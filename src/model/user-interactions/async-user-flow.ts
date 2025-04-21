@@ -32,12 +32,22 @@ export type AsyncUserFlowFsmState<RunStateT> =
   | { kind: "preparing" }
   | ActiveAsyncUserFlowFsmState<RunStateT>;
 
+export type RunOutcome =
+  | "error"
+  | "abandoned-by-navigation"
+  | "cancelled-by-user"
+  | "succeeded";
+
 function assertInteracting<RunStateT>(
   fsmState: AsyncUserFlowFsmState<RunStateT>
 ): asserts fsmState is InteractingAsyncUserFlowFsmState<RunStateT> {
   if (fsmState.kind !== "interacting")
     throw new Error('FSM-state should be "interacting"');
 }
+
+type AugRunArgs<RunArgsT> = RunArgsT & {
+  onDispose?: (runOutcome: RunOutcome) => void;
+};
 
 export type AsyncUserFlowState<RunStateT> = {
   fsmState: Generic<AsyncUserFlowFsmState<RunStateT>>;
@@ -55,7 +65,7 @@ export type AsyncUserFlowSlice<
   >;
   run: Thunk<
     AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT>,
-    RunArgsT,
+    AugRunArgs<RunArgsT>,
     void,
     AppModelT
   >;
@@ -108,6 +118,14 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
         return;
       }
 
+      let runOutcome: RunOutcome = "error";
+
+      // For some flows, RunArgsT = void, and then the run() action is
+      // called with no arguments, meaning args is undefined.  So we
+      // have to check that args is non-undefined, as well as that it
+      // has an "onDispose" property.
+      const onDispose = (args && args.onDispose) ?? (() => void 0);
+
       const storeActions = helpers.getStoreActions();
 
       const navigationGuard = new NavigationAbandonmentGuard();
@@ -137,6 +155,7 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
 
           const settleResult = await throwIfAbandoned(userSettlePromise);
           if (settleResult === "cancel") {
+            runOutcome = "cancelled-by-user";
             return;
           }
 
@@ -155,6 +174,7 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
             );
 
             actions.setFsmState({ kind: "succeeded", runState });
+            runOutcome = "succeeded";
 
             if (options.pulseSuccessMessage) {
               await throwIfAbandoned(delaySeconds(1.0));
@@ -173,12 +193,17 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
           }
         }
       } catch (err) {
-        if (!navigationGuard.wasAbandoned(err)) {
+        if (navigationGuard.wasAbandoned(err)) {
+          runOutcome = "abandoned-by-navigation";
+        } else {
+          // Shouldn't happen.
+          runOutcome = "error";
           throw err;
         }
       } finally {
         actions.setFsmState({ kind: "idle" });
         navigationGuard.exit();
+        onDispose(runOutcome);
       }
     }),
   };
