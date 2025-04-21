@@ -1,5 +1,4 @@
 import React, { PropsWithChildren } from "react";
-import { Link } from "./LinkWithinApp";
 import Button from "react-bootstrap/Button";
 import { useStoreActions, useStoreState } from "../store";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -121,6 +120,7 @@ const GoToMyProjectsDropdownItem: React.FC<EmptyProps> = () => {
 };
 
 export const StageControls: React.FC<EmptyProps> = () => {
+  const navigate = useNavigate();
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
   );
@@ -161,8 +161,12 @@ export const StageControls: React.FC<EmptyProps> = () => {
     </Button>
   );
 
+  const ariaLabel = "Controls";
+
+  const goHome = () => navigate(pathWithinApp("/"));
+
   return isFullScreen ? (
-    <div className="StageControls">
+    <section className="StageControls" aria-label={ariaLabel}>
       <div className="run-stop-controls">
         <GreenFlag />
         <RedStop />
@@ -174,9 +178,9 @@ export const StageControls: React.FC<EmptyProps> = () => {
       >
         <FontAwesomeIcon className="fa-lg" icon="compress" />
       </Button>
-    </div>
+    </section>
   ) : (
-    <div className="StageControls">
+    <section className="StageControls" aria-label={ariaLabel}>
       <GreenFlag />
       <RedStop />
       <Button
@@ -186,11 +190,9 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <span>Save</span>
       </Button>
       {fullScreenButton}
-      <Link to="/">
-        <Button>
-          <FontAwesomeIcon aria-label="Home" icon="home" />
-        </Button>
-      </Link>
+      <Button onClick={goHome}>
+        <FontAwesomeIcon aria-label="Home" icon="home" />
+      </Button>
       <DropdownButton align="end" title="⋮">
         <GoToMyProjectsDropdownItem />
         <Dropdown.Item onClick={onScreenshot}>Screenshot</Dropdown.Item>
@@ -200,6 +202,6 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <LaunchCoordsChooserDropdownItem />
         <Dropdown.Item onClick={onShowTooltips}>Show tooltips</Dropdown.Item>
       </DropdownButton>
-    </div>
+    </section>
   );
 };

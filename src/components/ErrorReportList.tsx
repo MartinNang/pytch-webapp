@@ -257,7 +257,7 @@ const attributeWatchErrorIntro = (errorContext: any) => {
   const owningObject = attributeWatchOwner(errorContext);
   return (
     <p>
-      While trying to show the value of the variable
+      While trying to show the value of the variable{" "}
       <code>{errorContext.attribute_name}</code> owned by {owningObject}, Pytch
       encountered this error:
     </p>
@@ -305,30 +305,32 @@ const ErrorReport: React.FC<ErrorReportProps> = ({ errorReport }) => {
   // we show a "sorry" message in that case.
 
   return (
-    <Alert variant="danger" className="ErrorReportAlert">
-      <ErrorIntro errorContext={errorContext} />
-      <blockquote>
-        <code>{msg}</code>
-      </blockquote>
-      {tracebackItems == null ? (
-        isBuildError ? null : (
-          <p>
-            Unfortunately there is no more information about what caused this
-            error. If you don’t think you were doing anything unusual, please
-            contact the Pytch team and ask for help. We suggest you save your
-            project then re-load Pytch.
-          </p>
-        )
-      ) : tracebackItems.length === 0 ? (
-        <p>There is no more information about this error.</p>
-      ) : (
-        <>
-          <p>This is how the error happened:</p>
-          <ul>{tracebackItems}</ul>
-          <p>{tracebackItems.length > 1 ? "which " : ""}raised the error.</p>
-        </>
-      )}
-    </Alert>
+    <li className="ErrorReportAlert-container">
+      <Alert variant="danger" className="ErrorReportAlert">
+        <ErrorIntro errorContext={errorContext} />
+        <blockquote>
+          <code>{msg}</code>
+        </blockquote>
+        {tracebackItems == null ? (
+          isBuildError ? null : (
+            <p>
+              Unfortunately there is no more information about what caused this
+              error. If you don’t think you were doing anything unusual, please
+              contact the Pytch team and ask for help. We suggest you save your
+              project then re-load Pytch.
+            </p>
+          )
+        ) : tracebackItems.length === 0 ? (
+          <p>There is no more information about this error.</p>
+        ) : (
+          <>
+            <p>This is how the error happened:</p>
+            <ol className="error-traceback">{tracebackItems}</ol>
+            <p>{tracebackItems.length > 1 ? "which " : ""}raised the error.</p>
+          </>
+        )}
+      </Alert>
+    </li>
   );
 };
 
@@ -363,11 +365,11 @@ export const ErrorReportList: React.FC<EmptyProps> = () => {
   return (
     <div className="ErrorReportPane">
       {intro}
-      <div className="ErrorReportList">
+      <ol className="ErrorReportList">
         {errors.map((errorReport, index) => (
           <ErrorReport key={index} errorReport={errorReport} />
         ))}
-      </div>
+      </ol>
     </div>
   );
 };

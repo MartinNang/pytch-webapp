@@ -234,8 +234,8 @@ export const AssetCard: React.FC<AssetCardProps> = ({
 
   return (
     <>
-      <DragPreviewImage connect={preview} src={dragPreview} />
-      <div className={classes}>
+      <li className={classes}>
+        <DragPreviewImage connect={preview} src={dragPreview} />
         <div ref={dropRef}>
           <div ref={dragRef}>
             <div className="drag-masked-card">
@@ -259,7 +259,7 @@ export const AssetCard: React.FC<AssetCardProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      </li>
     </>
   );
 };
