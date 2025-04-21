@@ -161,12 +161,11 @@ const ActorCard: React.FC<ActorCardProps> = ({ isFocused, kind, id, name }) => {
 };
 
 export const ActorsList = () => {
-  const program = useStructuredProgram();
+  const program = useStructuredProgram("ActorsList()");
   const focusedActor = useJrEditState((s) => s.focusedActor);
-
   const runUpsertFlow = useJrEditActions((a) => a.upsertSpriteFlow.run);
-  const existingNames = StructuredProgramOps.spriteNames(program);
 
+  const existingNames = StructuredProgramOps.spriteNames(program);
   const launchAddSpriteModal = () => {
     runUpsertFlow({
       upsertionAction: { kind: "insert" },
