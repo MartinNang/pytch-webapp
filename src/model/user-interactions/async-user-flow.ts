@@ -9,12 +9,11 @@ import {
   Generic,
   generic,
 } from "easy-peasy";
-import { delaySeconds, propSetterAction } from "../../utils";
+import { delaySeconds, promiseAndResolve, propSetterAction } from "../../utils";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
 type UserSettleResult = "cancel" | "submit";
 type UserSettleFun = (result: UserSettleResult) => void;
-const kIgnoreSettleResult: UserSettleFun = () => void 0;
 
 type InteractingAsyncUserFlowFsmState<RunStateT> = {
   kind: "interacting";
@@ -112,26 +111,22 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
       const storeActions = helpers.getStoreActions();
 
       const navigationGuard = new NavigationAbandonmentGuard();
-      function throwIfAbandoned<ResultT>(
-        p: Promise<ResultT>
-      ): Promise<ResultT> {
-        return navigationGuard.throwIfAbandoned(p);
-      }
+      const throwIfAbandoned =
+        navigationGuard.throwIfAbandoned.bind(navigationGuard);
 
       try {
         actions.setFsmState({ kind: "preparing" });
 
-        const preparePromise = prepare(args, storeActions, navigationGuard);
-        let runState: RunStateT = await throwIfAbandoned(preparePromise);
+        let runState: RunStateT = await throwIfAbandoned(
+          prepare(args, storeActions, navigationGuard)
+        );
 
         let maybeLastFailure: Error | null = null;
 
         let hasSucceeded = false;
         while (!hasSucceeded) {
-          let userSettle = kIgnoreSettleResult;
-          const userSettlePromise = new Promise<UserSettleResult>((resolve) => {
-            userSettle = resolve;
-          });
+          const { promise: userSettlePromise, resolve: userSettle } =
+            promiseAndResolve<UserSettleResult>();
 
           actions.setFsmState({
             kind: "interacting",
@@ -146,10 +141,7 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
           }
 
           try {
-            // Unsure what Easy-Peasy is doing with types here such that
-            // this cast is required.
-            const fsmState_ = helpers.getState().fsmState;
-            const fsmState = fsmState_ as AsyncUserFlowFsmState<RunStateT>;
+            const fsmState = helpers.getState().fsmState;
 
             assertInteracting(fsmState);
             runState = fsmState.runState;
@@ -157,22 +149,15 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
             actions.setFsmState({ kind: "attempting", runState });
 
             // The promise returned from this attempt() call can reject
-            // (either as a "business logic" error, or by back/fwd
-            // abandonment).
-            const attemptPromise = attempt(
-              runState,
-              storeActions,
-              navigationGuard
+            // (a "business logic" error, or by back/fwd abandonment).
+            await throwIfAbandoned(
+              attempt(runState, storeActions, navigationGuard)
             );
-            await navigationGuard.throwIfAbandoned(attemptPromise);
 
             actions.setFsmState({ kind: "succeeded", runState });
 
             if (options.pulseSuccessMessage) {
-              // Whether the delay is cancelled by navigation or runs to
-              // completion, we're finished, so we can ignore the return
-              // value of resultOrAbandoned().
-              await navigationGuard.throwIfAbandoned(delaySeconds(1.0));
+              await throwIfAbandoned(delaySeconds(1.0));
             }
 
             hasSucceeded = true;
@@ -180,6 +165,10 @@ function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             err: any
           ) {
+            // If the error is because of user navigation abandonment,
+            // we will loop back to "interacting", and the "error" will
+            // be picked up again there, so we need not treat user
+            // navigation abandonment specially.
             maybeLastFailure = err;
           }
         }
