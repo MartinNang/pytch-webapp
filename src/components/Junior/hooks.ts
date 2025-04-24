@@ -1,7 +1,14 @@
 import { State, Actions } from "easy-peasy";
 import { PytchProgramOps } from "../../model/pytch-program";
 import { useStoreActions, useStoreState } from "../../store";
-import { useDrag, useDrop } from "react-dnd";
+import {
+  ConnectDragPreview,
+  ConnectDragSource,
+  ConnectDropTarget,
+  useDrag,
+  useDrop,
+} from "react-dnd";
+import { useCallback } from "react";
 
 import { IPytchAppModel } from "../../model";
 import { EditState } from "../../model/junior/edit-state";
@@ -84,6 +91,38 @@ export const useActorNubs = () => {
 
   return useMappedProgram("useActorNubs()", mapProgram, ActorNubOps.eqArrays);
 };
+
+////////////////////////////////////////////////////////////////////////////////
+// General helpers for drag/drop.
+// https://github.com/react-dnd/react-dnd/issues/3655#issuecomment-2578808024
+
+function useRefFromConnector(connector: (el: HTMLElement) => void) {
+  return useCallback(
+    (element: HTMLElement | null) => {
+      if (element) {
+        connector(element);
+      }
+    },
+    [connector]
+  );
+}
+
+function refFromDragConnector<PropsT>([props, connector, preview]: [
+  PropsT,
+  ConnectDragSource,
+  ConnectDragPreview,
+]) {
+  const ref = useRefFromConnector(connector);
+  return [props, ref, preview] as const;
+}
+
+function refFromDropConnector<PropsT>([props, connector]: [
+  PropsT,
+  ConnectDropTarget,
+]) {
+  const ref = useRefFromConnector(connector);
+  return [props, ref] as const;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helpers for drag/drop of Pytch scripts.
