@@ -134,7 +134,8 @@ export const usePytchScriptDrag = (handlerId: Uuid) => {
   const setScriptDragInProgress = useJrEditActions(
     (a) => a.setScriptDragInProgress
   );
-  return useDrag<PytchScriptDragItem, void, PytchScriptDragProps>(
+  return refFromDragConnector(
+    useDrag<PytchScriptDragItem, void, PytchScriptDragProps>(
     () => ({
       type: "pytch-script",
       item: () => {
@@ -149,6 +150,7 @@ export const usePytchScriptDrag = (handlerId: Uuid) => {
       },
     }),
     [setScriptDragInProgress]
+    )
   );
 };
 
@@ -158,7 +160,8 @@ export const usePytchScriptDrop = (actorId: Uuid, handlerId: Uuid) => {
     (actions) => actions.activeProject.reorderHandlers
   );
 
-  return useDrop<PytchScriptDragItem, void, PytchScriptDropProps>(
+  return refFromDropConnector(
+    useDrop<PytchScriptDragItem, void, PytchScriptDropProps>(
     () => ({
       accept: "pytch-script",
       canDrop: (item) => item.handlerId !== handlerId,
@@ -174,6 +177,7 @@ export const usePytchScriptDrop = (actorId: Uuid, handlerId: Uuid) => {
       }),
     }),
     [reorderHandlers]
+    )
   );
 };
 
@@ -184,12 +188,13 @@ type AssetCardDragItem = { fullPathname: string };
 
 type AssetCardDragProps = { isDragging: boolean };
 export const useAssetCardDrag = (fullPathname: string, allowed: boolean) => {
-  return useDrag<AssetCardDragItem, void, AssetCardDragProps>(() => ({
+  return refFromDragConnector(
+    useDrag<AssetCardDragItem, void, AssetCardDragProps>(() => ({
     canDrag: allowed,
     type: "jr-asset-card",
     item: { fullPathname },
     collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-  }));
+  })));
 };
 
 type AssetCardDropProps = { hasDragItemOver: boolean };
@@ -199,7 +204,8 @@ export const useAssetCardDrop = (fullPathname: string, allowed: boolean) => {
     (actions) => actions.activeProject.reorderAssetsAndSync
   );
 
-  return useDrop<AssetCardDragItem, void, AssetCardDropProps>(() => ({
+  return refFromDropConnector(
+    useDrop<AssetCardDragItem, void, AssetCardDropProps>(() => ({
     accept: "jr-asset-card",
     canDrop: (item) => allowed && item.fullPathname !== fullPathname,
     drop: (item) => {
@@ -213,7 +219,7 @@ export const useAssetCardDrop = (fullPathname: string, allowed: boolean) => {
     collect: (monitor) => ({
       hasDragItemOver: monitor.canDrop() && monitor.isOver(),
     }),
-  }));
+  })));
 };
 
 export type AssetCardSwapWithAdjacentFuns = {
@@ -322,7 +328,8 @@ export const useHelpHatBlockDrag = (eventDescriptor?: EventDescriptor) => {
   const setScriptDragInProgress = useJrEditActions(
     (a) => a.setScriptDragInProgress
   );
-  return useDrag<HelpHatBlockDragItem, void, HelpHatBlockDragProps>(
+  return refFromDragConnector(
+    useDrag<HelpHatBlockDragItem, void, HelpHatBlockDragProps>(
     () => ({
       canDrag: eventDescriptor != null,
       type: "help-hat-block",
@@ -336,6 +343,7 @@ export const useHelpHatBlockDrag = (eventDescriptor?: EventDescriptor) => {
       },
     }),
     [eventDescriptor, setScriptDragInProgress]
+    )
   );
 };
 
@@ -344,7 +352,8 @@ export const useHelpHatBlockDrop = (actorId: Uuid) => {
     (actions) => actions.activeProject.upsertHandler
   );
 
-  return useDrop<HelpHatBlockDragItem, void, HelpHatBlockDropProps>(
+  return refFromDropConnector(
+    useDrop<HelpHatBlockDragItem, void, HelpHatBlockDropProps>(
     () => ({
       accept: "help-hat-block",
       drop: (item) => {
@@ -355,6 +364,7 @@ export const useHelpHatBlockDrop = (actorId: Uuid) => {
       collect: (monitor) => ({ hasDragItemOver: monitor.isOver() }),
     }),
     [actorId]
+    )
   );
 };
 
