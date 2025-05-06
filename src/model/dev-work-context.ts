@@ -1,6 +1,11 @@
 import { assertNever } from "../utils";
 import { ActorKind } from "./junior/structured-program";
 
+type PerMethodDevWorkContext = {
+  programKind: "per-method";
+  actorKind: ActorKind;
+};
+
 /** In what context is the user doing this piece of development work?
  * This affects the help text we show for a particular block (e.g.,
  * "flat" help might mention having to do "import math" whereas
@@ -8,9 +13,7 @@ import { ActorKind } from "./junior/structured-program";
  * blocks are shown (e.g., if editing a "per-method" program, don't show
  * Sprite-only blocks when the Stage is active).  It also affects the
  * list of completions we provide in the code editor. */
-export type DevWorkContext =
-  | { programKind: "flat" }
-  | { programKind: "per-method"; actorKind: ActorKind };
+export type DevWorkContext = { programKind: "flat" } | PerMethodDevWorkContext;
 
 export type DevWorkContextFlatKey = "flat" | `per-method-${ActorKind}`;
 
@@ -24,5 +27,11 @@ export class DevWorkContextOps {
       default:
         return assertNever(ctx);
     }
+  }
+
+  static eq(x: DevWorkContext, y: DevWorkContext): boolean {
+    if (x.programKind !== y.programKind) return false;
+    if (x.programKind === "flat") return true;
+    return x.actorKind === (y as PerMethodDevWorkContext).actorKind;
   }
 }
