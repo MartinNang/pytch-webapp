@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useStoreState, useStoreActions } from "../store";
-import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   BlockElementDescriptor,
@@ -14,10 +13,9 @@ import {
   showEntryInContext,
   useDevWorkContext,
 } from "../model/help-sidebar";
-import { assertNever, copyTextToClipboard, failIfNull } from "../utils";
+import { assertNever, EmptyProps, failIfNull } from "../utils";
 import classNames from "classnames";
 import { Spinner } from "react-bootstrap";
-import { IconName } from "@fortawesome/fontawesome-common-types";
 import { useHelpHatBlockDrag } from "./Junior/hooks";
 import { EventDescriptor } from "../model/junior/structured-program";
 import { DevWorkContext, DevWorkContextOps } from "../model/dev-work-context";
@@ -27,11 +25,6 @@ interface IScratchAndPython {
   scratch: SVGElement;
   scratchIsLong: boolean;
   pythonToCopy?: string;
-}
-
-interface IToggleHelp {
-  helpIsVisible: boolean;
-  toggleHelp: () => void;
 }
 
 function helpElementsFromProps(props: {
@@ -56,43 +49,37 @@ function pythonCodeFromProps(props: {
   );
 }
 
-const CopyButton: React.FC<{ pythonToCopy: string }> = ({ pythonToCopy }) => (
-  <Button
-    className="copy-button help-sidebar-button"
-    variant="outline-success"
-    onClick={() => {
-      copyTextToClipboard(pythonToCopy);
-    }}
-  >
-    <span>COPY</span>
-    <FontAwesomeIcon icon="copy" />
-  </Button>
+type AccordionAngleSignifierProps = {
+  wrap?: boolean;
+};
+const AccordionAngleSignifier: React.FC<AccordionAngleSignifierProps> = (
+  props
+) => {
+  const wrap = props.wrap ?? false;
+
+  const span = (
+    <span className="accordion-signifier">
+      <FontAwesomeIcon className="for-collapsed" icon="angle-right" />
+      <FontAwesomeIcon className="for-expanded" icon="angle-down" />
+    </span>
+  );
+
+  return wrap ? (
+    <div className="accordion-signifier-container me-2">{span}</div>
+  ) : (
+    span
+  );
+};
+
+const AccordionTextSignifier: React.FC<EmptyProps> = () => (
+  <div className="help-item-text-signifier">
+    <span className="for-collapsed">show more...</span>
+    <span className="for-expanded">show less...</span>
+  </div>
 );
 
-const MaybeCopyButton: React.FC<{ pythonToCopy?: string }> = ({
-  pythonToCopy,
-}) => {
-  return pythonToCopy == null ? null : (
-    <CopyButton pythonToCopy={pythonToCopy} />
-  );
-};
-
-const HelpToggleButton: React.FC<IToggleHelp> = (props) => {
-  const iconName: IconName = props.helpIsVisible ? "angle-up" : "angle-down";
-  return (
-    <Button
-      className="help-button help-sidebar-button"
-      variant="outline-secondary"
-      onClick={props.toggleHelp}
-    >
-      <span>HELP</span>
-      <FontAwesomeIcon className="fa-lg" icon={iconName} />
-    </Button>
-  );
-};
-
-const ScratchAndButtons: React.FC<
-  IScratchAndPython & IToggleHelp & { workContext: DevWorkContext }
+const ScratchBlockMaybeDraggable: React.FC<
+  IScratchAndPython & { workContext: DevWorkContext }
 > = (props) => {
   const scratchRef: React.RefObject<HTMLDivElement> = React.createRef();
 
@@ -111,7 +98,6 @@ const ScratchAndButtons: React.FC<
       if (scratchDiv.hasAttribute("data-populated")) return;
 
       scratchDiv.appendChild(props.scratch);
-
       scratchDiv.setAttribute("data-populated", "");
     }
   });
@@ -119,21 +105,14 @@ const ScratchAndButtons: React.FC<
   const draggableHatBlock = eventDescriptor != null;
   const dragDivClasses = classNames({ draggableHatBlock });
 
-  const maybeLongClass = props.scratchIsLong ? " long" : "";
   return (
-    <div className={`scratch-with-buttons${maybeLongClass}`}>
-      <div className={dragDivClasses} ref={dragRef}>
-        <div className="scratch-block-wrapper" ref={scratchRef} />
-      </div>
-      <HelpToggleButton {...props} />
+    <div className={dragDivClasses} ref={dragRef}>
+      <div className="scratch-block-wrapper" ref={scratchRef} />
     </div>
   );
 };
 
-const HelpText: React.FC<{ helpIsVisible: boolean; help: ElementArray }> = (
-  props
-) => {
-  const helpVisibility = props.helpIsVisible ? "shown" : "hidden";
+const HelpText: React.FC<{ help: ElementArray }> = (props) => {
   const helpRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   useEffect(() => {
@@ -152,14 +131,11 @@ const HelpText: React.FC<{ helpIsVisible: boolean; help: ElementArray }> = (
     }
   });
 
-  return <div className={`help-text ${helpVisibility}`} ref={helpRef} />;
+  return <div className="help-text" ref={helpRef} />;
 };
 
 const BlockElement: React.FC<
-  BlockElementDescriptor & {
-    toggleHelp: () => void;
-    workContext: DevWorkContext;
-  }
+  BlockElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
 
@@ -168,36 +144,34 @@ const BlockElement: React.FC<
     props.workContext.programKind === "per-method" &&
     props.python.startsWith("@pytch.when");
 
-  const mHeader = hideDecorator ? null : (
+  const mHeader = (
     <h2 className="has-python">
-      <code>{props.python}</code>
-      <MaybeCopyButton pythonToCopy={props.python} />
+      <AccordionAngleSignifier wrap />
+      {!hideDecorator && <code>{props.python}</code>}
     </h2>
   );
 
   return (
-    <div className="pytch-method">
-      {mHeader}
-      <ScratchAndButtons
-        workContext={props.workContext}
-        eventDescriptor={props.eventDescriptor}
-        scratch={props.scratch}
-        scratchIsLong={props.scratchIsLong}
-        helpIsVisible={props.helpIsVisible}
-        toggleHelp={props.toggleHelp}
-        pythonToCopy={props.python}
-      />
+    <details className="pytch-method">
+      <summary>
+        {mHeader}
+        <ScratchBlockMaybeDraggable
+          workContext={props.workContext}
+          eventDescriptor={props.eventDescriptor}
+          scratch={props.scratch}
+          scratchIsLong={props.scratchIsLong}
+          pythonToCopy={props.python}
+        />
+        <AccordionTextSignifier />
+      </summary>
 
-      <HelpText help={helpElements} helpIsVisible={props.helpIsVisible} />
-    </div>
+      <HelpText help={helpElements} />
+    </details>
   );
 };
 
 const NonMethodBlockElement: React.FC<
-  NonMethodBlockElementDescriptor & {
-    toggleHelp: () => void;
-    workContext: DevWorkContext;
-  }
+  NonMethodBlockElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
   const maybePythonDiv =
@@ -208,65 +182,61 @@ const NonMethodBlockElement: React.FC<
     );
 
   return (
-    <div className="pytch-method">
-      <h2 className="non-method">{props.heading}</h2>
+    <details className="pytch-method">
+      <summary>
+        <h2 className="non-method">
+          <AccordionAngleSignifier wrap />
+          {props.heading}
+        </h2>
 
-      {maybePythonDiv}
+        {maybePythonDiv}
 
-      <ScratchAndButtons
-        workContext={props.workContext}
-        scratch={props.scratch}
-        scratchIsLong={false}
-        helpIsVisible={props.helpIsVisible}
-        toggleHelp={props.toggleHelp}
-      />
+        <ScratchBlockMaybeDraggable
+          workContext={props.workContext}
+          scratch={props.scratch}
+          scratchIsLong={false}
+        />
+        <AccordionTextSignifier />
+      </summary>
 
-      <HelpText help={helpElements} helpIsVisible={props.helpIsVisible} />
-    </div>
+      <HelpText help={helpElements} />
+    </details>
   );
 };
 
 const PythonAndButtons: React.FC<{
   python: string;
-  helpIsVisible: boolean;
-  toggleHelp: () => void;
 }> = (props) => (
   <>
     <h2 className="has-python">
+      <AccordionAngleSignifier wrap />
       <code>{props.python}</code>
-      <MaybeCopyButton pythonToCopy={props.python} />
     </h2>
     <div className="python-with-buttons">
       <div />
-      <HelpToggleButton {...props} />
     </div>
   </>
 );
 
 const PurePythonElement: React.FC<
-  PurePythonElementDescriptor & IToggleHelp & { workContext: DevWorkContext }
+  PurePythonElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
   const pythonCode = pythonCodeFromProps(props);
 
   return (
-    <div className="pytch-method">
-      <PythonAndButtons
-        python={pythonCode}
-        helpIsVisible={props.helpIsVisible}
-        toggleHelp={props.toggleHelp}
-      />
-      <HelpText help={helpElements} helpIsVisible={props.helpIsVisible} />
-    </div>
+    <details className="pytch-method">
+      <summary>
+        <PythonAndButtons python={pythonCode} />
+        <AccordionTextSignifier />
+      </summary>
+      <HelpText help={helpElements} />
+    </details>
   );
 };
 
-// It's a bit clumsy to accept a toggleHelp function for all elements,
-// since not all elements use it.  E.g., a heading element has no
-// toggle-help button.  But it does no real harm.
 type HelpElementProps = {
   key: string;
-  toggleHelp: () => void;
   workContext: DevWorkContext;
 };
 const HelpElement: React.FC<HelpElementDescriptor & HelpElementProps> = (
@@ -294,35 +264,8 @@ const HelpElement: React.FC<HelpElementDescriptor & HelpElementProps> = (
 };
 
 type HelpSidebarSectionProps = HelpSectionContent & {
-  isExpanded: boolean;
-  toggleSectionVisibility: () => void;
-  toggleEntryHelp: (entryIndex: number) => () => void;
   workContext: DevWorkContext;
 };
-
-const scrollRequest = (() => {
-  let sectionSlug: string | null = null;
-
-  const enqueue = (slug: string): void => {
-    if (sectionSlug != null) {
-      console.warn(
-        `scrollRequest: enqueue("${slug}") while have "${sectionSlug}"`
-      );
-    }
-    sectionSlug = slug;
-  };
-
-  const acquireIfMatch = (slug: string): boolean => {
-    if (sectionSlug === slug) {
-      sectionSlug = null;
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  return { enqueue, acquireIfMatch };
-})();
 
 function sectionHasNoEntries(
   sectionSlug: string,
@@ -352,65 +295,36 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
   sectionSlug,
   sectionHeading,
   entries,
-  isExpanded,
-  toggleSectionVisibility,
-  toggleEntryHelp,
   workContext,
 }) => {
-  const categoryClass = `category-${sectionSlug}`;
-  const className = classNames("HelpSidebarSection", categoryClass, {
-    isExpanded,
-  });
-
-  const divRef: React.RefObject<HTMLDivElement> = React.createRef();
-
-  useEffect(() => {
-    if (
-      divRef.current &&
-      scrollRequest.acquireIfMatch(sectionSlug) &&
-      isExpanded
-    ) {
-      divRef.current.scrollIntoView();
-    }
-  }, [divRef, sectionSlug, isExpanded]);
-
-  const collapseOrExpandIcon = isExpanded ? "angle-up" : "angle-down";
-
   const workContextKey = DevWorkContextOps.asFlatKey(workContext);
-
-  // <HelpElement> can return false, to not render that entry.  The
-  // entry-index is used to identify the entry within the section for
-  // the expand/collapse action, so we have to maintain that
-  // relationship.  (The alternative would have been to filter the
-  // entries down to just the wanted ones and only create a shorter list
-  // of <HelpElement>s, but that would lose the relationship between
-  // index and entry.)
   const renderedEntries = entries.map((entry, idx) => (
     <HelpElement
       key={`${sectionSlug}-${idx}-${workContextKey}`}
       {...entry}
-      toggleHelp={toggleEntryHelp(idx)}
       workContext={workContext}
     />
   ));
 
   const noEntries = sectionHasNoEntries(sectionSlug, entries, workContext);
-  const expandedContent = noEntries ? (
+  const content = noEntries ? (
     <p className="no-help-entries-help">The Stage has no motion methods.</p>
   ) : (
     renderedEntries
   );
 
+  const categoryClass = `category-${sectionSlug}`;
+  const className = classNames("HelpSidebarSection", categoryClass);
   return (
-    <div className={className} ref={divRef}>
-      <h1 onClick={toggleSectionVisibility}>
-        <span className="content">{sectionHeading}</span>
-        <span className="accordion-signifier">
-          <FontAwesomeIcon icon={collapseOrExpandIcon} />
-        </span>
-      </h1>
-      {isExpanded && expandedContent}
-    </div>
+    <details className={className}>
+      <summary>
+        <h1>
+          <AccordionAngleSignifier />
+          <span className="content">{sectionHeading}</span>
+        </h1>
+      </summary>
+      {content}
+    </details>
   );
 };
 
@@ -423,20 +337,6 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
   const contentFetchState = useStoreState(
     (state) => state.ideLayout.helpSidebar.contentFetchState
   );
-  const sectionVisibility = useStoreState(
-    (state) => state.ideLayout.helpSidebar.sectionVisibility
-  );
-  const toggleSectionVisibilityAction = useStoreActions(
-    (actions) => actions.ideLayout.helpSidebar.toggleSectionVisibility
-  );
-  const toggleHelpEntryVisibility = useStoreActions(
-    (actions) => actions.ideLayout.helpSidebar.toggleHelpEntryVisibility
-  );
-
-  const toggleSectionVisibility = (slug: string) => {
-    scrollRequest.enqueue(slug);
-    toggleSectionVisibilityAction(slug);
-  };
 
   switch (contentFetchState.state) {
     case "idle":
@@ -447,36 +347,16 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
         </div>
       );
     case "available": {
-      const sectionIsExpanded = (slug: string) =>
-        sectionVisibility.status === "one-visible" &&
-        sectionVisibility.slug === slug;
-
-      // The type here is a bit fiddly.  Each <HelpSidebarSection> needs
-      // (as its toggleEntryHelp prop) a function which takes an
-      // entry-index and returns a function suitable for use as an
-      // onClick handler.  We want a function which creates such
-      // functions from sectionIndex values.
-      //
-      const toggleEntryHelp =
-        (sectionIndex: number) => (entryIndex: number) => () => {
-          toggleHelpEntryVisibility({ sectionIndex, entryIndex });
-        };
-
       const helpContent = contentFetchState.content;
 
       return (
         <>
-          {helpContent.map((section, idx) => (
+          {helpContent.map((section) => (
             <HelpSidebarSection
               key={section.sectionSlug}
               sectionSlug={section.sectionSlug}
               sectionHeading={section.sectionHeading}
               entries={section.entries}
-              isExpanded={sectionIsExpanded(section.sectionSlug)}
-              toggleSectionVisibility={() =>
-                toggleSectionVisibility(section.sectionSlug)
-              }
-              toggleEntryHelp={toggleEntryHelp(idx)}
               workContext={workContext}
             ></HelpSidebarSection>
           ))}

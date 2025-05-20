@@ -18,34 +18,52 @@ $block-category-backgrounds: (
 
 $hovered-method-bg: darken($secondary-bg-color, 5);
 
-.help-sidebar {
-  .content-wrapper > .content {
-    width: $help-sidebar-content-width;
-    .inner-content {
-      margin: 0.75rem;
-      margin-bottom: 7.5rem;
-    }
+@each $cat, $bg in $block-category-backgrounds {
+  .HelpSidebarSection.category-#{$cat} {
+    --pytch-help-category-background: #{$bg};
+    --pytch-help-category-hover-background: #{darken($bg, 15)};
   }
 }
 
-.ActivityContent .HelpSidebar .content .inner-content,
-.help-sidebar .content .inner-content {
+.ActivityContent .HelpSidebar .content .inner-content {
   .HelpSidebarSection {
-    > div:last-child {
-      margin-bottom: 2rem;
+    summary {
+      display: block;
+      padding: 4px;
     }
 
-    h1 {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: stretch;
+    details summary {
+      padding-bottom: 8px;
+      h2 + * {
+        margin-left: 32px;
+      }
+      .help-item-text-signifier {
+        text-align: right;
+        margin-right: 0.5rem;
+        color: $pytch-colour-main-blue;
+      }
+    }
 
-      color: white;
+    > details:last-child {
+      margin-bottom: 1rem;
+    }
+
+    summary h1 {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: stretch;
+      margin-bottom: 0px;
+
+      background-color: var(--pytch-help-category-background);
+      &:hover {
+        background-color: var(--pytch-help-category-hover-background);
+      }
+      transition-property: background-color;
+      transition-duration: 150ms;
+
       border-radius: 4px;
       cursor: pointer;
       user-select: none;
-      transition-property: background-color;
-      transition-duration: 150ms;
 
       .content,
       .accordion-signifier {
@@ -60,51 +78,99 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
         margin: 6px 1rem;
         font-weight: normal;
       }
-
-      .accordion-signifier {
-        margin: 6px 1rem 6px 0px;
-        display: grid;
-        align-items: center;
-
-        > svg {
-          // Chevron is not quite vertically centred in its box; fix:
-          transform: translateY(1px);
-        }
-      }
     }
-  }
 
-  @each $cat, $bg in $block-category-backgrounds {
-    .HelpSidebarSection.category-#{$cat} {
-      h1 {
-        background-color: $bg;
-        &:hover {
-          background-color: darken($bg, 15);
-        }
-      }
-    }
-  }
-
-  h2 {
-    font-size: 1rem;
-    font-weight: bold;
-
-    &.has-python {
+    details summary h2 .accordion-signifier,
+    summary h1 .accordion-signifier {
       display: grid;
-      grid-template-columns: auto 1fr;
-      justify-items: right;
+      place-content: center center;
+
+      // The difference in padding is because the angle-down icon seems
+      // to be not quite vertically centred in its box.
+      .for-collapsed {
+        display: block;
+        padding-top: 1px;
+        padding-bottom: 1px;
+      }
+      .for-expanded {
+        display: none;
+        padding-top: 2px;
+      }
     }
-    &.non-method {
-      font-size: 1.125rem;
+
+    summary h1 .accordion-signifier {
+      width: 1.5rem;
+      margin: 6px 0px 6px 0.5rem;
+    }
+
+    details summary h2 .accordion-signifier-container {
+      background-color: var(--pytch-help-category-background);
+      &:hover {
+        background-color: var(--pytch-help-category-hover-background);
+      }
+      border-radius: 4px;
+      .accordion-signifier {
+        border-radius: 4px;
+        background-color: #ffffffa0;
+        font-size: 0.875rem;
+        padding: 3px;
+        width: 1rem;
+        margin: 4px;
+      }
+    }
+
+    details[open] summary h2 .accordion-signifier,
+    &[open] summary h1 .accordion-signifier {
+      .for-collapsed {
+        display: none;
+      }
+      .for-expanded {
+        display: block;
+      }
+    }
+
+    details summary .help-item-text-signifier {
+      .for-collapsed {
+        display: block;
+      }
+      .for-expanded {
+        display: none;
+      }
+    }
+    details[open] summary .help-item-text-signifier {
+      .for-collapsed {
+        display: none;
+      }
+      .for-expanded {
+        display: block;
+      }
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: bold;
+
+      &.has-python,
+      &.non-method {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        justify-items: left;
+      }
+      &.non-method {
+        font-size: 1.125rem;
+        align-items: center;
+      }
+    }
+
+    .no-help-entries-help {
+      margin: 0px 4px 8px;
+      font-style: italic;
     }
   }
 
   .pytch-method {
-    margin-top: 1.25rem;
-    margin-left: -6px;
-    margin-right: -6px;
+    margin-top: 0.5rem;
     background-color: $secondary-bg-color;
-    border: 6px solid transparent;
 
     &:hover {
       background-color: $hovered-method-bg;
@@ -116,10 +182,9 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
     }
 
     .help-text {
-      &.hidden {
-        display: none;
-      }
-      margin-top: 0.75rem;
+      padding: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #aaa;
     }
 
     .help-sidebar-button {
@@ -165,10 +230,6 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
     svg.scratchblocks {
       margin: 0px;
     }
-
-    .python {
-      margin-top: 0.75rem;
-    }
   }
 
   em {
@@ -199,8 +260,7 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
 
   .draggableHatBlock {
     padding: 4px 2px;
-    margin-left: -2px;
-    margin-top: -4px;
+    margin: -4px -2px;
 
     cursor: grab;
     &:hover {
