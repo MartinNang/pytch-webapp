@@ -12,15 +12,21 @@ export type AddSomethingButtonWhat =
 export type AddSomethingButtonProps = {
   what: AddSomethingButtonWhat;
   label: string;
+  className?: string;
   onClick: React.MouseEventHandler;
 };
 
 export const AddSomethingButton: React.FC<AddSomethingButtonProps> = ({
   what,
   label,
+  className: customClassnames,
   onClick,
 }) => {
-  const classes = classNames("AddSomethingButton", `add-${what}`);
+  const classes = classNames(
+    "AddSomethingButton",
+    `add-${what}`,
+    customClassnames
+  );
   return (
     <button className={classes} onClick={onClick}>
       {label && <span className="label">{label}</span>}
@@ -52,6 +58,7 @@ export const AddSomethingButtonStrip: React.FC<
 
 type AddSomethingSingleButtonProps = AddSomethingButtonProps & {
   className?: string;
+  buttonClassName?: string;
 };
 export const AddSomethingSingleButton: React.FC<
   AddSomethingSingleButtonProps
@@ -59,6 +66,7 @@ export const AddSomethingSingleButton: React.FC<
   return (
     <AddSomethingButtonStrip className={props.className}>
       <AddSomethingButton
+        className={props.buttonClassName}
         what={props.what}
         label={props.label}
         onClick={props.onClick}
