@@ -13,6 +13,7 @@ import {
   showEntryInContext,
   useDevWorkContext,
 } from "../model/help-sidebar";
+import { highlightedPreEltsFromCode } from "../model/highlight-as-ace";
 import { assertNever, EmptyProps, failIfNull } from "../utils";
 import classNames from "classnames";
 import { Spinner } from "react-bootstrap";
@@ -147,7 +148,9 @@ const BlockElement: React.FC<
   const mHeader = (
     <h2 className="has-python">
       <AccordionAngleSignifier wrap />
-      {!hideDecorator && <code>{props.python}</code>}
+      {!hideDecorator && (
+        <code onClick={(ev) => ev.preventDefault()}>{props.python}</code>
+      )}
     </h2>
   );
 
@@ -174,10 +177,23 @@ const NonMethodBlockElement: React.FC<
   NonMethodBlockElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
+
+  const populateHighlightedCode = (preElt: HTMLPreElement) => {
+    if (preElt == null) return;
+    if (preElt.hasAttribute("data-code-populated")) return;
+    if (props.python == null) return; // Shouldn't happen
+    const codeLineElts = highlightedPreEltsFromCode(props.python);
+    codeLineElts.forEach((elt) => preElt.appendChild(elt));
+    preElt.setAttribute("data-code-populated", "yes");
+  };
+
   const maybePythonDiv =
     props.python == null ? null : (
-      <div className="python">
-        <pre>{props.python}</pre>
+      <div className="python" onClick={(ev) => ev.preventDefault()}>
+        <pre
+          className="help-sidebar-example-snippet"
+          ref={populateHighlightedCode}
+        />
       </div>
     );
 

@@ -26,6 +26,13 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
 }
 
 .ActivityContent .HelpSidebar .content .inner-content {
+  details.pytch-method summary {
+    code,
+    pre {
+      cursor: text;
+    }
+  }
+
   .HelpSidebarSection {
     summary {
       display: block;
@@ -240,6 +247,7 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
     background-color: white;
     line-height: 1rem;
     padding: 8px;
+    margin-right: 3rem;
     > pre {
       margin: 0px;
       padding: 0px;
