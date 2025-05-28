@@ -168,8 +168,11 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
     // can.  (Messy but seems to be working.)
     function setLoadFiredAttr() {
       const mDiv = aceParentRef.current;
-      if (mDiv != null) mDiv.setAttribute("data-on-load-fired", "yes");
-      else setTimeout(setLoadFiredAttr, 20);
+      if (mDiv != null) {
+        mDiv.setAttribute("data-on-load-fired", "yes");
+      } else {
+        setTimeout(setLoadFiredAttr, 20);
+      }
     }
     setLoadFiredAttr();
   };
@@ -198,6 +201,8 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
 
   const aceParentDivId = `aceParent-${handler.id}`;
 
+  const aceId = `ace-${handlerId}`;
+
   return (
     <>
       <li className={classes}>
@@ -223,7 +228,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
               enableBasicAutocompletion={completers}
               value={handler.pythonCode}
               onChange={updateCodeText}
-              name={`ace-${handler.id}`}
+              name={aceId}
               onLoad={onAceEditorLoad}
               onFocus={onAceEditorFocus}
               fontSize={14}

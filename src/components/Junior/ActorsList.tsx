@@ -104,7 +104,10 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
       return;
     }
 
-    runDeleteActor({ spriteDisplayName: name, actorId: id });
+    runDeleteActor({
+      spriteDisplayName: name,
+      actorId: id,
+    });
   };
 
   const appearancesName = ActorKindOps.names(kind).appearancesDisplay;
@@ -199,7 +202,7 @@ export const ActorsList = () => {
           <AddSomethingSingleButton
             what="sprite"
             label="Add sprite"
-            onClick={() => launchAddSpriteModal()}
+            onClick={launchAddSpriteModal}
           />
         </div>
       </SingleTab>

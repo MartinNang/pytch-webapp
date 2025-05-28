@@ -115,6 +115,10 @@ export const HatBlock: React.FC<HatBlockProps> = ({
   event,
 }) => {
   const launchUpsertAction = useJrEditActions((a) => a.upsertHatBlockFlow.run);
+  const reorderHandlers = useStoreActions(
+    (actions) => actions.activeProject.reorderHandlers
+  );
+
   const onChangeHatBlock = () => {
     launchUpsertAction({
       operation: {
@@ -124,14 +128,12 @@ export const HatBlock: React.FC<HatBlockProps> = ({
     });
   };
 
-  const reorderHandlers = useStoreActions(
-    (actions) => actions.activeProject.reorderHandlers
-  );
   const swapWithAdjacentFun = (targetHandlerId: Uuid | null) => () => {
     if (targetHandlerId != null) {
       reorderHandlers({ actorId, movingHandlerId: handlerId, targetHandlerId });
     }
   };
+
   const swapWithPrev = swapWithAdjacentFun(prevHandlerId);
   const swapWithNext = swapWithAdjacentFun(nextHandlerId);
 
@@ -139,8 +141,13 @@ export const HatBlock: React.FC<HatBlockProps> = ({
     (a) => a.activeProject.duplicateHandler
   );
   const onDuplicate = () => duplicateHandlerAction({ actorId, handlerId });
+
   const runDeleteFlow = useJrEditActions((a) => a.deleteHandlerFlow.run);
-  const onDelete = () => runDeleteFlow({ actorId, handlerId });
+  const onDelete = () =>
+    runDeleteFlow({
+      actorId,
+      handlerId,
+    });
 
   return (
     <div className="HatBlock" onDoubleClick={onChangeHatBlock}>
