@@ -10,6 +10,13 @@ import { IconName } from "@fortawesome/fontawesome-common-types";
 import { useHasLinkedLesson, useHasLinkedSpecimen } from "./lesson/hooks";
 import { EmptyProps } from "../../utils";
 import { useStoreState } from "../../store";
+import { Nav } from "react-bootstrap";
+import {
+  containerRefCallback,
+  focusGroupContainerClass,
+  groupedFocusManager,
+  kFocusGroupItemClassName,
+} from "../../model/junior/grouped-focus";
 
 type TabKeyUiDetails = { icon: IconName; tooltip: string };
 
@@ -28,8 +35,10 @@ function uiDetailsFromTabKey(tab: ActivityBarTabKey): TabKeyUiDetails {
   return mDetails;
 }
 
-const tabIsActive = (tab: ActivityBarTabKey, barState: ActivityContentState) =>
-  barState.kind === "expanded" && barState.tab === tab;
+const tabIsActive = (
+  tab: ActivityBarTabKey,
+  contentState: ActivityContentState
+) => contentState.kind === "expanded" && contentState.tab === tab;
 
 type ActivityBarTabProps = { tab: ActivityBarTabKey; isActive: boolean };
 const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
@@ -39,14 +48,24 @@ const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
   const onClick = isActive ? () => collapseAction() : () => expandAction(tab);
   const uiDetails = uiDetailsFromTabKey(tab);
   const classes = classNames("ActivityBarTab", { isActive }, `tab-key-${tab}`);
+  const buttonClasses = classNames("tabkey-icon", kFocusGroupItemClassName);
 
   return (
-    <div className={classes} onClick={onClick}>
-      <div className="tabkey-icon">
+    <li className={classes} onClick={onClick}>
+      <button
+        className={buttonClasses}
+        tabIndex={-1}
+        onClick={groupedFocusManager.onItemClick}
+        id={`pytch:activity-bar-tab:tab:${tab}`}
+        role="tab"
+        aria-controls={`pytch:activity-bar-tab:tabpanel:${tab}`}
+        aria-selected={isActive}
+        data-activity-bar-tab={tab}
+      >
         <FontAwesomeIcon icon={uiDetails.icon} />
-      </div>
+      </button>
       <div className="tabkey-tooltip">{uiDetails.tooltip}</div>
-    </div>
+    </li>
   );
 };
 
@@ -72,20 +91,29 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
     ? ["helpsidebar", "tutorial"]
     : ["helpsidebar"];
 
+  const focusGroupExtraClass =
+    activityContentState.kind === "collapsed" ? "gfs__help__container" : "";
+  const divClasses = focusGroupContainerClass(focusGroupExtraClass);
   const syncClasses = classNames("sync-indicator", { pendingActionsExist });
   return (
-    <div className="ActivityBar">
-      <div className="activity-bar-tabs">
-        {tabs.map((tab) => (
-          <ActivityBarTab
-            key={tab}
-            tab={tab}
-            isActive={tabIsActive(tab, activityContentState)}
-          />
-        ))}
-      </div>
-      <div className={syncClasses}>
-        <FontAwesomeIcon icon="arrows-rotate" />
+    <div
+      ref={containerRefCallback()}
+      className={divClasses}
+      data-grouped-focus-key="ActivityBar"
+    >
+      <div className="ActivityBar">
+        <Nav as="ul" className="activity-bar-tabs">
+          {tabs.map((tab) => (
+            <ActivityBarTab
+              key={tab}
+              tab={tab}
+              isActive={tabIsActive(tab, activityContentState)}
+            />
+          ))}
+        </Nav>
+        <div className={syncClasses}>
+          <FontAwesomeIcon icon="arrows-rotate" />
+        </div>
       </div>
     </div>
   );
