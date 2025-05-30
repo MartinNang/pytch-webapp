@@ -18,6 +18,11 @@ import { EmptyProps, PYTCH_CYPRESS } from "../../utils";
 import { aceControllerMap } from "../../skulpt-connection/code-editor";
 import { useNotableChanges } from "../hooks/notable-changes";
 import { ConjoinedResizeObserver } from "../../model/junior/conjoined-resize-observer";
+import {
+  containerRefCallback,
+  focusGroupContainerClass,
+  kFocusGroupFallbackClassName,
+} from "../../model/junior/grouped-focus";
 
 const AddHandlerButton: React.FC<EmptyProps> = () => {
   const focusedActorId = useJrEditState((s) => s.focusedActor);
@@ -34,6 +39,7 @@ const AddHandlerButton: React.FC<EmptyProps> = () => {
   return (
     <AddSomethingSingleButton
       className={classes}
+      buttonClassName={kFocusGroupFallbackClassName}
       what="script"
       label="Add script"
       onClick={launchAdd}
@@ -103,15 +109,16 @@ const ScriptsEditor = () => {
   // handlerIds either with -1 or with nHandlers gives undefined, which
   // is a bit messy, but works for null.
   const scriptsContent = handlerIds.map((hid, idx) => (
-    <PytchScriptEditor
-      key={hid}
-      actorKind={kind}
-      actorId={actorId}
-      handlerId={hid}
-      prevHandlerId={handlerIds[idx - 1]}
-      nextHandlerId={handlerIds[idx + 1]}
-      conjoinedResizeObserver={conjoinedResizeObserver}
-    />
+    <li key={hid}>
+      <PytchScriptEditor
+        actorKind={kind}
+        actorId={actorId}
+        handlerId={hid}
+        prevHandlerId={handlerIds[idx - 1]}
+        nextHandlerId={handlerIds[idx + 1]}
+        conjoinedResizeObserver={conjoinedResizeObserver}
+      />
+    </li>
   ));
 
   // The "pb-5" adds padding below; without this, the above scroll
@@ -124,13 +131,17 @@ const ScriptsEditor = () => {
   // that the Ace editor is resized after rendering?
   //
   return (
-    <>
+    <div
+      ref={containerRefCallback()}
+      className={focusGroupContainerClass("gfs__actorprops__container")}
+      data-grouped-focus-key={`ActorProperties/${actorId}/code`}
+    >
       <div ref={scriptsDivRef} className="pt-2 pb-5 Junior-ScriptsEditor">
         {maybeNoContentHelp}
         <ol>{scriptsContent}</ol>
       </div>
       <AddHandlerButton />
-    </>
+    </div>
   );
 };
 
