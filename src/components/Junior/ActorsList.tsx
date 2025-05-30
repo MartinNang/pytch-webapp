@@ -16,9 +16,16 @@ import {
   useMappedProgram,
   useStructuredProgram,
 } from "./hooks";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import { ActorPropertiesTabKey } from "../../model/junior/edit-state";
 import { SingleTab } from "../SingleTab";
+import { CaptiveContextMenu } from "../CaptiveContextMenu";
+import {
+  containerRefCallback,
+  groupedFocusManager,
+  kFocusGroupItemClassName,
+  focusGroupContainerClass,
+} from "../../model/junior/grouped-focus";
 
 type ActorThumbnailProps = { id: Uuid };
 const ActorThumbnail: React.FC<ActorThumbnailProps> = ({ id }) => {
@@ -75,9 +82,9 @@ const RenameSpriteDropdownItem: React.FC<RenameSpriteDropdownItemProps> = ({
     });
 
   return (
-    <Dropdown.Item onClick={doRename} disabled={!isAllowed}>
+    <CaptiveContextMenu.DropdownItem onInvoke={doRename} disabled={!isAllowed}>
       Rename
-    </Dropdown.Item>
+    </CaptiveContextMenu.DropdownItem>
   );
 };
 
@@ -93,12 +100,15 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
 }) => {
   const runDeleteActor = useJrEditActions((a) => a.deleteSpriteFlow.run);
   const activateTab = useJrEditActions((a) => a.setActorPropertiesActiveTab);
+  const setFocusedActorAction = useJrEditActions((a) => a.setFocusedActor);
+
+  const activateThisActor = () => setFocusedActorAction(id);
 
   // You can only rename/delete sprites, not the stage.
   const canRenameOrDelete = kind === "sprite";
 
   // TODO: Add undo functionality for "delete sprite" action.
-  const doDelete: React.MouseEventHandler = () => {
+  const doDelete = () => {
     if (!canRenameOrDelete) {
       console.warn("ActorCardDropdown.doDelete(): should not be running");
       return;
@@ -111,33 +121,46 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   };
 
   const appearancesName = ActorKindOps.names(kind).appearancesDisplay;
-  const onClickProps = (tab: ActorPropertiesTabKey) => ({
-    onClick() {
+  const onInvokeProps = (tab: ActorPropertiesTabKey) => ({
+    onInvoke() {
+      const seizeFocusKey = `ActorProperties/${id}/${tab}`;
+      groupedFocusManager.focusBookmarkedItemOrQueueRequest(seizeFocusKey);
+
+      // For mouse usage, clicking on the dropdown toggle will have
+      // already activated this actor, but for keyboard navigation, the
+      // user might not have explicitly activated this actor before
+      // launching the dropdown and choosing code/costumes/sounds.
+      activateThisActor();
+
       activateTab(tab);
     },
   });
 
   return (
-    <DropdownButton align="end" title="⋮">
-      <Dropdown.Item {...onClickProps("code")}>See code</Dropdown.Item>
-      <Dropdown.Item {...onClickProps("appearances")}>
-        See {appearancesName}
-      </Dropdown.Item>
-      <Dropdown.Item {...onClickProps("sounds")}>See sounds</Dropdown.Item>
+    <CaptiveContextMenu.DropdownMenu>
+      <CaptiveContextMenu.DropdownItem {...onInvokeProps("code")}>
+        Go to code
+      </CaptiveContextMenu.DropdownItem>
+      <CaptiveContextMenu.DropdownItem {...onInvokeProps("appearances")}>
+        Go to {appearancesName}
+      </CaptiveContextMenu.DropdownItem>
+      <CaptiveContextMenu.DropdownItem {...onInvokeProps("sounds")}>
+        Go to sounds
+      </CaptiveContextMenu.DropdownItem>
       <Dropdown.Divider />
       <RenameSpriteDropdownItem
         actorId={id}
         isAllowed={canRenameOrDelete}
         previousName={name}
       />
-      <Dropdown.Item
+      <CaptiveContextMenu.DropdownItem
         className="danger"
-        onClick={doDelete}
+        onInvoke={doDelete}
         disabled={!canRenameOrDelete}
       >
         DELETE
-      </Dropdown.Item>
-    </DropdownButton>
+      </CaptiveContextMenu.DropdownItem>
+    </CaptiveContextMenu.DropdownMenu>
   );
 };
 
@@ -153,13 +176,19 @@ const ActorCard: React.FC<ActorCardProps> = ({ isFocused, kind, id, name }) => {
 
   const className = classNames("ActorCard", `kind-${kind}`, { isFocused });
   return (
-    <li className={className} onClick={setFocusedActor} data-actor-id={id}>
-      <div className="ActorCardContent">
-        <ActorThumbnail id={id} />
-        <div className="label">{name}</div>
+    <CaptiveContextMenu.Container
+      className={kFocusGroupItemClassName}
+      onClick={groupedFocusManager.onItemClick}
+      onActivate={setFocusedActor}
+    >
+      <div className={className} data-actor-id={id}>
+        <div className="ActorCardContent">
+          <ActorThumbnail id={id} />
+          <div className="label">{name}</div>
+        </div>
+        <ActorCardDropdown kind={kind} name={name} id={id} />
       </div>
-      <ActorCardDropdown kind={kind} name={name} id={id} />
-    </li>
+    </CaptiveContextMenu.Container>
   );
 };
 
@@ -185,25 +214,29 @@ export const ActorsList = () => {
     >
       <SingleTab title="Stage and sprites">
         <div className="abs-0000">
-          <ol className="ActorsList">
-            {program.actors.map((a) => {
-              const isFocused = a.id === focusedActor;
-              return (
-                <ActorCard
-                  key={a.id}
-                  isFocused={isFocused}
-                  kind={a.kind}
-                  id={a.id}
-                  name={a.name}
-                />
-              );
-            })}
-          </ol>
-          <AddSomethingSingleButton
-            what="sprite"
-            label="Add sprite"
-            onClick={launchAddSpriteModal}
-          />
+          <div
+            ref={containerRefCallback()}
+            className={focusGroupContainerClass("gfs__actors__container")}
+            data-grouped-focus-key="ActorsList"
+          >
+            <ol className="ActorsList">
+              {program.actors.map((a) => (
+                <li key={a.id} className="Item-ActorCard">
+                  <ActorCard
+                    isFocused={a.id === focusedActor}
+                    kind={a.kind}
+                    id={a.id}
+                    name={a.name}
+                  />
+                </li>
+              ))}
+            </ol>
+            <AddSomethingSingleButton
+              what="sprite"
+              label="Add sprite"
+              onClick={launchAddSpriteModal}
+            />
+          </div>
         </div>
       </SingleTab>
     </section>
