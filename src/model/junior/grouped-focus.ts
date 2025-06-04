@@ -133,6 +133,21 @@ function eltOrSectionSummary(elt: HTMLElement): HTMLElement {
   return summaryElt;
 }
 
+/** If a focus-group item has a captive context menu, then we want to
+ * NOT respond to keypresses when that menu is open.  The
+ * captive-context-menu logic gives the captive-context-menu container
+ * element a particular class to signal that the menu is open.  This
+ * function tests for the presence of such a suppressing element.
+ *
+ * This is rather more coupled than would be ideal; should we revisit
+ * the design? */
+function containsSuppressingItem(elt: HTMLElement) {
+  const mSuppressingItem = elt.querySelector<HTMLElement>(
+    `:scope .${kFocusGroupItemClassName}[data-suppress-focus-group-navigation]`
+  );
+  return mSuppressingItem != null;
+}
+
 export class GroupedFocusManager {
   bookmarkFromKey_: Map<string, number>;
   pendingKey: string | null;
@@ -428,6 +443,62 @@ export class GroupedFocusManager {
       focusItemDiv.focus();
     };
   }
+
+  /** Return a freshly-made function to act as a ref callback for the
+   * focus-group container element.  It attaches key handlers and also is
+   * part of managing the two-stage focus-request mechanism (see docs just
+   * before `setPendingKey()`). */
+  containerRefCallback<ElementT extends HTMLElement>() {
+    let onKeyDown: ((evt: KeyboardEvent) => void) | null = null;
+    let eltWithHandler: HTMLElement | null = null;
+
+    return (elt: ElementT | null) => {
+      if (elt == null) {
+        if (eltWithHandler != null && onKeyDown != null) {
+          eltWithHandler.removeEventListener("keydown", onKeyDown);
+        }
+      } else {
+        const key = GroupedFocusManager.keyFromElt(elt);
+
+        this.setContainerTabFocusability(elt);
+        if (eltWithHandler == null) {
+          onKeyDown = (evt) => {
+            // Do nothing if the user is navigating a dropdown menu.
+            if (containsSuppressingItem(elt)) return;
+
+            switch (evt.key) {
+              case "ArrowRight":
+              case "ArrowDown":
+                this.focusOffsetItem(elt, 1);
+                evt.preventDefault();
+                break;
+
+              case "ArrowLeft":
+              case "ArrowUp":
+                this.focusOffsetItem(elt, -1);
+                evt.preventDefault();
+                break;
+
+              case "Home":
+                this.focusAbsoluteItem(elt, 0);
+                break;
+
+              case "End":
+                this.focusAbsoluteItem(elt, -1);
+                break;
+            }
+          };
+          eltWithHandler = elt;
+          elt.addEventListener("keydown", onKeyDown);
+
+          const focusRequestPending = this.acquirePendingKey(key);
+          if (focusRequestPending) {
+            this.focusBookmarkedItem(elt);
+          }
+        }
+      }
+    };
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -436,21 +507,6 @@ export class GroupedFocusManager {
 // within a context object provided at high level in the IDE DOM?
 
 export let groupedFocusManager = new GroupedFocusManager();
-
-/** If a focus-group item has a captive context menu, then we want to
- * NOT respond to keypresses when that menu is open.  The
- * captive-context-menu logic gives the captive-context-menu container
- * element a particular class to signal that the menu is open.  This
- * function tests for the presence of such a suppressing element.
- *
- * This is rather more coupled than would be ideal; should we revisit
- * the design? */
-function containsSuppressingItem(elt: HTMLElement) {
-  const mSuppressingItem = elt.querySelector<HTMLElement>(
-    `:scope .${kFocusGroupItemClassName}[data-suppress-focus-group-navigation]`
-  );
-  return mSuppressingItem != null;
-}
 
 /** Return a freshly-made function to act as a ref callback for the
  * focus-group container element.  It attaches key handlers and also is
