@@ -9,7 +9,12 @@ import {
   Generic,
   generic,
 } from "easy-peasy";
-import { delaySeconds, promiseAndResolve, propSetterAction } from "../../utils";
+import {
+  assertNever,
+  delaySeconds,
+  promiseAndResolve,
+  propSetterAction,
+} from "../../utils";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
 type UserSettleResult = "cancel" | "submit";
@@ -38,6 +43,23 @@ export type RunOutcome =
   | "cancelled-by-user"
   | "succeeded";
 
+/** Whether the given `runOutcome` indicates that the user settled the
+ * flow, either by cancelling or submitting.  (In contrast to
+ * abandoning the flow by navigating forward/backward, or encountering
+ * an unhandled error.) */
+export function flowWasSettledByUser(runOutcome: RunOutcome): boolean {
+  switch (runOutcome) {
+    case "error":
+    case "abandoned-by-navigation":
+      return false;
+    case "cancelled-by-user":
+    case "succeeded":
+      return true;
+    default:
+      return assertNever(runOutcome);
+  }
+}
+
 function assertInteracting<RunStateT>(
   fsmState: AsyncUserFlowFsmState<RunStateT>
 ): asserts fsmState is InteractingAsyncUserFlowFsmState<RunStateT> {
@@ -45,8 +67,10 @@ function assertInteracting<RunStateT>(
     throw new Error('FSM-state should be "interacting"');
 }
 
+export type AsyncUserFlowOnDisposeFun = (runOutcome: RunOutcome) => void;
+
 type AugRunArgs<RunArgsT> = RunArgsT & {
-  onDispose?: (runOutcome: RunOutcome) => void;
+  onDispose?: AsyncUserFlowOnDisposeFun;
 };
 
 export type AsyncUserFlowState<RunStateT> = {
