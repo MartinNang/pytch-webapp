@@ -26,8 +26,8 @@ const kIntroKeyLowerCase = "g";
 
 export type GlobalFocusTargetStem =
   | "gfs__help" // Activity sidebar
-  | "gfs__actors" // Stage and sprites
-  | "gfs__actorprops"; // Code (scripts) / costumes / sounds
+  | "gfs__actors" // Stage and sprites ("per-method")
+  | "gfs__actorprops"; // Code (scripts) / costumes / sounds ("per-method")
 
 export class GlobalFocusSteering {
   state: State;
@@ -68,9 +68,8 @@ export class GlobalFocusSteering {
 
   static containerEltFromStem(stem: GlobalFocusTargetStem) {
     const containerClass = `${stem}__container`;
-    const mElt = document.getElementsByClassName(
-      containerClass
-    )[0] as HTMLElement;
+    const clsElts = document.getElementsByClassName(containerClass);
+    const mElt = clsElts[0] as HTMLElement;
     if (mElt == null) {
       throw new Error(
         `containerEltFromStem(): no elt with class ${containerClass}`
