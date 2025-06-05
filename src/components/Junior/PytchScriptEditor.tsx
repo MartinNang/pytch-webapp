@@ -32,11 +32,9 @@ import { ConjoinedResizeObserver } from "../../model/junior/conjoined-resize-obs
 import { scrollCursorRowIntoView } from "./PytchScriptEditor-scroller";
 import { DevWorkContext } from "../../model/dev-work-context";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
-import { globalFocusSteering } from "../../model/junior/global-steer-focus";
-import {
-  groupedFocusManager,
-  kFocusGroupItemClassName,
-} from "../../model/junior/grouped-focus";
+import { kFocusGroupItemClassName } from "../../model/junior/grouped-focus";
+import { FocusContext } from "../hooks/focus-steering";
+import { useNonNullContext } from "../hooks/non-null-context";
 
 // Adapted from https://stackoverflow.com/a/71952718
 const insertElectricFullStop = (editor: AceEditorT) => {
@@ -64,6 +62,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
   nextHandlerId,
   conjoinedResizeObserver,
 }) => {
+  const focusContext = useNonNullContext(FocusContext);
   const [dragProps, dragRef, preview] = usePytchScriptDrag(handlerId);
   const [dropProps, dropRef] = usePytchScriptDrop(actorId, handlerId);
   const aceParentRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -187,7 +186,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
           if (mTextArea.dataset.escapeHandlerSet == null) {
             mTextArea.addEventListener("keydown", (evt) => {
               if (evt.key === "Escape") {
-                globalFocusSteering.focusBookmarkedItem("gfs__actorprops");
+                focusContext.focusBookmarkedItem("gfs__actorprops");
               }
             });
             mTextArea.dataset.escapeHandlerSet = "yes";
@@ -235,7 +234,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
   return (
     <CaptiveContextMenu.Container
       className={ccmenuClasses}
-      onClick={groupedFocusManager.onItemClick}
+      onClick={focusContext.onGroupItemClick}
       onActivate={focusTextArea}
     >
       <div className={classes}>

@@ -1,4 +1,4 @@
-import { groupedFocusManager } from "./grouped-focus";
+import { GroupedFocusManager } from "./grouped-focus";
 
 /** Machinery for allowing a two-key sequence to send focus to a small
  * set of target "focus group"s.  The user can type, e.g., "g h" to send
@@ -32,14 +32,16 @@ export type GlobalFocusTargetStem =
 export class GlobalFocusSteering {
   state: State;
   classFromSecondKey: Map<string, GlobalFocusTargetStem>;
+  groupedFocusManager: GroupedFocusManager;
 
-  constructor() {
+  constructor(groupedFocusManager: GroupedFocusManager) {
     this.state = kIdleState;
     this.classFromSecondKey = new Map([
       ["h", "gfs__help"],
       ["s", "gfs__actors"],
       ["c", "gfs__actorprops"],
     ]);
+    this.groupedFocusManager = groupedFocusManager;
   }
 
   targetStem(key: string, timestamp: number) {
@@ -78,11 +80,9 @@ export class GlobalFocusSteering {
     return mElt;
   }
 
-  // This could be static but it keeps things simpler to leave it as an
-  // instance method.
   focusBookmarkedItem(stem: GlobalFocusTargetStem) {
     const containerElt = GlobalFocusSteering.containerEltFromStem(stem);
-    groupedFocusManager.focusBookmarkedItem(containerElt);
+    this.groupedFocusManager.focusBookmarkedItem(containerElt);
   }
 
   onKeyDown(key: string, timestamp: number) {
@@ -92,10 +92,8 @@ export class GlobalFocusSteering {
       return;
     }
 
+    // TODO: Will need to be generalised to handle "flat" projects,
+    // where "go to code" should focus the (only) Ace editor textarea.
     this.focusBookmarkedItem(mStem);
   }
 }
-
-// TODO: Would it be more React-y to put this in a Context provided by a
-// fairly high-up component in the tree for the IDE?
-export let globalFocusSteering = new GlobalFocusSteering();
