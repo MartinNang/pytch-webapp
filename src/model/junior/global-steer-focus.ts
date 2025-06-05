@@ -32,9 +32,31 @@ export type GlobalFocusTargetStem =
   | "gfs__actors" // Stage and sprites ("per-method")
   | "gfs__actorprops"; // Code (scripts) / costumes / sounds ("per-method")
 
+type GlobalFocusAction =
+  | {
+      kind: "bookmarked-item";
+      stem: GlobalFocusTargetStem;
+    }
+  | {
+      kind: "element";
+      selector: string;
+    };
+
+const bookmarkedAction = (stem: GlobalFocusTargetStem): GlobalFocusAction => ({
+  kind: "bookmarked-item",
+  stem,
+});
+
+const elementAction = (selector: string): GlobalFocusAction => ({
+  kind: "element",
+  selector,
+});
+
+type KeyDownOutcome = "triggered-action" | "did-nothing";
+
 export class GlobalFocusSteering {
   state: State;
-  classFromSecondKey: Map<string, GlobalFocusTargetStem>;
+  actionFromSecondKey: Map<string, GlobalFocusAction>;
   groupedFocusManager: GroupedFocusManager;
 
   constructor(
@@ -42,25 +64,31 @@ export class GlobalFocusSteering {
     groupedFocusManager: GroupedFocusManager
   ) {
     this.state = kIdleState;
-    this.classFromSecondKey = new Map();
+    this.actionFromSecondKey = new Map();
     this.groupedFocusManager = groupedFocusManager;
+
+    this.actionFromSecondKey.set("p", elementAction("#pytch-speech-bubbles"));
 
     switch (programKind) {
       case "per-method":
-        this.classFromSecondKey.set("h", "gfs__help");
-        this.classFromSecondKey.set("s", "gfs__actors");
-        this.classFromSecondKey.set("c", "gfs__actorprops");
+        this.actionFromSecondKey.set("h", bookmarkedAction("gfs__help"));
+        this.actionFromSecondKey.set("s", bookmarkedAction("gfs__actors"));
+        this.actionFromSecondKey.set("c", bookmarkedAction("gfs__actorprops"));
         break;
       case "flat":
-        this.classFromSecondKey.set("h", "gfs__help");
-        this.classFromSecondKey.set("a", "gfs__flatassets");
+        this.actionFromSecondKey.set("h", bookmarkedAction("gfs__help"));
+        this.actionFromSecondKey.set("a", bookmarkedAction("gfs__flatassets"));
+        this.actionFromSecondKey.set(
+          "c",
+          elementAction("#pytch-ace-editor textarea")
+        );
         break;
       default:
         assertNever(programKind);
     }
   }
 
-  targetStem(key: string, timestamp: number) {
+  maybeAction(key: string, timestamp: number) {
     const keyLowerCase = key.toLowerCase();
 
     switch (this.state.kind) {
@@ -78,7 +106,7 @@ export class GlobalFocusSteering {
           return null;
         } else {
           this.state = kIdleState;
-          return this.classFromSecondKey.get(keyLowerCase);
+          return this.actionFromSecondKey.get(keyLowerCase);
         }
       }
     }
@@ -111,15 +139,24 @@ export class GlobalFocusSteering {
     return GroupedFocusManager.nItemsInGroup(containerElt);
   }
 
-  onKeyDown(key: string, timestamp: number) {
-    const mStem = this.targetStem(key, timestamp);
-    if (mStem == null) {
+  onKeyDown(key: string, timestamp: number): KeyDownOutcome {
+    const mAction = this.maybeAction(key, timestamp);
+    if (mAction == null) {
       // User typed something not triggering global focus steering.
-      return;
+      return "did-nothing";
     }
 
-    // TODO: Will need to be generalised to handle "flat" projects,
-    // where "go to code" should focus the (only) Ace editor textarea.
-    this.focusBookmarkedItem(mStem);
+    switch (mAction.kind) {
+      case "bookmarked-item":
+        this.focusBookmarkedItem(mAction.stem);
+        return "triggered-action";
+      case "element": {
+        const mElement = document.querySelector<HTMLElement>(mAction.selector);
+        mElement?.focus();
+        return "triggered-action";
+      }
+      default:
+        return assertNever(mAction);
+    }
   }
 }
