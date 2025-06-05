@@ -2,7 +2,6 @@ import {
   assertActorNames,
   assertBackdropNames,
   assertCostumeNames,
-  elementIsVisible,
   launchAdd,
   launchDeleteActorByIndex,
   launchRenameActorByIndex,
@@ -41,14 +40,6 @@ context("Work with list of actors", () => {
         .click()
         .should("have.class", "isFocused");
 
-      // And only that card should have a visible dropdown.
-      cy.get(".ActorCard .dropdown").then(($divs) => {
-        const divs = $divs.toArray();
-        const gotVisibilities = divs.map(elementIsVisible);
-        const expVisibilities = divs.map((_d, i) => i === targetIdx);
-        expect(gotVisibilities).deep.eq(expVisibilities);
-      });
-
       // Hard-code expected costumes for each index.
       switch (targetIdx) {
         case 0:
@@ -74,7 +65,7 @@ context("Work with list of actors", () => {
   });
 
   it("can't rename or delete Stage", () => {
-    cy.get(".ActorCard").eq(0).click().find("button").click();
+    cy.get(".ActorCard").eq(0).click().find(".dropdown").click();
     cy.get(".dropdown-item")
       .contains("DELETE")
       .should("have.class", "disabled");

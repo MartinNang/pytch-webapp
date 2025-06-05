@@ -37,7 +37,7 @@ context("Modify/reorder event handlers", () => {
     assertHatBlockLabels(ScriptOps.someExtendedHandlerLabels([3, 1, 0, 2]));
   });
 
-  it("can reorder event handlers with buttons", () => {
+  it("can reorder event handlers with dropdown items", () => {
     cy.pytchBasicJrProject();
 
     const moveHandlerAndAssertLabels = (
@@ -47,8 +47,11 @@ context("Modify/reorder event handlers", () => {
     ) => {
       cy.get(".Junior-ScriptsEditor .HatBlock")
         .eq(movingIdx)
-        .find(`button.swap-${direction}`)
-        .click({ force: true });
+        .find(`.dropdown`)
+        .click()
+        .contains(direction === "prev" ? "script up" : "script down")
+        .click();
+
       const expLabels = ScriptOps.someExtendedHandlerLabels(expOrderAfterMove);
       assertHatBlockLabels(expLabels);
     };
@@ -79,7 +82,7 @@ context("Modify/reorder event handlers", () => {
 
     saveButton.shouldReactToInteraction(() => {
       cy.get(".HatBlock").contains('"go for it"').dblclick();
-      cy.contains("when I start as a clone").click();
+      cy.get("div.modal.show").contains("when I start as a clone").click();
       settleModalDialog("OK");
     });
 

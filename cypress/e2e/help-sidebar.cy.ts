@@ -48,54 +48,71 @@ const perMethodIdeContext: SidebarTestContext = {
 
 const sidebarTestContexts = [flatIdeContext, perMethodIdeContext];
 
+const useSectionHeadings = (callback: (headings: Array<string>) => void) => {
+  cy.request("data/help-sidebar.json").then((response) => {
+    const headingBlocks = response.body.filter(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (item: any) => item.kind === "heading"
+    );
+
+    const headings = headingBlocks
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((item: any) => item.heading);
+
+    callback(headings);
+  });
+};
+
+const assertSectionHeadings = (
+  helpSelector: string,
+  headings: Array<string>
+) => {
+  cy.get(helpSelector)
+    .find("details > summary > h1 > span.content")
+    .then((spans) => {
+      const gotHeadings = spans.toArray().map((elt) => elt.innerText);
+      cy.wrap(gotHeadings).should("deep.equal", headings);
+    });
+};
+
+const assertAllSectionsCollapsed = (
+  helpSelector: string,
+  headings: Array<string>
+) => {
+  assertSectionHeadings(helpSelector, headings);
+
+  cy.get(helpSelector)
+    .find("details > summary > h1")
+    .parent()
+    .parent()
+    .each((dtls) => {
+      cy.wrap(dtls).should("not.have.attr", "open");
+    });
+};
+
 sidebarTestContexts.forEach((ctx) =>
   context(`Help sidebar (${ctx.label})`, () => {
-    const useSectionHeadings = (
-      callback: (headings: Array<string>) => void
-    ) => {
-      cy.request("data/help-sidebar.json").then((response) => {
-        const headingBlocks = response.body.filter(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (item: any) => item.kind === "heading"
-        );
-
-        const headings = headingBlocks
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .map((item: any) => item.heading);
-
-        callback(headings);
-      });
-    };
-
     const getHelpContainer = () => cy.get(ctx.containerSelector);
-
-    const assertAllSectionsCollapsed = (headings: Array<string>) => {
-      const allHeadingsFlat = headings.join("");
-      getHelpContainer().should("contain.text", allHeadingsFlat);
-    };
 
     const assertAllCollapsedExcept = (
       allHeadings: Array<string>,
-      expandedHeading: string
+      expandedHeadings: Array<string>
     ) => {
-      for (const heading of allHeadings) {
-        getHelpContainer()
-          .find("h1")
-          .contains(heading)
-          .parent()
-          .parent()
-          .as("header");
-        cy.get("@header").should("have.class", "HelpSidebarSection");
-
-        if (heading !== expandedHeading) {
-          cy.get("@header").should("have.text", heading);
-        } else {
-          cy.get("@header")
-            .should("contain.text", heading)
-            .should("not.have.text", heading);
-        }
-      }
+      assertSectionHeadings(ctx.containerSelector, allHeadings);
+      getHelpContainer()
+        .find("details > summary > h1")
+        .parent()
+        .parent()
+        .each((dtls, idx) => {
+          const predicate = expandedHeadings.includes(allHeadings[idx])
+            ? "have.attr"
+            : "not.have.attr";
+          cy.wrap(dtls).should(predicate, "open");
+        });
     };
+
+    const assertAllCollapsed = (headings: Array<string>) =>
+      assertAllSectionsCollapsed(ctx.containerSelector, headings);
 
     before(() => {
       ctx.before();
@@ -123,7 +140,7 @@ sidebarTestContexts.forEach((ctx) =>
     it("has section list in sidebar", () =>
       useSectionHeadings((headings) => {
         openSidebar();
-        assertAllSectionsCollapsed(headings);
+        assertAllCollapsed(headings);
         closeSidebar();
       }));
 
@@ -132,9 +149,9 @@ sidebarTestContexts.forEach((ctx) =>
         openSidebar();
         getHelpContainer().contains("Operators").click();
         getHelpContainer().contains("math.floor");
-        assertAllCollapsedExcept(headings, "Operators");
+        assertAllCollapsedExcept(headings, ["Operators"]);
         getHelpContainer().contains("Operators").click();
-        assertAllSectionsCollapsed(headings);
+        assertAllCollapsed(headings);
         closeSidebar();
       }));
 
@@ -146,16 +163,21 @@ sidebarTestContexts.forEach((ctx) =>
 
         getHelpContainer().contains("Working with variables").click();
         getHelpContainer().contains("pytch.show_variable");
-        assertAllCollapsedExcept(headings, "Working with variables");
+        assertAllCollapsedExcept(headings, [
+          "Operators",
+          "Working with variables",
+        ]);
         getHelpContainer().contains("Working with variables").click();
+        assertAllCollapsedExcept(headings, ["Operators"]);
 
         // Click centre-left to check for absence of bug SF noticed with
         // hover tooltips in "per-method" editor.
         getHelpContainer().contains("Motion").click("left");
-        assertAllCollapsedExcept(headings, "Motion");
+        assertAllCollapsedExcept(headings, ["Operators", "Motion"]);
         getHelpContainer().contains("Motion").click("left");
+        getHelpContainer().contains("Operators").click();
 
-        assertAllSectionsCollapsed(headings);
+        assertAllCollapsed(headings);
         closeSidebar();
       }));
 
@@ -168,7 +190,7 @@ sidebarTestContexts.forEach((ctx) =>
         closeSidebar();
         openSidebar();
 
-        assertAllSectionsCollapsed(headings);
+        assertAllCollapsed(headings);
         closeSidebar();
       });
     });
@@ -176,14 +198,17 @@ sidebarTestContexts.forEach((ctx) =>
     it("allows help text to be shown", () => {
       openSidebar();
       getHelpContainer().contains("Looks").click();
-      cy.contains("self.backdrop_number")
+      cy.get("summary > h2")
+        .contains("self.backdrop_number")
         .parentsUntil(".pytch-method")
+        .eq(0)
         .parent()
-        .within(() => {
-          cy.get(".help-button").click();
-          cy.contains("Python counts list entries");
-          cy.get(".help-button").click();
-        });
+        .as("item-details")
+        .click();
+      cy.get("details[open] details[open]").contains(
+        "Python counts list entries"
+      );
+      cy.get("@item-details").click();
       getHelpContainer().contains("Looks").click();
       closeSidebar();
     });
@@ -203,6 +228,8 @@ context("Help sidebar (cross-mode)", () => {
     cy.get(perMethodIdeContext.containerSelector).contains("Sound").click();
 
     cy.pytchSwitchProject("Test seed project");
-    cy.contains("play_sound_until_done").should("not.exist");
+    useSectionHeadings((headings) =>
+      assertAllSectionsCollapsed(flatIdeContext.containerSelector, headings)
+    );
   });
 });

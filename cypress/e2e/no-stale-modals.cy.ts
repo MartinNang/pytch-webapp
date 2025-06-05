@@ -365,7 +365,7 @@ context("Modals are cancelled when navigating away", () => {
     runModal: () => {
       selectSnakeCode();
       cy.get(".HatBlock").contains("green flag clicked").dblclick();
-      cy.contains("when I start as a clone").click();
+      cy.get("div.modal.show").contains("when I start as a clone").click();
     },
     afterwardsExpect: assertSnakeHatBlocksUnchanged,
   });
@@ -412,7 +412,7 @@ context("Modals are cancelled when navigating away", () => {
     page: { kind: "ide", projectIdx: kPerMethodProjectIdx },
     runModal: () => {
       selectSnakeCostumes();
-      cy.get(".AssetCard button.dropdown-toggle").click();
+      cy.get(".AssetCard .dropdown").click();
       cy.get(".dropdown-item").contains("Crop/scale").click();
     },
     // TODO: Assert image-transform unchanged?

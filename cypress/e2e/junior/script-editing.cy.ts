@@ -17,6 +17,7 @@ context("Edit Python of scripts", () => {
     ScriptOps.chooseHandlerDropdownItem(0, "DELETE");
     settleModalDialog("DELETE");
     ScriptOps.addHandler(ScriptOps.selectGreenFlagHatBlock);
+    cy.get("textarea").should("have.focus");
     cy.pytchSendKeysToApp("# 42");
     soleEventHandlerCodeShouldEqual("# 42");
   });
@@ -117,32 +118,6 @@ context("Edit Python of scripts", () => {
     assertNCompletions(0);
     cy.pytchSendKeysToApp("self.backdrop");
     assertNCompletions(4);
-  });
-
-  it("focuses editor from activity content", () => {
-    loadFromZipfile("newly-created-per-method.zip");
-
-    selectSprite("Snake");
-    deleteAllCodeOfSoleHandler();
-    cy.pytchSendKeysToApp("# Hello");
-    soleEventHandlerCodeShouldEqual("# Hello");
-
-    cy.get(".HelpSidebarSection.category-motion").click();
-    cy.contains("turn_degrees");
-    cy.pytchSendKeysToApp(" world");
-    soleEventHandlerCodeShouldEqual("# Hello world");
-
-    // Switching to a different actor and back again should "forget" the
-    // most-recent editor.
-    selectStage();
-    selectSprite("Snake");
-
-    cy.get(".HelpSidebarSection.category-sensing").click();
-    cy.contains("ask_and_wait");
-    cy.pytchSendKeysToApp(" again");
-
-    // The " again" should not have been sent to the editor:
-    soleEventHandlerCodeShouldEqual("# Hello world");
   });
 
   it("can edit code, updating Save button", () => {

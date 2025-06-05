@@ -1,5 +1,6 @@
 import {
   ActorKind,
+  AssetMimeType,
   StructuredProgram,
 } from "../../../src/model/junior/structured-program";
 import { deIndent } from "../../common/utils";
@@ -52,7 +53,7 @@ export function selectActorAspect(
       const dropdownText = tabLabel.toLowerCase();
       cy.get(".ActorCard.isFocused .dropdown").click();
       cy.get(".ActorCard.isFocused .dropdown .dropdown-item")
-        .contains(`See ${dropdownText}`)
+        .contains(`Go to ${dropdownText}`)
         .click();
       break;
     }
@@ -125,7 +126,7 @@ export const typeIntoScriptEditor = (scriptIndex: number, text: string) =>
 
 const assertAssetNames = (
   actorKind: ActorKind,
-  assetKind: "image" | "sound",
+  assetKind: AssetMimeType,
   expNames: Array<string>
 ) => {
   const actorCls = `actor-kind-${actorKind}`;
@@ -155,7 +156,7 @@ export const assertBackdropNames = (expNames: Array<string>) =>
 export const assertSoundNames = (
   actorKind: ActorKind,
   expNames: Array<string>
-) => assertAssetNames(actorKind, "sound", expNames);
+) => assertAssetNames(actorKind, "audio", expNames);
 
 /** Assert that the current collection of actors has the given array
  * `expNames` as its names. */
@@ -375,7 +376,7 @@ export class ScriptOps {
   static chooseHandlerDropdownItem(scriptIndex: number, itemMatch: string) {
     cy.get(".PytchScriptEditor .HatBlock")
       .eq(scriptIndex)
-      .find("button.dropdown-toggle")
+      .find(".dropdown")
       .click();
     cy.get(".dropdown-item").contains(itemMatch).click();
   }
@@ -468,7 +469,7 @@ export const addFromMediaLib = (matches: Array<string>) => {
  * (i.e., Backdrops or Costumes) tab active, launch the Delete modal for
  * the appearance at the given `idx`. */
 export const launchDeleteAssetByIndex = (idx: number) => {
-  cy.get(".AssetCard").eq(idx).find("button").click();
+  cy.get(".AssetCard").eq(idx).find(".dropdown").click();
   cy.get(".dropdown-item").contains("DELETE").click();
   cy.get(".modal-header").should("have.length", 1).contains("Delete image");
 };
@@ -477,7 +478,7 @@ export const launchDeleteAssetByIndex = (idx: number) => {
  * (i.e., Backdrops or Costumes) tab active, launch the Rename modal for
  * the appearance at the given `idx`. */
 export const launchRenameAssetByIndex = (idx: number) => {
-  cy.get("div.tab-pane.active .AssetCard").eq(idx).find("button").click();
+  cy.get("div.tab-pane.active .AssetCard").eq(idx).find(".dropdown").click();
   cy.get(".dropdown-item").contains("Rename").click();
   cy.get(".modal-header").should("have.length", 1).contains("Rename");
 };
@@ -486,7 +487,7 @@ export const launchRenameAssetByIndex = (idx: number) => {
  * action on the Actor at the given `idx` (which must be non-zero,
  * because it is impossible to rename the Stage).   */
 export const launchRenameActorByIndex = (idx: number) => {
-  cy.get(".ActorCard").eq(idx).click().find("button").click();
+  cy.get(".ActorCard").eq(idx).click().find(".dropdown").click();
   cy.get(".dropdown-item.disabled").should("not.exist");
   cy.get(".dropdown-item").contains("Rename").click();
   cy.get(".modal-header").should("have.length", 1).contains("Rename");
@@ -496,7 +497,7 @@ export const launchRenameActorByIndex = (idx: number) => {
  * action on the Actor at the given `idx` (which must be non-zero,
  * because it is impossible to delete the Stage).   */
 export const launchDeleteActorByIndex = (idx: number) => {
-  cy.get(".ActorCard").eq(idx).click().find("button").click();
+  cy.get(".ActorCard").eq(idx).click().find(".dropdown").click();
   cy.get(".dropdown-item.disabled").should("not.exist");
   cy.get(".dropdown-item").contains("DELETE").click();
   cy.get(".modal-header").should("have.length", 1).contains("Delete");
