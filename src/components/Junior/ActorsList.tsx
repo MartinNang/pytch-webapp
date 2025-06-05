@@ -69,6 +69,7 @@ const RenameSpriteDropdownItem: React.FC<RenameSpriteDropdownItemProps> = ({
   actorId,
   previousName,
 }) => {
+  const focusContext = useFocusContext("per-method");
   const runUpsertFlow = useJrEditActions((a) => a.upsertSpriteFlow.run);
   const existingNames = useMappedProgram(
     "RenameSpriteDropdownItem",
@@ -78,6 +79,7 @@ const RenameSpriteDropdownItem: React.FC<RenameSpriteDropdownItemProps> = ({
     runUpsertFlow({
       upsertionAction: { kind: "update", actorId, previousName },
       existingNames,
+      onDispose: focusContext.onDisposeDeleteOrRenameSprite,
     });
 
   return (
@@ -117,6 +119,7 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
     runDeleteActor({
       spriteDisplayName: name,
       actorId: id,
+      onDispose: focusContext.onDisposeDeleteOrRenameSprite,
     });
   };
 
@@ -204,6 +207,7 @@ export const ActorsList = () => {
     runUpsertFlow({
       upsertionAction: { kind: "insert" },
       existingNames,
+      onDispose: focusContext.onDisposeAddSprite(),
     });
   };
 

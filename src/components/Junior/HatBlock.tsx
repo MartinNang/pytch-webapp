@@ -15,6 +15,7 @@ import { assertNever } from "../../utils";
 import { descriptorFromBrowserKeyName } from "../../model/junior/keyboard-layout";
 import { useJrEditActions } from "./hooks";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
+import { useFocusContext } from "../hooks/focus-steering";
 
 /** See docstring for `HatBlockContent`. */
 type DisplayVariant = "kind-chosen" | "fully-specified" | "in-editor";
@@ -114,6 +115,7 @@ export const HatBlock: React.FC<HatBlockProps> = ({
   nextHandlerId,
   event,
 }) => {
+  const focusContext = useFocusContext("per-method");
   const launchUpsertAction = useJrEditActions((a) => a.upsertHatBlockFlow.run);
   const reorderHandlers = useStoreActions(
     (actions) => actions.activeProject.reorderHandlers
@@ -125,6 +127,7 @@ export const HatBlock: React.FC<HatBlockProps> = ({
         actorId,
         action: { kind: "update", handlerId, previousEvent: event },
       },
+      onDispose: focusContext.onDisposeChangeHatBlock,
     });
   };
 
@@ -147,6 +150,7 @@ export const HatBlock: React.FC<HatBlockProps> = ({
     runDeleteFlow({
       actorId,
       handlerId,
+      onDispose: focusContext.onDisposeDeleteScript,
     });
 
   return (
