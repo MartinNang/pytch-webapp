@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { KeyboardEventHandler, useEffect } from "react";
 import AceEditor from "react-ace";
 import { useStoreState, useStoreActions } from "../store";
 import {
+  AceEditorT,
   getFlatAceController,
   setFlatAceController,
 } from "../skulpt-connection/code-editor";
@@ -72,6 +73,19 @@ const CodeAceEditor = () => {
       },
     });
 
+    // TODO: Which is the better approach?  This one, or the direct DOM
+    // event listener used in per-method editors?
+    ace.editor.commands.addCommand({
+      name: "escapeTabTrap",
+      bindKey: { mac: "Escape", win: "Escape" },
+      exec: () => {
+        const mCodeTab = document.querySelector<HTMLButtonElement>(
+          ".CodeEditor li.nav-item button"
+        );
+        mCodeTab?.focus();
+      },
+    });
+
     // It seems common to have not ever heard of "overwrite" mode.  If
     // it gets turned on by mistake, people often get confused.  Ensure
     // we are in "insert" mode, and also remove any bindings for the
@@ -102,6 +116,15 @@ const CodeAceEditor = () => {
     new PytchAceAutoCompleter({ programKind: "flat" }) as any,
   ];
 
+  const onAceLoad = (editor: AceEditorT) => {
+    setFlatAceController(editor);
+    const textarea = failIfNull(
+      document.querySelector<HTMLTextAreaElement>("#pytch-ace-editor textarea"),
+      "could not find textarea"
+    );
+    textarea.tabIndex = -1;
+  };
+
   return (
     <>
       <AceEditor
@@ -114,7 +137,7 @@ const CodeAceEditor = () => {
         fontSize={14}
         width="100%"
         height="100%"
-        onLoad={setFlatAceController}
+        onLoad={onAceLoad}
         onChange={updateCodeText}
         readOnly={saveIsPending}
       />
@@ -124,8 +147,20 @@ const CodeAceEditor = () => {
 };
 
 export const CodeEditor = () => {
+  const onKeyDown: KeyboardEventHandler = (ev) => {
+    const isActivateKey = ev.key === "Enter" || ev.key === " ";
+    const isButton = (ev.target as HTMLElement).tagName === "BUTTON";
+    if (isActivateKey && isButton) {
+      const textarea = document.querySelector<HTMLTextAreaElement>(
+        "#pytch-ace-editor textarea"
+      );
+      textarea?.focus();
+      ev.preventDefault();
+    }
+  };
+
   return (
-    <div className="CodeEditor compact-tablist-container">
+    <div className="CodeEditor compact-tablist-container" onKeyDown={onKeyDown}>
       <SingleTab title="Code">
         <div className="abs-0000">
           <CodeAceEditor />
