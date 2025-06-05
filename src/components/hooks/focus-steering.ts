@@ -4,8 +4,11 @@ import {
 } from "../../model/junior/global-steer-focus";
 import { GroupedFocusManager } from "../../model/junior/grouped-focus";
 import { PytchProgramKind } from "../../model/pytch-program";
+import { assertNever } from "../../utils";
+import { useNonNullContext } from "./non-null-context";
 
-type FocusContextT = {
+type BaseFocusContextT = {
+  programKind: PytchProgramKind;
   focusBookmarkedItem: GlobalFocusSteering["focusBookmarkedItem"];
   focusBookmarkedItemOrQueue: GroupedFocusManager["focusBookmarkedItemOrQueueRequest"];
 
@@ -14,6 +17,19 @@ type FocusContextT = {
 
   onKeyDown: GlobalFocusSteering["onKeyDown"];
 };
+
+type PerMethodExtraContext = {
+  programKind: "per-method";
+  // Anything per-method-IDE specific will go here.
+};
+
+type FlatExtraContext = {
+  programKind: "flat";
+  // Anything flat-IDE specific will go here.
+};
+
+type FocusContextT = BaseFocusContextT &
+  (PerMethodExtraContext | FlatExtraContext);
 
 export const FocusContext = createContext<FocusContextT | null>(null);
 
@@ -41,7 +57,7 @@ export const createFocusContext = (
 
   const onKeyDown = globalFocusSteering.onKeyDown.bind(globalFocusSteering);
 
-  return {
+  const baseContextNub = {
     focusBookmarkedItem,
     focusBookmarkedItemOrQueue,
 
@@ -50,4 +66,43 @@ export const createFocusContext = (
 
     onKeyDown,
   };
+
+  switch (programKind) {
+    case "per-method": {
+      const perMethodExtras = {
+        programKind,
+      };
+
+      return Object.assign({}, baseContextNub, perMethodExtras);
+    }
+
+    case "flat": {
+      const flatExtras = {
+        programKind,
+      };
+
+      return Object.assign({}, baseContextNub, flatExtras);
+    }
+
+    default:
+      return assertNever(programKind);
+  }
 };
+
+export function useFocusContext<KindT extends PytchProgramKind>(
+  programKind: KindT
+): FocusContextT & { programKind: KindT };
+export function useFocusContext(): BaseFocusContextT;
+export function useFocusContext<KindT extends PytchProgramKind>(
+  programKind?: KindT
+) {
+  const ctx = useNonNullContext(FocusContext);
+
+  if (programKind != null && ctx.programKind !== programKind)
+    throw new Error(
+      `expecting FocusContext for "${programKind}"` +
+        ` but got "${ctx.programKind}"`
+    );
+
+  return ctx;
+}
