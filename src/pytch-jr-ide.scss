@@ -475,11 +475,19 @@
   &.ActorCard.kind-stage,
   &.AssetCard.kind-stage {
     --actor-card-background: #{$stage-card-background};
+    --actor-card-darker-background: #{shade-color(
+        $stage-card-background,
+        $btn-hover-bg-shade-amount
+      )};
   }
   &.ActorCard.kind-sprite,
   &.AssetCard.kind-flat,
   &.AssetCard.kind-sprite {
     --actor-card-background: #{$sprite-card-background};
+    --actor-card-darker-background: #{shade-color(
+        $sprite-card-background,
+        $btn-hover-bg-shade-amount
+      )};
   }
 
   &.ActorCard .dropdown {
@@ -491,7 +499,10 @@
     padding: 2px 6px;
     margin-top: 0.25rem;
     margin-right: 0.25rem;
-    background-color: var(--actor-card-background);
+    @include background-color-as-button-precomputed(
+      var(--actor-card-background),
+      var(--actor-card-darker-background)
+    );
     color: white;
     font-size: 12px;
     border-radius: 4px;
@@ -571,6 +582,14 @@
   flex-direction: row;
   justify-content: right;
 
+  button.AddSomethingButton-container {
+    border-radius: 0.75rem;
+    border-style: none;
+    background-color: transparent;
+    margin: 0.5rem;
+    padding: 0px;
+  }
+
   .AddSomethingButton {
     span.label {
       margin: 0.5rem 0px 0.5rem 1rem;
@@ -584,9 +603,7 @@
     align-items: center;
     justify-content: center;
     min-height: 2.5rem;
-    margin: 1rem;
-
-    border-style: none;
+    margin: 0.5rem;
 
     &.add-script {
       @include background-color-as-button($scratch-hat-block-background);
@@ -664,9 +681,13 @@
 
     .dropdown {
       margin-right: 1rem;
-      button {
+      .dropdown-toggle {
+        @include background-color-as-button($scratch-hat-block-background);
+        cursor: pointer;
         display: block;
         padding: 0px 6px 0px 2px;
+        border: 1px solid black;
+        border-radius: 4px;
         font-size: 0.875rem;
       }
     }
