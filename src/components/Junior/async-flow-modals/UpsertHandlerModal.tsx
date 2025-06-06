@@ -1,4 +1,11 @@
-import React, { ChangeEvent, createRef, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  createRef,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useRef,
+  useState,
+} from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -6,7 +13,6 @@ import { MaybeErrorOrSuccessReport } from "../../MaybeErrorOrSuccessReport";
 import {
   ActorKindOps,
   EventDescriptorKind,
-  EventDescriptorKindOps,
 } from "../../../model/junior/structured-program";
 import { submitOnEnterKeyFun } from "../../../utils";
 import { KeyChoiceModal } from "./KeyChoiceModal";
@@ -20,6 +26,13 @@ import {
   settleFunctions,
 } from "../../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "../../async-flow-modals/utils";
+import { HandlerUpsertionMode } from "../../../model/junior/upsert-hat-block";
+import { useFocusContext } from "../../hooks/focus-steering";
+import {
+  focusGroupNavigationSuppression,
+  kFocusGroupContainerClassName,
+  kFocusGroupItemClassName,
+} from "../../../model/junior/grouped-focus";
 
 // TODO: Is this unduly restrictive?  I think we should end up with a
 // valid Python string literal if we forbid the backslash character, the
@@ -39,18 +52,27 @@ const EventKindOption: React.FC<EventKindOptionProps> = ({
   onDoubleClick,
   children,
 }) => {
+  const focusContext = useFocusContext("per-method");
   const setChosenKind = useJrEditActions(
     (a) => a.upsertHatBlockFlow.setChosenKind
   );
 
   const chosen = chosenKind === kind;
-  const classes = classNames("EventKindOption", { chosen });
+  const classes = classNames("EventKindOption", kFocusGroupItemClassName, {
+    chosen,
+  });
+
+  const onClick: MouseEventHandler<HTMLElement> = (ev) => {
+    setChosenKind(kind);
+    focusContext.onGroupItemClick(ev);
+  };
 
   return (
     <li
       className={classes}
-      onClick={() => setChosenKind(kind)}
+      onClick={onClick}
       onDoubleClick={onDoubleClick}
+      data-event-handler-kind={kind}
     >
       <div className="bump" />
       {children}
@@ -59,12 +81,32 @@ const EventKindOption: React.FC<EventKindOptionProps> = ({
 };
 
 type KeyEditorProps = {
+  isTabStop: boolean;
   displayName: string;
   onEditClick(): void;
 };
-const KeyEditor: React.FC<KeyEditorProps> = ({ displayName, onEditClick }) => {
+const KeyEditor: React.FC<KeyEditorProps> = ({
+  isTabStop,
+  displayName,
+  onEditClick,
+}) => {
+  const onKeyDown: KeyboardEventHandler = (ev) => {
+    if (ev.key === "Enter" || ev.key === " ") {
+      onEditClick();
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+  };
+
   return (
-    <div className="KeyEditor">
+    <div
+      className="KeyEditor"
+      role="button"
+      tabIndex={isTabStop ? 0 : -1}
+      onKeyDown={onKeyDown}
+      onFocus={focusGroupNavigationSuppression.onFocus}
+      onBlur={focusGroupNavigationSuppression.onBlur}
+    >
       <span className="key-button" onClick={onEditClick}>
         <span className="key-display-name">{displayName}</span>
         <span className="dropdown-indicator">▾</span>
@@ -74,6 +116,9 @@ const KeyEditor: React.FC<KeyEditorProps> = ({ displayName, onEditClick }) => {
 };
 
 export const UpsertHandlerModal = () => {
+  const focusContext = useFocusContext("per-method");
+  const prevMode = useRef<HandlerUpsertionMode | null>(null);
+
   const { fsmState, isSubmittable } = useJrEditState(
     (s) => s.upsertHatBlockFlow
   );
@@ -82,19 +127,11 @@ export const UpsertHandlerModal = () => {
   const { setMode, setKeyIfChosen, setMessageIfChosen } = useJrEditActions(
     (a) => a.upsertHatBlockFlow
   );
+  const setChosenKind = useJrEditActions(
+    (a) => a.upsertHatBlockFlow.setChosenKind
+  );
 
   const ulRef: React.RefObject<HTMLUListElement> = createRef();
-
-  useEffect(() => {
-    if (
-      isActive(fsmState) &&
-      fsmState.runState.mode === "choosing-hat-block" &&
-      ulRef.current != null &&
-      EventDescriptorKindOps.arity(fsmState.runState.chosenKind) === 0
-    ) {
-      ulRef.current.focus();
-    }
-  }, [fsmState]);
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { mode, chosenKind, keyIfChosen, messageIfChosen, actorKind } =
@@ -128,6 +165,7 @@ export const UpsertHandlerModal = () => {
     };
 
     if (mode === "choosing-key") {
+      prevMode.current = mode;
       return (
         <KeyChoiceModal
           startingKey={keyIfChosen}
@@ -161,16 +199,36 @@ export const UpsertHandlerModal = () => {
       </EventKindOption>
     );
 
+    const keyPressedOptionDivRefCb = (elt: HTMLDivElement | null) => {
+      if (prevMode.current === "choosing-key" && elt != null) {
+        const dropdownDivs = elt.getElementsByClassName("KeyEditor");
+        const mDropdownDiv = dropdownDivs[0] as HTMLDivElement | null;
+        mDropdownDiv?.focus();
+        prevMode.current = mode;
+      }
+    };
+
+    const setChosenFromFocused = (elt: HTMLElement) => {
+      const kind = elt.dataset.eventHandlerKind as EventDescriptorKind;
+      if (kind == null) {
+        console.warn("no kind data attr in", elt);
+        return;
+      }
+      setChosenKind(kind);
+    };
+
     // Disable `restoreFocus` behaviour; we use `onDispose()` to manage
     // ourselves where the focus goes after the modal dialog goes away.
     // See code in `CodeEditor` (for add=insert) and `HatBlock` (for
-    // change=update).
+    // change=update).  Also disable "autoFocus" because we use the
+    // grouped-focus mechanism to enqueue a focus request.
     return (
       <Modal
         className="UpsertHandlerModal"
         show={isActive(activeFsmState)}
         onHide={handleClose}
         animation={false}
+        autoFocus={false}
         restoreFocus={false}
         centered
       >
@@ -179,48 +237,62 @@ export const UpsertHandlerModal = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <ul tabIndex={-1} onKeyDown={handleKeyDown} ref={ulRef}>
-              <EventKindOption {...ekoProps} kind="green-flag">
-                <div className="content">when green flag clicked</div>
-              </EventKindOption>
-              <EventKindOption {...ekoProps} kind="clicked">
-                <div className="content">when {actorNounPhrase} clicked</div>
-              </EventKindOption>
-              {mCloneHatBlockOption}
-              <EventKindOption {...ekoProps} kind="key-pressed">
-                <div className="content">
-                  when{" "}
-                  <KeyEditor
-                    displayName={keyIfChosen.displayName}
-                    onEditClick={handleEditKeyClick}
-                  />{" "}
-                  key pressed
-                </div>
-              </EventKindOption>
-              <EventKindOption
-                chosenKind={chosenKind}
-                kind="message-received"
-                onDoubleClick={maybeAttemptUpsert}
-              >
-                <div className="content">
-                  when I receive “
-                  <Form.Control
-                    className={messageInputClasses}
-                    type="text"
-                    placeholder="message"
-                    value={messageIfChosen}
-                    onChange={handleMessageChange}
-                    // Only select the double-clicked-on word; don't
-                    // choose (as if clicking "OK") that hat-block:
-                    onDoubleClick={(event) => event.stopPropagation()}
-                  ></Form.Control>
-                  ”
-                </div>
-              </EventKindOption>
-              <li className={emptyMessageHintClasses}>
-                Please provide a message.
-              </li>
-            </ul>
+            <div
+              ref={focusContext.groupContainerRefCallback({
+                onFocusFromKeyboard: setChosenFromFocused,
+                onFocusFromPendingRequest: setChosenFromFocused,
+              })}
+              className={kFocusGroupContainerClassName}
+              data-grouped-focus-key={`UpsertHandlerModal/${actorKind}`}
+            >
+              <ul tabIndex={-1} onKeyDown={handleKeyDown} ref={ulRef}>
+                <EventKindOption {...ekoProps} kind="green-flag">
+                  <div className="content">when green flag clicked</div>
+                </EventKindOption>
+                <EventKindOption {...ekoProps} kind="clicked">
+                  <div className="content">when {actorNounPhrase} clicked</div>
+                </EventKindOption>
+                {mCloneHatBlockOption}
+                <EventKindOption {...ekoProps} kind="key-pressed">
+                  <div className="content" ref={keyPressedOptionDivRefCb}>
+                    when{" "}
+                    <KeyEditor
+                      isTabStop={chosenKind === "key-pressed"}
+                      displayName={keyIfChosen.displayName}
+                      onEditClick={handleEditKeyClick}
+                    />{" "}
+                    key pressed
+                  </div>
+                </EventKindOption>
+                <EventKindOption
+                  chosenKind={chosenKind}
+                  kind="message-received"
+                  onDoubleClick={maybeAttemptUpsert}
+                >
+                  <div className="content">
+                    when I receive “
+                    <Form.Control
+                      tabIndex={chosenKind === "message-received" ? 0 : -1}
+                      className={messageInputClasses}
+                      type="text"
+                      placeholder="message"
+                      readOnly={chosenKind !== "message-received"}
+                      value={messageIfChosen}
+                      onChange={handleMessageChange}
+                      // Only select the double-clicked-on word; don't
+                      // choose (as if clicking "OK") that hat-block:
+                      onDoubleClick={(event) => event.stopPropagation()}
+                      onFocus={focusGroupNavigationSuppression.onFocus}
+                      onBlur={focusGroupNavigationSuppression.onBlur}
+                    ></Form.Control>
+                    ”
+                  </div>
+                </EventKindOption>
+                <li className={emptyMessageHintClasses}>
+                  Please provide a message.
+                </li>
+              </ul>
+            </div>
           </Form>
           <MaybeErrorOrSuccessReport
             messageWhenSuccess={"" /* not used; we skip "succeeded" */}

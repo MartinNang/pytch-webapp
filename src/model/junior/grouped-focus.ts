@@ -517,6 +517,22 @@ export class GroupedFocusManager {
             // Do nothing if the user is navigating a dropdown menu.
             if (containsSuppressingItem(elt)) return;
 
+            // Swallow arrows and home/end if focus is on the fallback
+            // item (usually the "Add SOMETHING" button).
+            const evtTarget = evt.target as HTMLElement;
+            if (evtTarget.classList.contains(kFocusGroupFallbackClassName)) {
+              switch (evt.key) {
+                case "ArrowRight":
+                case "ArrowDown":
+                case "ArrowLeft":
+                case "ArrowUp":
+                case "Home":
+                case "End":
+                  evt.preventDefault();
+              }
+              return;
+            }
+
             switch (evt.key) {
               case "ArrowRight":
               case "ArrowDown": {
@@ -552,10 +568,16 @@ export class GroupedFocusManager {
 
           const focusRequestPending = this.acquirePendingKey(key);
           if (focusRequestPending) {
-            const focusOutcome = this.focusBookmarkedItem(elt);
-            if (focusOutcome.kind !== "none") {
-              onFocusFromPendingRequest(focusOutcome.elt);
-            }
+            // For reasons I haven't got to the bottom of, if we
+            // directly call focus() (via the focusBookmarkedItem()
+            // method), the focus gets overridden when the focus-group
+            // is in a just-rendered <Modal>.
+            setTimeout(() => {
+              const focusOutcome = this.focusBookmarkedItem(elt);
+              if (focusOutcome.kind !== "none") {
+                onFocusFromPendingRequest(focusOutcome.elt);
+              }
+            });
           }
         }
       }
