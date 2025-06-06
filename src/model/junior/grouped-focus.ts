@@ -148,6 +148,10 @@ function containsSuppressingItem(elt: HTMLElement) {
   return mSuppressingItem != null;
 }
 
+type FocusBookmarkedItemOutcome =
+  | { kind: "bookmarked" | "last" | "fallback"; elt: HTMLElement }
+  | { kind: "none" };
+
 export class GroupedFocusManager {
   bookmarkFromKey_: Map<string, number>;
   pendingKey: string | null;
@@ -281,7 +285,10 @@ export class GroupedFocusManager {
    *
    * TODO: Should we simplify to just "first" or "last"?  Those are the
    * only values which are ever used currently. */
-  focusAbsoluteItem(containerEltOrKey: HTMLElement | string, index: number) {
+  focusAbsoluteItem(
+    containerEltOrKey: HTMLElement | string,
+    index: number
+  ): HTMLElement | undefined {
     const containerElt =
       containerEltOrKey instanceof HTMLElement
         ? containerEltOrKey
@@ -308,6 +315,7 @@ export class GroupedFocusManager {
     }
 
     this.bookmarkAndFocus(containerElt, newFocusedItem);
+    return newFocusedItem;
   }
 
   static nItemsInGroup(containerElt: HTMLElement) {
@@ -319,7 +327,10 @@ export class GroupedFocusManager {
    * currently-bookmarked item.  (So if `offset` is negative, this moves
    * the bookmark earlier in the list.)
    */
-  focusOffsetItem(containerElt: HTMLElement, offset: number) {
+  focusOffsetItem(
+    containerElt: HTMLElement,
+    offset: number
+  ): HTMLElement | undefined {
     const allItems = GroupedFocusManager.containedItemElts(containerElt);
     const navigableItems = allItems.filter(isNavigable);
     const focusedElt = containerElt.querySelector<HTMLElement>(":scope :focus");
@@ -342,6 +353,7 @@ export class GroupedFocusManager {
     }
 
     this.bookmarkAndFocus(containerElt, newFocusedItem);
+    return newFocusedItem;
   }
 
   /** Give focus to the bookmarked descendant of the given
@@ -359,7 +371,7 @@ export class GroupedFocusManager {
    *   container contains only one item and it is deleted, we focus the
    *   fallback descendant (if one exists).
    * */
-  focusBookmarkedItem(containerElt: HTMLElement) {
+  focusBookmarkedItem(containerElt: HTMLElement): FocusBookmarkedItemOutcome {
     const key = GroupedFocusManager.keyFromElt(containerElt);
 
     const items = GroupedFocusManager.containedItemElts(containerElt);
@@ -368,14 +380,14 @@ export class GroupedFocusManager {
     if (mBookmarkedItem != null) {
       const focusTarget = eltOrSectionSummary(mBookmarkedItem);
       this.bookmarkAndFocus(containerElt, focusTarget);
-      return;
+      return { kind: "bookmarked", elt: focusTarget };
     }
 
     const mLastItem = items[items.length - 1];
     if (mLastItem != null) {
       const focusTarget = eltOrSectionSummary(mLastItem);
       this.bookmarkAndFocus(containerElt, focusTarget);
-      return;
+      return { kind: "last", elt: focusTarget };
     }
 
     const fallbacks = containerElt.getElementsByClassName(
@@ -384,10 +396,11 @@ export class GroupedFocusManager {
     const mFallback = fallbacks[0] as HTMLElement | null;
     if (mFallback != null) {
       mFallback.focus();
-      return;
+      return { kind: "fallback", elt: mFallback };
     }
 
     console.warn("No descendant item or fallback found for", key);
+    return { kind: "none" };
   }
 
   /** Find the container with the given focus-group `key`, if such a
