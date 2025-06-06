@@ -293,10 +293,27 @@ export class GroupedFocusManager {
     this.setTabFocusability(itemContext.allItems, itemContext.index);
   }
 
+  resolvedContainerAndKey(containerEltOrKey: HTMLElement | string) {
+    // For both values, allow null or undefined; caller must handle this
+    // situation, which is probably an error.
+
+    const containerElt =
+      containerEltOrKey instanceof HTMLElement
+        ? containerEltOrKey
+        : this.maybeContainerForKey(containerEltOrKey);
+
+    const key =
+      containerEltOrKey instanceof HTMLElement
+        ? containerEltOrKey.dataset.groupedFocusKey
+        : containerEltOrKey;
+
+    return { containerElt, key };
+  }
+
   /** Bookmark and focus the item descendent (of a specified container
    * element) at the given `index` within the array of navigable
    * descendants.  The container can be specified either by directly
-   * supplying an `HTMLElement`, or by specifying the string key
+   * supplying an `HTMLElement`, or by supplying the string key
    * identifying it.
    *
    * If the given `index` is negative, interpret it as an offset from
@@ -308,11 +325,7 @@ export class GroupedFocusManager {
     containerEltOrKey: HTMLElement | string,
     index: number
   ): HTMLElement | undefined {
-    const containerElt =
-      containerEltOrKey instanceof HTMLElement
-        ? containerEltOrKey
-        : this.maybeContainerForKey(containerEltOrKey);
-
+    const { containerElt } = this.resolvedContainerAndKey(containerEltOrKey);
     if (containerElt == null) {
       console.warn("not a valid container:", containerEltOrKey);
       return;
@@ -341,38 +354,48 @@ export class GroupedFocusManager {
     return GroupedFocusManager.containedItemElts(containerElt).length;
   }
 
-  /** Bookmark and focus the navigable item descendent of the given
-   * `containerElt` which is the given `offset` after the
+  /** Bookmark and focus the navigable item descendent of a specified
+   * container element which is the given `offset` after the
    * currently-bookmarked item.  (So if `offset` is negative, this moves
-   * the bookmark earlier in the list.)
+   * the bookmark earlier in the list.)  The container can be specified
+   * either by directly supplying an `HTMLElement`, or by supplying the
+   * string key identifying it.
    */
   focusOffsetItem(
-    containerElt: HTMLElement,
+    containerEltOrKey: HTMLElement | string,
     offset: number
   ): HTMLElement | undefined {
+    const { containerElt, key } =
+      this.resolvedContainerAndKey(containerEltOrKey);
+    if (containerElt == null || key == null) {
+      console.warn("not a valid container/key:", containerElt, key);
+      return;
+    }
+
     const allItems = GroupedFocusManager.containedItemElts(containerElt);
     const navigableItems = allItems.filter(isNavigable);
-    const focusedElt = containerElt.querySelector<HTMLElement>(":scope :focus");
-    if (focusedElt == null) {
-      console.warn("no focused elt");
+    const bookmark = this.bookmarkFromKey(key);
+    const bookmarkedElt = allItems[bookmark];
+    if (bookmarkedElt == null) {
+      console.warn("bookmark gave invalid elt", key, bookmark);
       return;
     }
 
-    const focusedNavigableIndex = navigableItems.indexOf(focusedElt);
-    if (focusedNavigableIndex === -1) {
-      console.warn("focused elt not found in navigable items");
+    const bookmarkedNavigableIndex = navigableItems.indexOf(bookmarkedElt);
+    if (bookmarkedNavigableIndex === -1) {
+      console.warn("bookmarked elt not found in navigable items");
       return;
     }
 
-    const newFocusIndex = focusedNavigableIndex + offset;
-    const newFocusedItem = navigableItems[newFocusIndex];
-    if (newFocusedItem == null) {
+    const newBookmark = bookmarkedNavigableIndex + offset;
+    const newBookmarkedItem = navigableItems[newBookmark];
+    if (newBookmarkedItem == null) {
       // Moved outside list of navigable items.
       return;
     }
 
-    this.bookmarkAndFocus(containerElt, newFocusedItem);
-    return newFocusedItem;
+    this.bookmarkAndFocus(containerElt, newBookmarkedItem);
+    return newBookmarkedItem;
   }
 
   /** Give focus to the bookmarked descendant of the given
