@@ -148,6 +148,11 @@ function containsSuppressingItem(elt: HTMLElement) {
   return mSuppressingItem != null;
 }
 
+type ContainerRefCallbackOptions = Partial<{
+  onFocusFromKeyboard: (elt: HTMLElement) => void;
+  onFocusFromPendingRequest: (elt: HTMLElement) => void;
+}>;
+
 type FocusBookmarkedItemOutcome =
   | { kind: "bookmarked" | "last" | "fallback"; elt: HTMLElement }
   | { kind: "none" };
@@ -465,7 +470,22 @@ export class GroupedFocusManager {
    * focus-group container element.  It attaches key handlers and also is
    * part of managing the two-stage focus-request mechanism (see docs just
    * before `setPendingKey()`). */
-  containerRefCallback<ElementT extends HTMLElement>() {
+  containerRefCallback<ElementT extends HTMLElement>(
+    opts?: ContainerRefCallbackOptions
+  ) {
+    opts ??= {};
+
+    const onFocusFromKeyboard = (mElt: HTMLElement | undefined) => {
+      if (mElt != null && opts.onFocusFromKeyboard != null) {
+        opts.onFocusFromKeyboard(mElt);
+      }
+    };
+    const onFocusFromPendingRequest = (mElt: HTMLElement | undefined) => {
+      if (mElt != null && opts.onFocusFromPendingRequest != null) {
+        opts.onFocusFromPendingRequest(mElt);
+      }
+    };
+
     let onKeyDown: ((evt: KeyboardEvent) => void) | null = null;
     let eltWithHandler: HTMLElement | null = null;
 
@@ -485,24 +505,32 @@ export class GroupedFocusManager {
 
             switch (evt.key) {
               case "ArrowRight":
-              case "ArrowDown":
-                this.focusOffsetItem(elt, 1);
+              case "ArrowDown": {
+                const mNewFocusedElt = this.focusOffsetItem(elt, 1);
+                onFocusFromKeyboard(mNewFocusedElt);
                 evt.preventDefault();
                 break;
+              }
 
               case "ArrowLeft":
-              case "ArrowUp":
-                this.focusOffsetItem(elt, -1);
+              case "ArrowUp": {
+                const mNewFocusedElt = this.focusOffsetItem(elt, -1);
+                onFocusFromKeyboard(mNewFocusedElt);
                 evt.preventDefault();
                 break;
+              }
 
-              case "Home":
-                this.focusAbsoluteItem(elt, 0);
+              case "Home": {
+                const mNewFocusedElt = this.focusAbsoluteItem(elt, 0);
+                onFocusFromKeyboard(mNewFocusedElt);
                 break;
+              }
 
-              case "End":
-                this.focusAbsoluteItem(elt, -1);
+              case "End": {
+                const mNewFocusedElt = this.focusAbsoluteItem(elt, -1);
+                onFocusFromKeyboard(mNewFocusedElt);
                 break;
+              }
             }
           };
           eltWithHandler = elt;
@@ -510,7 +538,10 @@ export class GroupedFocusManager {
 
           const focusRequestPending = this.acquirePendingKey(key);
           if (focusRequestPending) {
-            this.focusBookmarkedItem(elt);
+            const focusOutcome = this.focusBookmarkedItem(elt);
+            if (focusOutcome.kind !== "none") {
+              onFocusFromPendingRequest(focusOutcome.elt);
+            }
           }
         }
       }
