@@ -4,7 +4,12 @@ import { AssetPresentation } from "../../model/asset";
 import { PytchProgramOps } from "../../model/pytch-program";
 import { useStoreState } from "../../store";
 import { AssetThumbnail } from "../AssetThumbnail";
-import { useAssetCardDrag, useAssetCardDrop } from "./hooks";
+import {
+  useAssetCardDrag,
+  useAssetCardDrop,
+  AssetCardSwapWithAdjacentFuns,
+  useAssetCardSwapWithAdjacent,
+} from "./hooks";
 
 import ImageAssetPreview from "../../images/drag-preview-image.png";
 import SoundAssetPreview from "../../images/sound-wave-w96.png";
@@ -152,16 +157,39 @@ type AssetCardDropdownProps = {
   operationScope: AssetOperationScope;
   presentation: AssetPresentation;
   deleteIsAllowed: boolean;
+  swapFuns: AssetCardSwapWithAdjacentFuns;
 };
 const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
   operationScope,
   presentation,
   deleteIsAllowed,
+  swapFuns,
 }) => {
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const fullPathname = presentation.assetInProject.name;
   const displayName = PytchProgramOps.assetPathAffixes(fullPathname).suffix;
   const assetKind = presentation.presentation.kind;
+
+  const nop = () => void 0;
+  const mReorderItems =
+    swapFuns == null ? (
+      <></>
+    ) : (
+      <>
+        <CaptiveContextMenu.DropdownItem
+          onInvoke={swapFuns.swapWithPrev != null ? swapFuns.swapWithPrev : nop}
+          disabled={swapFuns.swapWithPrev == null}
+        >
+          Move one place earlier
+        </CaptiveContextMenu.DropdownItem>
+        <CaptiveContextMenu.DropdownItem
+          onInvoke={swapFuns.swapWithNext != null ? swapFuns.swapWithNext : nop}
+          disabled={swapFuns.swapWithNext == null}
+        >
+          Move one place later
+        </CaptiveContextMenu.DropdownItem>
+      </>
+    );
 
   return (
     <CaptiveContextMenu.DropdownMenu>
@@ -175,6 +203,7 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
         assetKind={assetKind}
         fullPathname={fullPathname}
       />
+      {mReorderItems}
       <DeleteDropdownItem
         assetKind={assetKind}
         fullPathname={fullPathname}
@@ -186,30 +215,45 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
 };
 
 type AssetCardProps = {
-  dragDropAllowed: boolean;
+  reorderingAllowed: boolean;
   assetKind: AssetMimeType;
   operationScope: AssetOperationScope;
   displayIndex: number | null;
   assetPresentation: AssetPresentation;
   canBeDeleted: boolean;
+  prevPathname: string | undefined;
+  nextPathname: string | undefined;
 };
 export const AssetCard: React.FC<AssetCardProps> = ({
-  dragDropAllowed,
+  reorderingAllowed,
   assetKind,
   operationScope,
   displayIndex,
   assetPresentation,
   canBeDeleted,
+  prevPathname,
+  nextPathname,
 }) => {
   const focusContext = useFocusContext();
 
   const fullPathname = assetPresentation.name;
 
+  const swapFuns = useAssetCardSwapWithAdjacent(
+    assetKind,
+    reorderingAllowed,
+    fullPathname,
+    prevPathname,
+    nextPathname
+  );
+
   const [dragProps, dragRef, preview] = useAssetCardDrag(
     fullPathname,
-    dragDropAllowed
+    reorderingAllowed
   );
-  const [dropProps, dropRef] = useAssetCardDrop(fullPathname, dragDropAllowed);
+  const [dropProps, dropRef] = useAssetCardDrop(
+    fullPathname,
+    reorderingAllowed
+  );
 
   const presentation = assetPresentation.presentation;
   if (presentation.kind !== assetKind) {
@@ -270,6 +314,7 @@ export const AssetCard: React.FC<AssetCardProps> = ({
                   operationScope={operationScope}
                   presentation={assetPresentation}
                   deleteIsAllowed={canBeDeleted}
+                  swapFuns={swapFuns}
                 />
               </div>
               <div className="drag-mask" />
