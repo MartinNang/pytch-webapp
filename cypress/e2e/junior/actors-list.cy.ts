@@ -23,22 +23,22 @@ context("Work with list of actors", () => {
     assertActorNames(["Stage", "Snake", "Sprite1"]);
 
     selectSprite("Snake");
-    assertActorFocusedByIndex(1);
+    assertActorActiveByIndex(1);
 
     launchAdd.sprite();
     cy.get(".modal-dialog input").type("{selectAll}{del}Banana");
     settleModalDialog("OK");
     assertActorNames(["Stage", "Snake", "Sprite1", "Banana"]);
-    assertActorFocusedByIndex(3);
+    assertActorActiveByIndex(3);
   });
 
-  it("focuses actor by clicking", () => {
+  it("activate actor by clicking", () => {
     const assertFocusFollowsClick = (targetIdx: number) => {
       // The card should be focused.
       cy.get(".ActorCard")
         .eq(targetIdx)
         .click()
-        .should("have.class", "isFocused");
+        .should("have.class", "isActive");
 
       // Hard-code expected costumes for each index.
       switch (targetIdx) {
@@ -139,9 +139,9 @@ context("Work with list of actors", () => {
     assertActorNames(["Stage", "Python", "Sprite1"]);
   });
 
-  const assertActorFocusedByIndex = (idx: number) => {
-    cy.get(".ActorCard.isFocused").should("have.length", 1);
-    cy.get(".ActorCard").eq(idx).should("have.class", "isFocused");
+  const assertActorActiveByIndex = (idx: number) => {
+    cy.get(".ActorCard.isActive").should("have.length", 1);
+    cy.get(".ActorCard").eq(idx).should("have.class", "isActive");
   };
 
   const assertModalHeaderText = (match: string) => {
@@ -167,18 +167,18 @@ context("Work with list of actors", () => {
     assertModalHeaderText("Delete Sprite1?");
     settleModalDialog("DELETE");
     assertActorNames(["Stage", "Snake", "Sprite2"]);
-    assertActorFocusedByIndex(2);
+    assertActorActiveByIndex(2);
 
     launchDeleteActorByIndex(2);
     assertModalHeaderText("Delete Sprite2?");
     settleModalDialog("DELETE");
     assertActorNames(["Stage", "Snake"]);
-    assertActorFocusedByIndex(1);
+    assertActorActiveByIndex(1);
 
     launchDeleteActorByIndex(1);
     assertModalHeaderText("Delete Snake?");
     settleModalDialog("DELETE");
     assertActorNames(["Stage"]);
-    assertActorFocusedByIndex(0);
+    assertActorActiveByIndex(0);
   });
 });

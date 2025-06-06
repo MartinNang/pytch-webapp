@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import { ActorSummaryOps } from "../../model/junior/structured-program/actor";
 import {
-  useFocusedActorKind,
+  useActiveActorKind,
   useHelpHatBlockDrop,
   useJrEditActions,
   useJrEditState,
@@ -27,19 +27,19 @@ import { useFocusContext } from "../hooks/focus-steering";
 
 const AddHandlerButton: React.FC<EmptyProps> = () => {
   const focusContext = useFocusContext("per-method");
-  const focusedActorId = useJrEditState((s) => s.focusedActor);
-  const focusedActorKind = useFocusedActorKind();
+  const activeActorId = useJrEditState((s) => s.activeActor);
+  const activeActorKind = useActiveActorKind();
   const launchUpsertAction = useJrEditActions((a) => a.upsertHatBlockFlow.run);
   const codingDragInProgress = useJrEditState((s) => s.scriptDragInProgress);
 
   const launchAdd = () => {
     // Send focus to the bookmarked hat-block when the modal renders.
-    const modalFocusGroupKey = `UpsertHandlerModal/${focusedActorKind}`;
+    const modalFocusGroupKey = `UpsertHandlerModal/${activeActorKind}`;
     focusContext.setPendingGroupFocusKey(modalFocusGroupKey);
 
     launchUpsertAction({
-      operation: { actorId: focusedActorId, action: { kind: "insert" } },
-      actorKind: focusedActorKind,
+      operation: { actorId: activeActorId, action: { kind: "insert" } },
+      actorKind: activeActorKind,
       onDispose: focusContext.onDisposeAddScript(),
     });
   };
@@ -70,7 +70,7 @@ const ScriptsEditor = () => {
 
   const scriptsDivRef = createRef<HTMLDivElement>();
 
-  const actorId = useJrEditState((s) => s.focusedActor);
+  const actorId = useJrEditState((s) => s.activeActor);
 
   const { kind, handlerIds } = useMappedProgram(
     "<ScriptsEditor>",
@@ -157,7 +157,7 @@ const ScriptsEditor = () => {
 };
 
 export const CodeEditor = () => {
-  const actorId = useJrEditState((s) => s.focusedActor);
+  const actorId = useJrEditState((s) => s.activeActor);
   const [dropProps, dropRef] = useHelpHatBlockDrop(actorId);
 
   // Normally we'd let the <Tabs> component worry about whether a

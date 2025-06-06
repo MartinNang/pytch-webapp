@@ -102,9 +102,9 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   const focusContext = useFocusContext("per-method");
   const runDeleteActor = useJrEditActions((a) => a.deleteSpriteFlow.run);
   const activateTab = useJrEditActions((a) => a.setActorPropertiesActiveTab);
-  const setFocusedActorAction = useJrEditActions((a) => a.setFocusedActor);
+  const setActiveActorAction = useJrEditActions((a) => a.setActiveActor);
 
-  const activateThisActor = () => setFocusedActorAction(id);
+  const activateThisActor = () => setActiveActorAction(id);
 
   // You can only rename/delete sprites, not the stage.
   const canRenameOrDelete = kind === "sprite";
@@ -168,22 +168,22 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
 };
 
 type ActorCardProps = {
-  isFocused: boolean;
+  isActive: boolean;
   kind: ActorKind;
   id: Uuid;
   name: string;
 };
-const ActorCard: React.FC<ActorCardProps> = ({ isFocused, kind, id, name }) => {
+const ActorCard: React.FC<ActorCardProps> = ({ isActive, kind, id, name }) => {
   const focusContext = useFocusContext("per-method");
-  const setFocusedActorAction = useJrEditActions((a) => a.setFocusedActor);
-  const setFocusedActor = () => setFocusedActorAction(id);
+  const setActiveActorAction = useJrEditActions((a) => a.setActiveActor);
+  const setActiveActor = () => setActiveActorAction(id);
 
-  const className = classNames("ActorCard", `kind-${kind}`, { isFocused });
+  const className = classNames("ActorCard", `kind-${kind}`, { isActive });
   return (
     <CaptiveContextMenu.Container
       className={kFocusGroupItemClassName}
       onClick={focusContext.onGroupItemClick}
-      onActivate={setFocusedActor}
+      onActivate={setActiveActor}
     >
       <div className={className} data-actor-id={id}>
         <div className="ActorCardContent">
@@ -199,7 +199,7 @@ const ActorCard: React.FC<ActorCardProps> = ({ isFocused, kind, id, name }) => {
 export const ActorsList = () => {
   const focusContext = useFocusContext("per-method");
   const program = useStructuredProgram("ActorsList()");
-  const focusedActor = useJrEditState((s) => s.focusedActor);
+  const activeActor = useJrEditState((s) => s.activeActor);
   const runUpsertFlow = useJrEditActions((a) => a.upsertSpriteFlow.run);
 
   const existingNames = StructuredProgramOps.spriteNames(program);
@@ -229,7 +229,7 @@ export const ActorsList = () => {
               {program.actors.map((a) => (
                 <li key={a.id} className="Item-ActorCard">
                   <ActorCard
-                    isFocused={a.id === focusedActor}
+                    isActive={a.id === activeActor}
                     kind={a.kind}
                     id={a.id}
                     name={a.name}
