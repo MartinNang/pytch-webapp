@@ -143,10 +143,24 @@ function eltOrSectionSummary(elt: HTMLElement): HTMLElement {
  * the design? */
 function containsSuppressingItem(elt: HTMLElement) {
   const mSuppressingItem = elt.querySelector<HTMLElement>(
-    `:scope .${kFocusGroupItemClassName}[data-suppress-focus-group-navigation]`
+    `:scope [data-suppress-focus-group-navigation]`
   );
   return mSuppressingItem != null;
 }
+
+export const focusGroupNavigationSuppression = (() => {
+  const onFocus = (ev: React.FocusEvent) => {
+    const elt = ev.target as HTMLElement;
+    elt.dataset.suppressFocusGroupNavigation = "yes";
+  };
+
+  const onBlur = (ev: React.FocusEvent) => {
+    const elt = ev.target as HTMLElement;
+    delete elt.dataset.suppressFocusGroupNavigation;
+  };
+
+  return { onFocus, onBlur };
+})();
 
 type ContainerRefCallbackOptions = Partial<{
   onFocusFromKeyboard: (elt: HTMLElement) => void;
