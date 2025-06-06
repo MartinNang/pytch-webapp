@@ -3,6 +3,7 @@ import { PytchProgramOps } from "../../model/pytch-program";
 import { useStoreActions, useStoreState } from "../../store";
 import { useDrag, useDrop } from "react-dnd";
 
+import { IPytchAppModel } from "../../model";
 import { EditState } from "../../model/junior/edit-state";
 import {
   ActorKind,
@@ -53,23 +54,23 @@ export function useMappedProgram<R>(
 export const useStructuredProgram = (label: string) =>
   useMappedProgram(label, (program) => program);
 
-export const useActiveActorKind = () =>
-  useStoreState((state) => {
-    const program = state.activeProject.project.program;
-    const programKind = program.kind;
-    if (programKind !== "per-method") {
-      throw new Error("useActiveActorKind(): expecting per-method program");
-    }
+export const activeActorSelector = (state: State<IPytchAppModel>) => {
+  const program = state.activeProject.project.program;
+  const programKind = program.kind;
+  if (programKind !== "per-method") {
+    throw new Error("useActiveActorKind(): expecting per-method program");
+  }
 
-    const activeActorId = state.jrEditState.activeActor;
-    const activeActor = StructuredProgramOps.uniqueActorById(
-      program.program,
-      activeActorId
-    );
-    const activeActorKind = activeActor.kind;
+  const activeActorId = state.jrEditState.activeActor;
+  const activeActor = StructuredProgramOps.uniqueActorById(
+    program.program,
+    activeActorId
+  );
 
-    return activeActorKind;
-  });
+  return activeActor.kind;
+};
+
+export const useActiveActorKind = () => useStoreState(activeActorSelector);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helpers for drag/drop of Pytch scripts.
