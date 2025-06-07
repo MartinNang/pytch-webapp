@@ -56,6 +56,8 @@ export type Actor = {
   handlers: Array<EventHandler>;
 };
 
+export type ActorNub = Pick<Actor, "id" | "kind" | "name">;
+
 export class ActorOps {
   /** Create and return a new `stage` `Actor` with no event-handlers.
    * */
@@ -233,7 +235,18 @@ export class ActorOps {
     }
     actor.handlers = newHandlers;
   }
+
+  /** Return array of the names of all `"sprite"`-kind Actors within the
+   * given array `actors`. */
+  static spriteNames<ActorInfoT extends ActorNub>(
+    actors: Array<ActorInfoT>
+  ): Array<string> {
+    return actors.filter((a) => a.kind === "sprite").map((a) => a.name);
+  }
 }
+
+// TODO: Are there better names than "summary" and "nub" for these
+// different projections of the Actor type?
 
 export type ActorSummary = {
   kind: ActorKind;
@@ -246,5 +259,32 @@ export class ActorSummaryOps {
    * `kind` and having the same handler-id values in the same order. */
   static eq(x: ActorSummary, y: ActorSummary): boolean {
     return x.kind === y.kind && UuidOps.eqArrays(x.handlerIds, y.handlerIds);
+  }
+}
+
+export class ActorNubOps {
+  /** Return `true`/`false` according to whether the given two
+   * `ActorNub` values are the same, in the sense of having the same
+   * values for each property. */
+  static eq(x: ActorNub, y: ActorNub): boolean {
+    return x.id === y.id && x.kind === y.kind && x.name === y.name;
+  }
+
+  /** Return `true`/`false` according to whether the given two arrays of
+   * `ActorNub` values are the same, in the sense of every element in
+   * `xs` being equal (as `ActorNubOps.eq`) to the corresponding element
+   * of `ys`. */
+  static eqArrays(xs: Array<ActorNub>, ys: Array<ActorNub>): boolean {
+    if (xs.length !== ys.length) {
+      return false;
+    }
+
+    for (let i = 0; i !== xs.length; ++i) {
+      if (!ActorNubOps.eq(xs[i], ys[i])) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

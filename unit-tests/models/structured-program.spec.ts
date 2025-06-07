@@ -17,6 +17,7 @@ import {
   Uuid,
   PendingCursorWarp,
   Actor,
+  ActorNubOps,
 } from "../../src/model/junior/structured-program";
 import { threeSpriteProgramNames, threeSpriteProgram } from "./fixtures";
 import { hexSHA256 } from "../../src/utils";
@@ -223,6 +224,25 @@ describe("Structured programs", () => {
       assert.equal(sprite.name, "Banana");
     });
 
+    describe("nubs", () => {
+      it("eq", () => {
+        const s1 = Ops.newEmptySprite("Banana");
+        const s2 = Ops.newEmptySprite("Orange");
+        assert.isTrue(ActorNubOps.eq(s1, s1));
+        assert.isFalse(ActorNubOps.eq(s1, s2));
+      });
+
+      it("eqArrays", () => {
+        const s1 = Ops.newEmptySprite("Banana");
+        const s2 = Ops.newEmptySprite("Orange");
+        const s3 = Ops.newEmptySprite("Apple");
+        assert.isTrue(ActorNubOps.eqArrays([s1, s2, s3], [s1, s2, s3]));
+        assert.isFalse(ActorNubOps.eqArrays([s1, s2], [s1, s2, s3]));
+        assert.isFalse(ActorNubOps.eqArrays([s1, s2, s3], [s2, s3]));
+        assert.isFalse(ActorNubOps.eqArrays([s1, s2, s2], [s1, s2, s3]));
+      });
+    });
+
     describe("handlers", () => {
       const bananaWithScript = (): Actor => {
         let sprite = Ops.newEmptySprite("Banana");
@@ -389,7 +409,7 @@ describe("Structured programs", () => {
 
     it("work with Sprite names", () => {
       let program = threeSpriteProgram();
-      const gotNames = Ops.spriteNames(program);
+      const gotNames = ActorOps.spriteNames(program.actors);
       assert.deepEqual(gotNames, threeSpriteProgramNames);
 
       assert.isTrue(Ops.hasSpriteByName(program, "Sprite2"));
@@ -412,7 +432,7 @@ describe("Structured programs", () => {
 
       assert.equal(spriteId, upsertArgs.actorId);
 
-      const gotNames = Ops.spriteNames(program);
+      const gotNames = ActorOps.spriteNames(program.actors);
       assert.deepEqual(gotNames, expNames);
     });
 
@@ -452,13 +472,13 @@ describe("Structured programs", () => {
         threeSpriteProgramNames[0],
         threeSpriteProgramNames[2],
       ];
-      assert.deepEqual(Ops.spriteNames(program), expSpriteNames_1);
+      assert.deepEqual(ActorOps.spriteNames(program.actors), expSpriteNames_1);
 
       // Deleting last Sprite should give us the previous sprite:
       const adjId_2 = Ops.deleteSprite(program, program.actors[2].id);
       assert.equal(adjId_2, firstSpriteId);
       const expSpriteNames_2 = [threeSpriteProgramNames[0]];
-      assert.deepEqual(Ops.spriteNames(program), expSpriteNames_2);
+      assert.deepEqual(ActorOps.spriteNames(program.actors), expSpriteNames_2);
     });
 
     it("handle Sprite-deletion failures", () => {
