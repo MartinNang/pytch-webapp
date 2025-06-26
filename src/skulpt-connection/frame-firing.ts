@@ -61,4 +61,23 @@ export class FrameFiringArbiter {
 
     return costNow < expectedCostWait;
   }
+
+  updateAndMakeFireDecision(nowTime: number) {
+    this.acceptOpportunityTime(nowTime);
+    this.prevOpportunityTime = nowTime;
+
+    const fireNow = this.preferFireNow(nowTime);
+    if (fireNow) {
+      // Always advance target time at least one target-fire-interval;
+      // more if we've fallen behind and need to skip some.
+      const nFrames = Math.max(
+        1,
+        1 + Math.floor((nowTime - this.targetTime) / this.targetFireInterval)
+      );
+
+      this.targetTime += nFrames * this.targetFireInterval;
+    }
+
+    return fireNow;
+  }
 }
