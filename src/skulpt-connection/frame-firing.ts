@@ -37,4 +37,28 @@ export class FrameFiringArbiter {
       this.nSamples += 1;
     }
   }
+
+  preferFireNow(nowTime: number) {
+    if (this.nSamples === 0) {
+      return true;
+    }
+
+    if (nowTime > this.targetTime) {
+      return true;
+    }
+
+    const preCostNow = this.targetTime - nowTime;
+    const costNow = preCostNow * preCostNow;
+
+    let expectedCostWait = 0.0;
+    for (let i = 0; i < this.nSamples; ++i) {
+      const sampleTime = nowTime + this.intervalSamples[i];
+      const preCostSample = this.targetTime - sampleTime;
+      const costSample = preCostSample * preCostSample;
+      expectedCostWait += costSample;
+    }
+    expectedCostWait /= this.nSamples;
+
+    return costNow < expectedCostWait;
+  }
 }
