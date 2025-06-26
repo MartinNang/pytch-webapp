@@ -1,5 +1,38 @@
 const N_INTERVAL_SAMPLES = 20;
 
+/** Mechanism for attempting to drive the project at a particular frame
+ * rate, while coping with the fact that the opportunities we get to
+ * advance the project by one frame do not necessarily come along at
+ * regular intervals, or, if they do, not necessarily at the desired
+ * frame rate.
+ *
+ * We keep track of the next `targetTime` we want to fire a project
+ * frame.  If an opportunity is after the target time, we are late, so
+ * definitely fire.  Otherwise, we have the opportunity to fire early,
+ * so have to decide between firing now vs postponing until at least the
+ * next opportunity.  We compute the "cost" of firing now (squared
+ * difference of target time from now).  Then estimate the expected cost
+ * (in the same sense) of firing at the next opportunity based on a
+ * recent history of inter-opportunity intervals.  We fire now if that
+ * has a lower cost.
+ *
+ * If we do fire now, we update the `targetTime` by at least
+ * `targetFireInterval`, and also by at least the smallest multiple of
+ * `targetFireInterval` which makes the new `targetTime` be in the
+ * future.
+ *
+ * To boot, we say "yes" to the first opportunity we get to fire.
+ *
+ * Usage is along the lines of:
+ *
+ * ```
+ * // Set up:
+ * const ffa = new FrameFiringArbiter(60);
+ *
+ * // When an opportunity to fire arises:
+ * const shouldFire = ffa.updateAndMakeFireDecision(now);
+ * ```
+ * */
 export class FrameFiringArbiter {
   intervalSamples: Array<number>;
   samplesHead: number;
