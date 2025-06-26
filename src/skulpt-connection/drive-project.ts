@@ -307,7 +307,7 @@ export class ProjectEngine {
     };
   }
 
-  oneFrame() {
+  oneFrame(nowTime: number) {
     const logIntro = `ProjectEngine[${this.id}].oneFrame()`;
 
     if (!this.shouldRun) {
