@@ -19,4 +19,22 @@ export class FrameFiringArbiter {
     this.targetFireInterval = 1000.0 / targetFps;
     this.prevOpportunityTime = null;
   }
+
+  acceptOpportunityTime(nowTime: number) {
+    if (this.prevOpportunityTime == null) {
+      return;
+    }
+
+    const intervalSample = nowTime - this.prevOpportunityTime;
+    this.intervalSamples[this.samplesHead] = intervalSample;
+
+    this.samplesHead += 1;
+    if (this.samplesHead === N_INTERVAL_SAMPLES) {
+      this.samplesHead = 0;
+    }
+
+    if (this.nSamples !== N_INTERVAL_SAMPLES) {
+      this.nSamples += 1;
+    }
+  }
 }
