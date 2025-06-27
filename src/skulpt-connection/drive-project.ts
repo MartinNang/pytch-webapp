@@ -13,6 +13,7 @@ import {
   IQuestionFromVM,
   MaybeUserAnswerSubmissionToVM,
 } from "../model/user-text-input";
+import { FrameFiringArbiter } from "./frame-firing";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
@@ -22,6 +23,8 @@ declare let Sk: any;
 //
 // TODO: Is this the best place to put this?
 Sk.configure({});
+
+const ASSUMED_VM_FPS = 60;
 
 let peId = 1000;
 
@@ -64,6 +67,7 @@ export class ProjectEngine {
   shouldRun: boolean;
   liveSpeechBubbles: Map<SpeakerId, LiveSpeechBubble>;
   webAppAPI: IWebAppAPI;
+  frameFiringArbiter: FrameFiringArbiter;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -78,6 +82,8 @@ export class ProjectEngine {
     this.bubblesDiv.innerHTML = "";
 
     this.webAppAPI = webAppAPI;
+
+    this.frameFiringArbiter = new FrameFiringArbiter(ASSUMED_VM_FPS);
 
     this.webAppAPI.setVariableWatchers([]);
 
@@ -307,8 +313,15 @@ export class ProjectEngine {
     };
   }
 
-  oneFrame() {
+  oneFrame(nowTime: number) {
     const logIntro = `ProjectEngine[${this.id}].oneFrame()`;
+
+    const doFrameNow =
+      this.frameFiringArbiter.updateAndMakeFireDecision(nowTime);
+    if (!doFrameNow) {
+      window.requestAnimationFrame(this.oneFrame);
+      return;
+    }
 
     if (!this.shouldRun) {
       console.log(`${logIntro}: halt was requested; bailing`);
