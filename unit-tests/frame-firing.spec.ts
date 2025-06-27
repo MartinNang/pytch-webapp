@@ -34,4 +34,25 @@ describe("Frame firing scheduler", () => {
         assert.approximately(nFramesFired, expNFramesFired, 1.0);
       })
   );
+
+  it("resumes after gap", () => {
+    let fft = new FrameFiringArbiter(10);
+    const frameIntervalMs = 100.0;
+
+    const N_FRAMES_PER_RUN = 10;
+    let nFramesFired = 0;
+    let now = 10000.0;
+    const run = () => {
+      for (let i = 0; i !== N_FRAMES_PER_RUN; ++i) {
+        now += frameIntervalMs;
+        if (fft.updateAndMakeFireDecision(now)) nFramesFired += 1;
+      }
+    };
+
+    run();
+    now += 12 * frameIntervalMs;
+    run();
+
+    assert.equal(nFramesFired, 2 * N_FRAMES_PER_RUN);
+  });
 });
