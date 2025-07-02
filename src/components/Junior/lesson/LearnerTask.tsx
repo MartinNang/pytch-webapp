@@ -8,11 +8,18 @@ import { Alert, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RawElement from "../../RawElement";
 import classNames from "classnames";
-import { assertNever } from "../../../utils";
+import { assertNever, range } from "../../../utils";
 import { LearnerTaskCommit } from "./LearnerTaskCommit";
 import { RawOrCodeSnippet, withCodeSnippetsRendered } from "./RawOrCodeSnippet";
 import { useStoreActions } from "../../../store";
 import { useMappedLinkedJrTutorial } from "./hooks";
+
+const kHelpStageIdPrefix = "pytch_tut_helpstage__";
+function helpStageId(fullOrPartialKeyPath: string, stageIndex?: number) {
+  return stageIndex == null
+    ? `${kHelpStageIdPrefix}${fullOrPartialKeyPath}`
+    : `${kHelpStageIdPrefix}${fullOrPartialKeyPath}/${stageIndex}`;
+}
 
 export type TaskInteractivityKind = "old" | "previous" | "current" | "future";
 
@@ -64,20 +71,17 @@ const HelpStage: React.FC<HelpStageProps> = ({
   keyPath,
   stage,
 }) => {
-  if (stageIndex >= nStagesShown) {
-    return null;
-  }
+  const isHidden = stageIndex >= nStagesShown;
+  const classes = classNames(isHidden && "d-none");
 
   const content = stage.fragments.map((fragment, idx) => (
     <HelpStageFragment key={idx} fragment={fragment} />
   ));
   return (
-    <>
+    <div className={classes} id={helpStageId(keyPath)}>
       <div className="help-stage-divider" />
-      <div key={keyPath} className="LearnerTask-HelpStage">
-        {content}
-      </div>
-    </>
+      <div className="LearnerTask-HelpStage">{content}</div>
+    </div>
   );
 };
 
@@ -85,19 +89,9 @@ type CheckboxHelpProps = { interactivityKind: TaskInteractivityKind };
 const CheckboxHelp: React.FC<CheckboxHelpProps> = ({ interactivityKind }) => {
   switch (interactivityKind) {
     case "current":
-      return (
-        <span>
-          <FontAwesomeIcon className="help-arrow" icon="arrow-left-long" />{" "}
-          Click when you’ve done this.
-        </span>
-      );
+      return <span>Click when you’ve done this.</span>;
     case "previous":
-      return (
-        <span>
-          <FontAwesomeIcon className="help-arrow" icon="arrow-left-long" />{" "}
-          Done! (Click to rewind to this task.)
-        </span>
-      );
+      return <span>Done! (Click to rewind to this task.)</span>;
     case "old":
       return <span>Done!</span>;
     case "future":
@@ -107,7 +101,106 @@ const CheckboxHelp: React.FC<CheckboxHelpProps> = ({ interactivityKind }) => {
   }
 };
 
-type ShowHelpStageButtonProps = {
+type TaskCheckboxButtonProps = {
+  interactivityKind: TaskInteractivityKind;
+  onCheckboxClick: () => void;
+};
+const TaskCheckboxButton: React.FC<TaskCheckboxButtonProps> = ({
+  interactivityKind,
+  onCheckboxClick,
+}) => {
+  const isDisabled =
+    interactivityKind === "old" || interactivityKind === "future";
+  const isPressed =
+    interactivityKind === "old" || interactivityKind === "previous";
+  return (
+    <Button
+      variant="outline-secondary"
+      aria-pressed={isPressed}
+      disabled={isDisabled}
+      className="TaskCheckboxButton"
+      onClick={onCheckboxClick}
+    >
+      <FontAwesomeIcon className="to-do-checkbox" icon="check-square" />
+      <CheckboxHelp interactivityKind={interactivityKind} />
+    </Button>
+  );
+};
+
+type HelpStageButtonProps = {
+  keyPath: string;
+  nStagesTotal: number;
+  nStagesStillHidden: number;
+  hideAllHelpStages: () => void;
+  showNextHelpStage: () => void;
+};
+const HelpStageButton: React.FC<HelpStageButtonProps> = ({
+  keyPath,
+  nStagesTotal,
+  nStagesStillHidden,
+  hideAllHelpStages,
+  showNextHelpStage,
+}) => {
+  if (nStagesTotal === 0) {
+    return false;
+  }
+
+  const nextStageIndex = nStagesTotal - nStagesStillHidden;
+  const nextStageId = helpStageId(keyPath, nextStageIndex);
+
+  const label = (() => {
+    switch (nStagesStillHidden) {
+      case 0:
+        return "Hide help";
+      case 1:
+        return "Show me";
+      default:
+        return "Hint";
+    }
+  })();
+
+  const { controlsId, expanded, description, onClick } = (() => {
+    if (nStagesStillHidden === 0) {
+      const allHelpStageIds = range(nStagesTotal)
+        .map((i) => helpStageId(keyPath, i))
+        .join(" ");
+      return {
+        controlsId: allHelpStageIds,
+        expanded: true,
+        description: "Hide the solution and any hints for this task",
+        onClick: hideAllHelpStages,
+      };
+    } else {
+      const description =
+        nStagesStillHidden === 1
+          ? "Show the solution to this task"
+          : nextStageIndex === 0
+          ? "Show a hint for this task"
+          : "Show another hint for this task";
+      return {
+        controlsId: nextStageId,
+        expanded: false,
+        description,
+        onClick: showNextHelpStage,
+      };
+    }
+  })();
+
+  return (
+    <Button
+      variant="outline-success"
+      onClick={onClick}
+      aria-label={description}
+      aria-controls={controlsId}
+      aria-expanded={expanded}
+    >
+      {label}
+    </Button>
+  );
+};
+
+type LearnerTaskButtonStripProps = {
+  keyPath: string;
   nStagesTotal: number;
   nStagesStillHidden: number;
   interactivityKind: TaskInteractivityKind;
@@ -115,7 +208,8 @@ type ShowHelpStageButtonProps = {
   hideAllHelpStages: () => void;
   onCheckboxClick: () => void;
 };
-const ShowNextHelpStageButton: React.FC<ShowHelpStageButtonProps> = ({
+const LearnerTaskButtonStrip: React.FC<LearnerTaskButtonStripProps> = ({
+  keyPath,
   nStagesTotal,
   nStagesStillHidden,
   interactivityKind,
@@ -123,45 +217,21 @@ const ShowNextHelpStageButton: React.FC<ShowHelpStageButtonProps> = ({
   hideAllHelpStages,
   onCheckboxClick,
 }) => {
-  const maybeButton =
-    nStagesTotal > 0 &&
-    (() => {
-      const label = (() => {
-        switch (nStagesStillHidden) {
-          case 0:
-            return "Hide help";
-          case 1:
-            return "Show me";
-          default:
-            return "Hint";
-        }
-      })();
-
-      const onClick =
-        nStagesStillHidden === 0 ? hideAllHelpStages : showNextHelpStage;
-
-      return (
-        <Button
-          key={nStagesStillHidden}
-          variant="outline-success"
-          onClick={onClick}
-        >
-          {label}
-        </Button>
-      );
-    })();
-
   return (
-    <div className="ShowNextHelpStageButton-container">
-      <div className="to-do-checkbox-container">
-        <FontAwesomeIcon
-          className="to-do-checkbox"
-          icon="check-square"
-          onClick={onCheckboxClick}
-        />
-        <CheckboxHelp interactivityKind={interactivityKind} />
-      </div>
-      {maybeButton}
+    <div className="LearnerTaskButtonStrip">
+      <TaskCheckboxButton
+        interactivityKind={interactivityKind}
+        onCheckboxClick={onCheckboxClick}
+      />
+      <HelpStageButton
+        {...{
+          keyPath,
+          nStagesTotal,
+          nStagesStillHidden,
+          hideAllHelpStages,
+          showNextHelpStage,
+        }}
+      />
     </div>
   );
 };
@@ -225,10 +295,15 @@ export const LearnerTask: React.FC<LearnerTaskProps> = ({
 
   const nStagesStillHidden = task.helpStages.length - nHelpStagesShown;
   const helpContent = (
-    <>
+    <div
+      className="LearnerTask-HelpContent"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       {taskHelpStages}
       <div className="help-stage-divider" />
-      <ShowNextHelpStageButton
+      <LearnerTaskButtonStrip
+        keyPath={keyPath}
         nStagesTotal={task.helpStages.length}
         nStagesStillHidden={nStagesStillHidden}
         interactivityKind={kind}
@@ -236,7 +311,7 @@ export const LearnerTask: React.FC<LearnerTaskProps> = ({
         hideAllHelpStages={() => hideAllHelpStages(task.index)}
         onCheckboxClick={onCheckboxClick}
       />
-    </>
+    </div>
   );
 
   const alertVariant = kind === "current" ? "success" : "light";
