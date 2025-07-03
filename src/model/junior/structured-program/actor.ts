@@ -56,6 +56,13 @@ export type Actor = {
   handlers: Array<EventHandler>;
 };
 
+type ActorKindAndName = Pick<Actor, "kind" | "name">;
+
+export type HandlerInActorContext = {
+  actor: Actor;
+  handler: EventHandler;
+};
+
 export type ActorNub = Pick<Actor, "id" | "kind" | "name">;
 
 export class ActorOps {
@@ -79,6 +86,19 @@ export class ActorOps {
       name,
       handlers: [],
     };
+  }
+
+  /** Return a description, suitable for putting after "the" or "The",
+   * for the given `actor`.  (Only the `kind` and `name` are used.)  */
+  static displayDescription(actor: ActorKindAndName): string {
+    switch (actor.kind) {
+      case "sprite":
+        return `Sprite "${actor.name}"`;
+      case "stage":
+        return "Stage";
+      default:
+        return assertNever(actor.kind);
+    }
   }
 
   /** Create and return a new `Actor` with a random `id` whose `kind`,
