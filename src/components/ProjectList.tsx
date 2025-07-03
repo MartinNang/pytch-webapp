@@ -4,7 +4,6 @@ import { useStoreState, useStoreActions } from "../store";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import NavBanner from "./NavBanner";
 import { pathWithinApp } from "../env-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +12,16 @@ import { EmptyProps, assertNever } from "../utils";
 import { MtimeDisplay } from "./MtimeDisplay";
 import { EditorKindThumbnail } from "./EditorKindThumbnail";
 import { useRunFlow } from "../model";
+import {
+  createFocusContext,
+  FocusContext,
+  useFocusContext,
+} from "./hooks/focus-steering";
+import {
+  focusGroupItemClass,
+  kFocusGroupContainerClassName,
+} from "../model/junior/grouped-focus";
+import { CaptiveContextMenu } from "./CaptiveContextMenu";
 
 type ProjectCardProps = {
   project: IDisplayedProjectSummary;
@@ -20,6 +29,7 @@ type ProjectCardProps = {
 };
 
 const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
+  const focusContext = useFocusContext("my-projects-list");
   const navigate = useNavigate();
 
   const runDeleteProject = useRunFlow((f) => f.deleteProjectFlow);
@@ -72,38 +82,51 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
 
   return (
     <li>
-      <Alert onClick={onActivate} className="ProjectCard" variant="success">
-        <div
-          className="project-card-content"
-          data-project-id={project.summary.id}
-        >
-          <span
-            className={`selection-check${maybeSelectedExtraClass}`}
-            onClick={onToggleIsSelected}
-          >
-            <FontAwesomeIcon className="fa-lg" icon="check-circle" />
-          </span>
-          <div className="project-description">
-            <p className="project-name">{project.summary.name}</p>
-            <MtimeDisplay mtime={project.summary.mtime} />
-            <p className="project-summary">{summary}</p>
-          </div>
-          <EditorKindThumbnail programKind={project.summary.programKind} />
+      <CaptiveContextMenu.Container
+        className={focusGroupItemClass("ProjectCard-wrapper")}
+        onClick={focusContext.onGroupItemClick}
+        onActivate={onActivate}
+      >
+        <Alert className="ProjectCard" variant="success">
           <div
-            className="dropdown-wrapper"
-            onClick={(e) => e.stopPropagation()}
+            className="project-card-content"
+            data-project-id={project.summary.id}
           >
-            <DropdownButton title="⋮">
-              <Dropdown.Item onClick={onActivate}>Open</Dropdown.Item>
-              <Dropdown.Item onClick={onRename}>Rename...</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item className="danger" onClick={onDelete}>
-                DELETE
-              </Dropdown.Item>
-            </DropdownButton>
+            <span
+              className={`selection-check${maybeSelectedExtraClass}`}
+              onClick={onToggleIsSelected}
+            >
+              <FontAwesomeIcon className="fa-lg" icon="check-circle" />
+            </span>
+            <div className="project-description">
+              <p className="project-name">{project.summary.name}</p>
+              <MtimeDisplay mtime={project.summary.mtime} />
+              <p className="project-summary">{summary}</p>
+            </div>
+            <EditorKindThumbnail programKind={project.summary.programKind} />
+            <div
+              className="dropdown-wrapper"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <CaptiveContextMenu.DropdownMenu>
+                <CaptiveContextMenu.DropdownItem onInvoke={onActivate}>
+                  Open
+                </CaptiveContextMenu.DropdownItem>
+                <CaptiveContextMenu.DropdownItem onInvoke={onRename}>
+                  Rename...
+                </CaptiveContextMenu.DropdownItem>
+                <Dropdown.Divider />
+                <CaptiveContextMenu.DropdownItem
+                  className="danger"
+                  onInvoke={onDelete}
+                >
+                  DELETE
+                </CaptiveContextMenu.DropdownItem>
+              </CaptiveContextMenu.DropdownMenu>
+            </div>
           </div>
-        </div>
-      </Alert>
+        </Alert>
+      </CaptiveContextMenu.Container>
     </li>
   );
 };
@@ -192,6 +215,7 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
 };
 
 const ProjectList: React.FC = () => {
+  const focusContext = useFocusContext("my-projects-list");
   const available = useStoreState((state) => state.projectCollection.available);
 
   const selectedIds = useStoreState(
@@ -202,11 +226,17 @@ const ProjectList: React.FC = () => {
   return (
     <>
       <ProjectListButtons />
-      <ul className={anySelected ? "some-selected" : ""}>
-        {available.map((p) => (
-          <Project key={p.summary.id} project={p} anySelected={anySelected} />
-        ))}
-      </ul>
+      <div
+        ref={focusContext.groupContainerRefCallback()}
+        className={kFocusGroupContainerClassName}
+        data-grouped-focus-key="MyProjectsList"
+      >
+        <ol className={anySelected ? "some-selected" : ""}>
+          {available.map((p) => (
+            <Project key={p.summary.id} project={p} anySelected={anySelected} />
+          ))}
+        </ol>
+      </div>
     </>
   );
 };
@@ -252,12 +282,15 @@ const MaybeProjectList: React.FC<EmptyProps> = () => {
 
   const InnerComponent = componentFromState(loadingStatus.kind);
 
+  const focusContext = createFocusContext("my-projects-list");
   return (
     <>
       <NavBanner />
       <div className="ProjectList" tabIndex={-1} ref={paneRef}>
         <h1>My projects</h1>
-        <InnerComponent />
+        <FocusContext.Provider value={focusContext}>
+          <InnerComponent />
+        </FocusContext.Provider>
       </div>
     </>
   );
