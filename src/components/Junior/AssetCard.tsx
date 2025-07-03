@@ -1,4 +1,4 @@
-import React from "react";
+import React, { KeyboardEventHandler } from "react";
 import classNames from "classnames";
 import { AssetPresentation } from "../../model/asset";
 import { PytchProgramKind, PytchProgramOps } from "../../model/pytch-program";
@@ -70,27 +70,20 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
   );
 };
 
-type DeleteDropdownItemProps = {
-  operationScope: AssetOperationScope;
-  assetKind: AssetMimeType;
-  fullPathname: string;
-  displayName: string;
-  isAllowed: boolean;
-};
-const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
-  operationScope,
-  assetKind,
-  fullPathname,
-  displayName,
-  isAllowed,
-}) => {
+function useOnDeleteFun(
+  isAllowed: boolean,
+  operationScope: AssetOperationScope,
+  assetKind: AssetMimeType,
+  fullPathname: string
+) {
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
   const runDeleteAsset = useRunFlow((f) => f.deleteAssetFlow);
 
   const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
+  const displayName = PytchProgramOps.assetPathAffixes(fullPathname).suffix;
 
-  const onDelete = () => {
+  return () => {
     if (!isAllowed) {
       console.warn(`forbidding attempt to delete "${fullPathname}"`);
       return;
@@ -103,6 +96,26 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
       onDispose: focusContext.onDisposeDeleteAsset,
     });
   };
+}
+
+type DeleteDropdownItemProps = {
+  operationScope: AssetOperationScope;
+  assetKind: AssetMimeType;
+  fullPathname: string;
+  isAllowed: boolean;
+};
+const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
+  operationScope,
+  assetKind,
+  fullPathname,
+  isAllowed,
+}) => {
+  const onDelete = useOnDeleteFun(
+    isAllowed,
+    operationScope,
+    assetKind,
+    fullPathname
+  );
 
   return (
     <CaptiveContextMenu.DropdownItem
@@ -236,7 +249,6 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
         operationScope={operationScope}
         assetKind={assetKind}
         fullPathname={fullPathname}
-        displayName={displayName}
         isAllowed={deleteIsAllowed}
       />
     </CaptiveContextMenu.DropdownMenu>
@@ -293,6 +305,13 @@ export const AssetCard: React.FC<AssetCardProps> = ({
     );
   }
 
+  const onDelete = useOnDeleteFun(
+    canBeDeleted,
+    operationScope,
+    assetKind,
+    fullPathname
+  );
+
   const classes = classNames(
     "AssetCard",
     `kind-${operationScope}`,
@@ -319,10 +338,17 @@ export const AssetCard: React.FC<AssetCardProps> = ({
     </div>
   );
 
+  const onKeyDown: KeyboardEventHandler = (evt) => {
+    if (evt.key === "Delete") {
+      onDelete();
+    }
+  };
+
   return (
     <CaptiveContextMenu.Container
       className={kFocusGroupItemClassName}
       onClick={focusContext.onGroupItemClick}
+      onKeyDown={onKeyDown}
     >
       <div className={classes}>
         <DragPreviewImage connect={preview} src={dragPreview} />
