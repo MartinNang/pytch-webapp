@@ -40,6 +40,11 @@ type GlobalFocusAction =
   | {
       kind: "element";
       selector: string;
+    }
+  | {
+      kind: "bookmarked-item-or-element";
+      stem: GlobalFocusTargetStem;
+      selector: string;
     };
 
 const bookmarkedAction = (stem: GlobalFocusTargetStem): GlobalFocusAction => ({
@@ -49,6 +54,15 @@ const bookmarkedAction = (stem: GlobalFocusTargetStem): GlobalFocusAction => ({
 
 const elementAction = (selector: string): GlobalFocusAction => ({
   kind: "element",
+  selector,
+});
+
+const bookmarkedOrElementAction = (
+  stem: GlobalFocusTargetStem,
+  selector: string
+): GlobalFocusAction => ({
+  kind: "bookmarked-item-or-element",
+  stem,
   selector,
 });
 
@@ -71,7 +85,10 @@ export class GlobalFocusSteering {
 
     switch (pageKind) {
       case "per-method":
-        this.actionFromSecondKey.set("h", bookmarkedAction("gfs__help"));
+        this.actionFromSecondKey.set(
+          "h",
+          bookmarkedOrElementAction("gfs__help", ".Junior-LessonContent")
+        );
         this.actionFromSecondKey.set("s", bookmarkedAction("gfs__actors"));
         this.actionFromSecondKey.set("c", bookmarkedAction("gfs__actorprops"));
         break;
@@ -112,6 +129,12 @@ export class GlobalFocusSteering {
         }
       }
     }
+  }
+
+  static containerEltOfStemExists(stem: GlobalFocusTargetStem) {
+    const containerClass = `${stem}__container`;
+    const clsElts = document.getElementsByClassName(containerClass);
+    return clsElts.length !== 0;
   }
 
   static containerEltFromStem(stem: GlobalFocusTargetStem) {
@@ -155,6 +178,17 @@ export class GlobalFocusSteering {
       case "element": {
         const mElement = document.querySelector<HTMLElement>(mAction.selector);
         mElement?.focus();
+        return "triggered-action";
+      }
+      case "bookmarked-item-or-element": {
+        if (GlobalFocusSteering.containerEltOfStemExists(mAction.stem)) {
+          this.focusBookmarkedItem(mAction.stem);
+        } else {
+          const mElement = document.querySelector<HTMLElement>(
+            mAction.selector
+          );
+          mElement?.focus();
+        }
         return "triggered-action";
       }
       default:
