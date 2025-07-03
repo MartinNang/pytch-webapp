@@ -116,12 +116,26 @@ export function notableChangeDescription(
 
     case "asset-changed": {
       const assetSingular = change.operationContext.assetSingularTitle;
-      return {
-        header: `${assetSingular} deleted`,
-        body:
-          `${assetSingular} "${change.assetDisplayName}"` +
-          ` deleted from ${change.operationContext.scope}`,
-      };
+      switch (change.assetChangedKind) {
+        case "update": {
+          return {
+            header: `${assetSingular} renamed`,
+            body:
+              `${assetSingular} renamed to "${change.assetDisplayName}"` +
+              ` in ${change.operationContext.scope}`,
+          };
+        }
+        case "delete": {
+          return {
+            header: `${assetSingular} deleted`,
+            body:
+              `${assetSingular} "${change.assetDisplayName}"` +
+              ` deleted from ${change.operationContext.scope}`,
+          };
+        }
+        default:
+          return assertNever(change.assetChangedKind);
+      }
     }
 
     default:
