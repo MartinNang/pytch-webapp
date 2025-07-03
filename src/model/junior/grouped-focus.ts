@@ -84,7 +84,7 @@ function funOrNop(
 
 /** Create class-names string for a focus-group container from the base
  * container class plus the given `extraClassname`. */
-export function focusGroupContainerClass(extraClassname: string): string {
+export function focusGroupContainerClass(extraClassname?: string): string {
   return classNames(kFocusGroupContainerClassName, extraClassname);
 }
 
@@ -182,7 +182,7 @@ export const focusGroupNavigationSuppression = (() => {
   return { onFocus, onBlur };
 })();
 
-type ContainerRefCallbackOptions = Partial<{
+export type ContainerRefCallbackOptions = Partial<{
   onFocusFromKeyboard: (elt: HTMLElement) => void;
   onFocusFromPendingRequest: (elt: HTMLElement) => void;
   onActivate: (elt: HTMLElement) => void;
