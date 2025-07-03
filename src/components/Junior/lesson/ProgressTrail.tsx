@@ -9,9 +9,15 @@ import { useStoreActions, useStoreState } from "../../../store";
 type LabelledProgressNodeKind = "normal" | "inverse";
 type ProgressNodeKind = "ellipsis" | LabelledProgressNodeKind;
 
+type LabelledProgressNodeDescriptor = {
+  kind: "normal" | "inverse";
+  index: number;
+  jumpable: boolean;
+};
+
 type ProgressNodeDescriptor = { kind: ProgressNodeKind; key: string } & (
-  | { kind: "normal" | "inverse"; index: number }
-  | { kind: "ellipsis" }
+  | LabelledProgressNodeDescriptor
+  | { kind: "ellipsis"; jumpable: false }
 );
 
 type ProgressTrailNodeProps = { descriptor: ProgressNodeDescriptor };
@@ -33,7 +39,7 @@ const ProgressTrailNode: React.FC<ProgressTrailNodeProps> = ({
 };
 
 function ellipsisDescriptor(index: number): ProgressNodeDescriptor {
-  return { kind: "ellipsis", key: `ellipsis-${index}` };
+  return { kind: "ellipsis", key: `ellipsis-${index}`, jumpable: false };
 }
 
 const kVisibleProgressNodes = 9;
@@ -43,12 +49,14 @@ const kCentralProgressNodes = 1 + 2 * kCentralNodeRangeHalfWidth;
 function progressNodeDescriptors(
   nTotalNodes: number,
   activeNodeIndex: number,
-  nodeKindFromIndex: (idx: number) => LabelledProgressNodeKind
+  nodeKindFromIndex: (idx: number) => LabelledProgressNodeKind,
+  canJumpHereFromIndex: (idx: number) => boolean
 ): Array<ProgressNodeDescriptor> {
   const mkLabelled = (nodeIdx: number): ProgressNodeDescriptor => ({
     key: `labelled-${nodeIdx}`,
     kind: nodeKindFromIndex(nodeIdx),
     index: nodeIdx,
+    jumpable: canJumpHereFromIndex(nodeIdx),
   });
 
   const lastIdx = nTotalNodes - 1;
@@ -85,44 +93,30 @@ function progressNodeDescriptors(
   ];
 }
 
-type GenericProgressTrailProps = {
-  nProgressStages: number;
-  activeChapterIndex: number;
-  setChapterIndex(idx: number): void;
-  nodeKindFromIndex(idx: number): LabelledProgressNodeKind;
-  cloneChapterTitleElt(idx: number): HTMLElement;
-  canJumpHereFromIndex(idx: number): boolean;
+type ProgressCoreNodesProps = {
+  nodeDescriptors: Array<ProgressNodeDescriptor>;
 };
-const GenericProgressTrail: React.FC<GenericProgressTrailProps> = ({
-  nProgressStages,
-  activeChapterIndex,
-  setChapterIndex,
-  nodeKindFromIndex,
-  cloneChapterTitleElt,
-  canJumpHereFromIndex,
+const ProgressCoreNodes: React.FC<ProgressCoreNodesProps> = ({
+  nodeDescriptors,
 }) => {
-  const chapterTitleElt = cloneChapterTitleElt(activeChapterIndex);
-
-  const nodeDescriptors = progressNodeDescriptors(
-    nProgressStages,
-    activeChapterIndex,
-    nodeKindFromIndex
-  );
-
   const nodeDivs = nodeDescriptors.map((d) => (
     <ProgressTrailNode key={d.key} descriptor={d} />
   ));
 
-  const maybeChapterNumberLabel = activeChapterIndex > 0 && (
-    <span className="chapter-number">{activeChapterIndex} —</span>
-  );
+  return <div className="nodes">{nodeDivs}</div>;
+};
 
-  const nodeBackgrounds = nodeDescriptors.map((d, idx) => {
-    const isActive = d.kind !== "ellipsis" && d.index === activeChapterIndex;
-    const classes = classNames("progress-node-background", { isActive });
-    return <div key={idx} className={classes} />;
-  });
-
+type ProgressNodeHoverTargetsProps = ProgressCoreNodesProps &
+  Pick<
+    GenericProgressTrailProps,
+    "activeChapterIndex" | "setChapterIndex" | "cloneChapterTitleElt"
+  >;
+const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
+  nodeDescriptors,
+  activeChapterIndex,
+  setChapterIndex,
+  cloneChapterTitleElt,
+}) => {
   const nodeHoverTargets = nodeDescriptors.map((d, displayedIdx) => {
     if (d.kind === "ellipsis") {
       return (
@@ -133,7 +127,7 @@ const GenericProgressTrail: React.FC<GenericProgressTrailProps> = ({
       );
     }
 
-    const canJumpHere = canJumpHereFromIndex(d.index);
+    const canJumpHere = d.jumpable;
     const contentElt = cloneChapterTitleElt(d.index);
 
     const tooltip = (
@@ -159,12 +153,62 @@ const GenericProgressTrail: React.FC<GenericProgressTrailProps> = ({
   });
 
   return (
+    <div className="node-hover-targets">
+      {nodeHoverTargets}
+    </div>
+  );
+};
+
+type GenericProgressTrailProps = {
+  nProgressStages: number;
+  activeChapterIndex: number;
+  setChapterIndex(idx: number): void;
+  nodeKindFromIndex(idx: number): LabelledProgressNodeKind;
+  cloneChapterTitleElt(idx: number): HTMLElement;
+  canJumpHereFromIndex(idx: number): boolean;
+};
+const GenericProgressTrail: React.FC<GenericProgressTrailProps> = ({
+  nProgressStages,
+  activeChapterIndex,
+  setChapterIndex,
+  nodeKindFromIndex,
+  cloneChapterTitleElt,
+  canJumpHereFromIndex,
+}) => {
+  const chapterTitleElt = cloneChapterTitleElt(activeChapterIndex);
+
+  const nodeDescriptors = progressNodeDescriptors(
+    nProgressStages,
+    activeChapterIndex,
+    nodeKindFromIndex,
+    canJumpHereFromIndex
+  );
+
+  const maybeChapterNumberLabel = activeChapterIndex > 0 && (
+    <span className="chapter-number">{activeChapterIndex} —</span>
+  );
+
+  const nodeBackgrounds = nodeDescriptors.map((d, idx) => {
+    const isActive = d.kind !== "ellipsis" && d.index === activeChapterIndex;
+    const classes = classNames("progress-node-background", { isActive });
+    return <div key={idx} className={classes} />;
+  });
+
+  return (
     <>
       <div className="ProgressTrail">
         <div className="node-backgrounds">{nodeBackgrounds}</div>
         <div className="track" />
-        <div className="nodes">{nodeDivs}</div>
-        <div className="node-hover-targets">{nodeHoverTargets}</div>
+        <ProgressCoreNodes {...{ nodeDescriptors }} />
+        <ProgressNodeHoverTargets
+          {...{
+            nodeDescriptors,
+            activeChapterIndex,
+            setChapterIndex,
+            cloneChapterTitleElt,
+            canJumpHereFromIndex,
+          }}
+        />
       </div>
       <div className="chapter-title">
         {maybeChapterNumberLabel}
