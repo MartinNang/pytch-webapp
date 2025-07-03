@@ -18,7 +18,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProjectId } from "../../model/project-core";
 import { useRunFlow } from "../../model";
 import { AssetMimeType } from "../../model/junior/structured-program/asset";
-import { AssetOperationScope } from "../../model/asset/core";
+import {
+  AssetOperationContextKey,
+  AssetOperationScope,
+} from "../../model/asset/core";
 import { assertNever, copyTextToClipboard } from "../../utils";
 import { pyStringRepr } from "../../skulpt-connection/utils";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
@@ -85,16 +88,16 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
   const focusContext = useFocusContext(pageKind);
   const runDeleteAsset = useRunFlow((f) => f.deleteAssetFlow);
 
+  const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
+
   const onDelete = () => {
     if (!isAllowed) {
       console.warn(`forbidding attempt to delete "${fullPathname}"`);
       return;
     }
 
-    // Slight hack: We're relying on the internal assetKind name to be
-    // suitable for display use.
     runDeleteAsset({
-      kindDisplayName: assetKind,
+      operationContextKey,
       name: fullPathname,
       displayName,
       onDispose: focusContext.onDisposeDeleteAsset,

@@ -1,18 +1,24 @@
 import { IPytchAppModel, PytchAppModelActions } from "..";
 import {
+  AssetOperationContext,
+  assetOperationContextFromKey,
+  AssetOperationContextKey,
+} from "../asset";
+import {
   AsyncUserFlowSlice,
   alwaysSubmittable,
   asyncUserFlowSlice,
-  idPrepare,
 } from "./async-user-flow";
 
 type DeleteAssetRunArgs = {
-  kindDisplayName: string;
+  operationContextKey: AssetOperationContextKey;
   name: string;
   displayName: string;
 };
 
-type DeleteAssetRunState = DeleteAssetRunArgs;
+type DeleteAssetRunState = {
+  operationContext: AssetOperationContext;
+} & Omit<DeleteAssetRunArgs, "operationContextKey">;
 
 // No actions:
 export type DeleteAssetFlow = AsyncUserFlowSlice<
@@ -21,14 +27,29 @@ export type DeleteAssetFlow = AsyncUserFlowSlice<
   DeleteAssetRunState
 >;
 
+async function prepare(args: DeleteAssetRunArgs): Promise<DeleteAssetRunState> {
+  const operationContext = assetOperationContextFromKey(
+    args.operationContextKey
+  );
+  return {
+    operationContext,
+    name: args.name,
+    displayName: args.displayName,
+  };
+}
+
 async function attempt(
   runState: DeleteAssetRunState,
   actions: PytchAppModelActions
 ) {
-  const deleteDescriptor = { name: runState.name };
+  const deleteDescriptor = {
+    operationContext: runState.operationContext,
+    name: runState.name,
+    displayName: runState.displayName,
+  };
   await actions.activeProject.deleteAssetAndSync(deleteDescriptor);
 }
 
 export let deleteAssetFlow: DeleteAssetFlow = (() => {
-  return asyncUserFlowSlice({}, idPrepare, alwaysSubmittable, attempt);
+  return asyncUserFlowSlice({}, prepare, alwaysSubmittable, attempt);
 })();
