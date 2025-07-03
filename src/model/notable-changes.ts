@@ -5,6 +5,7 @@ import {
   eqPerMethodScriptDeleted,
   eqPerMethodScriptUpserted,
 } from "./junior/change-events";
+import { ActorOps, EventDescriptorKindOps } from "./junior/structured-program";
 
 export type NotableChange = PerMethodScriptUpserted | PerMethodScriptDeleted;
 
@@ -22,6 +23,71 @@ export function eqNotableChange(x: NotableChange, y: NotableChange): boolean {
       return eqPerMethodScriptDeleted(x, y as PerMethodScriptDeleted);
     default:
       return assertNever(x);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////
+
+type NotableChangeDescription = {
+  header: string;
+  body: string;
+};
+
+export function notableChangeDescription(
+  change: NotableChange
+): NotableChangeDescription {
+  switch (change.kind) {
+    case "script-upserted": {
+      const eventKindDescription = EventDescriptorKindOps.displayDescription(
+        change.handlerEventKind
+      );
+      const displayName = ActorOps.displayDescription({
+        kind: change.actorKind,
+        name: change.actorName,
+      });
+      switch (change.upsertKind) {
+        case "insert": {
+          return {
+            header: "Script added",
+            body:
+              `New "${eventKindDescription}" script` +
+              ` added to the ${displayName}.`,
+          };
+        }
+        case "update": {
+          return {
+            header: "Script hat block changed",
+            body:
+              `Script in the ${displayName}` +
+              ` changed to "${eventKindDescription}".`,
+          };
+        }
+        case "duplicate": {
+          return {
+            header: "Script duplicated",
+            body:
+              `"${eventKindDescription}" script` +
+              ` duplicated in the ${displayName}.`,
+          };
+        }
+        default:
+          return assertNever(change.upsertKind);
+      }
+    }
+
+    case "script-deleted": {
+      const eventKindDescription = EventDescriptorKindOps.displayDescription(
+        change.handlerEventKind
+      );
+      const displayName = ActorOps.displayDescription({
+        kind: change.actorKind,
+        name: change.actorName,
+      });
+      return {
+        header: "Script deleted",
+        body: `"${eventKindDescription}" script deleted from the ${displayName}.`,
+      };
+    }
   }
 }
 
