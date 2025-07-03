@@ -596,7 +596,7 @@ export const activeProject: IActiveProject = {
   }),
 
   _deleteSprite: action((state, augArgs) => {
-    let program = ensureStructured(state.project, "deleteSprite");
+    let program = ensureStructured(state.project, "_deleteSprite");
     const adjacentSpriteId = StructuredProgramOps.deleteSprite(
       program,
       augArgs.spriteId
@@ -606,7 +606,9 @@ export const activeProject: IActiveProject = {
   deleteSprite: thunk((actions, spriteId) => {
     let idCell = valueCell<Uuid>("");
     actions._deleteSprite({ spriteId, handleSpriteId: idCell.set });
+
     actions.noteCodeChange();
+
     return idCell.get();
   }),
 
