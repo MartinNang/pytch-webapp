@@ -68,6 +68,20 @@ export const kFocusGroupContainerClassName = "focus-group__container";
 export const kFocusGroupItemClassName = "focus-group__item";
 export const kFocusGroupFallbackClassName = "focus-group__fallback";
 
+function funOrNop(
+  mFun: ((elt: HTMLElement) => void) | undefined
+): (mElt: HTMLElement | undefined) => void {
+  if (mFun == null) {
+    return (_mElt) => void 0;
+  } else {
+    return (mElt) => {
+      if (mElt != null) {
+        mFun(mElt);
+      }
+    };
+  }
+}
+
 /** Create class-names string for a focus-group container from the base
  * container class plus the given `extraClassname`. */
 export function focusGroupContainerClass(extraClassname: string): string {
@@ -171,6 +185,7 @@ export const focusGroupNavigationSuppression = (() => {
 type ContainerRefCallbackOptions = Partial<{
   onFocusFromKeyboard: (elt: HTMLElement) => void;
   onFocusFromPendingRequest: (elt: HTMLElement) => void;
+  onActivate: (elt: HTMLElement) => void;
 }>;
 
 type FocusBookmarkedItemOutcome =
@@ -518,16 +533,9 @@ export class GroupedFocusManager {
   ) {
     opts ??= {};
 
-    const onFocusFromKeyboard = (mElt: HTMLElement | undefined) => {
-      if (mElt != null && opts.onFocusFromKeyboard != null) {
-        opts.onFocusFromKeyboard(mElt);
-      }
-    };
-    const onFocusFromPendingRequest = (mElt: HTMLElement | undefined) => {
-      if (mElt != null && opts.onFocusFromPendingRequest != null) {
-        opts.onFocusFromPendingRequest(mElt);
-      }
-    };
+    const onFocusFromKeyboard = funOrNop(opts.onFocusFromKeyboard);
+    const onFocusFromPendingRequest = funOrNop(opts.onFocusFromPendingRequest);
+    const onActivate = funOrNop(opts.onActivate);
 
     let onKeyDown: ((evt: KeyboardEvent) => void) | null = null;
     let eltWithHandler: HTMLElement | null = null;
@@ -588,6 +596,12 @@ export class GroupedFocusManager {
               case "End": {
                 const mNewFocusedElt = this.focusAbsoluteItem(elt, -1);
                 onFocusFromKeyboard(mNewFocusedElt);
+                break;
+              }
+
+              case " ":
+              case "Enter": {
+                onActivate(evtTarget);
                 break;
               }
             }
