@@ -4,10 +4,14 @@ import {
   ImageCropSourceDescriptor,
   ImageCropDescriptor,
   ImageDimensions,
+  AssetOperationContextKey,
+  AssetOperationContext,
+  assetOperationContextFromKey,
 } from "../asset";
 import { IPytchAppModel, PytchAppModelActions } from "..";
 import {
   alwaysSubmittable,
+  AsyncUserFlowOptions,
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
   runStateAction,
@@ -15,12 +19,17 @@ import {
 } from "./async-user-flow";
 
 type CropScaleImageRunArgs = AssetLocator & {
+  operationContextKey: AssetOperationContextKey;
   existingCrop: ImageCropDescriptor;
   sourceURL: URL;
   originalSize: ImageDimensions;
 };
 
-type CropScaleImageRunState = CropScaleImageRunArgs & {
+type CropScaleImageRunState = Omit<
+  CropScaleImageRunArgs,
+  "operationContextKey"
+> & {
+  operationContext: AssetOperationContext;
   displayedNewCrop: ImageCropSourceDescriptor;
   newScale: number;
 };
@@ -44,13 +53,22 @@ export type CropScaleImageFlow = CropScaleImageBase & CropScaleImageActions;
 async function prepare(
   args: CropScaleImageRunArgs
 ): Promise<CropScaleImageRunState> {
+  const operationContext = assetOperationContextFromKey(
+    args.operationContextKey
+  );
+
   const existingCropIsIdentity = eqCropSources(args.existingCrop, identityCrop);
   const initialDisplayCrop = existingCropIsIdentity
     ? zeroCrop
     : args.existingCrop;
 
   return {
-    ...args,
+    projectId: args.projectId,
+    assetName: args.assetName,
+    existingCrop: args.existingCrop,
+    sourceURL: args.sourceURL,
+    originalSize: args.originalSize,
+    operationContext,
     displayedNewCrop: initialDisplayCrop,
     newScale: args.existingCrop.scale,
   };
@@ -67,6 +85,7 @@ async function attempt(
   const descriptor: UpdateAssetTransformDescriptor = {
     projectId: runState.projectId,
     assetName: runState.assetName,
+    operationContext: runState.operationContext,
     newTransform: {
       targetType: "image",
       ...effectiveNewCrop,
@@ -110,11 +129,14 @@ export let cropScaleImageFlow: CropScaleImageFlow = (() => {
     }),
   };
 
+  const flowOptions: AsyncUserFlowOptions = { pulseSuccessMessage: false };
+
   return asyncUserFlowSlice(
     specificSlice,
     prepare,
     alwaysSubmittable, // Crop/scale are always valid.
-    attempt
+    attempt,
+    flowOptions
   );
 })();
 

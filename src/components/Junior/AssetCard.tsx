@@ -116,10 +116,14 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
 };
 
 type CropScaleDropdownItemProps = {
+  operationScope: AssetOperationScope;
+  assetKind: AssetMimeType;
   projectId: ProjectId;
   presentation: AssetPresentation;
 };
 const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
+  operationScope,
+  assetKind,
   projectId,
   presentation,
 }) => {
@@ -137,10 +141,12 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
 
   const fullSource = presentation.presentation.fullSourceImage;
 
+  const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
   const onClick = () => {
     runCropScaleImage({
       projectId,
       assetName: presentation.name,
+      operationContextKey,
       existingCrop: transform,
       originalSize: { width: fullSource.width, height: fullSource.height },
       sourceURL: new URL(fullSource.src),
@@ -215,6 +221,8 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
     <CaptiveContextMenu.DropdownMenu>
       <CopyAssetNameDropdownItem assetName={displayName} />
       <CropScaleDropdownItem
+        operationScope={operationScope}
+        assetKind={assetKind}
         projectId={projectId}
         presentation={presentation}
       />
