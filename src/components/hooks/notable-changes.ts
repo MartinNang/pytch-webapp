@@ -1,25 +1,31 @@
+import { Uuid } from "../../model/junior/structured-program";
 import {
   KeyedNotableChange,
-  NotableChange,
-  NotableChangeKind,
-  NotableChangeOfKind,
-  NotableChangesManagerOps,
   eqKeyedNotableChangeArrays,
-  eqNotableChangeArrays,
 } from "../../model/notable-changes";
 import { useStoreActions, useStoreState } from "../../store";
 
-export function useNotableChanges<KindT extends NotableChangeKind>(
-  kind: KindT,
-  select?: (change: NotableChangeOfKind<KindT>) => boolean
-): Array<NotableChange> {
-  return useStoreState((state) => {
-    const allChangesOfKind = NotableChangesManagerOps.changesOfKind(
-      state.activeProject.changesManager,
-      kind
-    );
-    return allChangesOfKind.filter(select ?? (() => true));
-  }, eqNotableChangeArrays);
+export function useScriptJustUpserted(handlerId: Uuid): boolean {
+  return useStoreState((state) =>
+    state.activeProject.changesManager.keyedChanges.some((keyedChange) => {
+      const change = keyedChange.change;
+      return (
+        change.kind === "script-upserted" && change.handlerId === handlerId
+      );
+    })
+  );
+}
+
+export function useSomeScriptJustAdded(): boolean {
+  return useStoreState((state) =>
+    state.activeProject.changesManager.keyedChanges.some((keyedChange) => {
+      const change = keyedChange.change;
+      return (
+        change.kind === "script-upserted" &&
+        (change.upsertKind === "insert" || change.upsertKind === "duplicate")
+      );
+    })
+  );
 }
 
 export function useActiveNotableChanges(): Array<KeyedNotableChange> {

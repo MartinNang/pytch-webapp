@@ -3,9 +3,6 @@ import {
   PerMethodScriptDeleted,
   PerMethodScriptUpserted,
   PerMethodSpriteChanged,
-  eqPerMethodScriptDeleted,
-  eqPerMethodScriptUpserted,
-  eqPerMethodSpriteChanged,
 } from "./junior/change-events";
 import { ActorOps, EventDescriptorKindOps } from "./junior/structured-program";
 
@@ -18,20 +15,6 @@ export type NotableChangeKind = NotableChange["kind"];
 
 export type NotableChangeOfKind<KindT extends NotableChangeKind> =
   NotableChange & { kind: KindT };
-
-export function eqNotableChange(x: NotableChange, y: NotableChange): boolean {
-  if (x.kind !== y.kind) return false;
-  switch (x.kind) {
-    case "script-upserted":
-      return eqPerMethodScriptUpserted(x, y as PerMethodScriptUpserted);
-    case "script-deleted":
-      return eqPerMethodScriptDeleted(x, y as PerMethodScriptDeleted);
-    case "sprite-changed":
-      return eqPerMethodSpriteChanged(x, y as PerMethodSpriteChanged);
-    default:
-      return assertNever(x);
-  }
-}
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -134,8 +117,6 @@ export function notableChangeDescription(
   }
 }
 
-export const eqNotableChangeArrays = arraysEqFun(eqNotableChange);
-
 // Currently the `change` within a KeyedNotableChange is immutable, so
 // it's enough to compare `changeId` and `isActive`.  This might change
 // if we move to a multi-phase presentation such as the blue ring
@@ -169,16 +150,6 @@ export type NotableChangesManager = {
 export class NotableChangesManagerOps {
   static make(): NotableChangesManager {
     return { keyedChanges: [] };
-  }
-
-  static changesOfKind<KindT extends NotableChangeKind>(
-    changesManager: NotableChangesManager,
-    kind: KindT
-  ): Array<NotableChangeOfKind<KindT>> {
-    const changes = changesManager.keyedChanges
-      .map((keyedChange) => keyedChange.change)
-      .filter((change) => change.kind === kind);
-    return changes as Array<NotableChangeOfKind<KindT>>;
   }
 
   static addChange(

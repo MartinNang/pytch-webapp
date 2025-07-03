@@ -20,7 +20,7 @@ import { PytchScriptEditor } from "./PytchScriptEditor";
 import { AddSomethingSingleButton } from "./AddSomethingButton";
 import { EmptyProps, PYTCH_CYPRESS } from "../../utils";
 import { aceControllerMap } from "../../skulpt-connection/code-editor";
-import { useNotableChanges } from "../hooks/notable-changes";
+import { useSomeScriptJustAdded } from "../hooks/notable-changes";
 import { ConjoinedResizeObserver } from "../../model/junior/conjoined-resize-observer";
 import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
 import { FocusGroupContainer } from "../FocusGroupContainer";
@@ -71,23 +71,24 @@ const ScriptsEditor = () => {
     ActorSummaryOps.eq
   );
 
-  const scriptAddedEvents = useNotableChanges(
-    "script-upserted",
-    (change) => change.upsertKind === "insert"
-  );
-  const scriptWasJustAdded = scriptAddedEvents.length > 0;
+  // TODO: Is this necessary?  Maybe sending focus to a newly-added
+  // script is enough for the browser to scroll it into view?
+
+  const scriptWasJustAdded = useSomeScriptJustAdded();
+
+  useEffect(() => {
+    // If new handler/s just added, scroll parent DIV to end.
+    const scrollDiv = scriptsDivRef.current?.parentElement;
+    if (scrollDiv != null && scriptWasJustAdded) {
+      scrollDiv.scrollTo({ top: scrollDiv.scrollHeight });
+    }
+  }, [scriptsDivRef.current, scriptWasJustAdded]);
 
   const conjoinedResizeObserver = new ConjoinedResizeObserver(handlerIds);
 
   useEffect(() => {
     // Purge map entries for handlers not in this instantiation of editor.
     aceControllerMap.deleteExcept(handlerIds);
-
-    // If a new handler has been added, scroll parent DIV to end.
-    const scrollDiv = scriptsDivRef.current?.parentElement;
-    if (scrollDiv != null && scriptWasJustAdded) {
-      scrollDiv.scrollTo({ top: scrollDiv.scrollHeight });
-    }
 
     return () => {
       conjoinedResizeObserver.disconnect();
