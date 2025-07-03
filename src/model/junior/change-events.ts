@@ -22,3 +22,18 @@ export function eqPerMethodScriptUpserted(
     x.handlerEventKind === y.handlerEventKind
   );
 }
+
+export type PerMethodScriptDeleted = {
+  kind: "script-deleted";
+  handlerId: Uuid;
+  handlerEventKind: EventDescriptorKind;
+  actorKind: ActorKind;
+  actorName: string;
+};
+
+export function eqPerMethodScriptDeleted(
+  x: PerMethodScriptDeleted,
+  y: PerMethodScriptDeleted
+): boolean {
+  return x.handlerId === y.handlerId;
+}

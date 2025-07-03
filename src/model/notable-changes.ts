@@ -1,12 +1,12 @@
 import { arraysEqFun, assertNever } from "../utils";
 import {
+  PerMethodScriptDeleted,
   PerMethodScriptUpserted,
+  eqPerMethodScriptDeleted,
   eqPerMethodScriptUpserted,
 } from "./junior/change-events";
 
-// This will become a discriminated union type once there are more kinds
-// of notable changes:
-export type NotableChange = PerMethodScriptUpserted;
+export type NotableChange = PerMethodScriptUpserted | PerMethodScriptDeleted;
 
 export type NotableChangeKind = NotableChange["kind"];
 
@@ -17,20 +17,30 @@ export function eqNotableChange(x: NotableChange, y: NotableChange): boolean {
   if (x.kind !== y.kind) return false;
   switch (x.kind) {
     case "script-upserted":
-      return eqPerMethodScriptUpserted(x, y);
+      return eqPerMethodScriptUpserted(x, y as PerMethodScriptUpserted);
+    case "script-deleted":
+      return eqPerMethodScriptDeleted(x, y as PerMethodScriptDeleted);
     default:
-      return assertNever(x.kind);
+      return assertNever(x);
   }
 }
 
 export const eqNotableChangeArrays = arraysEqFun(eqNotableChange);
+
+// Currently a KeyedNotableChange is immutable, so it's enough to
+// compare IDs.  This might change if we move to a multi-phase
+// presentation such as the blue ring lasting for a shorter time than
+// the toast.
+export const eqKeyedNotableChangeArrays = arraysEqFun<KeyedNotableChange>(
+  (x, y) => x.changeId === y.changeId
+);
 
 const nextChangeId = (() => {
   let id = 42000;
   return () => id++;
 })();
 
-type KeyedNotableChange = {
+export type KeyedNotableChange = {
   changeId: number;
   change: NotableChange;
 };
