@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import { AssetPresentation } from "../../model/asset";
-import { PytchProgramOps } from "../../model/pytch-program";
+import { PytchProgramKind, PytchProgramOps } from "../../model/pytch-program";
 import { useStoreState } from "../../store";
 import { AssetThumbnail } from "../AssetThumbnail";
 import {
@@ -19,11 +19,25 @@ import { ProjectId } from "../../model/project-core";
 import { useRunFlow } from "../../model";
 import { AssetMimeType } from "../../model/junior/structured-program/asset";
 import { AssetOperationScope } from "../../model/asset/core";
-import { copyTextToClipboard } from "../../utils";
+import { assertNever, copyTextToClipboard } from "../../utils";
 import { pyStringRepr } from "../../skulpt-connection/utils";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { kFocusGroupItemClassName } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
+
+const pageKindFromOperationScope = (
+  opScope: AssetOperationScope
+): PytchProgramKind => {
+  switch (opScope) {
+    case "sprite":
+    case "stage":
+      return "per-method";
+    case "flat":
+      return "flat";
+    default:
+      return assertNever(opScope);
+  }
+};
 
 type RenameDropdownItemProps = {
   operationScope: AssetOperationScope;
@@ -54,18 +68,21 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
 };
 
 type DeleteDropdownItemProps = {
+  operationScope: AssetOperationScope;
   assetKind: AssetMimeType;
   fullPathname: string;
   displayName: string;
   isAllowed: boolean;
 };
 const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
+  operationScope,
   assetKind,
   fullPathname,
   displayName,
   isAllowed,
 }) => {
-  const focusContext = useFocusContext();
+  const pageKind = pageKindFromOperationScope(operationScope);
+  const focusContext = useFocusContext(pageKind);
   const runDeleteAsset = useRunFlow((f) => f.deleteAssetFlow);
 
   const onDelete = () => {
@@ -205,6 +222,7 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
       />
       {mReorderItems}
       <DeleteDropdownItem
+        operationScope={operationScope}
         assetKind={assetKind}
         fullPathname={fullPathname}
         displayName={displayName}

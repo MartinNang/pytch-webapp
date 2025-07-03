@@ -13,8 +13,10 @@ import {
 import { assertNever } from "../../utils";
 import { useNonNullContext } from "./non-null-context";
 
+export type FocusContextPageKind = PytchProgramKind | "my-projects-list";
+
 type BaseFocusContextT = {
-  programKind: PytchProgramKind;
+  pageKind: FocusContextPageKind;
   focusBookmarkedItem: GlobalFocusSteering["focusBookmarkedItem"];
   focusBookmarkedItemOrQueue: GroupedFocusManager["focusBookmarkedItemOrQueueRequest"];
   focusOffsetItem: GroupedFocusManager["focusOffsetItem"];
@@ -24,35 +26,38 @@ type BaseFocusContextT = {
   onGroupItemClick: MouseEventHandler<HTMLElement>;
 
   onKeyDown: GlobalFocusSteering["onKeyDown"];
-
-  onDisposeDeleteAsset: AsyncUserFlowOnDisposeFun;
 };
 
 type PerMethodExtraContext = {
-  programKind: "per-method";
+  pageKind: "per-method";
   onDisposeAddScript: () => AsyncUserFlowOnDisposeFun;
   onDisposeChangeHatBlock: AsyncUserFlowOnDisposeFun;
   onDisposeDeleteScript: AsyncUserFlowOnDisposeFun;
   onDisposeAddSprite: () => AsyncUserFlowOnDisposeFun;
   onDisposeDeleteOrRenameSprite: AsyncUserFlowOnDisposeFun;
+  onDisposeDeleteAsset: AsyncUserFlowOnDisposeFun;
 };
 
 type FlatExtraContext = {
-  programKind: "flat";
-  // Anything flat-IDE specific will go here.
+  pageKind: "flat";
+  onDisposeDeleteAsset: AsyncUserFlowOnDisposeFun;
+};
+
+type MyProjectsListExtraContext = {
+  pageKind: "my-projects-list";
 };
 
 type FocusContextT = BaseFocusContextT &
-  (PerMethodExtraContext | FlatExtraContext);
+  (PerMethodExtraContext | FlatExtraContext | MyProjectsListExtraContext);
 
 export const FocusContext = createContext<FocusContextT | null>(null);
 
 export const createFocusContext = (
-  programKind: PytchProgramKind
+  pageKind: FocusContextPageKind
 ): FocusContextT => {
   const groupedFocusManager = new GroupedFocusManager();
   const globalFocusSteering = new GlobalFocusSteering(
-    programKind,
+    pageKind,
     groupedFocusManager
   );
 
@@ -116,7 +121,7 @@ export const createFocusContext = (
     onKeyDown,
   };
 
-  switch (programKind) {
+  switch (pageKind) {
     case "per-method": {
       const focusBookmarkedActor =
         focusBookmarkedIfUserSettledFun("gfs__actors");
@@ -129,7 +134,7 @@ export const createFocusContext = (
         bookmarkFirstNewItemIfSubmittedFun("gfs__actors");
 
       const perMethodExtras = {
-        programKind,
+        pageKind,
         onDisposeDeleteAsset: focusBookmarkedActorProp,
         onDisposeAddScript,
         onDisposeChangeHatBlock: focusBookmarkedActorProp,
@@ -146,31 +151,37 @@ export const createFocusContext = (
         focusBookmarkedIfUserSettledFun("gfs__flatassets");
 
       const flatExtras = {
-        programKind,
+        pageKind,
         onDisposeDeleteAsset,
       };
 
       return Object.assign({}, baseContextNub, flatExtras);
     }
 
+    case "my-projects-list": {
+      const myProjectListExtras = {
+        pageKind,
+      };
+      return Object.assign({}, baseContextNub, myProjectListExtras);
+    }
+
     default:
-      return assertNever(programKind);
+      return assertNever(pageKind);
   }
 };
 
-export function useFocusContext<KindT extends PytchProgramKind>(
-  programKind: KindT
-): FocusContextT & { programKind: KindT };
+export function useFocusContext<KindT extends FocusContextPageKind>(
+  pageKind: KindT
+): FocusContextT & { pageKind: KindT };
 export function useFocusContext(): BaseFocusContextT;
-export function useFocusContext<KindT extends PytchProgramKind>(
-  programKind?: KindT
+export function useFocusContext<KindT extends FocusContextPageKind>(
+  pageKind?: KindT
 ) {
   const ctx = useNonNullContext(FocusContext);
 
-  if (programKind != null && ctx.programKind !== programKind)
+  if (pageKind != null && ctx.pageKind !== pageKind)
     throw new Error(
-      `expecting FocusContext for "${programKind}"` +
-        ` but got "${ctx.programKind}"`
+      `expecting FocusContext for "${pageKind}" but got "${ctx.pageKind}"`
     );
 
   return ctx;
