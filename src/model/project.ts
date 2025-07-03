@@ -75,7 +75,10 @@ import {
   HandlerDuplicationDescriptor,
 } from "./junior/structured-program/program";
 import { AssetOperationContext } from "./asset";
-import { AssetMetaDataOps } from "./junior/structured-program";
+import {
+  AssetMetaDataOps,
+  HandlerInActorContext,
+} from "./junior/structured-program";
 import {
   JrTutorialContent,
   LinkedJrTutorial,
@@ -436,6 +439,14 @@ const ensureStructured = (
   return ensureKind(`${label}()`, project.program, "per-method").program;
 };
 
+const handlerInContextById = (
+  project: StoredProjectContent,
+  handlerId: Uuid
+): HandlerInActorContext => {
+  const program = ensureStructured(project, "handlerInContext()");
+  return StructuredProgramOps.handlerInContextById(program, handlerId);
+};
+
 const ensureJrTutorial = (state: State<IActiveProject>): LinkedJrTutorial => {
   const contentState = state.linkedContentLoadingState;
   assertLinkedContentSucceededOfKind(contentState, "jr-tutorial");
@@ -583,16 +594,24 @@ export const activeProject: IActiveProject = {
     const handlerId = StructuredProgramOps.upsertHandler(program, descriptor);
     upsertionAugArgs.handleHandlerId(handlerId);
   }),
-  upsertHandler: thunk((actions, descriptor) => {
+  upsertHandler: thunk((actions, descriptor, helpers) => {
     let idCell = valueCell<Uuid>("");
     actions._upsertHandler({ descriptor, handleHandlerId: idCell.set });
     const handlerId = idCell.get();
+
+    const handlerInContext = handlerInContextById(
+      helpers.getState().project,
+      handlerId
+    );
 
     actions.noteCodeChange();
     actions.pulseNotableChange({
       kind: "script-upserted",
       upsertKind: descriptor.action.kind,
       handlerId: handlerId,
+      handlerEventKind: handlerInContext.handler.event.kind,
+      actorKind: handlerInContext.actor.kind,
+      actorName: handlerInContext.actor.name,
     });
 
     // It's a slight fudge to use this pending-warp machinery, but the
@@ -610,16 +629,24 @@ export const activeProject: IActiveProject = {
     duplicationAugArgs.handleHandlerId(handlerId);
   }),
 
-  duplicateHandler: thunk((actions, descriptor) => {
+  duplicateHandler: thunk((actions, descriptor, helpers) => {
     let idCell = valueCell<Uuid>("");
     actions._duplicateHandler({ descriptor, handleHandlerId: idCell.set });
     const handlerId = idCell.get();
 
+    const handlerInContext = handlerInContextById(
+      helpers.getState().project,
+      handlerId
+    );
+
     actions.noteCodeChange();
     actions.pulseNotableChange({
       kind: "script-upserted",
-      upsertKind: "insert",
+      upsertKind: "duplicate",
       handlerId: handlerId,
+      handlerEventKind: handlerInContext.handler.event.kind,
+      actorKind: handlerInContext.actor.kind,
+      actorName: handlerInContext.actor.name,
     });
 
     pendingCursorWarp.set({ handlerId, lineNo: 1, colNo: 0 });
