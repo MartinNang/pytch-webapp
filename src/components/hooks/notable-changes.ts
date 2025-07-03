@@ -7,7 +7,7 @@ import {
   eqKeyedNotableChangeArrays,
   eqNotableChangeArrays,
 } from "../../model/notable-changes";
-import { useStoreState } from "../../store";
+import { useStoreActions, useStoreState } from "../../store";
 
 export function useNotableChanges<KindT extends NotableChangeKind>(
   kind: KindT,
@@ -22,9 +22,16 @@ export function useNotableChanges<KindT extends NotableChangeKind>(
   }, eqNotableChangeArrays);
 }
 
-export function useAllNotableChanges(): Array<KeyedNotableChange> {
+export function useActiveNotableChanges(): Array<KeyedNotableChange> {
   return useStoreState(
-    (state) => state.activeProject.changesManager.keyedChanges,
+    (state) =>
+      state.activeProject.changesManager.keyedChanges.filter(
+        (change) => change.isActive
+      ),
     eqKeyedNotableChangeArrays
   );
+}
+
+export function useDeactivateChangeAction() {
+  return useStoreActions((actions) => actions.activeProject._deactivateChange);
 }

@@ -93,12 +93,12 @@ export function notableChangeDescription(
 
 export const eqNotableChangeArrays = arraysEqFun(eqNotableChange);
 
-// Currently a KeyedNotableChange is immutable, so it's enough to
-// compare IDs.  This might change if we move to a multi-phase
-// presentation such as the blue ring lasting for a shorter time than
-// the toast.
+// Currently the `change` within a KeyedNotableChange is immutable, so
+// it's enough to compare `changeId` and `isActive`.  This might change
+// if we move to a multi-phase presentation such as the blue ring
+// lasting for a shorter time than the toast.
 export const eqKeyedNotableChangeArrays = arraysEqFun<KeyedNotableChange>(
-  (x, y) => x.changeId === y.changeId
+  (x, y) => x.changeId === y.changeId && x.isActive === y.isActive
 );
 
 const nextChangeId = (() => {
@@ -108,13 +108,14 @@ const nextChangeId = (() => {
 
 export type KeyedNotableChange = {
   changeId: number;
+  isActive: boolean;
   change: NotableChange;
 };
 
 class KeyedNotableChangeOps {
   static make(change: NotableChange): KeyedNotableChange {
     const changeId = nextChangeId();
-    return { changeId, change };
+    return { changeId, isActive: true, change };
   }
 }
 
@@ -145,6 +146,22 @@ export class NotableChangesManagerOps {
     const changeId = keyedChange.changeId;
     changesManager.keyedChanges.push(keyedChange);
     return changeId;
+  }
+
+  static deactivateChange(
+    changesManager: NotableChangesManager,
+    changeId: number
+  ) {
+    let found = false;
+    changesManager.keyedChanges.forEach((change) => {
+      if (change.changeId === changeId) {
+        if (found) {
+          console.warn(`found duplicate changes with id ${changeId}`);
+        }
+        change.isActive = false;
+        found = true;
+      }
+    });
   }
 
   static deleteChange(
