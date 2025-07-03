@@ -20,6 +20,19 @@ type ProgressNodeDescriptor = { kind: ProgressNodeKind; key: string } & (
   | { kind: "ellipsis"; jumpable: false }
 );
 
+// This is labouring the point a bit, but allows TypeScript to infer
+// types through filter(canJumpToNode).
+//
+type JumpableProgressNodeDescriptor = ProgressNodeDescriptor & {
+  jumpable: true;
+};
+//
+function canJumpToNode(
+  node: ProgressNodeDescriptor
+): node is JumpableProgressNodeDescriptor {
+  return node.jumpable;
+}
+
 type ProgressTrailNodeProps = { descriptor: ProgressNodeDescriptor };
 const ProgressTrailNode: React.FC<ProgressTrailNodeProps> = ({
   descriptor,
