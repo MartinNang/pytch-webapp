@@ -1,5 +1,8 @@
 import { ActorKind, EventDescriptorKind, Uuid } from "./structured-program";
-import { HandlerUpsertionActionKind } from "./structured-program/program";
+import {
+  HandlerUpsertionActionKind,
+  SpriteUpsertionActionKind,
+} from "./structured-program/program";
 
 export type PerMethodScriptUpserted = {
   kind: "script-upserted";
@@ -36,4 +39,25 @@ export function eqPerMethodScriptDeleted(
   y: PerMethodScriptDeleted
 ): boolean {
   return x.handlerId === y.handlerId;
+}
+
+type PerMethodSpriteChangedKind = SpriteUpsertionActionKind | "delete";
+
+export type PerMethodSpriteChanged = {
+  kind: "sprite-changed";
+  spriteId: Uuid;
+  spriteChangedKind: PerMethodSpriteChangedKind;
+  /** The `spriteName` is the *new* name, if this is a rename event. */
+  spriteName: string;
+};
+
+export function eqPerMethodSpriteChanged(
+  x: PerMethodSpriteChanged,
+  y: PerMethodSpriteChanged
+): boolean {
+  return (
+    x.spriteId === y.spriteId &&
+    x.spriteChangedKind === y.spriteChangedKind &&
+    x.spriteName === y.spriteName
+  );
 }

@@ -2,12 +2,17 @@ import { arraysEqFun, assertNever } from "../utils";
 import {
   PerMethodScriptDeleted,
   PerMethodScriptUpserted,
+  PerMethodSpriteChanged,
   eqPerMethodScriptDeleted,
   eqPerMethodScriptUpserted,
+  eqPerMethodSpriteChanged,
 } from "./junior/change-events";
 import { ActorOps, EventDescriptorKindOps } from "./junior/structured-program";
 
-export type NotableChange = PerMethodScriptUpserted | PerMethodScriptDeleted;
+export type NotableChange =
+  | PerMethodScriptUpserted
+  | PerMethodScriptDeleted
+  | PerMethodSpriteChanged;
 
 export type NotableChangeKind = NotableChange["kind"];
 
@@ -21,6 +26,8 @@ export function eqNotableChange(x: NotableChange, y: NotableChange): boolean {
       return eqPerMethodScriptUpserted(x, y as PerMethodScriptUpserted);
     case "script-deleted":
       return eqPerMethodScriptDeleted(x, y as PerMethodScriptDeleted);
+    case "sprite-changed":
+      return eqPerMethodSpriteChanged(x, y as PerMethodSpriteChanged);
     default:
       return assertNever(x);
   }
@@ -87,6 +94,36 @@ export function notableChangeDescription(
         header: "Script deleted",
         body: `"${eventKindDescription}" script deleted from the ${displayName}.`,
       };
+    }
+
+    case "sprite-changed": {
+      const displayName = ActorOps.displayDescription({
+        kind: "sprite",
+        name: change.spriteName,
+      });
+
+      switch (change.spriteChangedKind) {
+        case "insert": {
+          return {
+            header: "Sprite added",
+            body: `${displayName} added to project`,
+          };
+        }
+
+        case "update": {
+          return {
+            header: "Sprite renamed",
+            body: `Sprite renamed to "${change.spriteName}"`,
+          };
+        }
+
+        case "delete": {
+          return {
+            header: "Sprite deleted",
+            body: `${displayName} deleted from project`,
+          };
+        }
+      }
     }
   }
 }
