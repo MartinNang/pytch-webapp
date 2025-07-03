@@ -481,7 +481,7 @@ export const activeProject: IActiveProject = {
   pulseNotableChange: thunk(async (actions, change) => {
     let idCell = valueCell<number>(0);
     actions._noteChange({ change, handleChangeId: idCell.set });
-    await delaySeconds(0.6);
+    await delaySeconds(3);
     actions._deleteChange(idCell.get());
   }),
 
@@ -663,7 +663,23 @@ export const activeProject: IActiveProject = {
     StructuredProgramOps.deleteHandler(program, deletionDescriptor);
     // TODO: Examine return value for failure.
   }),
-  deleteHandler: notingCodeChange((a) => a._deleteHandler),
+  deleteHandler: thunk((actions, descriptor, helpers) => {
+    const handlerInContext = handlerInContextById(
+      helpers.getState().project,
+      descriptor.handlerId
+    );
+
+    actions._deleteHandler(descriptor);
+
+    actions.noteCodeChange();
+    actions.pulseNotableChange({
+      kind: "script-deleted",
+      handlerId: handlerInContext.handler.id,
+      handlerEventKind: handlerInContext.handler.event.kind,
+      actorKind: handlerInContext.actor.kind,
+      actorName: handlerInContext.actor.name,
+    });
+  }),
 
   _reorderHandlers: action((state, reorderDescriptor) => {
     let program = ensureStructured(state.project, "reorderHandlers");
