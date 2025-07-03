@@ -29,6 +29,7 @@ const Context = createContext<ContextT | null>(null);
 
 type ContainerProps = {
   onClick?: MouseEventHandler;
+  onKeyDown?: KeyboardEventHandler;
   onActivate?: () => void;
   className?: string;
 };
@@ -48,11 +49,13 @@ type ContainerProps = {
  * */
 const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
   onClick: callerOnClick,
+  onKeyDown: callerOnKeyDown,
   onActivate,
   className,
   children,
 }) => {
   callerOnClick ??= () => {};
+  callerOnKeyDown ??= () => {};
   onActivate ??= () => {};
 
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -150,25 +153,28 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
           evt.preventDefault();
         }
       }
-      return;
-    }
 
-    const containerDiv = divRef.current;
-    if (containerDiv == null) return;
+      callerOnKeyDown(evt);
+    } else {
+      const containerDiv = divRef.current;
+      if (containerDiv != null) {
+        if (evt.key === "Tab") {
+          const activeElt = document.activeElement;
+          if (activeElt == null) return;
+          const allItems = Array.from(
+            containerDiv.querySelectorAll(itemSelector)
+          );
+          const lastItemIdx = allItems.length - 1;
+          const oldActiveIdx = allItems.indexOf(activeElt);
+          const movingOut = oldActiveIdx === (evt.shiftKey ? 0 : lastItemIdx);
+          if (movingOut) {
+            setShow(false);
+          }
+        }
 
-    if (show && evt.key === "Tab") {
-      const activeElt = document.activeElement;
-      if (activeElt == null) return;
-      const allItems = Array.from(containerDiv.querySelectorAll(itemSelector));
-      const lastItemIdx = allItems.length - 1;
-      const oldActiveIdx = allItems.indexOf(activeElt);
-      const movingOut = oldActiveIdx === (evt.shiftKey ? 0 : lastItemIdx);
-      if (movingOut) {
-        setShow(false);
+        handleMovementKeys(containerDiv, itemSelector, evt);
       }
     }
-
-    handleMovementKeys(containerDiv, itemSelector, evt);
   };
 
   const containerClick: MouseEventHandler = (evt) => {
