@@ -381,6 +381,10 @@ export class GroupedFocusManager {
    * the bookmark earlier in the list.)  The container can be specified
    * either by directly supplying an `HTMLElement`, or by supplying the
    * string key identifying it.
+   *
+   * Return either `undefined` (in the case of error or attempt to move
+   * outside the range of valid items) or the `HTMLElement` to which the
+   * focus was moved.
    */
   focusOffsetItem(
     containerEltOrKey: HTMLElement | string,
@@ -498,7 +502,28 @@ export class GroupedFocusManager {
     );
     const key = GroupedFocusManager.keyFromElt(containerElt);
     const eltIdx = GroupedFocusManager.itemIndex(containerElt, elt);
-    this.setBookmark(key, eltIdx);
+    this.bookmarkItemByKeyAndIndex(key, eltIdx, containerElt);
+  }
+
+  /** Bookmark the element at the given `eltIndex` given the `key`, and
+   * update the tab-index attribute of the now-bookmarked element and
+   * its siblings.
+   *
+   * Optionally, the given `containerElt` is assumed to be the container
+   * for that key; if not provided, it is searched for.
+   * */
+  bookmarkItemByKeyAndIndex(
+    key: string,
+    eltIndex: number,
+    containerElt?: HTMLElement | null
+  ) {
+    containerElt ??= this.maybeContainerForKey(key);
+    if (containerElt == null) {
+      console.warn(`bookmarkItemByKeyAndIndex(): no container for "${key}"`);
+      return;
+    }
+
+    this.setBookmark(key, eltIndex);
     this.setContainerTabFocusability(containerElt);
   }
 
