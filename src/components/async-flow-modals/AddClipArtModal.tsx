@@ -11,7 +11,11 @@ import {
   entryMatchesTags,
 } from "../../model/clipart-gallery-core";
 
-import { assertNever, discardReturnValue } from "../../utils";
+import {
+  assertNever,
+  discardReturnValue,
+  mDataAttrIntValue,
+} from "../../utils";
 import { MaybeErrorOrSuccessReport } from "../MaybeErrorOrSuccessReport";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import {
@@ -22,6 +26,12 @@ import {
 } from "../../model/user-interactions/async-user-flow";
 import { OnTagClickFun } from "../../model/user-interactions/clipart-gallery-select";
 import { useFlowActions, useFlowState } from "../../model";
+import { FocusGroupContainer } from "../FocusGroupContainer";
+import {
+  focusGroupItemClass,
+  kFocusGroupItemClassName,
+} from "../../model/junior/grouped-focus";
+import { useFocusContext } from "../hooks/focus-steering";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -35,18 +45,28 @@ const styleClampingToSize = (width: number, height: number): CSSProperties => {
 
 type ClipArtTagButtonProps = {
   label: string;
+  tag: string;
   isSelected: boolean;
   onClick: MouseEventHandler;
 };
 const ClipArtTagButton: React.FC<ClipArtTagButtonProps> = ({
   label,
+  tag,
   isSelected,
   onClick,
 }) => {
   const baseVariant = label === "All" ? "success" : "primary";
   const variantPrefix = isSelected ? "" : "outline-";
   const variant = `${variantPrefix}${baseVariant}`;
-  return <Button {...{ variant, onClick }}>{label}</Button>;
+  return (
+    <Button
+      className={kFocusGroupItemClassName}
+      {...{ variant, onClick }}
+      data-media-lib-tag={tag}
+    >
+      {label}
+    </Button>
+  );
 };
 
 type ClipArtTagButtonCollectionProps = {
@@ -59,31 +79,47 @@ const ClipArtTagButtonCollection: React.FC<ClipArtTagButtonCollectionProps> = ({
   selectedTags,
   onTagClick,
 }) => {
+  const focusCtx = useFocusContext();
   const allIsSelected = selectedTags.length === 0;
 
-  type MouseEventHandlerFun = (tag: string) => MouseEventHandler;
-  const clickFun: MouseEventHandlerFun = (tag: string) => (event) =>
+  type MouseEventHandlerFun = (tag: string) => MouseEventHandler<HTMLElement>;
+  const clickFun: MouseEventHandlerFun = (tag: string) => (event) => {
     onTagClick({ tag, isMultiSelect: event.ctrlKey });
+    focusCtx.onGroupItemClick(event);
+  };
+
+  const onActivate = (elt: HTMLElement) => {
+    const tag = elt.dataset.mediaLibTag;
+    if (tag == null) {
+      console.warn("no media-lib-tag data attr");
+      return;
+    }
+    onTagClick({ tag, isMultiSelect: false });
+  };
 
   return (
-    <ul className="ClipArtTagButtonCollection">
-      <li key="--all--">
-        <ClipArtTagButton
-          label="All"
-          isSelected={allIsSelected}
-          onClick={clickFun("--all--")}
-        />
-      </li>
-      {gallery.tags.map((tag) => (
-        <li key={tag}>
+    <FocusGroupContainer groupedFocusKey="MediaLibTags" opts={{ onActivate }}>
+      <ul className="ClipArtTagButtonCollection">
+        <li key="--all--">
           <ClipArtTagButton
-            label={tag}
-            isSelected={selectedTags.indexOf(tag) !== -1}
-            onClick={clickFun(tag)}
+            label="All"
+            isSelected={allIsSelected}
+            onClick={clickFun("--all--")}
+            tag={"--all--"}
           />
         </li>
-      ))}
-    </ul>
+        {gallery.tags.map((tag) => (
+          <li key={tag}>
+            <ClipArtTagButton
+              label={tag}
+              isSelected={selectedTags.indexOf(tag) !== -1}
+              onClick={clickFun(tag)}
+              tag={tag}
+            />
+          </li>
+        ))}
+      </ul>
+    </FocusGroupContainer>
   );
 };
 
@@ -99,6 +135,8 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
   selectItemById,
   deselectItemById,
 }) => {
+  const focusCtx = useFocusContext();
+
   const extraClass = isSelected ? " selected" : " unselected";
   const clickHandler = isSelected ? deselectItemById : selectItemById;
 
@@ -111,8 +149,20 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
   const [rawImageWidth, rawImageHeight] = galleryItem.size;
   const thumbStyle = styleClampingToSize(rawImageWidth, rawImageHeight);
 
+  const onClick: MouseEventHandler<HTMLElement> = (evt) => {
+    clickHandler(galleryEntry.id);
+    focusCtx.onGroupItemClick(evt);
+  };
+
   return (
-    <div className="clipart-card" onClick={() => clickHandler(galleryEntry.id)}>
+    <div
+      className={focusGroupItemClass("clipart-card")}
+      onClick={onClick}
+      role="button"
+      aria-pressed={isSelected}
+      data-media-lib-entry-id={galleryEntry.id}
+      data-is-selected={isSelected ? 1 : 0}
+    >
       <div className="decorations">
         <p className="clipart-checkmark">
           <span className={`clipart-selection${extraClass}`}>
@@ -152,11 +202,38 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   const selectedIdsSet = new Set(selectedIds);
   const selectedTagsSet = new Set<string>(selectedTags);
 
+  // For an initial implementation, bookmark position in the list
+  // separately depending what tags are selected.  A better alternative
+  // might be to remember a "target" entry and move the bookmark to the
+  // entry closest to it when selectedTags changes, but that's quite a
+  // lot of work for a gain in usability which is not obviously large.
+  let sortedTags = selectedTags.slice();
+  sortedTags.sort();
+  const groupedFocusKey = `MediaLibEntries-${sortedTags.join("/")}`;
+
+  const onActivate = (elt: HTMLElement) => {
+    const entryId = mDataAttrIntValue(elt, "mediaLibEntryId");
+    const entrySelectedInt = mDataAttrIntValue(elt, "isSelected");
+    if (entryId != null && entrySelectedInt != null) {
+      if (entrySelectedInt === 1) {
+        deselectItemById(entryId);
+      } else {
+        selectItemById(entryId);
+      }
+    }
+  };
+
+  const preventDefaultAfterOnActivate = true;
+
   return (
     <>
       <ClipArtTagButtonCollection {...{ gallery, selectedTags, onTagClick }} />
       <div className="modal-separator" />
-      <div className="clipart-gallery">
+      <FocusGroupContainer
+        groupedFocusKey={groupedFocusKey}
+        className="clipart-gallery"
+        opts={{ onActivate, preventDefaultAfterOnActivate }}
+      >
         <ul>
           {gallery.entries.map((entry) => {
             if (!entryMatchesTags(entry, selectedTagsSet)) return null;
@@ -174,7 +251,7 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
             );
           })}
         </ul>
-      </div>
+      </FocusGroupContainer>
     </>
   );
 };
