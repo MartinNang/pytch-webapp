@@ -4,7 +4,6 @@ import { useFlowActions, useFlowState } from "../../model";
 import { ChooseFiles } from "../ChooseFiles";
 import { FileProcessingFailures } from "../FileProcessingFailures";
 import { settleFunctions } from "../../model/user-interactions/async-user-flow";
-import { FileFailureError } from "../../model/user-interactions/process-files";
 import { GenericWorkingModal } from "./GenericWorkingModal";
 import { assertNever } from "../../utils";
 
@@ -14,24 +13,23 @@ export const AddAssetsModal = () => {
 
   return asyncFlowModal(fsmState, (activeState) => {
     const { operationContext, chosenFiles } = activeState.runState;
-    const settle = settleFunctions(isSubmittable, activeState);
     const assetPlural = operationContext.assetPlural;
 
-    if (
-      activeState.kind === "interacting" &&
-      activeState.maybeLastFailure != null
-    ) {
-      const error = activeState.maybeLastFailure as FileFailureError;
+    if (activeState.kind === "awaiting-ack-of-notification") {
+      // TODO: Compute proper value when available.
+      const error = { fileFailures: [] };
       const titleText = `Problem adding ${assetPlural}`;
       return (
         <FileProcessingFailures
           titleText={titleText}
           introText="Sorry, there was a problem adding files to your project:"
           failures={error.fileFailures}
-          dismiss={settle.cancel}
+          dismiss={activeState.userAck}
         />
       );
     }
+
+    const settle = settleFunctions(isSubmittable, activeState);
 
     switch (activeState.kind) {
       case "interacting":

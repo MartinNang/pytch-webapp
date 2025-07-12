@@ -3,7 +3,6 @@ import { ChooseFiles } from "../ChooseFiles";
 import { FileProcessingFailures } from "../FileProcessingFailures";
 import { asyncFlowModal } from "./utils";
 import { settleFunctions } from "../../model/user-interactions/async-user-flow";
-import { FileFailureError } from "../../model/user-interactions/process-files";
 import { GenericWorkingModal } from "./GenericWorkingModal";
 import { useFlowActions, useFlowState } from "../../model";
 import { assertNever } from "../../utils";
@@ -13,23 +12,21 @@ export const UploadZipfilesModal = () => {
   const { setChosenFiles } = useFlowActions((f) => f.uploadZipfilesFlow);
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
-    const { chosenFiles } = activeFsmState.runState;
-    const settle = settleFunctions(isSubmittable, activeFsmState);
-
-    if (
-      activeFsmState.kind === "interacting" &&
-      activeFsmState.maybeLastFailure != null
-    ) {
-      const error = activeFsmState.maybeLastFailure as FileFailureError;
+    if (activeFsmState.kind === "awaiting-ack-of-notification") {
+      // TODO: Compute proper value when available.
+      const error = { fileFailures: [] };
       return (
         <FileProcessingFailures
           titleText="Problem uploading project zipfiles"
           introText="Sorry, there was a problem uploading the projects:"
           failures={error.fileFailures}
-          dismiss={settle.cancel}
+          dismiss={activeFsmState.userAck}
         />
       );
     }
+
+    const { chosenFiles } = activeFsmState.runState;
+    const settle = settleFunctions(isSubmittable, activeFsmState);
 
     switch (activeFsmState.kind) {
       case "interacting":

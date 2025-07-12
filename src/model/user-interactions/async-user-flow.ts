@@ -19,6 +19,7 @@ import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
 type UserSettleResult = "cancel" | "submit";
 type UserSettleFun = (result: UserSettleResult) => void;
+type UserAckFun = () => void;
 
 type InteractingAsyncUserFlowFsmState<RunStateT> = {
   kind: "interacting";
@@ -27,15 +28,21 @@ type InteractingAsyncUserFlowFsmState<RunStateT> = {
   userSettle: UserSettleFun;
 };
 
-export type ActiveAsyncUserFlowFsmState<RunStateT> =
+export type ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> =
   | InteractingAsyncUserFlowFsmState<RunStateT>
   | { kind: "attempting"; runState: RunStateT }
+  | {
+      kind: "awaiting-ack-of-notification";
+      runState: RunStateT;
+      outcomeNub: AttemptOutcomeNubT;
+      userAck: UserAckFun;
+    }
   | { kind: "succeeded"; runState: RunStateT };
 
-export type AsyncUserFlowFsmState<RunStateT> =
+export type AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> =
   | { kind: "idle" }
   | { kind: "preparing" }
-  | ActiveAsyncUserFlowFsmState<RunStateT>;
+  | ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>;
 
 export type RunOutcome =
   | "error"
@@ -61,7 +68,7 @@ export function flowWasSettledByUser(runOutcome: RunOutcome): boolean {
 }
 
 function assertInteracting<RunStateT>(
-  fsmState: AsyncUserFlowFsmState<RunStateT>
+  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
 ): asserts fsmState is InteractingAsyncUserFlowFsmState<RunStateT> {
   if (fsmState.kind !== "interacting")
     throw new Error('FSM-state should be "interacting"');
@@ -73,22 +80,36 @@ type AugRunArgs<RunArgsT> = RunArgsT & {
   onDispose?: AsyncUserFlowOnDisposeFun;
 };
 
-export type AsyncUserFlowState<RunStateT> = {
-  fsmState: Generic<AsyncUserFlowFsmState<RunStateT>>;
-  isSubmittable: Computed<AsyncUserFlowState<RunStateT>, boolean>;
+export type AsyncUserFlowState<RunStateT, AttemptOutcomeNubT> = {
+  fsmState: Generic<AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>>;
+  isSubmittable: Computed<
+    AsyncUserFlowState<RunStateT, AttemptOutcomeNubT>,
+    boolean
+  >;
 };
 
+/** Type describing state and actions for an async user flow.  The type
+ * params are:
+ *
+ * * `AppModelT`: the type of the overall app model
+ * * `RunArgsT`: the type describing the arguments (bundled into one
+ *   object) which are needed to initiate the flow.
+ * * `RunStateT`: the type describing the state of the flow as the user
+ *   interacts with it
+ * * `AttemptOutcomeNubT`: the type describing the `nub` prop of the
+ *   outcome of the `attempt()` call (optional, default `void`) */
 export type AsyncUserFlowSlice<
   AppModelT extends object,
   RunArgsT,
   RunStateT,
-> = AsyncUserFlowState<RunStateT> & {
+  AttemptOutcomeNubT = void,
+> = AsyncUserFlowState<RunStateT, AttemptOutcomeNubT> & {
   setFsmState: Action<
-    AsyncUserFlowState<RunStateT>,
-    AsyncUserFlowFsmState<RunStateT>
+    AsyncUserFlowState<RunStateT, AttemptOutcomeNubT>,
+    AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>
   >;
   run: Thunk<
-    AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT>,
+    AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT>,
     AugRunArgs<RunArgsT>,
     void,
     AppModelT
@@ -138,7 +159,7 @@ function baseAsyncUserFlowSlice<
     AttemptOutcome<AttemptOutcomeNubT>
   >,
   options: AsyncUserFlowOptions
-): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT> {
+): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
   return {
     fsmState: generic({ kind: "idle" }),
     isSubmittable: computed((state) => {
@@ -299,7 +320,16 @@ function baseAsyncUserFlowSlice<
         error escape to the caller.
 
       An `attempt()` function might not need `storeActions` or
-      `navigationGuard`.
+      `navigationGuard`.  The `attempt()` function should return an
+      object of an "outcome" type.  Its `needsModalNotification` prop
+      says whether the user should be presented with a modal
+      notification.  This should be used for anticipated errors.  If the
+      outcome was that the operation was fully successfully performed, a
+      notification should _not_ be requested with this prop.  The
+      `outcomeNub` prop contains any further details needed to present
+      the notification to the user, or to construct the "toast" which
+      lets the user know, unobtrusively, that the operation succeeded,
+      at least in part.
 */
 // TODO: If SpecificSliceT is always a collection of Actions, rename
 // type param to sth like SpecificActions.
@@ -319,7 +349,8 @@ export function asyncUserFlowSlice<
     AttemptOutcome<AttemptOutcomeNubT>
   >,
   options: Partial<AsyncUserFlowOptions> = kDefaultAsyncUserFlowOptions
-): SpecificSliceT & AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT> {
+): SpecificSliceT &
+  AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
   const effectiveOptions: AsyncUserFlowOptions = Object.assign(
     {},
     kDefaultAsyncUserFlowOptions,
@@ -347,18 +378,19 @@ export function isSucceeded<RunStateT>(
 }
 
 export function isInteractable<RunStateT>(
-  fsmState: AsyncUserFlowFsmState<RunStateT>
+  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
 ): boolean {
   return fsmState.kind === "interacting";
 }
 
 export function isActive<RunStateT>(
-  fsmState: AsyncUserFlowFsmState<RunStateT>
-): fsmState is ActiveAsyncUserFlowFsmState<RunStateT> {
+  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
+): fsmState is ActiveAsyncUserFlowFsmState<RunStateT, unknown> {
   return (
     fsmState.kind === "interacting" ||
     fsmState.kind === "attempting" ||
-    fsmState.kind === "succeeded"
+    fsmState.kind === "succeeded" ||
+    fsmState.kind === "awaiting-ack-of-notification"
   );
 }
 
@@ -372,7 +404,7 @@ type SettleFunctions = {
 
 export function settleFunctions<RunStateT>(
   isSubmittable: boolean,
-  fsmState: AsyncUserFlowFsmState<RunStateT>
+  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
 ): SettleFunctions {
   return fsmState.kind === "interacting"
     ? {
@@ -394,7 +426,7 @@ export function settleFunctions<RunStateT>(
 
 export function flowFocusOrBlurFun<Elt extends HTMLElement, RunStateT>(
   elementRef: React.RefObject<Elt>,
-  fsmState: AsyncUserFlowFsmState<RunStateT>
+  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
 ) {
   return () => {
     if (!isActive(fsmState)) {
@@ -423,21 +455,25 @@ type RunStateAction<RunStateT, PayloadT> = (
   payload: PayloadT
 ) => void;
 
-export function runStateAction<RunStateT, PayloadT>(
+export function runStateAction<RunStateT, PayloadT, AttemptOutcomeNubT>(
   actionFun: RunStateAction<RunStateT, PayloadT>
 ) {
-  return action<AsyncUserFlowState<RunStateT>, PayloadT>((state, payload) => {
-    const fsmState = state.fsmState;
-    assertInteracting(fsmState);
-    actionFun(fsmState.runState, payload);
-  });
+  return action<AsyncUserFlowState<RunStateT, AttemptOutcomeNubT>, PayloadT>(
+    (state, payload) => {
+      const fsmState = state.fsmState;
+      assertInteracting(fsmState);
+      actionFun(fsmState.runState, payload);
+    }
+  );
 }
 
-export function setRunStateProp<RunStateT, PropNameT extends keyof RunStateT>(
-  propName: PropNameT
-) {
+export function setRunStateProp<
+  RunStateT,
+  PropNameT extends keyof RunStateT,
+  AttemptOutcomeNubT,
+>(propName: PropNameT) {
   return action<
-    AsyncUserFlowState<RunStateT>,
+    AsyncUserFlowState<RunStateT, AttemptOutcomeNubT>,
     NonNullable<RunStateT[PropNameT]>
   >((state, val) => {
     const fsmState = state.fsmState;
