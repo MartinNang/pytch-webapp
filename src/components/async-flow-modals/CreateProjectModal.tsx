@@ -4,7 +4,6 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
 import { submitOnEnterKeyFun } from "../../utils";
-import { MaybeErrorOrSuccessReport } from "../MaybeErrorOrSuccessReport";
 import { RadioButtonOption } from "../RadioButtonOption";
 
 import { PytchProgramKind } from "../../model/pytch-program";
@@ -17,8 +16,6 @@ import {
   flowFocusOrBlurFun,
   isActive,
   isInteractable,
-  isSucceeded,
-  maybeLastFailureMessage,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
 import { useFlowActions, useFlowState } from "../../model";
@@ -118,11 +115,6 @@ export const CreateProjectModal = () => {
             </Form.Group>
             {editingModeContent}
           </Form>
-          <MaybeErrorOrSuccessReport
-            messageWhenSuccess="Project created!"
-            attemptSucceeded={isSucceeded(activeFsmState)}
-            maybeLastFailureMessage={maybeLastFailureMessage(activeFsmState)}
-          />
         </Modal.Body>
         <Modal.Footer>
           <Button

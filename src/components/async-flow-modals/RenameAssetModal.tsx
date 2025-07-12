@@ -1,14 +1,11 @@
 import React, { useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { MaybeErrorOrSuccessReport } from "../MaybeErrorOrSuccessReport";
 import { CompoundTextInput } from "../CompoundTextInput";
 import { FormatSpecifier } from "../../model/compound-text-input";
 import {
   flowFocusOrBlurFun,
   isInteractable,
-  isSucceeded,
-  maybeLastFailureMessage,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "./utils";
@@ -47,11 +44,6 @@ export const RenameAssetModal = () => {
             onNewUiFragmentValue={setNewStem}
             onEnterKey={settle.submit}
             ref={inputRef}
-          />
-          <MaybeErrorOrSuccessReport
-            messageWhenSuccess="Renamed!"
-            attemptSucceeded={isSucceeded(activeFsmState)}
-            maybeLastFailureMessage={maybeLastFailureMessage(activeFsmState)}
           />
         </Modal.Body>
         <Modal.Footer>

@@ -16,12 +16,9 @@ import {
   discardReturnValue,
   mDataAttrIntValue,
 } from "../../utils";
-import { MaybeErrorOrSuccessReport } from "../MaybeErrorOrSuccessReport";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import {
   isInteractable,
-  isSucceeded,
-  maybeLastFailureMessage,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
 import { OnTagClickFun } from "../../model/user-interactions/clipart-gallery-select";
@@ -318,11 +315,6 @@ export const AddClipArtModal = () => {
         </Modal.Header>
         <Modal.Body className="clipart-body">
           <ClipArtGalleryPanel {...selectionProps} />
-          <MaybeErrorOrSuccessReport
-            messageWhenSuccess="Added!"
-            attemptSucceeded={isSucceeded(activeState)}
-            maybeLastFailureMessage={maybeLastFailureMessage(activeState)}
-          />
         </Modal.Body>
         <Modal.Footer className="clipart-footer">
           <div className="licence-info">

@@ -2,13 +2,10 @@ import React, { ChangeEvent, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { MaybeErrorOrSuccessReport } from "../MaybeErrorOrSuccessReport";
 import { submitOnEnterKeyFun } from "../../utils";
 import {
   flowFocusOrBlurFun,
   isInteractable,
-  isSucceeded,
-  maybeLastFailureMessage,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "../async-flow-modals/utils";
@@ -56,11 +53,6 @@ export const CopyProjectModal = () => {
               />
             </Form.Group>
           </Form>
-          <MaybeErrorOrSuccessReport
-            messageWhenSuccess="Project copied!"
-            attemptSucceeded={isSucceeded(activeFsmState)}
-            maybeLastFailureMessage={maybeLastFailureMessage(activeFsmState)}
-          />
         </Modal.Body>
         <Modal.Footer>
           <Button
