@@ -36,8 +36,7 @@ export type ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> =
       runState: RunStateT;
       outcomeNub: AttemptOutcomeNubT;
       userAck: UserAckFun;
-    }
-  | { kind: "succeeded"; runState: RunStateT };
+    };
 
 export type AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> =
   | { kind: "idle" }
@@ -236,7 +235,8 @@ function baseAsyncUserFlowSlice<
               attempt(runState, storeActions, navigationGuard)
             );
 
-            actions.setFsmState({ kind: "succeeded", runState });
+            // TODO: Replace once control flow redesigned.
+            // actions.setFsmState({ kind: "succeeded", runState });
             runOutcome = "succeeded";
 
             if (options.pulseSuccessMessage) {
@@ -371,12 +371,6 @@ export function asyncUserFlowSlice<
 // TODO: Would it be cleaner for these to be computed properties on the
 // slice, sibling to isSubmittable?
 
-export function isSucceeded<RunStateT>(
-  fsmState: AsyncUserFlowFsmState<RunStateT>
-): boolean {
-  return fsmState.kind === "succeeded";
-}
-
 export function isInteractable<RunStateT>(
   fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
 ): boolean {
@@ -389,7 +383,6 @@ export function isActive<RunStateT>(
   return (
     fsmState.kind === "interacting" ||
     fsmState.kind === "attempting" ||
-    fsmState.kind === "succeeded" ||
     fsmState.kind === "awaiting-ack-of-notification"
   );
 }
