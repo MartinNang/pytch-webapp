@@ -5,7 +5,9 @@ import {
   AsyncUserFlowOptions,
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
+  noModalWithVoid,
   setRunStateProp,
+  VoidOutcome,
 } from "../user-interactions/async-user-flow";
 import { EventDescriptorKind } from "./structured-program/event";
 import { HandlerUpsertionOperation } from "./structured-program/program";
@@ -125,7 +127,7 @@ function isSubmittable(runState: UpsertHatBlockRunState): boolean {
 async function attempt(
   runState: UpsertHatBlockRunState,
   actions: PytchAppModelActions
-): Promise<void> {
+): Promise<VoidOutcome> {
   const eventDescriptor = (() => {
     switch (runState.chosenKind) {
       case "green-flag":
@@ -148,7 +150,11 @@ async function attempt(
   })();
 
   const upsertionDescriptor = { ...runState.operation, eventDescriptor };
+
+  // This action is sync.
   actions.activeProject.upsertHandler(upsertionDescriptor);
+
+  return noModalWithVoid;
 }
 
 export let upsertHatBlockFlow: UpsertHatBlockFlow = (() => {

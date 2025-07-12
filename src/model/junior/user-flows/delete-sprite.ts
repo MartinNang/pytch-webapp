@@ -2,9 +2,11 @@ import { IPytchAppModel, PytchAppModelActions } from "../..";
 import {
   AsyncUserFlowOptions,
   AsyncUserFlowSlice,
+  VoidOutcome,
   alwaysSubmittable,
   asyncUserFlowSlice,
   idPrepare,
+  noModalWithVoid,
 } from "../../user-interactions/async-user-flow";
 import { Uuid } from "../structured-program";
 
@@ -25,8 +27,11 @@ export type DeleteSpriteFlow = AsyncUserFlowSlice<
 async function attempt(
   runState: DeleteSpriteRunState,
   actions: PytchAppModelActions
-): Promise<void> {
+): Promise<VoidOutcome> {
+  // This action is sync.
   actions.jrEditState.deleteActiveActor(runState.actorId);
+
+  return noModalWithVoid;
 }
 
 export let deleteSpriteFlow: DeleteSpriteFlow = (() => {

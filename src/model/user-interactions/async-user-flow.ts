@@ -101,11 +101,15 @@ type AsyncFlowPrepareFun<RunArgsT, AppModelT extends object, RunStateT> = (
   navigationGuard: NavigationAbandonmentGuard
 ) => Promise<RunStateT>;
 
-type AsyncFlowAttemptFun<RunStateT, AppModelT extends object> = (
+type AsyncFlowAttemptFun<
+  RunStateT,
+  AppModelT extends object,
+  AttemptOutcomeT,
+> = (
   runState: RunStateT,
   storeActions: Actions<AppModelT>,
   navigationGuard: NavigationAbandonmentGuard
-) => Promise<void>;
+) => Promise<AttemptOutcomeT>;
 
 export type AsyncUserFlowOptions = {
   pulseSuccessMessage: boolean;
@@ -115,10 +119,24 @@ const kDefaultAsyncUserFlowOptions: AsyncUserFlowOptions = {
   pulseSuccessMessage: true,
 };
 
-function baseAsyncUserFlowSlice<AppModelT extends object, RunArgsT, RunStateT>(
+export type AttemptOutcome<NubT> = {
+  needsModalNotification: boolean;
+  nub: NubT;
+};
+
+function baseAsyncUserFlowSlice<
+  AppModelT extends object,
+  RunArgsT,
+  RunStateT,
+  AttemptOutcomeNubT,
+>(
   prepare: AsyncFlowPrepareFun<RunArgsT, AppModelT, RunStateT>,
   isSubmittable: (runState: RunStateT) => boolean,
-  attempt: AsyncFlowAttemptFun<RunStateT, AppModelT>,
+  attempt: AsyncFlowAttemptFun<
+    RunStateT,
+    AppModelT,
+    AttemptOutcome<AttemptOutcomeNubT>
+  >,
   options: AsyncUserFlowOptions
 ): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT> {
   return {
@@ -290,11 +308,16 @@ export function asyncUserFlowSlice<
   SpecificSliceT,
   RunArgsT,
   RunStateT,
+  AttemptOutcomeNubT,
 >(
   specificSlice: SpecificSliceT,
   prepare: AsyncFlowPrepareFun<RunArgsT, AppModelT, RunStateT>,
   isSubmittable: (runState: RunStateT) => boolean,
-  attempt: AsyncFlowAttemptFun<RunStateT, AppModelT>,
+  attempt: AsyncFlowAttemptFun<
+    RunStateT,
+    AppModelT,
+    AttemptOutcome<AttemptOutcomeNubT>
+  >,
   options: Partial<AsyncUserFlowOptions> = kDefaultAsyncUserFlowOptions
 ): SpecificSliceT & AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT> {
   const effectiveOptions: AsyncUserFlowOptions = Object.assign(
@@ -424,6 +447,16 @@ export function setRunStateProp<RunStateT, PropNameT extends keyof RunStateT>(
 }
 
 ////////////////////////////////////////////////////////////////////////
+// Helpers for simple attempt() functions
+
+export type VoidOutcome = AttemptOutcome<void>;
+
+export const noModalWithVoid: VoidOutcome = {
+  needsModalNotification: false,
+  nub: void 0,
+};
+
+////////////////////////////////////////////////////////////////////////
 // Helpers for very simple flows
 
 export async function idPrepare<ArgsAndStateT>(
@@ -436,6 +469,6 @@ export function alwaysSubmittable(): boolean {
   return true;
 }
 
-export async function emptyAttempt(): Promise<void> {
-  return;
+export async function emptyAttempt(): Promise<VoidOutcome> {
+  return noModalWithVoid;
 }

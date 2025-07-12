@@ -14,7 +14,9 @@ import {
   AsyncUserFlowOptions,
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
+  noModalWithVoid,
   runStateAction,
+  VoidOutcome,
 } from "../user-interactions/async-user-flow";
 
 type UpsertSpriteRunArgs = {
@@ -88,20 +90,22 @@ function isSubmittable(runState: UpsertSpriteRunState): boolean {
 async function attempt(
   runState: UpsertSpriteRunState,
   actions: PytchAppModelActions
-): Promise<void> {
+): Promise<VoidOutcome> {
   const upsertionArgs: SpriteUpsertionArgs = {
     ...runState.upsertionAction,
     name: runState.name,
   };
 
   // This can throw if name already exists, even though we've tried to
-  // not let that happen:
+  // not let that happen.  The action is sync.
   const spriteId = actions.activeProject.upsertSprite(upsertionArgs);
 
   // The aim here is to activate a newly-added Sprite, but it does no harm
   // to always setActiveActor(), because for a rename, that Sprite was
   // active anyway.
   actions.jrEditState.setActiveActor(spriteId);
+
+  return noModalWithVoid;
 }
 
 export let upsertSpriteFlow: UpsertSpriteFlow = (() => {
