@@ -567,12 +567,6 @@ export const activeProject: IActiveProject = {
     const spriteId = idCell.get();
 
     actions.noteCodeChange();
-    actions.pulseNotableChange({
-      kind: "sprite-changed",
-      spriteChangedKind: args.kind,
-      spriteId,
-      spriteName: args.name,
-    });
 
     return spriteId;
   }),
@@ -596,7 +590,6 @@ export const activeProject: IActiveProject = {
     actions.pulseNotableChange({
       kind: "sprite-changed",
       spriteChangedKind: "delete",
-      spriteId,
       spriteName,
     });
 
