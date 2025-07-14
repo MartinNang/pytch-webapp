@@ -1,3 +1,4 @@
+import { assertNever } from "../../../utils";
 import { Uuid } from "./core-types";
 
 // Compatible with AssetPresentation
@@ -9,6 +10,8 @@ export interface AssetMetaData {
 export type AssetNames = { fullPathname: string; basename: string };
 
 export type AssetMimeType = "image" | "audio";
+
+export type AssetSourceKind = "this-device" | "media-library";
 
 type AssetNamesByKind = {
   appearances: Array<AssetNames>;
@@ -195,5 +198,16 @@ export class AssetMetaDataOps {
         belongsToTargetActor(asset) &&
         asset.assetInProject.mimeType.startsWith(mimeTypePrefix)
     );
+  }
+
+  static assetSourceDisplayName(sourceKind: AssetSourceKind): string {
+    switch (sourceKind) {
+      case "this-device":
+        return "this device";
+      case "media-library":
+        return "the media library";
+      default:
+        return assertNever(sourceKind);
+    }
   }
 }

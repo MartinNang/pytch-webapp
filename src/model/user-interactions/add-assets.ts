@@ -1,7 +1,6 @@
 import { Action } from "easy-peasy";
 import { simpleReadArrayBuffer } from "../../utils";
 import { addAssetToProject } from "../../database/indexed-db";
-import { FileProcessingFailure, FileFailureError } from "./process-files";
 import { IPytchAppModel, PytchAppModelActions } from "..";
 import {
   AssetOperationContext,
@@ -11,12 +10,12 @@ import {
 import {
   AsyncUserFlowSlice,
   asyncUserFlowSlice,
-  noModalWithVoid,
+  AttemptOutcome,
   setRunStateProp,
-  VoidOutcome,
 } from "./async-user-flow";
 import { ProjectId } from "../project-core";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { AssetSourceKind } from "../junior/structured-program/asset";
 
 export function addAssetErrorMessageFromError(
   operationContext: AssetOperationContext,
@@ -47,10 +46,20 @@ type AddAssetsRunState = {
   chosenFiles: FileList | null;
 };
 
+export type AddAssetSuccess = { displayName: string };
+export type AddAssetFailure = { displayName: string; reason: string };
+
+export type AddAssetsOutcomeNub = {
+  sourceKind: AssetSourceKind;
+  successes: Array<AddAssetSuccess>;
+  failures: Array<AddAssetFailure>;
+};
+
 type AddAssetsBase = AsyncUserFlowSlice<
   IPytchAppModel,
   AddAssetsRunArgs,
-  AddAssetsRunState
+  AddAssetsRunState,
+  AddAssetsOutcomeNub
 >;
 
 type SAction<ArgT> = Action<AddAssetsBase, ArgT>;
@@ -81,9 +90,10 @@ async function attempt(
   runState: AddAssetsRunState,
   actions: PytchAppModelActions,
   navigationGuard: NavigationAbandonmentGuard
-): Promise<VoidOutcome> {
+): Promise<AttemptOutcome<AddAssetsOutcomeNub>> {
   const { projectId, assetNamePrefix, operationContext } = runState;
-  let failures: Array<FileProcessingFailure> = [];
+  let successes: Array<AddAssetSuccess> = [];
+  let failures: Array<AddAssetFailure> = [];
 
   for (const file of runState.chosenFiles ?? []) {
     try {
@@ -92,6 +102,7 @@ async function attempt(
       await navigationGuard.throwIfAbandoned(
         addAssetToProject(projectId, assetPath, file.type, fileBuffer)
       );
+      successes.push({ displayName: file.name });
     } catch (error) {
       console.error("add-assets::attempt():", error);
 
@@ -104,7 +115,7 @@ async function attempt(
         file.name,
         error as Error
       );
-      failures.push({ filename: file.name, reason });
+      failures.push({ displayName: file.name, reason });
     }
   }
 
@@ -112,16 +123,35 @@ async function attempt(
     actions.activeProject.syncAssetsFromStorage()
   );
 
-  if (failures.length > 0) {
-    throw new FileFailureError(failures);
-  }
+  return {
+    needsModalNotification: failures.length > 0,
+    nub: { sourceKind: "this-device", successes, failures },
+  };
+}
 
-  return noModalWithVoid;
+function onCompleted(
+  runState: AddAssetsRunState,
+  outcomeNub: AddAssetsOutcomeNub,
+  storeActions: PytchAppModelActions
+) {
+  if (outcomeNub.successes.length > 0) {
+    const operationContext = runState.operationContext;
+    storeActions.activeProject.pulseNotableChange({
+      kind: "assets-added",
+      operationContext,
+      ...outcomeNub,
+    });
+  }
 }
 
 export let addAssetsFlow: AddAssetsFlow = (() => {
   const specificSlice: AddAssetsActions = {
     setChosenFiles: setRunStateProp("chosenFiles"),
   };
-  return asyncUserFlowSlice(specificSlice, { prepare, isSubmittable, attempt });
+  return asyncUserFlowSlice(specificSlice, {
+    prepare,
+    isSubmittable,
+    attempt,
+    onCompleted,
+  });
 })();

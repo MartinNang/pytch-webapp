@@ -5,6 +5,7 @@ import { ChooseFiles } from "../ChooseFiles";
 import { FileProcessingFailures } from "../FileProcessingFailures";
 import { settleFunctions } from "../../model/user-interactions/async-user-flow";
 import { assertNever } from "../../utils";
+import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 
 export const AddAssetsModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.addAssetsFlow);
@@ -14,25 +15,27 @@ export const AddAssetsModal = () => {
     const { operationContext, chosenFiles } = activeState.runState;
     const assetPlural = operationContext.assetPlural;
 
-    if (activeState.kind === "awaiting-ack-of-notification") {
-      // TODO: Compute proper value when available.
-      const error = { fileFailures: [] };
-      const titleText = `Problem adding ${assetPlural}`;
-      return (
-        <FileProcessingFailures
-          titleText={titleText}
-          introText="Sorry, there was a problem adding files to your project:"
-          failures={error.fileFailures}
-          dismiss={activeState.userAck}
-        />
-      );
-    }
-
-    const settle = settleFunctions(isSubmittable, activeState);
-
     switch (activeState.kind) {
+      case "awaiting-ack-of-notification": {
+        const fileFailures: Array<FileProcessingFailure> =
+          activeState.outcomeNub.failures.map((failure) => ({
+            filename: failure.displayName,
+            reason: failure.reason,
+          }));
+        const titleText = `Problem adding ${assetPlural}`;
+        return (
+          <FileProcessingFailures
+            titleText={titleText}
+            introText="Sorry, there was a problem adding files to your project:"
+            failures={fileFailures}
+            dismiss={activeState.userAck}
+          />
+        );
+      }
+
       case "interacting":
       case "attempting": {
+        const settle = settleFunctions(isSubmittable, activeState);
         return (
           <ChooseFiles
             titleText={`Add ${assetPlural}`}
