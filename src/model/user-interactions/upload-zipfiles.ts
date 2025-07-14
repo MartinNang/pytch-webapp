@@ -7,11 +7,9 @@ import { IPytchAppModel, PytchAppModelActions } from "..";
 import {
   AsyncUserFlowSlice,
   asyncUserFlowSlice,
-  noModalWithVoid,
+  AttemptOutcome,
   setRunStateProp,
-  VoidOutcome,
 } from "./async-user-flow";
-import { FileFailureError } from "./process-files";
 import { Action } from "easy-peasy";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
@@ -21,10 +19,19 @@ type UploadZipfilesRunState = {
   chosenFiles: FileList | null;
 };
 
+type UploadZipfilesAttemptOutcomeNub = {
+  nSuccesses: number;
+  failures: Array<FileProcessingFailure>;
+};
+
+type UploadZipfilesAttemptOutcome =
+  AttemptOutcome<UploadZipfilesAttemptOutcomeNub>;
+
 type UploadZipfilesBase = AsyncUserFlowSlice<
   IPytchAppModel,
   UploadZipfilesRunArgs,
-  UploadZipfilesRunState
+  UploadZipfilesRunState,
+  UploadZipfilesAttemptOutcomeNub
 >;
 
 type SAction<ArgT> = Action<UploadZipfilesBase, ArgT>;
@@ -47,7 +54,7 @@ async function attempt(
   runState: UploadZipfilesRunState,
   actions: PytchAppModelActions,
   navGuard: NavigationAbandonmentGuard
-): Promise<VoidOutcome> {
+): Promise<UploadZipfilesAttemptOutcome> {
   let failures: Array<FileProcessingFailure> = [];
   let newProjectIds: Array<ProjectId> = [];
   for (const file of runState.chosenFiles ?? []) {
@@ -101,16 +108,37 @@ async function attempt(
     });
   }
 
-  if (failures.length > 0) {
-    throw new FileFailureError(failures);
-  }
+  return {
+    needsModalNotification: nFailures > 0,
+    nub: { nSuccesses, failures },
+  };
+}
 
-  return noModalWithVoid;
+function onCompleted(
+  _runState: UploadZipfilesRunState,
+  outcomeNub: UploadZipfilesAttemptOutcomeNub,
+  storeActions: PytchAppModelActions
+) {
+  const nCreated = outcomeNub.nSuccesses;
+  const nFailed = outcomeNub.failures.length;
+
+  if (nCreated > 1 || (nCreated === 1 && nFailed > 0)) {
+    storeActions.activeProject.pulseNotableChange({
+      kind: "zipfiles-uploaded",
+      nCreated,
+      nFailed,
+    });
+  }
 }
 
 export let uploadZipfilesFlow: UploadZipfilesFlow = (() => {
   const specificSlice: UploadZipfilesActions = {
     setChosenFiles: setRunStateProp("chosenFiles"),
   };
-  return asyncUserFlowSlice(specificSlice, { prepare, isSubmittable, attempt });
+  return asyncUserFlowSlice(specificSlice, {
+    prepare,
+    isSubmittable,
+    attempt,
+    onCompleted,
+  });
 })();
