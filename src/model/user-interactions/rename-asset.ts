@@ -9,9 +9,8 @@ import {
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
-  noModalWithVoid,
+  AttemptOutcome,
   setRunStateProp,
-  VoidOutcome,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
@@ -29,10 +28,15 @@ type RenameAssetRunState = {
   fixedSuffix: string;
 };
 
+export type RenameAssetOutcomeNub =
+  | { kind: "success" }
+  | { kind: "error"; message: string };
+
 type RenameAssetBase = AsyncUserFlowSlice<
   IPytchAppModel,
   RenameAssetRunArgs,
-  RenameAssetRunState
+  RenameAssetRunState,
+  RenameAssetOutcomeNub
 >;
 
 type SAction<ArgT> = Action<RenameAssetBase, ArgT>;
@@ -85,7 +89,7 @@ async function attempt(
   runState: RenameAssetRunState,
   actions: PytchAppModelActions,
   navigationGuard: NavigationAbandonmentGuard
-): Promise<VoidOutcome> {
+): Promise<AttemptOutcome<RenameAssetOutcomeNub>> {
   const suffix = runState.fixedSuffix;
   const oldNameSuffix = `${runState.oldStem}${suffix}`;
   const newNameSuffix = `${runState.newStem}${suffix}`;
@@ -97,11 +101,42 @@ async function attempt(
     newNameSuffix,
   };
 
-  await navigationGuard.throwIfAbandoned(
-    actions.activeProject.renameAssetAndSync(renameDescriptor)
-  );
+  try {
+    // The renameAssetAndSync() call includes pulsing a change, so we
+    // won't need to do that separately.
+    await navigationGuard.throwIfAbandoned(
+      actions.activeProject.renameAssetAndSync(renameDescriptor)
+    );
 
-  return noModalWithVoid;
+    return {
+      needsModalNotification: false,
+      nub: { kind: "success" },
+    };
+  } catch (error) {
+    if (navigationGuard.wasAbandoned(error)) {
+      throw error;
+    }
+
+    return {
+      needsModalNotification: true,
+      nub: { kind: "error", message: (error as Error).toString() },
+    };
+  }
+}
+
+function onCompleted(
+  runState: RenameAssetRunState,
+  outcomeNub: RenameAssetOutcomeNub,
+  storeActions: PytchAppModelActions
+) {
+  if (outcomeNub.kind === "success") {
+    storeActions.activeProject.pulseNotableChange({
+      kind: "asset-changed",
+      assetChangedKind: "update",
+      operationContext: runState.operationContext,
+      assetDisplayName: `${runState.newStem}${runState.fixedSuffix}`,
+    });
+  }
 }
 
 export let renameAssetFlow: RenameAssetFlow = (() => {
@@ -109,5 +144,10 @@ export let renameAssetFlow: RenameAssetFlow = (() => {
     setNewStem: setRunStateProp("newStem"),
   };
 
-  return asyncUserFlowSlice(specificSlice, { prepare, isSubmittable, attempt });
+  return asyncUserFlowSlice(specificSlice, {
+    prepare,
+    isSubmittable,
+    attempt,
+    onCompleted,
+  });
 })();
