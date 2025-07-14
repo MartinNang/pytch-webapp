@@ -130,6 +130,16 @@ type AsyncFlowAttemptFun<
   navigationGuard: NavigationAbandonmentGuard
 ) => Promise<AttemptOutcomeT>;
 
+type AsyncFlowOnCompletedFun<
+  AppModelT extends object,
+  RunStateT,
+  AttemptOutcomeNubT,
+> = (
+  runState: RunStateT,
+  outcomeNub: AttemptOutcomeNubT,
+  storeActions: Actions<AppModelT>
+) => void;
+
 export type AttemptOutcome<NubT> = {
   needsModalNotification: boolean;
   nub: NubT;
@@ -147,6 +157,11 @@ type AsyncUserFlowSliceFuncs<
     RunStateT,
     AppModelT,
     AttemptOutcome<AttemptOutcomeNubT>
+  >;
+  onCompleted?: AsyncFlowOnCompletedFun<
+    AppModelT,
+    RunStateT,
+    AttemptOutcomeNubT
   >;
 };
 
@@ -258,6 +273,10 @@ function baseAsyncUserFlowSlice<
             }
             throw err;
           }
+        }
+
+        if (funcs.onCompleted != null) {
+          funcs.onCompleted(submittedRunState, outcome.nub, storeActions);
         }
 
         onDispose("completed");
