@@ -1,9 +1,6 @@
 import { Action } from "easy-peasy";
 import { IPytchAppModel, PytchAppModelActions } from "..";
-import {
-  ClipArtGalleryEntry,
-  ClipArtGalleryEntryId,
-} from "../clipart-gallery-core";
+import { ClipArtGalleryEntryId } from "../clipart-gallery-core";
 import { ProjectId } from "../project-core";
 import { addRemoteAssetToProject } from "../../database/indexed-db";
 import {
@@ -11,13 +8,18 @@ import {
   assetOperationContextFromKey,
   AssetOperationContextKey,
 } from "../asset";
-import { addAssetErrorMessageFromError } from "./add-assets";
+import {
+  addAssetErrorMessageFromError,
+  AddAssetSuccess,
+  AddAssetFailure,
+  AddAssetsOutcomeNub,
+  onAddAssetsCompleted,
+} from "./add-assets";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
-  noModalWithVoid,
+  AttemptOutcome,
   runStateAction,
-  VoidOutcome,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
@@ -38,7 +40,8 @@ type AddClipArtRunState = {
 type AddClipArtBase = AsyncUserFlowSlice<
   IPytchAppModel,
   AddClipArtRunArgs,
-  AddClipArtRunState
+  AddClipArtRunState,
+  AddAssetsOutcomeNub
 >;
 
 type OnTagClickArgs = {
@@ -75,57 +78,40 @@ function isSubmittable(runState: AddClipArtRunState) {
   return runState.selectedIds.length > 0;
 }
 
-const attemptAddOneEntry = async (
-  projectId: ProjectId,
-  assetNamePrefix: string,
-  entry: ClipArtGalleryEntry,
-  navGuard: NavigationAbandonmentGuard
-) => {
-  // Iterate with "for" --- rather than Promise.all() --- to make sure
-  // the items are added to the project in the same order that they
-  // appear in in the entry.
-  for (const item of entry.items) {
-    const fullName = `${assetNamePrefix}${item.name}`;
-    await navGuard.throwIfAbandoned(
-      addRemoteAssetToProject(projectId, item.url, fullName)
-    );
-  }
-};
-
-type AddItemFailure = {
-  itemName: string;
-  message: string;
-};
-
 async function attempt(
   runState: AddClipArtRunState,
   actions: PytchAppModelActions,
   navGuard: NavigationAbandonmentGuard
-): Promise<VoidOutcome> {
-  let failures: Array<AddItemFailure> = [];
+): Promise<AttemptOutcome<AddAssetsOutcomeNub>> {
+  let successes: Array<AddAssetSuccess> = [];
+  let failures: Array<AddAssetFailure> = [];
 
   const entries = actions.clipArtGallery.selectedEntries(runState.selectedIds);
+
+  // Iterate over items of entries in one nested loop, so we can gather
+  // the successes and failures without unduly complicated control flow
+  // to handle navigation-abandoned (and other) exceptions.
   for (const entry of entries) {
-    try {
-      await attemptAddOneEntry(
-        runState.projectId,
-        runState.assetNamePrefix,
-        entry,
-        navGuard
-      );
-    } catch (err) {
-      if (navGuard.wasAbandoned(err)) throw err;
+    for (const item of entry.items) {
+      const fullName = `${runState.assetNamePrefix}${item.name}`;
+      try {
+        await navGuard.throwIfAbandoned(
+          addRemoteAssetToProject(runState.projectId, item.url, fullName)
+        );
+        successes.push({ displayName: item.name });
+      } catch (error) {
+        if (navGuard.wasAbandoned(error)) {
+          throw error;
+        }
 
-      const message = addAssetErrorMessageFromError(
-        runState.operationContext,
-        entry.name,
-        err as Error
-      );
+        const reason = addAssetErrorMessageFromError(
+          runState.operationContext,
+          item.name,
+          error as Error
+        );
 
-      // Possibly more context would be useful here, e.g., if the item
-      // is within a group and the user didn't know they were trying to
-      // add "digit9.png".  Revisit if problematic.
-      failures.push({ itemName: entry.name, message });
+        failures.push({ displayName: item.name, reason });
+      }
     }
   }
 
@@ -133,73 +119,10 @@ async function attempt(
     actions.activeProject.syncAssetsFromStorage()
   );
 
-  if (failures.length > 0) {
-    let nbSuccess = entries.length - failures.length;
-    let clipArtMsg: string;
-    if (nbSuccess === 0) {
-      let msg = "There was a problem: ";
-      if (failures.length === 1) {
-        msg =
-          msg +
-          "The selected clipart can not be added (" +
-          failures[0].itemName +
-          ": " +
-          failures[0].message;
-      } else {
-        msg =
-          msg +
-          "The " +
-          failures.length +
-          " selected cliparts can not be added (";
-        failures.forEach((failure) => {
-          clipArtMsg = failure.itemName + ": " + failure.message + " ";
-          msg = msg + clipArtMsg;
-        });
-      }
-      msg = msg + ") Please modify your selection.";
-      throw new Error(msg);
-    } else if (nbSuccess === 1) {
-      let msg = nbSuccess + " clipart successfully added, but ";
-      if (failures.length === 1) {
-        msg =
-          msg +
-          "not the other (" +
-          failures[0].itemName +
-          ": " +
-          failures[0].message;
-      } else {
-        msg = msg + "not the " + failures.length + " others (";
-        failures.forEach((failure) => {
-          let clipArtMsg: string =
-            failure.itemName + ": " + failure.message + " ";
-          msg = msg + clipArtMsg;
-        });
-      }
-      msg = msg + ") Please modify your selection.";
-      throw new Error(msg);
-    } else {
-      let msg = nbSuccess + " cliparts successfully added, but ";
-      if (failures.length === 1) {
-        msg =
-          msg +
-          "1 problem encountered (" +
-          failures[0].itemName +
-          ": " +
-          failures[0].message;
-      } else {
-        msg = msg + failures.length + " problems encountered (";
-        failures.forEach((failure) => {
-          let clipArtMsg: string =
-            failure.itemName + ": " + failure.message + " ";
-          msg = msg + clipArtMsg;
-        });
-      }
-      msg = msg + ") Please modify your selection.";
-      throw new Error(msg);
-    }
-  }
-
-  return noModalWithVoid;
+  return {
+    needsModalNotification: failures.length > 0,
+    nub: { sourceKind: "media-library", successes, failures },
+  };
 }
 
 export let addClipArtFlow: AddClipArtFlow = (() => {
@@ -229,5 +152,10 @@ export let addClipArtFlow: AddClipArtFlow = (() => {
       if (index !== -1) state.selectedIds.splice(index, 1);
     }),
   };
-  return asyncUserFlowSlice(specificSlice, { prepare, isSubmittable, attempt });
+  return asyncUserFlowSlice(specificSlice, {
+    prepare,
+    isSubmittable,
+    attempt,
+    onCompleted: onAddAssetsCompleted,
+  });
 })();
