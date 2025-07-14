@@ -2,7 +2,6 @@ import { Action } from "easy-peasy";
 import { assertNever } from "../../utils";
 import { IPytchAppModel, PytchAppModelActions } from "../../model";
 import {
-  AsyncUserFlowOptions,
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
   noModalWithVoid,
@@ -164,13 +163,5 @@ export let upsertHatBlockFlow: UpsertHatBlockFlow = (() => {
     setKeyIfChosen: setRunStateProp("keyIfChosen"),
     setMessageIfChosen: setRunStateProp("messageIfChosen"),
   };
-  // We provide feedback by pulsing a glow around the upserted script,
-  // so don't also pulse a message in the modal:
-  const flowOptions: AsyncUserFlowOptions = { pulseSuccessMessage: false };
-
-  return asyncUserFlowSlice(
-    specificSlice,
-    { prepare, isSubmittable, attempt },
-    flowOptions
-  );
+  return asyncUserFlowSlice(specificSlice, { prepare, isSubmittable, attempt });
 })();

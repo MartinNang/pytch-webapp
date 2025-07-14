@@ -1,6 +1,5 @@
 import { IPytchAppModel, PytchAppModelActions } from "../..";
 import {
-  AsyncUserFlowOptions,
   AsyncUserFlowSlice,
   VoidOutcome,
   alwaysSubmittable,
@@ -35,11 +34,8 @@ async function attempt(
 }
 
 export let deleteSpriteFlow: DeleteSpriteFlow = (() => {
-  const flowOptions: AsyncUserFlowOptions = { pulseSuccessMessage: false };
-
   return asyncUserFlowSlice(
     {},
-    { prepare: idPrepare, isSubmittable: alwaysSubmittable, attempt },
-    flowOptions
+    { prepare: idPrepare, isSubmittable: alwaysSubmittable, attempt }
   );
 })();

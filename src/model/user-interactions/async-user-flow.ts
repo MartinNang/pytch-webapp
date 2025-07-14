@@ -9,12 +9,7 @@ import {
   Generic,
   generic,
 } from "easy-peasy";
-import {
-  assertNever,
-  delaySeconds,
-  promiseAndResolve,
-  propSetterAction,
-} from "../../utils";
+import { assertNever, promiseAndResolve, propSetterAction } from "../../utils";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
 type UserSettleResult = "cancel" | "submit";
@@ -23,7 +18,6 @@ type UserAckFun = () => void;
 
 type InteractingAsyncUserFlowFsmState<RunStateT> = {
   kind: "interacting";
-  maybeLastFailure: Error | null;
   runState: RunStateT;
   userSettle: UserSettleFun;
 };
@@ -41,13 +35,18 @@ export type ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> =
 export type AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> =
   | { kind: "idle" }
   | { kind: "preparing" }
+  | {
+      kind: "awaiting-ack-of-error";
+      errorMessage: string;
+      userAck: UserAckFun;
+    }
   | ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>;
 
 export type RunOutcome =
   | "error"
   | "abandoned-by-navigation"
   | "cancelled-by-user"
-  | "succeeded";
+  | "completed";
 
 /** Whether the given `runOutcome` indicates that the user settled the
  * flow, either by cancelling or submitting.  (In contrast to
@@ -59,7 +58,7 @@ export function flowWasSettledByUser(runOutcome: RunOutcome): boolean {
     case "abandoned-by-navigation":
       return false;
     case "cancelled-by-user":
-    case "succeeded":
+    case "completed":
       return true;
     default:
       return assertNever(runOutcome);
@@ -131,14 +130,6 @@ type AsyncFlowAttemptFun<
   navigationGuard: NavigationAbandonmentGuard
 ) => Promise<AttemptOutcomeT>;
 
-export type AsyncUserFlowOptions = {
-  pulseSuccessMessage: boolean;
-};
-
-const kDefaultAsyncUserFlowOptions: AsyncUserFlowOptions = {
-  pulseSuccessMessage: true,
-};
-
 export type AttemptOutcome<NubT> = {
   needsModalNotification: boolean;
   nub: NubT;
@@ -170,8 +161,7 @@ function baseAsyncUserFlowSlice<
     RunArgsT,
     RunStateT,
     AttemptOutcomeNubT
-  >,
-  options: AsyncUserFlowOptions
+  >
 ): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
   return {
     fsmState: generic({ kind: "idle" }),
@@ -195,8 +185,6 @@ function baseAsyncUserFlowSlice<
         return;
       }
 
-      let runOutcome: RunOutcome = "error";
-
       // For some flows, RunArgsT = void, and then the run() action is
       // called with no arguments, meaning args is undefined.  So we
       // have to check that args is non-undefined, as well as that it
@@ -212,76 +200,101 @@ function baseAsyncUserFlowSlice<
       try {
         actions.setFsmState({ kind: "preparing" });
 
-        let runState: RunStateT = await throwIfAbandoned(
+        const initRunState: RunStateT = await throwIfAbandoned(
           funcs.prepare(args, storeActions, navigationGuard)
         );
 
-        let maybeLastFailure: Error | null = null;
+        const { promise: userSettlePromise, resolve: userSettle } =
+          promiseAndResolve<UserSettleResult>();
 
-        let hasSucceeded = false;
-        while (!hasSucceeded) {
-          const { promise: userSettlePromise, resolve: userSettle } =
-            promiseAndResolve<UserSettleResult>();
+        actions.setFsmState({
+          kind: "interacting",
+          runState: initRunState,
+          userSettle,
+        });
+
+        const settleResult = await throwIfAbandoned(userSettlePromise);
+        if (settleResult === "cancel") {
+          onDispose("cancelled-by-user");
+          return;
+        }
+
+        const fsmState = helpers.getState().fsmState;
+
+        assertInteracting(fsmState);
+        const submittedRunState = fsmState.runState;
+
+        actions.setFsmState({
+          kind: "attempting",
+          runState: submittedRunState,
+        });
+
+        // The promise returned from this attempt() call can reject
+        // (a "business logic" error, or by back/fwd abandonment).
+        const outcome = await throwIfAbandoned(
+          funcs.attempt(submittedRunState, storeActions, navigationGuard)
+        );
+
+        if (outcome.needsModalNotification) {
+          const { promise: userAckPromise, resolve: userAck } =
+            promiseAndResolve<void>();
 
           actions.setFsmState({
-            kind: "interacting",
-            maybeLastFailure,
-            runState,
-            userSettle,
+            kind: "awaiting-ack-of-notification",
+            outcomeNub: outcome.nub,
+            runState: submittedRunState,
+            userAck,
           });
 
-          const settleResult = await throwIfAbandoned(userSettlePromise);
-          if (settleResult === "cancel") {
-            runOutcome = "cancelled-by-user";
-            return;
-          }
-
+          // I could not find a sensible way to avoid duplicating this
+          // code below, since it's so coupled to values in scope and to
+          // the control flow.  Sorry.
           try {
-            const fsmState = helpers.getState().fsmState;
-
-            assertInteracting(fsmState);
-            runState = fsmState.runState;
-
-            actions.setFsmState({ kind: "attempting", runState });
-
-            // The promise returned from this attempt() call can reject
-            // (a "business logic" error, or by back/fwd abandonment).
-            await throwIfAbandoned(
-              funcs.attempt(runState, storeActions, navigationGuard)
-            );
-
-            // TODO: Replace once control flow redesigned.
-            // actions.setFsmState({ kind: "succeeded", runState });
-            runOutcome = "succeeded";
-
-            if (options.pulseSuccessMessage) {
-              await throwIfAbandoned(delaySeconds(1.0));
+            await throwIfAbandoned(userAckPromise);
+          } catch (err) {
+            if (navigationGuard.wasAbandoned(err)) {
+              onDispose("abandoned-by-navigation");
+              return;
             }
-
-            hasSucceeded = true;
-          } catch (
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            err: any
-          ) {
-            // If the error is because of user navigation abandonment,
-            // we will loop back to "interacting", and the "error" will
-            // be picked up again there, so we need not treat user
-            // navigation abandonment specially.
-            maybeLastFailure = err;
+            throw err;
           }
         }
+
+        onDispose("completed");
       } catch (err) {
         if (navigationGuard.wasAbandoned(err)) {
-          runOutcome = "abandoned-by-navigation";
-        } else {
-          // Shouldn't happen.
-          runOutcome = "error";
+          onDispose("abandoned-by-navigation");
+          return;
+        }
+
+        // We shouldn't really get here.  The attempt() function should
+        // anticipate as many kinds of problems as it can, and bundle
+        // the information into the outcome.
+
+        const { promise: userAckPromise, resolve: userAck } =
+          promiseAndResolve<void>();
+
+        actions.setFsmState({
+          kind: "awaiting-ack-of-error",
+          errorMessage: (err as Error).toString(),
+          userAck,
+        });
+
+        // See comment above re duplication.
+        try {
+          await throwIfAbandoned(userAckPromise);
+        } catch (err) {
+          if (navigationGuard.wasAbandoned(err)) {
+            onDispose("abandoned-by-navigation");
+            return;
+          }
           throw err;
         }
+
+        onDispose("error");
       } finally {
         actions.setFsmState({ kind: "idle" });
         navigationGuard.exit();
-        onDispose(runOutcome);
       }
     }),
   };
@@ -361,16 +374,10 @@ export function asyncUserFlowSlice<
     RunArgsT,
     RunStateT,
     AttemptOutcomeNubT
-  >,
-  options: Partial<AsyncUserFlowOptions> = kDefaultAsyncUserFlowOptions
+  >
 ): SpecificSliceT &
   AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
-  const effectiveOptions: AsyncUserFlowOptions = Object.assign(
-    {},
-    kDefaultAsyncUserFlowOptions,
-    options
-  );
-  const asyncFlowModelSlice = baseAsyncUserFlowSlice(funcs, effectiveOptions);
+  const asyncFlowModelSlice = baseAsyncUserFlowSlice(funcs);
   return Object.assign({}, specificSlice, asyncFlowModelSlice);
 }
 
@@ -386,14 +393,23 @@ export function isInteractable<RunStateT>(
   return fsmState.kind === "interacting";
 }
 
-export function isActive<RunStateT>(
-  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
-): fsmState is ActiveAsyncUserFlowFsmState<RunStateT, unknown> {
-  return (
-    fsmState.kind === "interacting" ||
-    fsmState.kind === "attempting" ||
-    fsmState.kind === "awaiting-ack-of-notification"
-  );
+export function isActive<RunStateT, AttemptOutcomeNubT>(
+  fsmState: AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>
+): fsmState is ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT> {
+  switch (fsmState.kind) {
+    case "idle":
+    case "preparing":
+    case "awaiting-ack-of-error":
+      return false;
+
+    case "interacting":
+    case "attempting":
+    case "awaiting-ack-of-notification":
+      return true;
+
+    default:
+      return assertNever(fsmState);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////
