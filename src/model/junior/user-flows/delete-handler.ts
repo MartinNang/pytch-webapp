@@ -1,38 +1,66 @@
 import { IPytchAppModel, PytchAppModelActions } from "../..";
 import {
   AsyncUserFlowSlice,
-  VoidOutcome,
+  AttemptOutcome,
   alwaysSubmittable,
   asyncUserFlowSlice,
   idPrepare,
-  noModalWithVoid,
 } from "../../user-interactions/async-user-flow";
+import { HandlerInActorContext } from "../structured-program";
 import { HandlerDeletionDescriptor } from "../structured-program/program";
 
 type DeleteHandlerRunArgs = HandlerDeletionDescriptor;
 
 type DeleteHandlerRunState = DeleteHandlerRunArgs;
 
+type DeleteHandlerOutcomeNub = {
+  handler: HandlerInActorContext;
+};
+
+type DeleteHandlerOutcome = AttemptOutcome<DeleteHandlerOutcomeNub>;
+
 // No actions:
 export type DeleteHandlerFlow = AsyncUserFlowSlice<
   IPytchAppModel,
   DeleteHandlerRunArgs,
-  DeleteHandlerRunState
+  DeleteHandlerRunState,
+  DeleteHandlerOutcomeNub
 >;
 
 async function attempt(
   runState: DeleteHandlerRunState,
   actions: PytchAppModelActions
-): Promise<VoidOutcome> {
+): Promise<DeleteHandlerOutcome> {
   // This action is sync.
-  actions.activeProject.deleteHandler(runState);
+  const handler = actions.activeProject.deleteHandler(runState);
 
-  return noModalWithVoid;
+  return { needsModalNotification: false, nub: { handler } };
+}
+
+function onCompleted(
+  _runState: DeleteHandlerRunState,
+  outcomeNub: DeleteHandlerOutcomeNub,
+  storeActions: PytchAppModelActions
+) {
+  const actor = outcomeNub.handler.actor;
+  const handler = outcomeNub.handler.handler;
+  storeActions.activeProject.pulseNotableChange({
+    kind: "script-deleted",
+    handlerId: handler.id,
+    handlerEventKind: handler.event.kind,
+    actorKind: actor.kind,
+    actorName: actor.name,
+  });
 }
 
 export let deleteHandlerFlow: DeleteHandlerFlow = (() => {
   return asyncUserFlowSlice(
     {},
-    { prepare: idPrepare, isSubmittable: alwaysSubmittable, attempt }
+    {
+      prepare: idPrepare,
+      isSubmittable: alwaysSubmittable,
+      attempt,
+      onCompleted,
+    }
   );
 })();
