@@ -1033,12 +1033,6 @@ export const activeProject: IActiveProject = {
     await actions.syncAssetsFromStorage();
 
     helpers.getStoreActions().projectCollection.noteDatabaseChange();
-    actions.pulseNotableChange({
-      kind: "asset-changed",
-      assetChangedKind: "delete",
-      operationContext: descriptor.operationContext,
-      assetDisplayName: descriptor.displayName,
-    });
   }),
 
   renameAssetAndSync: thunk(async (actions, descriptor, helpers) => {
@@ -1089,13 +1083,6 @@ export const activeProject: IActiveProject = {
     await actions.syncAssetsFromStorage();
 
     helpers.getStoreActions().projectCollection.noteDatabaseChange();
-    const assetAffixes = PytchProgramOps.assetPathAffixes(descriptor.assetName);
-    actions.pulseNotableChange({
-      kind: "asset-changed",
-      assetChangedKind: "update-transform",
-      operationContext: descriptor.operationContext,
-      assetDisplayName: assetAffixes.suffix,
-    });
   }),
 
   requestSyncToStorage: thunk(async (actions, _payload, helpers) => {
