@@ -33,9 +33,26 @@ async function attempt(
   return noModalWithVoid;
 }
 
+function onCompleted(
+  runState: DeleteSpriteRunState,
+  _outcomeNub: void,
+  storeActions: PytchAppModelActions
+) {
+  storeActions.activeProject.pulseNotableChange({
+    kind: "sprite-changed",
+    spriteChangedKind: "delete",
+    spriteName: runState.spriteDisplayName,
+  });
+}
+
 export let deleteSpriteFlow: DeleteSpriteFlow = (() => {
   return asyncUserFlowSlice(
     {},
-    { prepare: idPrepare, isSubmittable: alwaysSubmittable, attempt }
+    {
+      prepare: idPrepare,
+      isSubmittable: alwaysSubmittable,
+      attempt,
+      onCompleted,
+    }
   );
 })();
