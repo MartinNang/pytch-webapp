@@ -69,7 +69,7 @@ context("Working with assets of an actor", () => {
       addFromMediaLib(["apple.png"]);
       attemptAddFromMediaLib(["apple.png"]);
 
-      cy.get(".modal-body .alert-danger").as("err-msg");
+      cy.get(".modal.add-asset-failures .modal-body").as("err-msg");
       cy.get("@err-msg").contains('Cannot add "apple.png"');
       cy.get("@err-msg").contains(containsMatch);
     };
@@ -77,12 +77,12 @@ context("Working with assets of an actor", () => {
     selectSprite("Snake");
     selectActorAspect("Costumes");
     assertErrorCorrect("already contains a Costume");
-    settleModalDialog("Cancel");
+    settleModalDialog("OK");
 
     selectStage();
     selectActorAspect("Backdrops");
     assertErrorCorrect("already contains a Backdrop");
-    settleModalDialog("Cancel");
+    settleModalDialog("OK");
   });
 
   it("can delete all Costumes and show help", () => {
@@ -114,11 +114,11 @@ context("Working with assets of an actor", () => {
     // Weird backdrops, but they'll do the job:
     addFromMediaLib(["apple.png", "bowl.png"]);
 
-    launchDeleteAssetByIndex(0);
+    launchDeleteAssetByIndex(0, "Backdrop");
     settleModalDialog("DELETE");
     assertBackdropNames(["apple.png", "bowl.png"]);
 
-    launchDeleteAssetByIndex(1);
+    launchDeleteAssetByIndex(1, "Backdrop");
     settleModalDialog("DELETE");
     assertBackdropNames(["apple.png"]);
 
@@ -239,12 +239,12 @@ context("Working with assets of an actor", () => {
       cy.get(".CompoundTextInput input").type("{selectAll}{del}sine-1kHz-2s");
       clickUniqueButton("Rename");
 
-      cy.get(".alert-danger").as("err-msg");
+      cy.get(".modal.RenameAssetModal-failure .modal-body p").as("err-msg");
       cy.get("@err-msg").contains('Cannot rename "silence-500ms.mp3"');
       cy.get("@err-msg").contains(containsMatch);
       cy.get("@err-msg").contains('a Sound called "sine-1kHz-2s.mp3"');
 
-      settleModalDialog("Cancel");
+      settleModalDialog("OK");
 
       assertSoundNames(actorKind, ["silence-500ms.mp3", "sine-1kHz-2s.mp3"]);
     };
