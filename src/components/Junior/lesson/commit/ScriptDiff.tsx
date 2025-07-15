@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { HTMLProps, KeyboardEventHandler, useId, useState } from "react";
 import classNames from "classnames";
 import {
   DiffViewKind,
@@ -15,20 +15,71 @@ import RawElement from "../../../RawElement";
 import { assertNever } from "../../../../utils";
 
 type ScriptDiffLine = PrettyPrintedLine<HTMLElement>;
+type SetViewKindFun = (kind: DiffViewKind) => void;
+
+type TabAndPanelIds = { tabId: string; panelId: string };
+const tabAndPanelIds = (
+  idNub: string,
+  viewKind: DiffViewKind
+): TabAndPanelIds => {
+  const stem = `pytch:sbs-diff:${idNub}:${viewKind}`;
+  return { tabId: `${stem}:tab`, panelId: `${stem}:tabpanel` };
+};
+
+const switchTabViaKeyFun: (
+  setViewKind: SetViewKindFun
+) => KeyboardEventHandler = (setViewKind) => (event) => {
+  const currentFocusDiv = event.target as HTMLDivElement;
+
+  const newFocusDiv = (() => {
+    switch (event.key) {
+      case "ArrowLeft":
+      case "ArrowUp": {
+        return currentFocusDiv.previousSibling;
+      }
+      case "ArrowRight":
+      case "ArrowDown": {
+        return currentFocusDiv.nextSibling;
+      }
+      default:
+        return null;
+    }
+  })() as HTMLDivElement | null;
+
+  if (newFocusDiv != null) {
+    currentFocusDiv.tabIndex = -1;
+    newFocusDiv.tabIndex = 0;
+    newFocusDiv.focus();
+    const innerDiv = newFocusDiv.firstChild as HTMLDivElement;
+    setViewKind(innerDiv.dataset.viewKind as DiffViewKind);
+  }
+};
 
 type DiffViewKindSelectorProps = {
   viewKind: DiffViewKind;
-  setViewKind: (kind: DiffViewKind) => void;
+  setViewKind: SetViewKindFun;
+  tabSetIdNub: string;
 };
 const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
   viewKind,
   setViewKind,
+  tabSetIdNub,
 }) => {
   const viewOption = (thisViewKind: DiffViewKind, label: string) => {
     const isActive = viewKind === thisViewKind;
     const classes = classNames("DiffViewKindOption", { isActive });
+    const switchTabViaKey = switchTabViaKeyFun(setViewKind);
+    const ids = tabAndPanelIds(tabSetIdNub, thisViewKind);
     return (
-      <div className="DiffViewKindOption-container">
+      <li
+        className="DiffViewKindOption-container"
+        tabIndex={isActive ? 0 : -1}
+        onKeyDown={switchTabViaKey}
+        role="tab"
+        id={ids.tabId}
+        aria-controls={ids.panelId}
+        aria-selected={isActive}
+      >
         <div
           data-view-kind={thisViewKind}
           className={classes}
@@ -36,16 +87,16 @@ const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
         >
           <span>{label}</span>
         </div>
-      </div>
+      </li>
     );
   };
 
   return (
-    <div className="DiffViewKindSelector">
+    <ul className="DiffViewKindSelector">
       {viewOption("bare-old", "What should my code look like now?")}
       {viewOption("old-diff", "Where should I change my code?")}
       {viewOption("new-diff", "What should my code look like afterwards?")}
-    </div>
+    </ul>
   );
 };
 
@@ -84,14 +135,22 @@ const ScriptDiffViewLine: React.FC<ScriptDiffViewLineProps> = ({ line }) => {
   }
 };
 
+// The `tabSetIdNub` prop is optional because this component is used in
+// two contexts.  One is for the three-tab mechanism for allowing the
+// user to see bare-old/old/new code; in this case, we do need ARIA
+// tab/tabpanel information.  The other is for adding a script in one go
+// or changing a hatblock, when the component is used just to display
+// the code; here it does not need tab/tabpanel info.
 type ScriptDiffViewProps = {
   thisViewKind: DiffViewKind;
   activeViewKind: DiffViewKind;
+  tabSetIdNub?: string;
   lines: Array<ScriptDiffLine>;
 };
 const ScriptDiffView: React.FC<ScriptDiffViewProps> = ({
   thisViewKind,
   activeViewKind,
+  tabSetIdNub,
   lines,
 }) => {
   const isActive = activeViewKind === thisViewKind;
@@ -114,7 +173,22 @@ const ScriptDiffView: React.FC<ScriptDiffViewProps> = ({
     rawContent
   );
 
-  return <div className={classes}>{content}</div>;
+  const tabProps: HTMLProps<HTMLDivElement> = (() => {
+    if (tabSetIdNub == null) return {};
+
+    const ids = tabAndPanelIds(tabSetIdNub, thisViewKind);
+    return {
+      role: "tabpanel",
+      id: ids.panelId,
+      "aria-labelledby": ids.tabId,
+    };
+  })();
+
+  return (
+    <div className={classes} {...tabProps}>
+      {content}
+    </div>
+  );
 };
 
 function enrichedDiff(oldCodeText: string, newCodeText: string) {
@@ -126,26 +200,30 @@ type ScriptCodeDiffProps = {
 };
 export const ScriptCodeDiff: React.FC<ScriptCodeDiffProps> = ({ richDiff }) => {
   const [viewKind, setViewKind] = useState<DiffViewKind>("bare-old");
+  const tabSetIdNub = useId();
   return (
     <>
       <div className="code-representations">
         <ScriptDiffView
           thisViewKind="bare-old"
           activeViewKind={viewKind}
+          tabSetIdNub={tabSetIdNub}
           lines={richDiff.viewBareOld()}
         />
         <ScriptDiffView
           thisViewKind="old-diff"
           activeViewKind={viewKind}
+          tabSetIdNub={tabSetIdNub}
           lines={richDiff.viewOldDiff()}
         />
         <ScriptDiffView
           thisViewKind="new-diff"
           activeViewKind={viewKind}
+          tabSetIdNub={tabSetIdNub}
           lines={richDiff.viewNewDiff()}
         />
       </div>
-      <DiffViewKindSelector {...{ viewKind, setViewKind }} />
+      <DiffViewKindSelector {...{ viewKind, setViewKind, tabSetIdNub }} />
     </>
   );
 };
