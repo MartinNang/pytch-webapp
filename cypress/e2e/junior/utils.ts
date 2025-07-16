@@ -1,6 +1,7 @@
 import {
   ActorKind,
   AssetMimeType,
+  EventDescriptorKind,
   StructuredProgram,
 } from "../../../src/model/junior/structured-program";
 import { deIndent } from "../../common/utils";
@@ -10,7 +11,7 @@ import { AceControllerMap } from "../../../src/skulpt-connection/code-editor";
 import { launchProjectInListDropdownAction } from "../utils";
 import { Actions } from "easy-peasy";
 import { IActiveProject } from "../../../src/model/project";
-import { range } from "../../../src/utils";
+import { assertNever, range } from "../../../src/utils";
 import { PytchAppStore } from "../../../src/store";
 
 /** Click on the Sprite with the given `spriteName`, thereby selecting
@@ -369,7 +370,29 @@ export class ScriptOps {
 
   /** Click on the "green flag" hat block. */
   static selectGreenFlagHatBlock() {
-    cy.get("li.EventKindOption").contains("green flag").click();
+    ScriptOps.selectHatBlock("green-flag");
+  }
+
+  /** Click on the hat block for the given event-kind. */
+  static selectHatBlock(eventKind: EventDescriptorKind) {
+    const match = (() => {
+      switch (eventKind) {
+        case "green-flag":
+          return /when green flag clicked/;
+        case "key-pressed":
+          return /when .* key pressed/;
+        case "message-received":
+          return /when I receive/;
+        case "start-as-clone":
+          return /when I start as a clone/;
+        case "clicked":
+          return /when .* clicked/;
+        default:
+          return assertNever(eventKind);
+      }
+    })();
+
+    cy.get("li.EventKindOption").contains(match).click();
   }
 
   /** Open the drop-down for the script at the given `scriptIndex`, and
@@ -432,11 +455,25 @@ export const clickAddSomething = (match: string) =>
 
 const launchAddFun = (match: string) => () => clickAddSomething(match);
 
+function assetFromThisDevice(fixtureBasenames: Array<string> = []) {
+  const filenames = fixtureBasenames.map(
+    (basename) => `sample-project-assets/${basename}`
+  );
+
+  clickAddSomething("Add from this device");
+  cy.contains("Add to project").should("be.disabled");
+  cy.get('.form-control[type="file"]').attachFile(
+    filenames.map((filePath) => ({ filePath, encoding: "binary" }))
+  );
+}
+
 /** Assuming that we are in the IDE, click, an "add something" button,
- * according to the function-valued property. */
+ * according to the function-valued property.  The functions take no
+ * arguments, except for `assetFromThisDevice()`, which takes an
+ * optional list of fixture basenames to attach to the file-chooser. */
 export const launchAdd = {
   sprite: launchAddFun("Add sprite"),
-  assetFromThisDevice: launchAddFun("Add from this device"),
+  assetFromThisDevice,
   assetFromMediaLibrary: launchAddFun("Add from media library"),
   script: launchAddFun("Add script"),
 };
@@ -487,6 +524,15 @@ export const launchRenameAssetByIndex = (idx: number) => {
   cy.get("div.tab-pane.active .AssetCard").eq(idx).find(".dropdown").click();
   cy.get(".dropdown-item").contains("Rename").click();
   cy.get(".modal-header").should("have.length", 1).contains("Rename");
+};
+
+/** Assuming that we are in the per-method IDE, with the Appearances
+ * (i.e., Backdrops or Costumes) tab active, launch the Crop/scale modal
+ * for the appearance at the given `idx`. */
+export const launchCropAssetByIndex = (idx: number) => {
+  cy.get("div.tab-pane.active .AssetCard").eq(idx).find(".dropdown").click();
+  cy.get(".dropdown-item").contains("Crop/scale").click();
+  cy.get(".modal-header").should("have.length", 1).contains("Adjust image");
 };
 
 /** Assuming that we are in the per-method IDE, launch the "rename"
