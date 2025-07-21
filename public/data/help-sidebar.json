@@ -15,8 +15,15 @@
         "kind": "block",
         "actorKind": "sprite",
         "python": "self.point_degrees(angle)",
-        "scratch": "point in direction [-45]",
+        "scratch": "point towards [-45]",
         "help": "Turn the `self` Sprite to point in the direction given by `angle`, which measures degrees anticlockwise (counter-clockwise) from its original orientation.  To give a direction in terms of rotation clockwise, use a negative value for `angle`.\n\n```\n# Point (1/8)th turn clockwise\n# compared to original costume:\nself.point_degrees(-45)\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
+        "python": "self.point_to_mouse_pointer()",
+        "scratch": "point to (mouse pointer v)",
+        "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards where the mouse pointer is:\nself.point_to_mouse_pointer()\n```"
     },
     {
         "kind": "block",
@@ -28,9 +35,23 @@
     {
         "kind": "block",
         "actorKind": "sprite",
+        "python": "self.go_to_mouse_pointer()",
+        "scratch": "go to (mouse pointer v)",
+        "help": "Move the `self` Sprite to the position of the mouse pointer.\n\n```\n# Move to where the mouse pointer is:\nself.go_to_mouse_pointer()\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
         "python": "self.glide_to_xy(x, y, seconds)",
         "scratch": "glide [2.5] secs to x: [0] y: [0]",
         "help": "Glide the `self` Sprite smoothly to the position (`x`, `y`) on the stage.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the centre of the stage:\nself.glide_to_xy(0, 0, 2.5)\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
+        "python": "self.glide_to_mouse_pointer(seconds)",
+        "scratch": "glide [2.5] secs to (mouse pointer v)",
+        "help": "Glide the `self` Sprite smoothly to the position of the mouse pointer.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the mouse pointer:\nself.glide_to_mouse_pointer(2.5)\n```"
     },
     {
         "kind": "block",
@@ -521,6 +542,13 @@
         "python": "self.touching(sprite_class)",
         "scratch": "<touching [Apple v]>",
         "help": "Report `True` or `False` according to whether the `self` Sprite is touching either the original `sprite_class` Sprite, or any `sprite_class` clones (if it has any).\n\n```\n# Hide if touching any Apple:\nif self.touching(Apple):\n    self.hide()\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
+        "python": "self.touching_mouse_pointer()",
+        "scratch": "<touching (mouse pointer v)>",
+        "help": "Report `True` or `False` according to whether the `self` Sprite is touching the mouse pointer.\n\n```\n# Hide if touching the mouse pointer:\nif self.touching_mouse_pointer():\n    self.hide()\n```"
     },
     {
         "kind": "block",
