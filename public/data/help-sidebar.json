@@ -22,7 +22,7 @@
         "kind": "block",
         "actorKind": "sprite",
         "python": "self.point_to_mouse_pointer()",
-        "scratch": "point to (mouse pointer v)",
+        "scratch": "point towards (mouse pointer v)",
         "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards where the mouse pointer is:\nself.point_to_mouse_pointer()\n```"
     },
     {
