@@ -5,13 +5,15 @@ import {
 } from "../../model/notable-changes";
 import { useStoreActions, useStoreState } from "../../store";
 
+/** Return whether a handler with the given `handlerId` has just been
+ * changed.  Current usage is that this is only called for an actor's
+ * handlers, so it does not matter that this function returns `true`
+ * when a script has been deleted.  */
 export function useScriptJustUpserted(handlerId: Uuid): boolean {
   return useStoreState((state) =>
     state.activeProject.changesManager.keyedChanges.some((keyedChange) => {
       const change = keyedChange.change;
-      return (
-        change.kind === "script-upserted" && change.handlerId === handlerId
-      );
+      return change.kind === "script-changed" && change.handlerId === handlerId;
     })
   );
 }
@@ -21,8 +23,9 @@ export function useSomeScriptJustAdded(): boolean {
     state.activeProject.changesManager.keyedChanges.some((keyedChange) => {
       const change = keyedChange.change;
       return (
-        change.kind === "script-upserted" &&
-        (change.upsertKind === "insert" || change.upsertKind === "duplicate")
+        change.kind === "script-changed" &&
+        (change.scriptChangedKind === "insert" ||
+          change.scriptChangedKind === "duplicate")
       );
     })
   );
