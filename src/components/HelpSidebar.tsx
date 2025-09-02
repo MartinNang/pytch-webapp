@@ -9,7 +9,8 @@ import {
   HelpSectionContent,
   NonMethodBlockElementDescriptor,
   PurePythonElementDescriptor,
-  PythonCodeFromKind,
+  RichPython,
+  RichPythonFromKind,
   showEntryInContext,
   useDevWorkContext,
 } from "../model/help-sidebar";
@@ -42,13 +43,13 @@ function helpElementsFromProps(props: {
   );
 }
 
-function pythonCodeFromProps(props: {
-  python: PythonCodeFromKind;
+function richPythonFromProps(props: {
+  richPython: RichPythonFromKind;
   workContext: DevWorkContext;
-}): string {
+}): RichPython {
   const programKind = props.workContext.programKind;
   return failIfNull(
-    props.python.get(programKind),
+    props.richPython.get(programKind),
     `no Python code for kind "${programKind}"`
   );
 }
@@ -152,6 +153,25 @@ const HelpNodeSummary: React.FC<HelpNodeSummaryProps> = ({ children }) => {
   );
 };
 
+const RichPythonCode: React.FC<{ richPython: RichPython }> = ({
+  richPython,
+}) => {
+  return richPython.map((fragment, idx) => {
+    switch (fragment.kind) {
+      case "literal":
+        return <span key={idx}>{fragment.value}</span>;
+      case "meta-var":
+        return (
+          <span key={idx} className="meta-var">
+            {fragment.name}
+          </span>
+        );
+      default:
+        return assertNever(fragment);
+    }
+  });
+};
+
 const BlockElement: React.FC<
   BlockElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
@@ -166,7 +186,9 @@ const BlockElement: React.FC<
     <h2 className="has-python">
       <AccordionAngleSignifier wrap />
       {!hideDecorator && (
-        <code onClick={(ev) => ev.preventDefault()}>{props.python}</code>
+        <code onClick={(ev) => ev.preventDefault()}>
+          <RichPythonCode richPython={props.richPython} />
+        </code>
       )}
     </h2>
   );
@@ -190,6 +212,26 @@ const BlockElement: React.FC<
   );
 };
 
+// This is clunky.  We want to mark some identifers as meta-variables,
+// but also get the benefit of consistent syntax highlighting.  So the
+// source JSON has identifiers of the form _MV_blah_blah_MV_ to signify
+// a meta-variable, and the below function strips the _MV_ affixes and
+// adds a class to that span.
+const kMetaVarIdentifierRegExp = new RegExp("^_MV_(.*)_MV_$");
+const patchMetaVars = (lineElt: HTMLPreElement): void => {
+  let codeElt = lineElt.childNodes[0] as HTMLElement;
+  codeElt.childNodes.forEach((child) => {
+    const span = child as HTMLSpanElement;
+    const text = span.innerText;
+    const reMatches = kMetaVarIdentifierRegExp.exec(text);
+    if (reMatches != null) {
+      span.innerText = reMatches[1];
+      span.removeAttribute("style");
+      span.classList.add("meta-var");
+    }
+  });
+};
+
 const NonMethodBlockElement: React.FC<
   NonMethodBlockElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
@@ -200,6 +242,7 @@ const NonMethodBlockElement: React.FC<
     if (preElt.hasAttribute("data-code-populated")) return;
     if (props.python == null) return; // Shouldn't happen
     const codeLineElts = highlightedPreEltsFromCode(props.python);
+    codeLineElts.forEach(patchMetaVars);
     codeLineElts.forEach((elt) => preElt.appendChild(elt));
     preElt.setAttribute("data-code-populated", "yes");
   };
@@ -238,12 +281,14 @@ const NonMethodBlockElement: React.FC<
 };
 
 const PythonAndButtons: React.FC<{
-  python: string;
+  richPython: RichPython;
 }> = (props) => (
   <>
     <h2 className="has-python">
       <AccordionAngleSignifier wrap />
-      <code>{props.python}</code>
+      <code>
+        <RichPythonCode richPython={props.richPython} />
+      </code>
     </h2>
     <div className="python-with-buttons">
       <div />
@@ -255,12 +300,12 @@ const PurePythonElement: React.FC<
   PurePythonElementDescriptor & { workContext: DevWorkContext }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
-  const pythonCode = pythonCodeFromProps(props);
+  const richPython = richPythonFromProps(props);
 
   return (
     <details className="pytch-method">
       <HelpNodeSummary>
-        <PythonAndButtons python={pythonCode} />
+        <PythonAndButtons richPython={richPython} />
         <AccordionTextSignifier />
       </HelpNodeSummary>
       <HelpText help={helpElements} />

@@ -23,8 +23,6 @@ export type ElementArray = Array<Element>;
 
 export type HelpContentFromContext = Map<DevWorkContextFlatKey, ElementArray>;
 
-export type PythonCodeFromKind = Map<PytchProgramKind, string>;
-
 type HelpElementDescriptorCommon = {
   forActorKinds: Array<ActorKind>;
 };
@@ -35,9 +33,67 @@ export type HeadingElementDescriptor = HelpElementDescriptorCommon & {
   heading: string;
 };
 
+///////////////////////////////////////////////////////////////////////
+
+type RichPythonFragment =
+  | { kind: "literal"; value: string }
+  | { kind: "meta-var"; name: string };
+
+export type RichPython = Array<RichPythonFragment>;
+
+export type RichPythonFromKind = Map<PytchProgramKind, RichPython>;
+
+const parsedRichPython = (encoded: string): RichPython => {
+  let tok = "";
+  let insideBackticks = false;
+  let fragments: RichPython = [];
+  for (const ch of encoded) {
+    if (ch === "`") {
+      if (tok !== "") {
+        const fragment: RichPythonFragment = insideBackticks
+          ? { kind: "meta-var", name: tok }
+          : { kind: "literal", value: tok };
+        fragments.push(fragment);
+      }
+      insideBackticks = !insideBackticks;
+      tok = "";
+    } else {
+      tok += ch;
+    }
+  }
+
+  if (insideBackticks) {
+    throw new Error("encoded rich Python ended inside backticks");
+  }
+
+  fragments.push({ kind: "literal", value: tok });
+
+  return fragments;
+};
+
+const plainFromRich = (richPython: RichPython): string => {
+  let plain = "";
+  for (const frag of richPython) {
+    switch (frag.kind) {
+      case "literal":
+        plain += frag.value;
+        break;
+      case "meta-var":
+        plain += frag.name;
+        break;
+      default:
+        return assertNever(frag);
+    }
+  }
+  return plain;
+};
+
+///////////////////////////////////////////////////////////////////////
+
 export type BlockElementDescriptor = HelpElementDescriptorCommon & {
   kind: "block";
   python: string;
+  richPython: RichPython;
   eventDescriptor?: EventDescriptor;
   scratch: SVGElement;
   scratchIsLong: boolean;
@@ -55,7 +111,7 @@ export type NonMethodBlockElementDescriptor = HelpElementDescriptorCommon & {
 
 export type PurePythonElementDescriptor = HelpElementDescriptorCommon & {
   kind: "pure-python";
-  python: PythonCodeFromKind;
+  richPython: RichPythonFromKind;
   help: HelpContentFromContext;
   helpIsVisible: boolean;
 };
@@ -236,9 +292,9 @@ type RawPythonCodeValue = string | Record<string, string>;
  * object with properties whose names are `PytchProgramKind` values and
  * whose values are strings) into a `PythonCodeFromKind` map.
  */
-const makePythonCodeLut = (
+const makeRichPythonLut = (
   rawPython: RawPythonCodeValue
-): PythonCodeFromKind => {
+): RichPythonFromKind => {
   const pythonCodeForKind = (kind: PytchProgramKind): string => {
     if (typeof rawPython === "string") {
       return rawPython;
@@ -252,8 +308,12 @@ const makePythonCodeLut = (
     }
   };
 
-  return new Map<PytchProgramKind, string>(
-    PytchProgramAllKinds.map((kind) => [kind, pythonCodeForKind(kind)])
+  const richPythonForKind = (kind: PytchProgramKind): RichPython => {
+    return parsedRichPython(pythonCodeForKind(kind));
+  };
+
+  return new Map(
+    PytchProgramAllKinds.map((kind) => [kind, richPythonForKind(kind)])
   );
 };
 
@@ -273,10 +333,13 @@ const applicableActorKindsFromRaw = (raw: any): Array<ActorKind> => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const makeBlockElementDescriptor = (raw: any): BlockElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
+  const richPython = parsedRichPython(raw.python);
+  const python = plainFromRich(richPython);
   return {
     kind: "block",
     forActorKinds,
-    python: raw.python,
+    python,
+    richPython,
     eventDescriptor: raw.eventDescriptor,
     scratch: makeScratchSVG(raw.scratch, scratchblocksScale),
     scratchIsLong: raw.scratchIsLong ?? false,
@@ -308,7 +371,7 @@ const makePurePythonElementDescriptor = (
   return {
     kind: "pure-python",
     forActorKinds,
-    python: makePythonCodeLut(raw.python),
+    richPython: makeRichPythonLut(raw.python),
     help: makeHelpContentLut(raw.help, forActorKinds),
     helpIsVisible: false,
   };
