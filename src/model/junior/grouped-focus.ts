@@ -193,6 +193,20 @@ type FocusBookmarkedItemOutcome =
   | { kind: "bookmarked" | "last" | "fallback"; elt: HTMLElement }
   | { kind: "none" };
 
+type BookmarkMaybeFocusOptions = {
+  doFocus: boolean;
+};
+
+const kBookmarkMaybeFocusOptionsDefaults: BookmarkMaybeFocusOptions = {
+  doFocus: true,
+};
+
+function effectiveBookmarkMaybeFocusOptions(
+  options?: Partial<BookmarkMaybeFocusOptions>
+): BookmarkMaybeFocusOptions {
+  return Object.assign({}, kBookmarkMaybeFocusOptionsDefaults, options ?? {});
+}
+
 export class GroupedFocusManager {
   bookmarkFromKey_: Map<string, number>;
   pendingKey: string | null;
@@ -306,13 +320,24 @@ export class GroupedFocusManager {
   }
 
   /** Make the given `itemElt` within the given `containerElt` be the
-   * bookmarked one, and also give it focus. */
-  bookmarkAndFocus(containerElt: HTMLElement, itemElt: HTMLElement) {
+   * bookmarked one, and also, by default, give it focus.  To just set
+   * the bookmark, and not focus the newly-bookmarked item, include
+   * `doFocus: false` in `options`. */
+  bookmarkMaybeFocus(
+    containerElt: HTMLElement,
+    itemElt: HTMLElement,
+    options?: Partial<BookmarkMaybeFocusOptions>
+  ) {
+    const effectiveOptions = effectiveBookmarkMaybeFocusOptions(options);
+
     const key = GroupedFocusManager.keyFromElt(containerElt);
     const itemContext = GroupedFocusManager.itemContext(containerElt, itemElt);
     this.setBookmark(key, itemContext.index);
-    itemElt.focus();
     this.setTabFocusability(itemContext.allItems, itemContext.index);
+
+    if (effectiveOptions.doFocus) {
+      itemElt.focus();
+    }
   }
 
   resolvedContainerAndKey(containerEltOrKey: HTMLElement | string) {
@@ -368,7 +393,7 @@ export class GroupedFocusManager {
       return;
     }
 
-    this.bookmarkAndFocus(containerElt, newFocusedItem);
+    this.bookmarkMaybeFocus(containerElt, newFocusedItem);
     return newFocusedItem;
   }
 
@@ -376,20 +401,24 @@ export class GroupedFocusManager {
     return GroupedFocusManager.containedItemElts(containerElt).length;
   }
 
-  /** Bookmark and focus the navigable item descendent of a specified
-   * container element which is the given `offset` after the
+  /** Bookmark and, by default, focus the navigable item descendent of a
+   * specified container element which is the given `offset` after the
    * currently-bookmarked item.  (So if `offset` is negative, this moves
    * the bookmark earlier in the list.)  The container can be specified
    * either by directly supplying an `HTMLElement`, or by supplying the
    * string key identifying it.
    *
+   * To just bookmark (and not focus) the item, include `doFocus: false`
+   * in `options`.
+   *
    * Return either `undefined` (in the case of error or attempt to move
    * outside the range of valid items) or the `HTMLElement` to which the
    * focus was moved.
    */
-  focusOffsetItem(
+  bookmarkMaybeFocusOffsetItem(
     containerEltOrKey: HTMLElement | string,
-    offset: number
+    offset: number,
+    options?: Partial<BookmarkMaybeFocusOptions>
   ): HTMLElement | undefined {
     const { containerElt, key } =
       this.resolvedContainerAndKey(containerEltOrKey);
@@ -420,7 +449,7 @@ export class GroupedFocusManager {
       return;
     }
 
-    this.bookmarkAndFocus(containerElt, newBookmarkedItem);
+    this.bookmarkMaybeFocus(containerElt, newBookmarkedItem, options);
     return newBookmarkedItem;
   }
 
@@ -447,14 +476,14 @@ export class GroupedFocusManager {
     const mBookmarkedItem = items[bookmark];
     if (mBookmarkedItem != null) {
       const focusTarget = eltOrSectionSummary(mBookmarkedItem);
-      this.bookmarkAndFocus(containerElt, focusTarget);
+      this.bookmarkMaybeFocus(containerElt, focusTarget);
       return { kind: "bookmarked", elt: focusTarget };
     }
 
     const mLastItem = items[items.length - 1];
     if (mLastItem != null) {
       const focusTarget = eltOrSectionSummary(mLastItem);
-      this.bookmarkAndFocus(containerElt, focusTarget);
+      this.bookmarkMaybeFocus(containerElt, focusTarget);
       return { kind: "last", elt: focusTarget };
     }
 
@@ -631,7 +660,10 @@ export class GroupedFocusManager {
             switch (evt.key) {
               case "ArrowRight":
               case "ArrowDown": {
-                const mNewFocusedElt = this.focusOffsetItem(elt, 1);
+                const mNewFocusedElt = this.bookmarkMaybeFocusOffsetItem(
+                  elt,
+                  1
+                );
                 onFocusFromKeyboard(mNewFocusedElt);
                 evt.preventDefault();
                 break;
@@ -639,7 +671,10 @@ export class GroupedFocusManager {
 
               case "ArrowLeft":
               case "ArrowUp": {
-                const mNewFocusedElt = this.focusOffsetItem(elt, -1);
+                const mNewFocusedElt = this.bookmarkMaybeFocusOffsetItem(
+                  elt,
+                  -1
+                );
                 onFocusFromKeyboard(mNewFocusedElt);
                 evt.preventDefault();
                 break;

@@ -148,7 +148,10 @@ export const HatBlock: React.FC<HatBlockProps> = ({
         // Defer updating bookmark until CodeEditor has re-rendered with
         // new order of scripts.
         setTimeout(() => {
-          focusContext.focusOffsetItem(groupedFocusKey, bookmarkOffset);
+          focusContext.bookmarkMaybeFocusOffsetItem(
+            groupedFocusKey,
+            bookmarkOffset
+          );
         });
       }
     };
@@ -159,7 +162,20 @@ export const HatBlock: React.FC<HatBlockProps> = ({
   const duplicateHandlerAction = useStoreActions(
     (a) => a.activeProject.duplicateHandlerAndNotify
   );
-  const onDuplicate = () => duplicateHandlerAction({ actorId, handlerId });
+  const onDuplicate = () => {
+    duplicateHandlerAction({ actorId, handlerId });
+
+    // Defer updating bookmark until CodeEditor has re-rendered with the
+    // newly-duplicated script.  The new script appears after the
+    // original, which must have been focused (and so bookmarked), so
+    // increasing the bookmark by 1 makes the new script have focus.  Do
+    // not actually focus the entire script; we focus the editor.
+    setTimeout(() => {
+      focusContext.bookmarkMaybeFocusOffsetItem(groupedFocusKey, 1, {
+        doFocus: false,
+      });
+    });
+  };
 
   const runDeleteFlow = useJrEditActions((a) => a.deleteHandlerFlow.run);
   const onDelete = () =>
