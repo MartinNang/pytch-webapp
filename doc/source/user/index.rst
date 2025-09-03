@@ -14,6 +14,7 @@ The Pytch web app helps you write Python programs in a Scratch-like way.
    ../../medialib/user/index
    printing-output
    errors-and-debugging
+   downloading-and-exporting
 
 
 Privacy
