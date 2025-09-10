@@ -19,6 +19,7 @@ type BaseFocusContextT = {
   pageKind: FocusContextPageKind;
   focusBookmarkedItem: GlobalFocusSteering["focusBookmarkedItem"];
   focusBookmarkedItemOrQueue: GroupedFocusManager["focusBookmarkedItemOrQueueRequest"];
+  setBookmark: GroupedFocusManager["setBookmark"];
   bookmarkMaybeFocusOffsetItem: GroupedFocusManager["bookmarkMaybeFocusOffsetItem"];
   bookmarkItemByKeyAndIndex: GroupedFocusManager["bookmarkItemByKeyAndIndex"];
   ensureBookmarkInRange: GroupedFocusManager["ensureBookmarkInRange"];
@@ -37,12 +38,12 @@ type PerMethodExtraContext = {
   onDisposeDeleteScript: AsyncUserFlowOnDisposeFun;
   onDisposeAddSprite: () => AsyncUserFlowOnDisposeFun;
   onDisposeDeleteOrRenameSprite: AsyncUserFlowOnDisposeFun;
-  onDisposeDeleteAsset: AsyncUserFlowOnDisposeFun;
+  onDisposeManipulateAsset: AsyncUserFlowOnDisposeFun;
 };
 
 type FlatExtraContext = {
   pageKind: "flat";
-  onDisposeDeleteAsset: AsyncUserFlowOnDisposeFun;
+  onDisposeManipulateAsset: AsyncUserFlowOnDisposeFun;
 };
 
 type MyProjectsListExtraContext = {
@@ -68,6 +69,8 @@ export const createFocusContext = (
       groupedFocusManager
     );
 
+  const setBookmark = groupedFocusManager.setBookmark.bind(groupedFocusManager);
+
   const bookmarkMaybeFocusOffsetItem =
     groupedFocusManager.bookmarkMaybeFocusOffsetItem.bind(groupedFocusManager);
 
@@ -86,7 +89,8 @@ export const createFocusContext = (
   const focusBookmarkedIfUserSettledFun =
     (stem: GlobalFocusTargetStem) => (runOutcome: RunOutcome) => {
       if (flowWasSettledByUser(runOutcome)) {
-        globalFocusSteering.focusBookmarkedItem(stem);
+        // Allow any re-renders to happen.
+        setTimeout(() => globalFocusSteering.focusBookmarkedItem(stem), 0);
       }
     };
 
@@ -120,6 +124,7 @@ export const createFocusContext = (
   const baseContextNub = {
     focusBookmarkedItem,
     focusBookmarkedItemOrQueue,
+    setBookmark,
     bookmarkMaybeFocusOffsetItem,
     bookmarkItemByKeyAndIndex,
     ensureBookmarkInRange,
@@ -145,7 +150,7 @@ export const createFocusContext = (
 
       const perMethodExtras = {
         pageKind,
-        onDisposeDeleteAsset: focusBookmarkedActorProp,
+        onDisposeManipulateAsset: focusBookmarkedActorProp,
         onDisposeAddScript,
         onDisposeChangeHatBlock: focusBookmarkedActorProp,
         onDisposeDeleteScript: focusBookmarkedActorProp,
@@ -157,12 +162,12 @@ export const createFocusContext = (
     }
 
     case "flat": {
-      const onDisposeDeleteAsset =
+      const onDisposeManipulateAsset =
         focusBookmarkedIfUserSettledFun("gfs__flatassets");
 
       const flatExtras = {
         pageKind,
-        onDisposeDeleteAsset,
+        onDisposeManipulateAsset,
       };
 
       return Object.assign({}, baseContextNub, flatExtras);

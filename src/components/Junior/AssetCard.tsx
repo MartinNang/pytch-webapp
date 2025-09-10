@@ -52,6 +52,8 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
   assetKind,
   fullPathname,
 }) => {
+  const pageKind = pageKindFromOperationScope(operationScope);
+  const focusContext = useFocusContext(pageKind);
   const runRenameAsset = useRunFlow((f) => f.renameAssetFlow);
 
   const operationContextKey = `${operationScope}/${assetKind}` as const;
@@ -61,6 +63,7 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
       operationContextKey,
       fixedPrefix: nameAffixes.prefix,
       oldNameSuffix: nameAffixes.suffix,
+      onDispose: focusContext.onDisposeManipulateAsset,
     });
 
   return (
@@ -93,7 +96,7 @@ function useOnDeleteFun(
       operationContextKey,
       name: fullPathname,
       displayName,
-      onDispose: focusContext.onDisposeDeleteAsset,
+      onDispose: focusContext.onDisposeManipulateAsset,
     });
   };
 }
@@ -140,6 +143,8 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
   projectId,
   presentation,
 }) => {
+  const pageKind = pageKindFromOperationScope(operationScope);
+  const focusContext = useFocusContext(pageKind);
   const runCropScaleImage = useRunFlow((f) => f.cropScaleImageFlow);
 
   if (presentation.presentation.kind !== "image") {
@@ -163,6 +168,7 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
       existingCrop: transform,
       originalSize: { width: fullSource.width, height: fullSource.height },
       sourceURL: new URL(fullSource.src),
+      onDispose: focusContext.onDisposeManipulateAsset,
     });
   };
 
@@ -176,12 +182,22 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
   );
 };
 
-type CopyAssetNameDropdownItemProps = { assetName: string };
+type CopyAssetNameDropdownItemProps = {
+  operationScope: AssetOperationScope;
+  assetName: string;
+};
 const CopyAssetNameDropdownItem: React.FC<CopyAssetNameDropdownItemProps> = ({
+  operationScope,
   assetName,
 }) => {
+  const pageKind = pageKindFromOperationScope(operationScope);
+  const focusContext = useFocusContext(pageKind);
+
   const nameStringLiteral = pyStringRepr(assetName);
-  const onCopyName = () => copyTextToClipboard(nameStringLiteral);
+  const onCopyName = () => {
+    copyTextToClipboard(nameStringLiteral);
+    focusContext.onDisposeManipulateAsset("completed");
+  };
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={onCopyName}>
       <span className="with-icon">
@@ -232,7 +248,10 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
 
   return (
     <CaptiveContextMenu.DropdownMenu>
-      <CopyAssetNameDropdownItem assetName={displayName} />
+      <CopyAssetNameDropdownItem
+        operationScope={operationScope}
+        assetName={displayName}
+      />
       <CropScaleDropdownItem
         operationScope={operationScope}
         assetKind={assetKind}
