@@ -131,12 +131,39 @@ export function assertOnHomepage() {
   cy.get(".welcome-text .CodingJourney");
 }
 
-/** Assert that text satisfying the given predicate `textIsExpected()`
- * has been copied to the clipboard.  (Note that this test cannot
- * actually inspect the contents of the clipboard, so it relies on the
- * code under test using the utility function `copyTextToClipboard()`.)
+/** Assert that no modal dialogs are visible. */
+export function assertNoModal() {
+  cy.get(".modal-dialog").should("not.exist");
+}
+
+/** Assert that at least one modal dialog is visible, and that the first
+ * such has the given `expTitle` as its title.  (Usually at most one
+ * modal dialog can exist, but in rare instances there can be "stacked"
+ * modals; this is why we look at the first one only).
  * */
-export function assertCopiedText(textIsExpected: (text: string) => boolean) {
+export function assertModalWithTitle(expTitle: string) {
+  cy.get(".modal-title").eq(0).should("have.text", expTitle);
+}
+
+/** Assert that text satisfying a predicate has been copied to the
+ * clipboard.  The predicate can be given in either of the following
+ * ways.
+ *
+ * * as a fixed string, in which case the copied text must equal the
+ *   given string;
+ * * as a predicate function which accepts the copied text and returns
+ *   `true`/`false` according to whether that string is as expected.
+ *
+ * (Note that this test cannot actually inspect the contents of the
+ * clipboard, so it relies on the code under test using the utility
+ * function `copyTextToClipboard()`.)
+ * */
+export function assertCopiedText(textIsExpected: (t: string) => boolean): void;
+export function assertCopiedText(expectedText: string): void;
+export function assertCopiedText(match: string | ((text: string) => boolean)) {
+  const textIsExpected =
+    typeof match === "string" ? (t: string) => t === match : match;
+
   cy.waitUntil(() =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.window().then((win: any) => {

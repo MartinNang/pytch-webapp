@@ -3,8 +3,11 @@
 import { AsyncFile } from "../../src/storage/google-drive";
 import { MockApiBehaviour } from "../../src/storage/google-drive/mock";
 import { valueCell } from "../../src/utils";
-import { assertInIDE, assertOnHomepage } from "./utils";
+import { assertInIDE, assertModalWithTitle, assertOnHomepage } from "./utils";
 type MatchContent = Parameters<Cypress.Chainable["contains"]>[1];
+
+const kImportModalTitle = "Import from Google Drive";
+const kExportModalTitle = "Export to Google Drive";
 
 context("Google Drive import and export", () => {
   const setApiBehaviourOpts = (behaviour: MockApiBehaviour) => ({
@@ -85,7 +88,7 @@ context("Google Drive import and export", () => {
     };
 
     const assertExportFailureShown = (expMessage: string) => {
-      cy.get(".modal-header").contains("Export to Google");
+      assertModalWithTitle(kExportModalTitle);
       cy.get(".modal-body")
         .find(".outcome-summary.failures")
         .contains(expMessage);
@@ -99,7 +102,7 @@ context("Google Drive import and export", () => {
 
     const assertExportSucceeds = () => {
       cy.pytchChooseDropdownEntry("Export");
-      cy.get(".modal-header").contains("Export to Google");
+      assertModalWithTitle(kExportModalTitle);
       cy.get(".modal-body").contains("Name of file");
       cy.get("button").contains("Export").click();
       cy.get(".modal-body").contains(/Project exported to.*[.]zip/);
@@ -127,7 +130,7 @@ context("Google Drive import and export", () => {
         });
         startImportFlow(mockBehaviour);
 
-        cy.get(".modal-title").contains("Import from Google");
+        assertModalWithTitle(kImportModalTitle);
         cy.get(".modal-body .outcome-summary.failures").contains(
           "something_went_wrong"
         );
@@ -143,7 +146,7 @@ context("Google Drive import and export", () => {
         });
         startImportFlow(mockBehaviour);
 
-        cy.get(".modal-title").contains("Connecting to Google");
+        assertModalWithTitle("Connecting to Google account");
         cy.go("back");
       });
 
@@ -177,7 +180,7 @@ context("Google Drive import and export", () => {
         });
         startImportFlow(mockBehaviour);
 
-        cy.get(".modal-header").contains("Import from Google");
+        assertModalWithTitle(kImportModalTitle);
         cy.go("back");
         cy.get(".modal-header")
           .should("not.exist")
@@ -228,7 +231,7 @@ context("Google Drive import and export", () => {
 
       cy.pytchExactlyOneProject(setApiBehaviourOpts(mockBehaviour));
       cy.pytchChooseDropdownEntry("Export");
-      cy.get(".modal-header").contains("Connecting to Google");
+      assertModalWithTitle("Connecting to Google account");
       cy.get("button").contains("Cancel").click();
       assertExportFailureShown("User cancelled");
     });
@@ -256,7 +259,7 @@ context("Google Drive import and export", () => {
       expSuccesses: Array<MatchContent>,
       expFailures: Array<MatchContent>
     ) => {
-      cy.get(".modal-header").contains(expHeader);
+      assertModalWithTitle(expHeader);
 
       const [expUserName, expUserEmail] =
         expAuthInfoValidity === "valid"
@@ -293,7 +296,7 @@ context("Google Drive import and export", () => {
       cy.get("button").contains("Export").click();
 
       assertTaskDoneInfo(
-        "Export to Google",
+        kExportModalTitle,
         "valid",
         null,
         [/Project exported to.*[.]zip/],
@@ -314,7 +317,7 @@ context("Google Drive import and export", () => {
       cy.get("button").contains("Export").click();
 
       assertTaskDoneInfo(
-        "Export to Google",
+        kExportModalTitle,
         "valid",
         null,
         [/Project exported to "Cool project.zip"/],
@@ -331,7 +334,7 @@ context("Google Drive import and export", () => {
       cy.get("button").contains("Cancel").click();
 
       assertTaskDoneInfo(
-        "Export to Google",
+        kExportModalTitle,
         "valid",
         null,
         [],
@@ -352,7 +355,7 @@ context("Google Drive import and export", () => {
       cy.get("button").contains("Export").click();
 
       assertTaskDoneInfo(
-        "Export to Google",
+        kExportModalTitle,
         "failed",
         null,
         [],
@@ -373,7 +376,7 @@ context("Google Drive import and export", () => {
       cy.contains("Import from Google").click();
 
       assertTaskDoneInfo(
-        "Import from Google",
+        kImportModalTitle,
         "failed",
         null,
         [],
@@ -413,7 +416,7 @@ context("Google Drive import and export", () => {
           cy.contains("Import from Google").click();
 
           assertTaskDoneInfo(
-            "Import from Google",
+            kImportModalTitle,
             "valid",
             null,
             [/Imported.*hello-world-123/],
@@ -440,7 +443,7 @@ context("Google Drive import and export", () => {
       cy.contains("Import from Google").click();
 
       assertTaskDoneInfo(
-        "Import from Google",
+        kImportModalTitle,
         "valid",
         "No files selected",
         [],
@@ -476,7 +479,7 @@ context("Google Drive import and export", () => {
               cy.contains("Import from Google").click();
 
               assertTaskDoneInfo(
-                "Import from Google",
+                kImportModalTitle,
                 "valid",
                 null,
                 [/Imported.*hello-world-123/],

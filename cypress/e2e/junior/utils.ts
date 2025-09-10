@@ -120,20 +120,48 @@ export const assertAspectTabLabels = (expLabels: Array<string>) =>
 export const assertHatBlockLabels = (expLabels: Array<string>) =>
   assertInnerTexts(".PytchScriptEditor .HatBlock .body .content", expLabels);
 
+/** Assuming the "Code" actor aspect is visible, assert that the script
+ * at the given `scriptIndex` has a hat-block of the given
+ * `expEventKind`. */
+export const assertScriptEventKind = (
+  scriptIndex: number,
+  expEventKind: EventDescriptorKind
+) => {
+  cy.get(".HatBlock")
+    .eq(scriptIndex)
+    .should("have.attr", "data-event-handler-kind", expEventKind);
+};
+
+/** Assuming the "Code" actor aspect is visible, focus the script at the
+ * given (zero-based) `scriptIndex` by clicking on its hat block. */
+export function focusScriptViaMouse(scriptIndex: number) {
+  const childIdx1b = scriptIndex + 1;
+  cy.get(
+    `.Junior-ScriptsEditor ol li:nth-child(${childIdx1b}) .HatBlock`
+  ).click();
+}
+
 /** Type the given `text` into the script editor at (zero-based) index
  * `scriptIndex`. */
 export const typeIntoScriptEditor = (scriptIndex: number, text: string) =>
   cy.get(".PytchScriptEditor").eq(scriptIndex).find(".ace_editor").type(text);
+
+const assetCardLabelSelector = (
+  actorKind: ActorKind,
+  assetKind: AssetMimeType
+) => {
+  const actorCls = `actor-kind-${actorKind}`;
+  const assetCls = `asset-kind-${assetKind}`;
+  const assetListSelector = `.Junior-AssetsList.${actorCls}.${assetCls}`;
+  return `${assetListSelector} .AssetCard .label`;
+};
 
 const assertAssetNames = (
   actorKind: ActorKind,
   assetKind: AssetMimeType,
   expNames: Array<string>
 ) => {
-  const actorCls = `actor-kind-${actorKind}`;
-  const assetCls = `asset-kind-${assetKind}`;
-  const assetListSelector = `.Junior-AssetsList.${actorCls}.${assetCls}`;
-  const selector = `${assetListSelector} .AssetCard .label`;
+  const selector = assetCardLabelSelector(actorKind, assetKind);
   assertInnerTexts(selector, expNames);
 };
 
@@ -141,6 +169,17 @@ const assertAppearanceNames = (
   actorKind: ActorKind,
   expLabels: Array<string>
 ) => assertAssetNames(actorKind, "image", expLabels);
+
+/** Assert that the appearance (backdrop or costume according to the
+ * given `actorKind`) at the given `idx` has the given `expLabel`. */
+export function assertAppearanceName(
+  actorKind: ActorKind,
+  idx: number,
+  expLabel: string
+) {
+  const selector = assetCardLabelSelector(actorKind, "image");
+  cy.get(selector).eq(idx).should("have.text", expLabel);
+}
 
 /** Assert that the currently-selected actor is a Sprite, and that its
  * Costumes have the given array `expNames` as their names. */
@@ -240,6 +279,28 @@ export const soleEventHandlerCodeShouldEqual = (expCode: string): void => {
     if (mController == null) throw new Error("no controller");
     const soleCode = mController.value();
     cy.wrap(soleCode).should("equal", expCode);
+  });
+};
+
+/** Assert that the event-handler at the given (zero-based)
+ * `scriptIndex` has the given `expCode` as its Python code. */
+export const eventHandlerCodeShouldEqual = (
+  scriptIndex: number,
+  expCode: string
+): void => {
+  const childIdx1b = scriptIndex + 1;
+  const selector =
+    ".Junior-ScriptsEditor ol" +
+    ` li:nth-child(${childIdx1b}) div.PytchScriptEditor`;
+  cy.get(selector).then(($div) => {
+    const div = $div[0];
+    const handlerId = div.dataset.handlerId ?? "no-data-handler-id-attr";
+    cy.window().then((window) => {
+      const controllerMap = aceControllerMapFromWindow(window);
+      const mController = controllerMap.get(handlerId);
+      if (mController == null) throw new Error("no controller");
+      cy.wrap(mController.value()).should("equal", expCode);
+    });
   });
 };
 
@@ -395,13 +456,19 @@ export class ScriptOps {
     cy.get("li.EventKindOption").contains(match).click();
   }
 
-  /** Open the drop-down for the script at the given `scriptIndex`, and
-   * click on the entry matching `itemMatch`. */
-  static chooseHandlerDropdownItem(scriptIndex: number, itemMatch: string) {
+  /** Open the drop-down for the script at the given `scriptIndex` by
+  clicking on the dropdown toggle. */
+  static launchHandlerDropdown(scriptIndex: number) {
     cy.get(".PytchScriptEditor .HatBlock")
       .eq(scriptIndex)
       .find(".dropdown")
       .click();
+  }
+
+  /** Open the drop-down for the script at the given `scriptIndex`, and
+   * click on the entry matching `itemMatch`. */
+  static chooseHandlerDropdownItem(scriptIndex: number, itemMatch: string) {
+    ScriptOps.launchHandlerDropdown(scriptIndex);
     cy.get(".dropdown-item").contains(itemMatch).click();
   }
 
@@ -504,13 +571,20 @@ export const addFromMediaLib = (matches: Array<string>) => {
 };
 
 /** Assuming that we are in the per-method IDE, with the Appearances
+ * (i.e., Backdrops or Costumes) tab active, launch the context menu for
+ * the appearance at the given `idx`. */
+export const launchActorAssetDropdown = (idx: number) => {
+  cy.get("div.tab-pane.active .AssetCard").eq(idx).find(".dropdown").click();
+};
+
+/** Assuming that we are in the per-method IDE, with the Appearances
  * (i.e., Backdrops or Costumes) tab active, launch the Delete modal for
  * the appearance at the given `idx`. */
 export const launchDeleteAssetByIndex = (
   idx: number,
   appearanceName = "Costume"
 ) => {
-  cy.get(".AssetCard").eq(idx).find(".dropdown").click();
+  launchActorAssetDropdown(idx);
   cy.get(".dropdown-item").contains("DELETE").click();
   cy.get(".modal-header")
     .should("have.length", 1)
@@ -521,7 +595,7 @@ export const launchDeleteAssetByIndex = (
  * (i.e., Backdrops or Costumes) tab active, launch the Rename modal for
  * the appearance at the given `idx`. */
 export const launchRenameAssetByIndex = (idx: number) => {
-  cy.get("div.tab-pane.active .AssetCard").eq(idx).find(".dropdown").click();
+  launchActorAssetDropdown(idx);
   cy.get(".dropdown-item").contains("Rename").click();
   cy.get(".modal-header").should("have.length", 1).contains("Rename");
 };
@@ -530,16 +604,36 @@ export const launchRenameAssetByIndex = (idx: number) => {
  * (i.e., Backdrops or Costumes) tab active, launch the Crop/scale modal
  * for the appearance at the given `idx`. */
 export const launchCropAssetByIndex = (idx: number) => {
-  cy.get("div.tab-pane.active .AssetCard").eq(idx).find(".dropdown").click();
+  launchActorAssetDropdown(idx);
   cy.get(".dropdown-item").contains("Crop/scale").click();
   cy.get(".modal-header").should("have.length", 1).contains("Adjust image");
+};
+
+/** Assuming that we are in the per-method IDE, with the Appearances
+ * (i.e., Backdrops or Costumes) tab active, use the appropriate context
+ * menu item to move the appearance at the given `idx` one place in the
+ * given `direction` in the ordering of appearances for that actor. */
+export const doReorderAssetByIndex = (
+  idx: number,
+  direction: "earlier" | "later"
+) => {
+  launchActorAssetDropdown(idx);
+  cy.get("div.show.dropdown .dropdown-item")
+    .contains(`Move one place ${direction}`)
+    .click();
+};
+
+/** Assuming that we are in the per-method IDE, launch the context menu
+ * for the actor at the given `idx`. */
+export const launchActorDropdown = (idx: number) => {
+  cy.get("div.tab-pane.active .ActorCard").eq(idx).find(".dropdown").click();
 };
 
 /** Assuming that we are in the per-method IDE, launch the "rename"
  * action on the Actor at the given `idx` (which must be non-zero,
  * because it is impossible to rename the Stage).   */
 export const launchRenameActorByIndex = (idx: number) => {
-  cy.get(".ActorCard").eq(idx).click().find(".dropdown").click();
+  launchActorDropdown(idx);
   cy.get(".dropdown-item.disabled").should("not.exist");
   cy.get(".dropdown-item").contains("Rename").click();
   cy.get(".modal-header").should("have.length", 1).contains("Rename");
@@ -549,7 +643,7 @@ export const launchRenameActorByIndex = (idx: number) => {
  * action on the Actor at the given `idx` (which must be non-zero,
  * because it is impossible to delete the Stage).   */
 export const launchDeleteActorByIndex = (idx: number) => {
-  cy.get(".ActorCard").eq(idx).click().find(".dropdown").click();
+  launchActorDropdown(idx);
   cy.get(".dropdown-item.disabled").should("not.exist");
   cy.get(".dropdown-item").contains("DELETE").click();
   cy.get(".modal-header").should("have.length", 1).contains("Delete");
