@@ -72,7 +72,10 @@ const HelpStage: React.FC<HelpStageProps> = ({
   stage,
 }) => {
   const isHidden = stageIndex >= nStagesShown;
-  const classes = classNames(isHidden && "d-none");
+  const classes = classNames(
+    "help-stage-content",
+    isHidden ? "d-none" : "visible"
+  );
 
   const content = stage.fragments.map((fragment, idx) => (
     <HelpStageFragment key={idx} fragment={fragment} />
@@ -189,6 +192,7 @@ const HelpStageButton: React.FC<HelpStageButtonProps> = ({
   return (
     <Button
       variant="outline-success"
+      className="HelpStageButton"
       onClick={onClick}
       aria-label={description}
       aria-controls={controlsId}
