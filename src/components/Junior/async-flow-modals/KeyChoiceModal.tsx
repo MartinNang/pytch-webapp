@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import classNames from "classnames";
@@ -6,6 +6,9 @@ import {
   KeyDescriptor,
   keyboardLayout,
 } from "../../../model/junior/keyboard-layout";
+import { FocusGroupContainer } from "../../FocusGroupContainer";
+import { kFocusGroupItemClassName } from "../../../model/junior/grouped-focus";
+import { useFocusContext } from "../../hooks/focus-steering";
 
 type KeyOptionProps = {
   descriptor: KeyDescriptor;
@@ -19,24 +22,32 @@ const KeyOption: React.FC<KeyOptionProps> = ({
   onClick,
   onDoubleClick,
 }) => {
+  const focusContext = useFocusContext("per-method");
   const { browserKeyName, displayName } = descriptor;
   const isSelected = browserKeyName === selectedKey.browserKeyName;
 
   // Ugly hack to get wide spacebar:
-  const classes = classNames("KeyOption", {
+  const classes = classNames(kFocusGroupItemClassName, "KeyOption", {
     isSelected,
     spacebar: browserKeyName === " ",
   });
 
+  const combinedOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+    onClick();
+    focusContext.onGroupItemClick(event);
+  };
+
   return (
-    <Button
-      variant="secondary"
-      className={classes}
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
-    >
-      <span>{displayName}</span>
-    </Button>
+    <li>
+      <Button
+        variant="secondary"
+        className={classes}
+        onClick={combinedOnClick}
+        onDoubleClick={onDoubleClick}
+      >
+        <span>{displayName}</span>
+      </Button>
+    </li>
   );
 };
 
@@ -57,6 +68,7 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
   return (
     <Modal
       className="KeyChoiceModal"
+      onHide={onCancel}
       animation={false}
       centered={true}
       restoreFocus={false}
@@ -66,21 +78,25 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
         <Modal.Title>Choose a key</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div className="keyboard">
-          {keyboardLayout.map((row) => (
-            <div key={"row-" + row[0].browserKeyName} className="key-row">
-              {row.map((descr) => (
-                <KeyOption
-                  key={descr.browserKeyName}
-                  descriptor={descr}
-                  selectedKey={selectedKey}
-                  onClick={() => selectKey(descr)}
-                  onDoubleClick={() => onAccept(descr)}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
+        <FocusGroupContainer groupedFocusKey="WhenKeyPressedOptionsList">
+          <ol className="keyboard">
+            {keyboardLayout.map((row) => (
+              <li key={"row-" + row[0].browserKeyName} className="key-row">
+                <ol className="keyboard-row">
+                  {row.map((descr) => (
+                    <KeyOption
+                      key={descr.browserKeyName}
+                      descriptor={descr}
+                      selectedKey={selectedKey}
+                      onClick={() => selectKey(descr)}
+                      onDoubleClick={() => onAccept(descr)}
+                    />
+                  ))}
+                </ol>
+              </li>
+            ))}
+          </ol>
+        </FocusGroupContainer>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onCancel}>
