@@ -45,6 +45,30 @@ export const IDELayout: React.FC<EmptyProps> = () => {
 
   useEffect(() => maybeConnectToLiveReloadServer());
 
+  // Even though we refer to activityContentFullStateLabel, we only want
+  // to set the bookmark on initial render; hence empty deps array.
+  useEffect(() => {
+    // TODO: The facts about which activities are present and which one
+    // is active when booted are spread across the code.  Here, and in
+    // (junior) `EditState.bootForProgram()`.  Would be good to tidy
+    // this up somehow.
+    const defaultBookmark = (() => {
+      switch (activityContentFullStateLabel) {
+        case "collapsed":
+        case "expanded-helpsidebar":
+          return 0;
+        case "expanded-specimen":
+        case "expanded-lesson":
+        case "expanded-tutorial":
+          return 1;
+        default:
+          return assertNever(activityContentFullStateLabel);
+      }
+    })();
+
+    focusContext.bookmarkItemByKeyAndIndex("ActivityBar", defaultBookmark);
+  }, []);
+
   if (isFullScreen) {
     return <FullScreenLayout />;
   }
