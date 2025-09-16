@@ -1,3 +1,4 @@
+import { DiffViewKind } from "../../../src/model/code-diff";
 import {
   ActivityBarTabKey,
   ActorPropertiesTabKey,
@@ -77,6 +78,83 @@ export function assertHelpEntryVisibility(
 
 ////////////////////////////////////////////////////////////////////////
 
+function getLearnerTaskCheckboxButton(taskIdx: number) {
+  return cy
+    .get(".Lesson-Chapter .LearnerTask")
+    .eq(taskIdx)
+    .find("button.TaskCheckboxButton");
+}
+
+function getLearnerTaskHelpButton(taskIdx: number) {
+  return cy
+    .get(".Lesson-Chapter .LearnerTask")
+    .eq(taskIdx)
+    .find("button.HelpStageButton");
+}
+
+export function assertLearnerTaskDoneState(
+  learnerTaskIdx: number,
+  expState: "click-when-done" | "click-to-rewind"
+) {
+  const expContents = (() => {
+    switch (expState) {
+      case "click-when-done":
+        return "Click when you’ve done this";
+      case "click-to-rewind":
+        return "Click to rewind to this task";
+      default:
+        return assertNever(expState);
+    }
+  })();
+
+  getLearnerTaskCheckboxButton(learnerTaskIdx).contains(expContents);
+}
+
+export function assertLearnerTaskHelpState(
+  learnerTaskIdx: number,
+  expState: "hint" | "show" | "hide"
+) {
+  const expContents = (() => {
+    switch (expState) {
+      case "hint":
+        return "Hint";
+      case "show":
+        return "Show me";
+      case "hide":
+        return "Hide help";
+      default:
+        return assertNever(expState);
+    }
+  })();
+
+  getLearnerTaskHelpButton(learnerTaskIdx).should("have.text", expContents);
+}
+
+export function assertLearnerTaskHelpNStages(
+  learnerTaskIdx: number,
+  expNStages: number
+) {
+  cy.get(".Lesson-Chapter .LearnerTask")
+    .eq(learnerTaskIdx)
+    .find("div.help-stage-content.visible")
+    .should("have.length", expNStages);
+}
+
+export function assertLearnerTaskDiffShown(
+  learnerTaskIdx: number,
+  expViewKind: DiffViewKind
+) {
+  cy.get(".Lesson-Chapter .LearnerTask").eq(learnerTaskIdx).as("taskDiv");
+  cy.get("@taskDiv")
+    .find(`.ScriptDiffView[data-view-kind="${expViewKind}"]`)
+    .should("be.visible");
+  cy.get("@taskDiv")
+    .find(`.ScriptDiffView:not([data-view-kind="${expViewKind}"])`)
+    .should("not.be.visible");
+}
+
+////////////////////////////////////////////////////////////////////////
+
 export function assertNoDropdownMenu() {
   cy.get('div[role="menu"].show.dropdown').should("not.exist");
 }
@@ -138,10 +216,17 @@ type FocusableAreaKind =
   | "stage"
   | "progress-node"
   | "tutorial-content"
+  | "learner-task-done-button"
+  | "learner-task-help-button"
+  | "learner-task-diff-tab"
   | "activity-tab";
 
 export function assertFocus(
-  area: "help-sidebar" | "actor-card-menu-item" | "appearance-card-menu-item",
+  area:
+    | "help-sidebar"
+    | "actor-card-menu-item"
+    | "appearance-card-menu-item"
+    | "learner-task-diff-tab",
   locWithinArea: Array<number>
 ): void;
 
@@ -166,6 +251,8 @@ export function assertFocus(
     | "actor-card"
     | "appearance-card"
     | "sound-card"
+    | "learner-task-done-button"
+    | "learner-task-help-button"
     | "progress-node",
   locWithinArea: number
 ): void;
@@ -196,6 +283,37 @@ export function assertFocus(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
   const inc = (x: number) => x + 1;
+
+  // Some descriptors cannot be handled just with a simple selector.
+  // Deal with them first.
+
+  switch (area) {
+    case "learner-task-done-button": {
+      const taskIdx = locWithinArea as number;
+      getLearnerTaskCheckboxButton(taskIdx).should("have.focus");
+      return;
+    }
+    case "learner-task-help-button": {
+      const taskIdx = locWithinArea as number;
+      getLearnerTaskHelpButton(taskIdx).should("have.focus");
+      return;
+    }
+    case "learner-task-diff-tab": {
+      const indexes = locWithinArea as Array<number>;
+      if (indexes.length !== 2) {
+        const idxsJson = JSON.stringify(indexes);
+        throw new Error(`bad locWithinArea ${idxsJson} of "${area}"`);
+      }
+
+      const [taskIdx, kindIdx] = indexes;
+      cy.get(".Lesson-Chapter .LearnerTask")
+        .eq(taskIdx)
+        .find("ul.DiffViewKindSelector li")
+        .eq(kindIdx)
+        .should("have.focus");
+      return;
+    }
+  }
 
   const selector = (() => {
     switch (area) {
