@@ -1,4 +1,4 @@
-import React, { ClipboardEventHandler, createRef } from "react";
+import React, { ClipboardEventHandler, createRef, useRef } from "react";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
 import Button from "react-bootstrap/Button";
@@ -22,6 +22,7 @@ import {
   ChapterNavigationButtons,
   ChapterNavigationButtonsProps,
 } from "./Junior/lesson/ChapterNavigationButtons";
+import { focusChapterContent } from "./Junior/lesson/hooks";
 
 type NavigationDirection = "prev" | "next";
 
@@ -381,6 +382,8 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
 };
 
 const TutorialChapter = () => {
+  const lastRenderedChapter = useRef<number>(-1);
+
   const maybeTrackedTutorial = useStoreState(
     (state) => state.activeProject.project?.trackedTutorial
   );
@@ -403,6 +406,13 @@ const TutorialChapter = () => {
   const maxValidIndex = allChapters.length - 1;
   const chapterIndex = Math.min(rawChapterIndex, maxValidIndex);
   const activeChapter = allChapters[chapterIndex];
+
+  if (chapterIndex !== lastRenderedChapter.current) {
+    if (lastRenderedChapter.current !== -1) {
+      setTimeout(focusChapterContent);
+    }
+    lastRenderedChapter.current = chapterIndex;
+  }
 
   const navigateToChapterFun = (chapterIndex: number) => () =>
     navigateToChapter(chapterIndex);
@@ -461,8 +471,9 @@ const ActiveTutorial = () => {
       </div>
       <div className="Junior-LessonContent-inner-container">
         <div
-          className="Junior-LessonContent abs-0000-oflow"
           ref={chapterContainerRef}
+          className="Junior-LessonContent abs-0000-oflow"
+          tabIndex={0}
         >
           <div className="content">
             <TutorialChapter />
