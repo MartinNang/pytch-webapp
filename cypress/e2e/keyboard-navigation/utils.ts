@@ -32,6 +32,17 @@ export function activateActivityViaTab(tab: ActivityBarTabKey) {
 
 ////////////////////////////////////////////////////////////////////////
 
+export function activateHatBlockOption(optionIdx: number): void {
+  cy.get(".EventKindOption").eq(optionIdx).click();
+}
+
+export function activateKeyPressedOption(browserKeyName: string): void {
+  const selector = keyPressedOptionSelector(browserKeyName);
+  cy.get(selector).click();
+}
+
+////////////////////////////////////////////////////////////////////////
+
 function helpEntrySelector(sectionIdx: number, entryIdx: number) {
   const sectionIdx1b = sectionIdx + 1;
   const entryIdx1b = entryIdx + 2; // Skip first child (<summary> elt)
