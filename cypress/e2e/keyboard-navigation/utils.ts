@@ -188,6 +188,11 @@ function keyPressedOptionSelector(keyBrowserName: string): string {
 ////////////////////////////////////////////////////////////////////////
 
 type FocusableAreaKind =
+  | "add-project-button"
+  | "project-card"
+  | "project-new-name-input"
+  | "selected-projects-back-button"
+  | "selected-projects-delete-button"
   | "help-sidebar"
   | "actor-property-tab"
   | "flat-code-tab"
@@ -242,6 +247,7 @@ export function assertFocus(
 
 export function assertFocus(
   area:
+    | "project-card"
     | "script"
     | "script-code"
     | "medialib-tag"
@@ -259,6 +265,10 @@ export function assertFocus(
 
 export function assertFocus(
   area:
+    | "add-project-button"
+    | "project-new-name-input"
+    | "selected-projects-back-button"
+    | "selected-projects-delete-button"
     | "flat-code-tab"
     | "key-pressed-cancel-button"
     | "add-script-button"
@@ -317,6 +327,26 @@ export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
 
   const selector = (() => {
     switch (area) {
+      case "add-project-button": {
+        return ".ProjectList div.buttons button:first-child";
+      }
+      case "project-card": {
+        const projectIdx = locWithinArea as number;
+        const childIdx1b = projectIdx + 1;
+        return (
+          `.ProjectList ol li:nth-child(${childIdx1b})` +
+          " div.ProjectCard-wrapper"
+        );
+      }
+      case "project-new-name-input": {
+        return ".RenameProjectModal .modal-body input";
+      }
+      case "selected-projects-back-button": {
+        return ".ProjectList .buttons.some-selected .intro button";
+      }
+      case "selected-projects-delete-button": {
+        return ".ProjectList .buttons.some-selected > button";
+      }
       case "help-sidebar": {
         const idxPath = locWithinArea as Array<number>;
         switch (idxPath.length) {
