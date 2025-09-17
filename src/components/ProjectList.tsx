@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { MouseEventHandler, useEffect } from "react";
 import { IDisplayedProjectSummary, LoadingStatus } from "../model/projects";
 import { useStoreState, useStoreActions } from "../store";
 import Alert from "react-bootstrap/Alert";
@@ -17,7 +17,10 @@ import {
   FocusContext,
   useFocusContext,
 } from "./hooks/focus-steering";
-import { focusGroupItemClass } from "../model/junior/grouped-focus";
+import {
+  focusGroupItemClass,
+  kFocusGroupFallbackClassName,
+} from "../model/junior/grouped-focus";
 import { CaptiveContextMenu } from "./CaptiveContextMenu";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { NotableChangeToasts } from "./NotableChangeToasts";
@@ -51,6 +54,7 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
     runDeleteProject({
       id: project.summary.id,
       name: project.summary.name,
+      onDispose: focusContext.onDisposeDeleteProject,
     });
   };
 
@@ -65,8 +69,10 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
     }
   };
 
-  const onToggleIsSelected = (e: React.MouseEvent) => {
+  const onToggleIsSelected: MouseEventHandler<HTMLElement> = (e) => {
+    // Stop the click passing through and opening the project:
     e.stopPropagation();
+    focusContext.onGroupItemClick(e);
     toggleSelected(project.summary.id);
   };
 
@@ -74,6 +80,7 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
     runRenameProject({
       projectId: project.summary.id,
       oldName: project.summary.name,
+      onDispose: focusContext.onDisposeRenameProject,
     });
   };
 
@@ -83,7 +90,6 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
     <li>
       <CaptiveContextMenu.Container
         className={focusGroupItemClass("ProjectCard-wrapper")}
-        onClick={focusContext.onGroupItemClick}
         onActivate={onActivate}
       >
         <Alert className="ProjectCard" variant="success">
@@ -105,7 +111,11 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
             <EditorKindThumbnail programKind={project.summary.programKind} />
             <div
               className="dropdown-wrapper"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                // Stop the click passing through and opening the project:
+                e.stopPropagation();
+                focusContext.onGroupItemClick(e);
+              }}
             >
               <CaptiveContextMenu.DropdownMenu>
                 <CaptiveContextMenu.DropdownItem onInvoke={onActivate}>
@@ -201,7 +211,11 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
     const showUploadModal = () => runUploadZipfiles();
     return (
       <div className="buttons">
-        <Button key="create-new" onClick={showCreateModal}>
+        <Button
+          key="create-new"
+          className={kFocusGroupFallbackClassName}
+          onClick={showCreateModal}
+        >
           Create new
         </Button>
         <Button key="upload" onClick={showUploadModal}>
@@ -213,7 +227,7 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
   }
 };
 
-const ProjectList: React.FC = () => {
+const LoadedProjectList: React.FC = () => {
   const available = useStoreState((state) => state.projectCollection.available);
 
   const selectedIds = useStoreState(
@@ -221,10 +235,16 @@ const ProjectList: React.FC = () => {
   );
   const anySelected = selectedIds.length > 0;
 
+  // Mark as a global-focus-steering target even though there is no
+  // keystroke shortcut for it.  We use this for directing focus after
+  // settling an operation on a project (rename or delete).
   return (
     <>
-      <ProjectListButtons />
-      <FocusGroupContainer groupedFocusKey="MyProjectsList">
+      <FocusGroupContainer
+        className="gfs__projects__container"
+        groupedFocusKey="MyProjectsList"
+      >
+        <ProjectListButtons />
         <ol className={anySelected ? "some-selected" : ""}>
           {available.map((p) => (
             <Project key={p.summary.id} project={p} anySelected={anySelected} />
@@ -240,7 +260,7 @@ const componentFromState = (stateKind: LoadingStatus["kind"]): React.FC => {
     case "pending":
       return ProjectsLoadingPending;
     case "succeeded":
-      return ProjectList;
+      return LoadedProjectList;
     case "failed":
       return ProjectsLoadingFailed;
     default:
@@ -276,19 +296,23 @@ const MaybeProjectList: React.FC<EmptyProps> = () => {
 
   const InnerComponent = componentFromState(loadingStatus.kind);
 
-  const focusContext = createFocusContext("my-projects-list");
   return (
     <>
       <NavBanner />
       <NotableChangeToasts />
       <div className="ProjectList" tabIndex={-1} ref={paneRef}>
         <h1>My projects</h1>
-        <FocusContext.Provider value={focusContext}>
-          <InnerComponent />
-        </FocusContext.Provider>
+        <InnerComponent />
       </div>
     </>
   );
 };
 
-export default MaybeProjectList;
+export const ProjectList: React.FC<EmptyProps> = () => {
+  const focusContext = createFocusContext("my-projects-list");
+  return (
+    <FocusContext.Provider value={focusContext}>
+      <MaybeProjectList />
+    </FocusContext.Provider>
+  );
+};

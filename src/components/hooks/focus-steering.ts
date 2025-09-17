@@ -48,6 +48,8 @@ type FlatExtraContext = {
 
 type MyProjectsListExtraContext = {
   pageKind: "my-projects-list";
+  onDisposeRenameProject: AsyncUserFlowOnDisposeFun;
+  onDisposeDeleteProject: AsyncUserFlowOnDisposeFun;
 };
 
 type FocusContextT = BaseFocusContextT &
@@ -86,11 +88,35 @@ export const createFocusContext = (
   const focusBookmarkedItem =
     globalFocusSteering.focusBookmarkedItem.bind(globalFocusSteering);
 
+  const scheduleFocusFun = (stem: GlobalFocusTargetStem) => () =>
+    setTimeout(() => globalFocusSteering.focusBookmarkedItem(stem), 0);
+
+  type UserSettleFunctions = {
+    onCancelled: () => void;
+    onCompleted: () => void;
+  };
+  const onUserSettleFun =
+    (funs: UserSettleFunctions) => (runOutcome: RunOutcome) => {
+      switch (runOutcome) {
+        case "error":
+        case "abandoned-by-navigation":
+          break;
+        case "cancelled-by-user":
+          funs.onCancelled();
+          break;
+        case "completed":
+          funs.onCompleted();
+          break;
+        default:
+          assertNever(runOutcome);
+      }
+    };
+
   const focusBookmarkedIfUserSettledFun =
     (stem: GlobalFocusTargetStem) => (runOutcome: RunOutcome) => {
       if (flowWasSettledByUser(runOutcome)) {
         // Allow any re-renders to happen.
-        setTimeout(() => globalFocusSteering.focusBookmarkedItem(stem), 0);
+        scheduleFocusFun(stem)();
       }
     };
 
@@ -174,8 +200,31 @@ export const createFocusContext = (
     }
 
     case "my-projects-list": {
+      // Renaming sends the project to the top (most recently modified)
+      // of the list.  We refresh the list by forcing a database reload,
+      // so can't immediately focus the correct project.  Instead we set
+      // a pending focus request.
+      const onDisposeRenameProject = onUserSettleFun({
+        onCancelled: scheduleFocusFun("gfs__projects"),
+        onCompleted: () => {
+          groupedFocusManager.setBookmark("MyProjectsList", 0);
+          groupedFocusManager.setPendingKey("MyProjectsList");
+        },
+      });
+
+      // Similarly, deleting a project forces a database reload,
+      // requiring the "pending focus request" machinery here too.
+      const onDisposeDeleteProject = onUserSettleFun({
+        onCancelled: scheduleFocusFun("gfs__projects"),
+        onCompleted: () => {
+          groupedFocusManager.setPendingKey("MyProjectsList");
+        },
+      });
+
       const myProjectListExtras = {
         pageKind,
+        onDisposeRenameProject,
+        onDisposeDeleteProject,
       };
       return Object.assign({}, baseContextNub, myProjectListExtras);
     }
