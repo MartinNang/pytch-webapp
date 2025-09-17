@@ -1,0 +1,181 @@
+import {
+  assertInIDE,
+  assertModalWithTitle,
+  assertNoModal,
+  assertProjectsSelected,
+  focusProjectCardViaMouse,
+} from "../utils";
+import { assertFocus, chooseCcMenuItem, kShiftTab, realPress } from "./utils";
+
+context("My projects list", () => {
+  beforeEach(() => {
+    cy.pytchResetDatabase();
+    cy.pytchTryUploadZipfiles([
+      "per-method-four-scripts.zip",
+      "eight-grey-costumes.zip",
+    ]);
+  });
+
+  it("navigate list", () => {
+    focusProjectCardViaMouse(1);
+    assertFocus("project-card", 1);
+    realPress(kShiftTab);
+    realPress("Tab");
+    assertFocus("project-card", 1);
+
+    realPress("ArrowDown");
+    assertFocus("project-card", 2);
+
+    focusProjectCardViaMouse(0, "select-toggle");
+    assertFocus("project-card", 0);
+
+    realPress("End");
+    assertFocus("project-card", 2);
+    realPress(kShiftTab);
+    realPress("Tab");
+    assertFocus("project-card", 2);
+
+    realPress("Home");
+    assertFocus("project-card", 0);
+  });
+
+  it("open project (ccmenu)", () => {
+    focusProjectCardViaMouse(2);
+    assertFocus("project-card", 2);
+    chooseCcMenuItem(0);
+    assertInIDE("flat");
+  });
+
+  function launchRename() {
+    focusProjectCardViaMouse(2);
+    chooseCcMenuItem(1);
+    assertModalWithTitle("Rename project “Test seed project”");
+  }
+  it("cxl rename", () => {
+    launchRename();
+    realPress("Escape");
+    assertNoModal();
+    assertFocus("project-card", 2);
+  });
+  it("do rename", () => {
+    launchRename();
+    assertFocus("project-new-name-input");
+    realPress(["Control", "a"]);
+    realPress("Delete");
+    cy.realType("HW");
+    realPress("Enter");
+    assertNoModal();
+
+    // Renaming is a modification; focus should be on the same project
+    // but now at the top of the list.
+    assertFocus("project-card", 0);
+    cy.pytchProjectNamesShouldDeepEqual([
+      "HW",
+      "Some images",
+      "Untitled project",
+    ]);
+  });
+
+  function launchDelete(projectIdx: number) {
+    focusProjectCardViaMouse(projectIdx);
+    chooseCcMenuItem(2);
+    assertModalWithTitle("Delete project?");
+  }
+  it("cxl delete", () => {
+    launchDelete(2);
+    realPress("Escape");
+    assertNoModal();
+    assertFocus("project-card", 2);
+  });
+  it("do delete", () => {
+    launchDelete(1);
+    realPress("Tab");
+    realPress("Enter");
+    assertNoModal();
+    assertFocus("project-card", 1);
+    cy.pytchProjectNamesShouldDeepEqual(["Some images", "Test seed project"]);
+    realPress("ArrowUp");
+    assertFocus("project-card", 0);
+    realPress("ArrowDown");
+    assertFocus("project-card", 1);
+
+    launchDelete(1);
+    realPress("Tab");
+    realPress("Enter");
+    assertNoModal();
+    assertFocus("project-card", 0);
+
+    launchDelete(0);
+    realPress("Tab");
+    realPress("Enter");
+    assertNoModal();
+    assertFocus("add-project-button");
+  });
+
+  it("multiple selection", () => {
+    focusProjectCardViaMouse(1);
+    assertProjectsSelected(3, []);
+
+    realPress("x");
+    assertProjectsSelected(3, [1]);
+    realPress("ArrowDown");
+    realPress("x");
+    assertProjectsSelected(3, [1, 2]);
+    realPress("x");
+    assertProjectsSelected(3, [1]);
+
+    realPress(kShiftTab);
+    assertFocus("selected-projects-delete-button");
+
+    realPress("Tab");
+    assertFocus("project-card", 2);
+
+    realPress(kShiftTab, 2);
+    assertFocus("selected-projects-back-button");
+  });
+
+  function selectTwoProjects() {
+    focusProjectCardViaMouse(1);
+    realPress("x");
+    realPress("ArrowDown");
+    realPress("x");
+  }
+  it("cxl multi-selection (back button)", () => {
+    selectTwoProjects();
+    realPress(kShiftTab, 2);
+    assertFocus("selected-projects-back-button");
+    realPress("Enter");
+    assertProjectsSelected(3, []);
+    assertFocus("project-card", 2);
+  });
+  it("cxl multi-selection (esc)", () => {
+    selectTwoProjects();
+    realPress("Escape");
+    assertProjectsSelected(3, []);
+    assertFocus("project-card", 2);
+  });
+
+  function launchDeleteMultiSelection() {
+    realPress(kShiftTab, 1);
+    assertFocus("selected-projects-delete-button");
+    realPress("Enter");
+    assertModalWithTitle("Delete projects?");
+  }
+  it("cxl multi-delete", () => {
+    selectTwoProjects();
+    launchDeleteMultiSelection();
+    realPress("Escape");
+
+    assertProjectsSelected(3, [1, 2]);
+    assertFocus("project-card", 2);
+  });
+  it("do multi-delete", () => {
+    selectTwoProjects();
+    launchDeleteMultiSelection();
+    realPress("Tab");
+    realPress("Enter");
+
+    assertProjectsSelected(1, []);
+    assertFocus("project-card", 0);
+  });
+});
