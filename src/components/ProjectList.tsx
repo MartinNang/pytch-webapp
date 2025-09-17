@@ -1,4 +1,8 @@
-import React, { MouseEventHandler, useEffect } from "react";
+import React, {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useEffect,
+} from "react";
 import { IDisplayedProjectSummary, LoadingStatus } from "../model/projects";
 import { useStoreState, useStoreActions } from "../store";
 import Alert from "react-bootstrap/Alert";
@@ -46,6 +50,9 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
   const ensureNotFullScreen = useStoreActions(
     (actions) => actions.ideLayout.ensureNotFullScreen
   );
+  const clearAllSelected = useStoreActions(
+    (actions) => actions.projectCollection.clearAllSelected
+  );
 
   const summary = project.summary.summary ?? "";
   const linkTarget = `/ide/${project.summary.id}`;
@@ -86,9 +93,23 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
 
   const maybeSelectedExtraClass = project.isSelected ? " selected" : "";
 
+  const onKeyDown: KeyboardEventHandler = (evt) => {
+    switch (evt.key) {
+      case "x": {
+        toggleSelected(project.summary.id);
+        break;
+      }
+      case "Escape": {
+        clearAllSelected();
+        break;
+      }
+    }
+  };
+
   return (
     <li>
       <CaptiveContextMenu.Container
+        onKeyDown={onKeyDown}
         className={focusGroupItemClass("ProjectCard-wrapper")}
         onActivate={onActivate}
       >
@@ -175,6 +196,8 @@ const ImportFromGoogleButton: React.FC<{ key: React.Key }> = () => {
 };
 
 const ProjectListButtons: React.FC<EmptyProps> = () => {
+  const focusContext = useFocusContext("my-projects-list");
+
   const selectedIds = useStoreState(
     (state) => state.projectCollection.availableSelectedIds
   );
@@ -191,12 +214,21 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
   const nSelected = selectedIds.length;
 
   if (nSelected > 0) {
-    const onDelete = () => runDeleteManyProjects({ ids: selectedIds });
+    function onCancel() {
+      clearAllSelected();
+      focusContext.onDisposeDeleteProject("cancelled-by-user");
+    }
+
+    const onDelete = () =>
+      runDeleteManyProjects({
+        ids: selectedIds,
+        onDispose: focusContext.onDisposeDeleteProject,
+      });
 
     return (
       <div className="buttons some-selected">
         <div className="intro">
-          <Button key="clear-selection" onClick={() => clearAllSelected()}>
+          <Button key="clear-selection" onClick={onCancel}>
             <FontAwesomeIcon icon="arrow-left" />
           </Button>
           <span>{nSelected}</span>
