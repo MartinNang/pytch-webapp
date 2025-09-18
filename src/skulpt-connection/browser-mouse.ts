@@ -20,12 +20,16 @@ export class BrowserMouse {
   clientX: number;
   clientY: number;
   button_is_down: boolean;
+  cached_stage_x: number | null;
+  cached_stage_y: number | null;
 
   constructor(canvas: HTMLDivElement) {
     this.undrainedClicks = [];
     this.clientX = 0.0;
     this.clientY = 0.0;
     this.button_is_down = false;
+    this.cached_stage_x = null;
+    this.cached_stage_y = null;
 
     this.canvasOverlayDiv = canvas;
 
