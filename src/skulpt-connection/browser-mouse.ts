@@ -84,33 +84,7 @@ export class BrowserMouse {
   }
 
   currentStageCoords(): IStageCoords {
-    const canvasDiv = this.canvasOverlayDiv;
-
-    const eltRect = canvasDiv.getBoundingClientRect();
-    const canvasX0 = eltRect.left + canvasDiv.clientLeft;
-    const canvasY0 = eltRect.top + canvasDiv.clientTop;
-
-    const canvasX = this.clientX - canvasX0;
-    const canvasY = this.clientY - canvasY0;
-
-    // Recover stage coords by: scaling; translating; flipping y.
-    const normalisedCanvasX = (canvasX / canvasDiv.clientWidth) * stageWidth;
-    const normalisedCanvasY = (canvasY / canvasDiv.clientHeight) * stageHeight;
-    const rawStageX = normalisedCanvasX - stageHalfWidth;
-    const rawStageY = stageHalfHeight - normalisedCanvasY;
-
-    // To allow for rounding errors and clicks on the 1-pixel border,
-    // clamp to the allowed range of stage coords.
-    const stage_x = Math.max(
-      Math.min(rawStageX, stageHalfWidth),
-      -stageHalfWidth
-    );
-    const stage_y = Math.max(
-      Math.min(rawStageY, stageHalfHeight),
-      -stageHalfHeight
-    );
-
-    return { stage_x, stage_y };
+    return { stage_x: this.stage_x, stage_y: this.stage_y };
   }
 
   onMouseDown() {
