@@ -22,12 +22,15 @@ function clamp(x: number, xmin: number, xmax: number) {
 
 export class BrowserMouse {
   canvasOverlayDiv: HTMLDivElement;
+  mainElt: HTMLElement | null;
   undrainedClicks: Array<IStageCoords>;
   clientX: number;
   clientY: number;
   button_is_down: boolean;
   cached_stage_x: number | null;
   cached_stage_y: number | null;
+
+  mouseMoveFun: (evt: PointerEvent) => void;
 
   constructor(canvas: HTMLDivElement) {
     this.undrainedClicks = [];
@@ -39,7 +42,18 @@ export class BrowserMouse {
 
     this.canvasOverlayDiv = canvas;
 
-    this.canvasOverlayDiv.onmousemove = (evt) => this.onMouseMove(evt);
+    this.mouseMoveFun = (evt: PointerEvent) => this.onMouseMove(evt);
+
+    const mains = document.getElementsByTagName("main");
+    const nMains = mains.length;
+    if (nMains === 1) {
+      this.mainElt = mains.item(0)!;
+      this.mainElt.addEventListener("pointermove", this.mouseMoveFun);
+    } else {
+      console.error(`expecting exactly one <main> but got ${nMains}`);
+      this.mainElt = null;
+    }
+
     this.canvasOverlayDiv.onpointerdown = (evt) => this.onMouseDown(evt);
     this.canvasOverlayDiv.onpointerup = () => this.onMouseUp();
 
@@ -100,6 +114,10 @@ export class BrowserMouse {
   deactivate() {
     // TODO: Should there be an API-point for doing this?
     Sk.pytch.mouse = Sk.default_pytch_environment.mouse;
+
+    if (this.mainElt != null) {
+      this.mainElt.removeEventListener("pointermove", this.mouseMoveFun);
+    }
   }
 
   // Snake-case to match what Pytch expects.
