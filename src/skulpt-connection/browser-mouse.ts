@@ -14,21 +14,48 @@ interface IStageCoords {
   stage_y: number;
 }
 
+function clamp(x: number, xmin: number, xmax: number) {
+  if (x < xmin) return xmin;
+  if (x < xmax) return x;
+  return xmax;
+}
+
 export class BrowserMouse {
   canvasOverlayDiv: HTMLDivElement;
+  mainElt: HTMLElement | null;
   undrainedClicks: Array<IStageCoords>;
   clientX: number;
   clientY: number;
+  button_is_down: boolean;
+  cached_stage_x: number | null;
+  cached_stage_y: number | null;
+
+  mouseMoveFun: (evt: PointerEvent) => void;
 
   constructor(canvas: HTMLDivElement) {
     this.undrainedClicks = [];
     this.clientX = 0.0;
     this.clientY = 0.0;
+    this.button_is_down = false;
+    this.cached_stage_x = null;
+    this.cached_stage_y = null;
 
     this.canvasOverlayDiv = canvas;
 
-    this.canvasOverlayDiv.onmousemove = (evt) => this.onMouseMove(evt);
-    this.canvasOverlayDiv.onmousedown = () => this.onMouseDown();
+    this.mouseMoveFun = (evt: PointerEvent) => this.onMouseMove(evt);
+
+    const mains = document.getElementsByTagName("main");
+    const nMains = mains.length;
+    if (nMains === 1) {
+      this.mainElt = mains.item(0)!;
+      this.mainElt.addEventListener("pointermove", this.mouseMoveFun);
+    } else {
+      console.error(`expecting exactly one <main> but got ${nMains}`);
+      this.mainElt = null;
+    }
+
+    this.canvasOverlayDiv.onpointerdown = (evt) => this.onMouseDown(evt);
+    this.canvasOverlayDiv.onpointerup = () => this.onMouseUp();
 
     Sk.pytch.mouse = this;
   }
@@ -38,45 +65,59 @@ export class BrowserMouse {
     // to query mouse position (at some point in the future).
     this.clientX = evt.clientX;
     this.clientY = evt.clientY;
+    this.cached_stage_x = null;
+    this.cached_stage_y = null;
+  }
+
+  get stage_x() {
+    if (this.cached_stage_x == null) {
+      const canvasDiv = this.canvasOverlayDiv;
+      const eltRect = canvasDiv.getBoundingClientRect();
+      const canvasX0 = eltRect.left + canvasDiv.clientLeft;
+      const canvasX = this.clientX - canvasX0;
+      const scaledCanvasX = canvasX * (stageWidth / canvasDiv.clientWidth);
+      const rawStageX = scaledCanvasX - stageHalfWidth;
+      const stageX = clamp(rawStageX, -stageHalfWidth, stageHalfWidth);
+      this.cached_stage_x = stageX;
+    }
+    return this.cached_stage_x;
+  }
+
+  get stage_y() {
+    if (this.cached_stage_y == null) {
+      const canvasDiv = this.canvasOverlayDiv;
+      const eltRect = canvasDiv.getBoundingClientRect();
+      const canvasY0 = eltRect.top + canvasDiv.clientTop;
+      const canvasY = this.clientY - canvasY0;
+      const scaledCanvasY = canvasY * (stageHeight / canvasDiv.clientHeight);
+      const rawStageY = stageHalfHeight - scaledCanvasY;
+      const stageY = clamp(rawStageY, -stageHalfHeight, stageHalfHeight);
+      this.cached_stage_y = stageY;
+    }
+    return this.cached_stage_y;
   }
 
   currentStageCoords(): IStageCoords {
-    const canvasDiv = this.canvasOverlayDiv;
-
-    const eltRect = canvasDiv.getBoundingClientRect();
-    const canvasX0 = eltRect.left + canvasDiv.clientLeft;
-    const canvasY0 = eltRect.top + canvasDiv.clientTop;
-
-    const canvasX = this.clientX - canvasX0;
-    const canvasY = this.clientY - canvasY0;
-
-    // Recover stage coords by: scaling; translating; flipping y.
-    const normalisedCanvasX = (canvasX / canvasDiv.clientWidth) * stageWidth;
-    const normalisedCanvasY = (canvasY / canvasDiv.clientHeight) * stageHeight;
-    const rawStageX = normalisedCanvasX - stageHalfWidth;
-    const rawStageY = stageHalfHeight - normalisedCanvasY;
-
-    // To allow for rounding errors and clicks on the 1-pixel border,
-    // clamp to the allowed range of stage coords.
-    const stage_x = Math.max(
-      Math.min(rawStageX, stageHalfWidth),
-      -stageHalfWidth
-    );
-    const stage_y = Math.max(
-      Math.min(rawStageY, stageHalfHeight),
-      -stageHalfHeight
-    );
-
-    return { stage_x, stage_y };
+    return { stage_x: this.stage_x, stage_y: this.stage_y };
   }
 
-  onMouseDown() {
+  onMouseDown(evt: PointerEvent) {
+    this.button_is_down = true;
     this.undrainedClicks.push(this.currentStageCoords());
+    this.canvasOverlayDiv.setPointerCapture(evt.pointerId);
+  }
+
+  onMouseUp() {
+    this.button_is_down = false;
   }
 
   deactivate() {
     // TODO: Should there be an API-point for doing this?
     Sk.pytch.mouse = Sk.default_pytch_environment.mouse;
+
+    if (this.mainElt != null) {
+      this.mainElt.removeEventListener("pointermove", this.mouseMoveFun);
+    }
   }
 
   // Snake-case to match what Pytch expects.

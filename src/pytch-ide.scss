@@ -20,6 +20,10 @@ $stage-controls-height: 37.6px;
   margin: 0px;
   display: flex;
 
+  main {
+    display: flex;
+    place-items: center;
+  }
   .FullScreenStage {
     margin: auto;
 

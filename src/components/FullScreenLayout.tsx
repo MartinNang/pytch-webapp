@@ -14,9 +14,11 @@ export const FullScreenLayout: React.FC<EmptyProps> = () => {
       windowTitle={`Pytch: ${projectName}`}
       data-project-id={projectId}
     >
-      <div className="FullScreenStage">
-        <StageWithControls />
-      </div>
+      <main className="abs-0000">
+        <div className="FullScreenStage">
+          <StageWithControls />
+        </div>
+      </main>
     </DivSettingWindowTitle>
   );
 };
