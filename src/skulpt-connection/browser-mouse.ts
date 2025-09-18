@@ -45,6 +45,8 @@ export class BrowserMouse {
     // to query mouse position (at some point in the future).
     this.clientX = evt.clientX;
     this.clientY = evt.clientY;
+    this.cached_stage_x = null;
+    this.cached_stage_y = null;
   }
 
   currentStageCoords(): IStageCoords {
