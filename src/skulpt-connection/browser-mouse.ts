@@ -14,6 +14,12 @@ interface IStageCoords {
   stage_y: number;
 }
 
+function clamp(x: number, xmin: number, xmax: number) {
+  if (x < xmin) return xmin;
+  if (x < xmax) return x;
+  return xmax;
+}
+
 export class BrowserMouse {
   canvasOverlayDiv: HTMLDivElement;
   undrainedClicks: Array<IStageCoords>;
