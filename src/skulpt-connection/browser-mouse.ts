@@ -30,7 +30,8 @@ export class BrowserMouse {
     this.canvasOverlayDiv = canvas;
 
     this.canvasOverlayDiv.onmousemove = (evt) => this.onMouseMove(evt);
-    this.canvasOverlayDiv.onmousedown = () => this.onMouseDown();
+    this.canvasOverlayDiv.onpointerdown = () => this.onMouseDown();
+    this.canvasOverlayDiv.onpointerup = () => this.onMouseUp();
 
     Sk.pytch.mouse = this;
   }
@@ -73,7 +74,12 @@ export class BrowserMouse {
   }
 
   onMouseDown() {
+    this.button_is_down = true;
     this.undrainedClicks.push(this.currentStageCoords());
+  }
+
+  onMouseUp() {
+    this.button_is_down = false;
   }
 
   deactivate() {
