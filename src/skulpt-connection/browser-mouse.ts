@@ -19,11 +19,13 @@ export class BrowserMouse {
   undrainedClicks: Array<IStageCoords>;
   clientX: number;
   clientY: number;
+  button_is_down: boolean;
 
   constructor(canvas: HTMLDivElement) {
     this.undrainedClicks = [];
     this.clientX = 0.0;
     this.clientY = 0.0;
+    this.button_is_down = false;
 
     this.canvasOverlayDiv = canvas;
 
