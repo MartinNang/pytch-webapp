@@ -61,10 +61,10 @@ export const IDELayout: React.FC<EmptyProps> = () => {
     >
       <Modals />
       <main>
-      <ActivityBar />
-      <ActivityContent />
-      <EditorAndOutErr />
-      <StageAndActorsOrAssets />
+        <ActivityBar />
+        <ActivityContent />
+        <EditorAndOutErr />
+        <StageAndActorsOrAssets />
       </main>
     </DivSettingWindowTitle>
   );
