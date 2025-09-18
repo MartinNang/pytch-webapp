@@ -55,6 +55,34 @@ export class BrowserMouse {
     this.cached_stage_y = null;
   }
 
+  get stage_x() {
+    if (this.cached_stage_x == null) {
+      const canvasDiv = this.canvasOverlayDiv;
+      const eltRect = canvasDiv.getBoundingClientRect();
+      const canvasX0 = eltRect.left + canvasDiv.clientLeft;
+      const canvasX = this.clientX - canvasX0;
+      const scaledCanvasX = (canvasX / canvasDiv.clientWidth) * stageWidth;
+      const rawStageX = scaledCanvasX - stageHalfWidth;
+      const stageX = clamp(rawStageX, -stageHalfWidth, stageHalfWidth);
+      this.cached_stage_x = stageX;
+    }
+    return this.cached_stage_x;
+  }
+
+  get stage_y() {
+    if (this.cached_stage_y == null) {
+      const canvasDiv = this.canvasOverlayDiv;
+      const eltRect = canvasDiv.getBoundingClientRect();
+      const canvasY0 = eltRect.top + canvasDiv.clientTop;
+      const canvasY = this.clientY - canvasY0;
+      const scaledCanvasY = (canvasY / canvasDiv.clientHeight) * stageHeight;
+      const rawStageY = stageHalfHeight - scaledCanvasY;
+      const stageY = clamp(rawStageY, -stageHalfHeight, stageHalfHeight);
+      this.cached_stage_y = stageY;
+    }
+    return this.cached_stage_y;
+  }
+
   currentStageCoords(): IStageCoords {
     const canvasDiv = this.canvasOverlayDiv;
 
