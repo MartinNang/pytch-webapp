@@ -82,7 +82,10 @@ const kCompletions = (() => {
     ...stageCompletions,
   ];
 
-  return { pytch, actor };
+  const sprite = actorCompletions.concat(spriteCompletions).map(withoutMeta);
+  const stage = actorCompletions.concat(stageCompletions).map(withoutMeta);
+
+  return { pytch, actor, sprite, stage };
 })();
 
 export class PytchAceAutoCompleter {
