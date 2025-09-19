@@ -6,6 +6,7 @@
 // based on the public module functions and base-class methods.
 
 import { IAceEditor } from "react-ace/lib/types";
+import { HelpDisplayContext } from "../model/help-sidebar";
 
 declare let Sk: any;
 
@@ -89,6 +90,12 @@ const kCompletions = (() => {
 })();
 
 export class PytchAceAutoCompleter {
+  readonly context: HelpDisplayContext;
+
+  constructor(context: HelpDisplayContext) {
+    this.context = context;
+  }
+
   // TODO: Proper types for the remaining arguments.
   getCompletions(
     _editor: IAceEditor,
