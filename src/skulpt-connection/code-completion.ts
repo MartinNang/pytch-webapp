@@ -6,6 +6,8 @@
 // based on the public module functions and base-class methods.
 
 import { IAceEditor } from "react-ace/lib/types";
+import { assertNever } from "../utils";
+import { HelpDisplayContext } from "../model/help-sidebar";
 
 declare let Sk: any;
 
@@ -23,18 +25,52 @@ const completionFromPyTuple = (meta: string | null) => (tup: any) => ({
   message: tup.v[3].v,
 });
 
+const withoutMeta = (completion: IAceCompletion): IAceCompletion => ({
+  caption: completion.caption,
+  value: completion.value,
+  message: completion.message,
+});
+
+const kPytchPerMethodExclusions = [
+  "Sprite",
+  "Stage",
+  "when_green_flag_clicked",
+  "when_I_receive",
+  "when_I_start_as_a_clone",
+  "when_key_pressed",
+  "when_stage_clicked",
+  "when_this_sprite_clicked",
+];
+
+const withoutPerMethodExclusions = (
+  completions: Array<IAceCompletion>
+): Array<IAceCompletion> => {
+  // Assert that all exclusions are in the original input array, to try
+  // to catch typos.
+  const completionValues = completions.map((c) => c.value);
+  const missingExclusions = kPytchPerMethodExclusions.filter(
+    (value) => !completionValues.includes(value)
+  );
+  if (missingExclusions.length > 0) {
+    throw new Error(
+      "some exclusions not found in full completions list: " +
+        JSON.stringify(missingExclusions)
+    );
+  }
+
+  return completions.filter(
+    (completion) => !kPytchPerMethodExclusions.includes(completion.value)
+  );
+};
+
 const completionsFromPyList = (meta: string | null, lst: any) =>
   lst.v.map(completionFromPyTuple(meta));
-
-// These will be populated in the IIFE below.
-let pytchCompletions: Array<IAceCompletion>;
-let actorCompletions: Array<IAceCompletion>;
 
 // Invoke the Python function _user_facing_completions() and
 // use the provided info on the user-facing attributes of pytch,
 // Actor, Sprite, and Stage.
 //
-(() => {
+const kCompletions = (() => {
   Sk.configure({});
   const pyStr = (s: string) => new Sk.builtin.str(s);
   const sUserFacingCompletions = pyStr("_user_facing_completions");
@@ -55,14 +91,14 @@ let actorCompletions: Array<IAceCompletion>;
 
   // Set top-level var holding completions for "pytch.":
   //
-  pytchCompletions = completionsFromPyList(
+  const allPytch = completionsFromPyList(
     null,
     pyCompletionsByKind.mp$subscript(sPytch)
   );
 
   // Set top-level var holding completions for "self.":
   //
-  const baseActorCompletions = completionsFromPyList(
+  const actorCompletions = completionsFromPyList(
     "[Spr/Stg]",
     pyCompletionsByKind.mp$subscript(sActor)
   );
@@ -74,14 +110,31 @@ let actorCompletions: Array<IAceCompletion>;
     "[Stg]",
     pyCompletionsByKind.mp$subscript(sStage)
   );
-  actorCompletions = [
-    ...baseActorCompletions,
+  const actor = [
+    ...actorCompletions,
     ...spriteCompletions,
     ...stageCompletions,
   ];
+
+  const sprite = actorCompletions.concat(spriteCompletions).map(withoutMeta);
+  const stage = actorCompletions.concat(stageCompletions).map(withoutMeta);
+
+  return {
+    allPytch,
+    perMethodPytch: withoutPerMethodExclusions(allPytch),
+    actor,
+    sprite,
+    stage,
+  };
 })();
 
 export class PytchAceAutoCompleter {
+  readonly context: HelpDisplayContext;
+
+  constructor(context: HelpDisplayContext) {
+    this.context = context;
+  }
+
   // TODO: Proper types for the remaining arguments.
   getCompletions(
     _editor: IAceEditor,
@@ -100,12 +153,38 @@ export class PytchAceAutoCompleter {
 
     const prePrefixLength = lineHead.length - prefix.length;
     const prePrefix = lineHead.substring(0, prePrefixLength);
+    const programKind = this.context.programKind;
 
-    const candidates = prePrefix.endsWith("pytch.")
-      ? pytchCompletions
-      : prePrefix.endsWith("self.")
-      ? actorCompletions
-      : [];
+    const candidates = (() => {
+      if (prePrefix.endsWith("pytch.")) {
+        switch (programKind) {
+          case "flat":
+            return kCompletions.allPytch;
+          case "per-method":
+            return kCompletions.perMethodPytch;
+          default:
+            return assertNever(this.context);
+        }
+      } else if (prePrefix.endsWith("self.")) {
+        switch (programKind) {
+          case "flat":
+            return kCompletions.actor;
+          case "per-method":
+            switch (this.context.actorKind) {
+              case "sprite":
+                return kCompletions.sprite;
+              case "stage":
+                return kCompletions.stage;
+              default:
+                return assertNever(this.context.actorKind);
+            }
+          default:
+            return assertNever(this.context);
+        }
+      } else {
+        return [];
+      }
+    })();
 
     callback(null, candidates);
   }

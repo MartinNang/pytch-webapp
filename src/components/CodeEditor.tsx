@@ -101,8 +101,10 @@ const CodeAceEditor = () => {
   // it will in fact take an array of class instances, which is how we
   // use it here.)
   //
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const completers = [new PytchAceAutoCompleter() as any];
+  const completers = [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    new PytchAceAutoCompleter({ programKind: "flat" }) as any,
+  ];
 
   return (
     <>
