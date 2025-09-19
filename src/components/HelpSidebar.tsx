@@ -6,15 +6,13 @@ import {
   BlockElementDescriptor,
   ElementArray,
   HelpContentFromContext,
-  HelpDisplayContext,
-  HelpDisplayContextOps,
   HelpElementDescriptor,
   HelpSectionContent,
   NonMethodBlockElementDescriptor,
   PurePythonElementDescriptor,
   PythonCodeFromKind,
   showEntryInContext,
-  useHelpDisplayContext,
+  useDevWorkContext,
 } from "../model/help-sidebar";
 import { assertNever, copyTextToClipboard, failIfNull } from "../utils";
 import classNames from "classnames";
@@ -22,6 +20,7 @@ import { Spinner } from "react-bootstrap";
 import { IconName } from "@fortawesome/fontawesome-common-types";
 import { useHelpHatBlockDrag } from "./Junior/hooks";
 import { EventDescriptor } from "../model/junior/structured-program";
+import { DevWorkContext, DevWorkContextOps } from "../model/dev-work-context";
 
 interface IScratchAndPython {
   eventDescriptor?: EventDescriptor;
@@ -37,9 +36,9 @@ interface IToggleHelp {
 
 function helpElementsFromProps(props: {
   help: HelpContentFromContext;
-  displayContext: HelpDisplayContext;
+  workContext: DevWorkContext;
 }): ElementArray {
-  const contextKey = HelpDisplayContextOps.asString(props.displayContext);
+  const contextKey = DevWorkContextOps.asFlatKey(props.workContext);
   return failIfNull(
     props.help.get(contextKey),
     `no help content for kind "${contextKey}"`
@@ -48,9 +47,9 @@ function helpElementsFromProps(props: {
 
 function pythonCodeFromProps(props: {
   python: PythonCodeFromKind;
-  displayContext: HelpDisplayContext;
+  workContext: DevWorkContext;
 }): string {
-  const programKind = props.displayContext.programKind;
+  const programKind = props.workContext.programKind;
   return failIfNull(
     props.python.get(programKind),
     `no Python code for kind "${programKind}"`
@@ -93,13 +92,13 @@ const HelpToggleButton: React.FC<IToggleHelp> = (props) => {
 };
 
 const ScratchAndButtons: React.FC<
-  IScratchAndPython & IToggleHelp & { displayContext: HelpDisplayContext }
+  IScratchAndPython & IToggleHelp & { workContext: DevWorkContext }
 > = (props) => {
   const scratchRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   // Fudge to indicate whether dragging should be possible:
   const eventDescriptor =
-    props.displayContext.programKind === "per-method"
+    props.workContext.programKind === "per-method"
       ? props.eventDescriptor
       : undefined;
 
@@ -159,14 +158,14 @@ const HelpText: React.FC<{ helpIsVisible: boolean; help: ElementArray }> = (
 const BlockElement: React.FC<
   BlockElementDescriptor & {
     toggleHelp: () => void;
-    displayContext: HelpDisplayContext;
+    workContext: DevWorkContext;
   }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
 
   // This is a bit of a fudge but does the job.
   const hideDecorator =
-    props.displayContext.programKind === "per-method" &&
+    props.workContext.programKind === "per-method" &&
     props.python.startsWith("@pytch.when");
 
   const mHeader = hideDecorator ? null : (
@@ -180,7 +179,7 @@ const BlockElement: React.FC<
     <div className="pytch-method">
       {mHeader}
       <ScratchAndButtons
-        displayContext={props.displayContext}
+        workContext={props.workContext}
         eventDescriptor={props.eventDescriptor}
         scratch={props.scratch}
         scratchIsLong={props.scratchIsLong}
@@ -197,7 +196,7 @@ const BlockElement: React.FC<
 const NonMethodBlockElement: React.FC<
   NonMethodBlockElementDescriptor & {
     toggleHelp: () => void;
-    displayContext: HelpDisplayContext;
+    workContext: DevWorkContext;
   }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
@@ -215,7 +214,7 @@ const NonMethodBlockElement: React.FC<
       {maybePythonDiv}
 
       <ScratchAndButtons
-        displayContext={props.displayContext}
+        workContext={props.workContext}
         scratch={props.scratch}
         scratchIsLong={false}
         helpIsVisible={props.helpIsVisible}
@@ -245,8 +244,7 @@ const PythonAndButtons: React.FC<{
 );
 
 const PurePythonElement: React.FC<
-  PurePythonElementDescriptor &
-    IToggleHelp & { displayContext: HelpDisplayContext }
+  PurePythonElementDescriptor & IToggleHelp & { workContext: DevWorkContext }
 > = (props) => {
   const helpElements = helpElementsFromProps(props);
   const pythonCode = pythonCodeFromProps(props);
@@ -269,13 +267,14 @@ const PurePythonElement: React.FC<
 type HelpElementProps = {
   key: string;
   toggleHelp: () => void;
-  displayContext: HelpDisplayContext;
+  workContext: DevWorkContext;
 };
 const HelpElement: React.FC<HelpElementDescriptor & HelpElementProps> = (
   props
 ) => {
-  if (!showEntryInContext(props.forActorKinds, props.displayContext))
+  if (!showEntryInContext(props.forActorKinds, props.workContext)) {
     return false;
+  }
 
   switch (props.kind) {
     case "heading":
@@ -298,7 +297,7 @@ type HelpSidebarSectionProps = HelpSectionContent & {
   isExpanded: boolean;
   toggleSectionVisibility: () => void;
   toggleEntryHelp: (entryIndex: number) => () => void;
-  displayContext: HelpDisplayContext;
+  workContext: DevWorkContext;
 };
 
 const scrollRequest = (() => {
@@ -328,22 +327,22 @@ const scrollRequest = (() => {
 function sectionHasNoEntries(
   sectionSlug: string,
   entries: Array<HelpElementDescriptor>,
-  displayContext: HelpDisplayContext
+  workContext: DevWorkContext
 ): boolean {
   const noEntries = entries.every(
-    (entry) => !showEntryInContext(entry.forActorKinds, displayContext)
+    (entry) => !showEntryInContext(entry.forActorKinds, workContext)
   );
 
   const expNoEntries =
     sectionSlug === "motion" &&
-    displayContext.programKind === "per-method" &&
-    displayContext.actorKind === "stage";
+    workContext.programKind === "per-method" &&
+    workContext.actorKind === "stage";
 
   if (noEntries !== expNoEntries)
     throw new Error(
       `noEntries=${noEntries} but expecting ${expNoEntries}` +
         ` for section "${sectionSlug}"` +
-        ` in context "${JSON.stringify(displayContext)}"`
+        ` in context "${JSON.stringify(workContext)}"`
     );
 
   return noEntries;
@@ -356,7 +355,7 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
   isExpanded,
   toggleSectionVisibility,
   toggleEntryHelp,
-  displayContext,
+  workContext,
 }) => {
   const categoryClass = `category-${sectionSlug}`;
   const className = classNames("HelpSidebarSection", categoryClass, {
@@ -377,7 +376,7 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
 
   const collapseOrExpandIcon = isExpanded ? "angle-up" : "angle-down";
 
-  const displayContextString = HelpDisplayContextOps.asString(displayContext);
+  const workContextKey = DevWorkContextOps.asFlatKey(workContext);
 
   // <HelpElement> can return false, to not render that entry.  The
   // entry-index is used to identify the entry within the section for
@@ -388,14 +387,14 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
   // index and entry.)
   const renderedEntries = entries.map((entry, idx) => (
     <HelpElement
-      key={`${sectionSlug}-${idx}-${displayContextString}`}
+      key={`${sectionSlug}-${idx}-${workContextKey}`}
       {...entry}
       toggleHelp={toggleEntryHelp(idx)}
-      displayContext={displayContext}
+      workContext={workContext}
     />
   ));
 
-  const noEntries = sectionHasNoEntries(sectionSlug, entries, displayContext);
+  const noEntries = sectionHasNoEntries(sectionSlug, entries, workContext);
   const expandedContent = noEntries ? (
     <p className="no-help-entries-help">The Stage has no motion methods.</p>
   ) : (
@@ -416,10 +415,10 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
 };
 
 type HelpSidebarInnerContentProps = {
-  displayContext: HelpDisplayContext;
+  workContext: DevWorkContext;
 };
 const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
-  displayContext,
+  workContext,
 }) => {
   const contentFetchState = useStoreState(
     (state) => state.ideLayout.helpSidebar.contentFetchState
@@ -478,7 +477,7 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
                 toggleSectionVisibility(section.sectionSlug)
               }
               toggleEntryHelp={toggleEntryHelp(idx)}
-              displayContext={displayContext}
+              workContext={workContext}
             ></HelpSidebarSection>
           ))}
         </>
@@ -499,7 +498,7 @@ export const HelpSidebar = () => {
   const ensureHaveContent = useStoreActions(
     (actions) => actions.ideLayout.helpSidebar.ensureHaveContent
   );
-  const displayContext = useHelpDisplayContext();
+  const displayContext = useDevWorkContext();
 
   useEffect(() => {
     ensureHaveContent();
@@ -509,7 +508,7 @@ export const HelpSidebar = () => {
     <div className="HelpSidebar">
       <div className="content">
         <div className="inner-content">
-          <HelpSidebarInnerContent displayContext={displayContext} />
+          <HelpSidebarInnerContent workContext={displayContext} />
         </div>
       </div>
     </div>

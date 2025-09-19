@@ -30,7 +30,7 @@ import { DragPreviewImage } from "react-dnd";
 import { useNotableChanges } from "../hooks/notable-changes";
 import { ConjoinedResizeObserver } from "../../model/junior/conjoined-resize-observer";
 import { scrollCursorRowIntoView } from "./PytchScriptEditor-scroller";
-import { HelpDisplayContext } from "../../model/help-sidebar";
+import { DevWorkContext } from "../../model/dev-work-context";
 
 // Adapted from https://stackoverflow.com/a/71952718
 const insertElectricFullStop = (editor: AceEditorT) => {
@@ -180,13 +180,10 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
 
   const nCodeLines = handler.pythonCode.split("\n").length;
 
-  const completionContext: HelpDisplayContext = {
-    programKind: "per-method",
-    actorKind,
-  };
+  const workContext: DevWorkContext = { programKind: "per-method", actorKind };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const completers = [new PytchAceAutoCompleter(completionContext) as any];
+  const completers = [new PytchAceAutoCompleter(workContext) as any];
 
   const classes = classNames(
     "PytchScriptEditor",

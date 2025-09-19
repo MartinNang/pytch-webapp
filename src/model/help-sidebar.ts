@@ -13,13 +13,11 @@ import {
 } from "./junior/structured-program";
 import { highlightedPreEltsFromCode } from "./highlight-as-ace";
 import { useStoreState } from "../store";
+import { DevWorkContext, DevWorkContextFlatKey } from "./dev-work-context";
 
 export type ElementArray = Array<Element>;
 
-export type HelpContentFromContext = Map<
-  HelpDisplayContextFlatKey,
-  ElementArray
->;
+export type HelpContentFromContext = Map<DevWorkContextFlatKey, ElementArray>;
 
 export type PythonCodeFromKind = Map<PytchProgramKind, string>;
 
@@ -61,42 +59,17 @@ export type PurePythonElementDescriptor = HelpElementDescriptorCommon & {
 
 export const scratchblocksScale = 0.7;
 
-/** In what context is the help sidebar being displayed?  This affects
- * the help text we show for a particular block (e.g., "flat" help might
- * mention having to do "import math" whereas "per-method" does that
- * import behind the scenes) and also which blocks are shown (e.g., if
- * editing a "per-method" program, don't show Sprite-only blocks when
- * the Stage is active). */
-export type HelpDisplayContext =
-  | { programKind: "flat" }
-  | { programKind: "per-method"; actorKind: ActorKind };
-
-export type HelpDisplayContextFlatKey = "flat" | `per-method-${ActorKind}`;
-
-export class HelpDisplayContextOps {
-  static asString(ctx: HelpDisplayContext): HelpDisplayContextFlatKey {
-    switch (ctx.programKind) {
-      case "flat":
-        return "flat";
-      case "per-method":
-        return `per-method-${ctx.actorKind}`;
-      default:
-        return assertNever(ctx);
-    }
-  }
-}
-
 export function showEntryInContext(
   forActorKinds: Array<ActorKind>,
-  displayContext: HelpDisplayContext
+  workContext: DevWorkContext
 ): boolean {
-  switch (displayContext.programKind) {
+  switch (workContext.programKind) {
     case "flat":
       return true;
     case "per-method":
-      return forActorKinds.includes(displayContext.actorKind);
+      return forActorKinds.includes(workContext.actorKind);
     default:
-      return assertNever(displayContext);
+      return assertNever(workContext);
   }
 }
 
@@ -146,44 +119,44 @@ const maybeApplyActorKindPrefix = (
 
 /** Compute the MarkDown string to be used for the given `rawHelp`,
  * which is marked as being applicable to `forActorKinds`, when working
- * in the given `displayContext`. */
+ * in the given `workContext`. */
 const helpStringForContext = (
   rawHelp: RawHelpValue,
   forActorKinds: Array<ActorKind>,
-  displayContext: HelpDisplayContext
+  workContext: DevWorkContext
 ): string => {
   if (typeof rawHelp === "string") {
     // If we have a bare string, then it's the help to show whether
     // we're in "flat" or "per-method" mode.  (Possibly once we have
     // prefixed with, e.g., "Sprite only:".)
     return maybeApplyActorKindPrefix(
-      displayContext.programKind,
+      workContext.programKind,
       rawHelp,
       forActorKinds
     );
   } else {
     const helpForProgramKind = failIfNull(
-      rawHelp[displayContext.programKind],
-      `no help for "${displayContext.programKind}"`
+      rawHelp[workContext.programKind],
+      `no help for "${workContext.programKind}"`
     );
 
     if (typeof helpForProgramKind === "string") {
       return maybeApplyActorKindPrefix(
-        displayContext.programKind,
+        workContext.programKind,
         helpForProgramKind,
         forActorKinds
       );
     } else {
-      switch (displayContext.programKind) {
+      switch (workContext.programKind) {
         case "flat":
           throw new Error('"flat" help must be string');
         case "per-method":
           return failIfNull(
-            helpForProgramKind[displayContext.actorKind],
-            `no help for "per-method/${displayContext.actorKind}"`
+            helpForProgramKind[workContext.actorKind],
+            `no help for "per-method/${workContext.actorKind}"`
           );
         default:
-          return assertNever(displayContext);
+          return assertNever(workContext);
       }
     }
   }
@@ -205,17 +178,17 @@ const makeHelpContentLut = (
   rawHelp: RawHelpValue,
   forActorKinds: Array<ActorKind>
 ): HelpContentFromContext => {
-  const helpEltsForContext = (displayContext: HelpDisplayContext) =>
+  const helpEltsForContext = (workContext: DevWorkContext) =>
     makeHelpTextElements(
-      helpStringForContext(rawHelp, forActorKinds, displayContext)
+      helpStringForContext(rawHelp, forActorKinds, workContext)
     );
 
-  const ctxFlat: HelpDisplayContext = { programKind: "flat" };
-  const ctxPerMethodSprite: HelpDisplayContext = {
+  const ctxFlat: DevWorkContext = { programKind: "flat" };
+  const ctxPerMethodSprite: DevWorkContext = {
     programKind: "per-method",
     actorKind: "sprite",
   };
-  const ctxPerMethodStage: HelpDisplayContext = {
+  const ctxPerMethodStage: DevWorkContext = {
     programKind: "per-method",
     actorKind: "stage",
   };
@@ -519,7 +492,7 @@ export const helpSidebar: IHelpSidebar = {
   }),
 };
 
-export function useHelpDisplayContext(): HelpDisplayContext {
+export function useDevWorkContext(): DevWorkContext {
   return useStoreState((state) => {
     const program = state.activeProject.project.program;
     const programKind = program.kind;
