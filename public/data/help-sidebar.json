@@ -21,6 +21,13 @@
     {
         "kind": "block",
         "actorKind": "sprite",
+        "python": "self.point_towards_mouse()",
+        "scratch": "point towards (mouse pointer v)",
+        "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards the mouse pointer:\nself.point_towards_mouse()\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
         "python": "self.go_to_xy(x, y)",
         "scratch": "go to x: [-200] y: [150]",
         "help": "Move the `self` Sprite to the position (`x`, `y`) on the Stage.\n\n```\n# Move to near top left:\nself.go_to_xy(-200, 150)\n```"
@@ -28,9 +35,23 @@
     {
         "kind": "block",
         "actorKind": "sprite",
+        "python": "self.go_to_mouse()",
+        "scratch": "go to (mouse pointer v)",
+        "help": "Move the `self` Sprite to the position of the mouse pointer.\n\n```\n# Move to the mouse pointer:\nself.go_to_mouse()\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
         "python": "self.glide_to_xy(x, y, seconds)",
         "scratch": "glide [2.5] secs to x: [0] y: [0]",
         "help": "Glide the `self` Sprite smoothly to the position (`x`, `y`) on the stage.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the centre of the stage:\nself.glide_to_xy(0, 0, 2.5)\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
+        "python": "self.glide_to_mouse(seconds)",
+        "scratch": "glide [2.5] secs to (mouse pointer v)",
+        "help": "Glide the `self` Sprite smoothly to the position of the mouse pointer.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the mouse pointer:\nself.glide_to_mouse(2.5)\n```"
     },
     {
         "kind": "block",
@@ -524,6 +545,20 @@
     },
     {
         "kind": "block",
+        "actorKind": "sprite",
+        "python": "self.touching_mouse",
+        "scratch": "<touching (mouse pointer v)>",
+        "help": "Report `True` or `False` according to whether the `self` Sprite is touching the mouse pointer.\n\n```\n# Hide if touching the mouse pointer:\nif self.touching_mouse:\n    self.hide()\n```"
+    },
+    {
+	"kind": "block",
+	"actorKind": "sprite",
+	"python": "self.distance_to_mouse",
+	"scratch": "(distance to (mouse pointer v))",
+	"help": "Report the distance between the `self` Sprite and the mouse pointer.\n\n```\n# Shrink if too close to mouse:\nif self.distance_to_mouse < 80:\n    self.set_size(0.5)\n```"
+    },
+    {
+        "kind": "block",
         "python": "self.ask_and_wait(question)",
         "scratch": "ask [Name?] and wait",
         "help": {
@@ -545,6 +580,30 @@
                 "stage": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose backdrop based on whether\n# the \"a\" key is pressed:\nif pytch.key_pressed(\"a\"):\n    self.switch_backdrop(\"cloudy-sky\")\nelse:\n    self.switch_backdrop(\"underwater\")\n```"
             }
         }
+    },
+    {
+	"kind": "block",
+	"python": "self.mouse_down",
+	"scratch": "<mouse down?>",
+	"help": {
+	    "flat": "Report `True` or `False` according to whether the mouse button is currently pressed down.\n\n```\n# (This example is for a Sprite.)\n# Disappear if the mouse button is down:\nif self.mouse_down:\n    self.hide()",
+	    "per-method": {
+		"sprite": "Report `True` or `False` according to whether the mouse button is currently pressed down.\n\n```\n# Disappear if the mouse button is down:\nif self.mouse_down:\n    self.hide()",
+		"stage": "Report `True` or `False` according to whether the mouse button is currently pressed down.\n\n```\n# Show starry background if the mouse\n# button is down:\nif self.mouse_down:\n    self.switch_backdrop(\"stars.jpg\")"
+	    }
+	}
+    },
+    {
+	"kind": "block",
+	"python": "self.mouse_x",
+	"scratch": "(mouse x)",
+	"help": "Report the *x* coordinate of the mouse, but restricted to between `-240` and `240` if the mouse is outside that range.\n\n```\n# If the mouse is in the left half\n# of the stage, say so:\nif self.mouse_x < 0:\n    print(\"Left!\")"
+    },
+    {
+	"kind": "block",
+	"python": "self.mouse_y",
+	"scratch": "(mouse y)",
+	"help": "Report the *y* coordinate of the mouse, but restricted to between `-180` and `180` if the mouse is outside that range.\n\n```\n# If the mouse is in the top half\n# of the stage, say so:\nif self.mouse_y > 0:\n    print(\"Top!\")"
     },
 
     {
