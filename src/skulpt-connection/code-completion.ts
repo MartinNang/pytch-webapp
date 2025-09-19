@@ -42,6 +42,27 @@ const kPytchPerMethodExclusions = [
   "when_this_sprite_clicked",
 ];
 
+const withoutPerMethodExclusions = (
+  completions: Array<IAceCompletion>
+): Array<IAceCompletion> => {
+  // Assert that all exclusions are in the original input array, to try
+  // to catch typos.
+  const completionValues = completions.map((c) => c.value);
+  const missingExclusions = kPytchPerMethodExclusions.filter(
+    (value) => !completionValues.includes(value)
+  );
+  if (missingExclusions.length > 0) {
+    throw new Error(
+      "some exclusions not found in full completions list: " +
+        JSON.stringify(missingExclusions)
+    );
+  }
+
+  return completions.filter(
+    (completion) => !kPytchPerMethodExclusions.includes(completion.value)
+  );
+};
+
 const completionsFromPyList = (meta: string | null, lst: any) =>
   lst.v.map(completionFromPyTuple(meta));
 
