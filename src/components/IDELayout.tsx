@@ -60,10 +60,12 @@ export const IDELayout: React.FC<EmptyProps> = () => {
       data-project-id={projectId}
     >
       <Modals />
+      <main>
       <ActivityBar />
       <ActivityContent />
       <EditorAndOutErr />
       <StageAndActorsOrAssets />
+      </main>
     </DivSettingWindowTitle>
   );
 };
