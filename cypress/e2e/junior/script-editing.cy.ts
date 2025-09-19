@@ -37,6 +37,17 @@ context("Edit Python of scripts", () => {
     soleEventHandlerCodeShouldEqual("# A0B1C2D3E45\n");
   });
 
+  function assertNCompletions(expNCompletions: number) {
+    if (expNCompletions === 0) {
+      cy.get(".ace_autocomplete").should("not.be.visible");
+    } else {
+      cy.get(".ace_autocomplete .ace_line").should(
+        "have.length",
+        expNCompletions
+      );
+    }
+  }
+
   it("launches autocomplete with electric dot", () => {
     loadFromZipfile("newly-created-per-method.zip");
 
