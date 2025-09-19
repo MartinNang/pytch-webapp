@@ -34,7 +34,7 @@ let actorCompletions: Array<IAceCompletion>;
 // use the provided info on the user-facing attributes of pytch,
 // Actor, Sprite, and Stage.
 //
-(() => {
+const kCompletions = (() => {
   Sk.configure({});
   const pyStr = (s: string) => new Sk.builtin.str(s);
   const sUserFacingCompletions = pyStr("_user_facing_completions");
@@ -55,7 +55,7 @@ let actorCompletions: Array<IAceCompletion>;
 
   // Set top-level var holding completions for "pytch.":
   //
-  pytchCompletions = completionsFromPyList(
+  const pytch = completionsFromPyList(
     null,
     pyCompletionsByKind.mp$subscript(sPytch)
   );
@@ -74,11 +74,13 @@ let actorCompletions: Array<IAceCompletion>;
     "[Stg]",
     pyCompletionsByKind.mp$subscript(sStage)
   );
-  actorCompletions = [
+  const actor = [
     ...baseActorCompletions,
     ...spriteCompletions,
     ...stageCompletions,
   ];
+
+  return { pytch, actor };
 })();
 
 export class PytchAceAutoCompleter {
@@ -102,9 +104,9 @@ export class PytchAceAutoCompleter {
     const prePrefix = lineHead.substring(0, prePrefixLength);
 
     const candidates = prePrefix.endsWith("pytch.")
-      ? pytchCompletions
+      ? kCompletions.pytch
       : prePrefix.endsWith("self.")
-      ? actorCompletions
+      ? kCompletions.actor
       : [];
 
     callback(null, candidates);
