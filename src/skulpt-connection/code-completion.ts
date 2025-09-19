@@ -121,6 +121,7 @@ const kCompletions = (() => {
 
   return {
     allPytch,
+    perMethodPytch: withoutPerMethodExclusions(allPytch),
     actor,
     sprite,
     stage,
@@ -156,7 +157,14 @@ export class PytchAceAutoCompleter {
 
     const candidates = (() => {
       if (prePrefix.endsWith("pytch.")) {
-        return kCompletions.allPytch;
+        switch (programKind) {
+          case "flat":
+            return kCompletions.allPytch;
+          case "per-method":
+            return kCompletions.perMethodPytch;
+          default:
+            return assertNever(this.context);
+        }
       } else if (prePrefix.endsWith("self.")) {
         switch (programKind) {
           case "flat":
