@@ -551,6 +551,13 @@
         "help": "Report `True` or `False` according to whether the `self` Sprite is touching the mouse pointer.\n\n```\n# Hide if touching the mouse pointer:\nif self.touching_mouse_pointer():\n    self.hide()\n```"
     },
     {
+	"kind": "block",
+	"actorKind": "sprite",
+	"python": "self.distance_to_mouse_pointer",
+	"scratch": "(distance to (mouse pointer v))",
+	"help": "Report the distance between the `self` Sprite and the mouse pointer.\n\n```\n# Shrink if too close to mouse:\nif self.distance_to_mouse_pointer < 80:\n    self.set_size(0.5)\n```"
+    },
+    {
         "kind": "block",
         "python": "self.ask_and_wait(question)",
         "scratch": "ask [Name?] and wait",
