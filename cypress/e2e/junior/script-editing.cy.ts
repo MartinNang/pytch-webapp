@@ -54,17 +54,21 @@ context("Edit Python of scripts", () => {
     selectSprite("Snake");
     deleteAllCodeOfSoleHandler();
 
-    cy.get(".ace_editor").type("pytch.");
-    cy.get(".ace_autocomplete").should("be.visible");
-    cy.pytchSendKeysToApp("{downArrow}{downArrow}{downArrow}{enter}");
-    soleEventHandlerCodeShouldEqual("pytch.create_clone_of");
+    cy.get(".ace_editor").type("pytch.br");
+    assertNCompletions(4);
+    cy.pytchSendKeysToApp("{downArrow}{enter}");
+    assertNCompletions(0);
+    soleEventHandlerCodeShouldEqual("pytch.broadcast");
 
     cy.pytchSendKeysToApp("{enter}self.{enter}");
-    soleEventHandlerCodeShouldEqual("pytch.create_clone_of\nself.all_clones");
+    assertNCompletions(0);
+    soleEventHandlerCodeShouldEqual("pytch.broadcast\nself.all_clones");
 
-    cy.pytchSendKeysToApp("{enter}rubbish.{enter}");
+    cy.pytchSendKeysToApp("{enter}rubbish.");
+    assertNCompletions(0);
+    cy.pytchSendKeysToApp("{enter}");
     soleEventHandlerCodeShouldEqual(
-      "pytch.create_clone_of\nself.all_clones\nrubbish.\n"
+      "pytch.broadcast\nself.all_clones\nrubbish.\n"
     );
   });
 
