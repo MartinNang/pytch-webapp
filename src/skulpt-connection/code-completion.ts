@@ -31,6 +31,17 @@ const withoutMeta = (completion: IAceCompletion): IAceCompletion => ({
   message: completion.message,
 });
 
+const kPytchPerMethodExclusions = [
+  "Sprite",
+  "Stage",
+  "when_green_flag_clicked",
+  "when_I_receive",
+  "when_I_start_as_a_clone",
+  "when_key_pressed",
+  "when_stage_clicked",
+  "when_this_sprite_clicked",
+];
+
 const completionsFromPyList = (meta: string | null, lst: any) =>
   lst.v.map(completionFromPyTuple(meta));
 
