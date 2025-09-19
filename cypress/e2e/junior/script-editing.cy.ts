@@ -73,6 +73,23 @@ context("Edit Python of scripts", () => {
     );
   });
 
+  it("completions excluded from pytch", () => {
+    loadFromZipfile("newly-created-per-method.zip");
+
+    selectSprite("Snake");
+    deleteAllCodeOfSoleHandler();
+
+    cy.get(".ace_editor").type("pytch.when");
+    assertNCompletions(0);
+
+    cy.pytchSendKeysToApp("{enter}{enter}");
+    assertNCompletions(0);
+    // The letters in the search string "stage" match the two "broadcast"
+    // methods, from broadcaST(messAGE).
+    cy.pytchSendKeysToApp("pytch.stage");
+    assertNCompletions(2);
+  });
+
   it("actor-kind-specific completions", () => {
     loadFromZipfile("newly-created-per-method.zip");
 
