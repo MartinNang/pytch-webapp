@@ -115,11 +115,15 @@ export class PytchAceAutoCompleter {
     const prePrefixLength = lineHead.length - prefix.length;
     const prePrefix = lineHead.substring(0, prePrefixLength);
 
-    const candidates = prePrefix.endsWith("pytch.")
-      ? kCompletions.pytch
-      : prePrefix.endsWith("self.")
-      ? kCompletions.actor
-      : [];
+    const candidates = (() => {
+      if (prePrefix.endsWith("pytch.")) {
+        return kCompletions.pytch;
+      } else if (prePrefix.endsWith("self.")) {
+        return kCompletions.actor;
+      } else {
+        return [];
+      }
+    })();
 
     callback(null, candidates);
   }
