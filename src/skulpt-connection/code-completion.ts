@@ -23,6 +23,12 @@ const completionFromPyTuple = (meta: string | null) => (tup: any) => ({
   message: tup.v[3].v,
 });
 
+const withoutMeta = (completion: IAceCompletion): IAceCompletion => ({
+  caption: completion.caption,
+  value: completion.value,
+  message: completion.message,
+});
+
 const completionsFromPyList = (meta: string | null, lst: any) =>
   lst.v.map(completionFromPyTuple(meta));
 
