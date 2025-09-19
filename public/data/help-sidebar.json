@@ -15,7 +15,7 @@
         "kind": "block",
         "actorKind": "sprite",
         "python": "self.point_degrees(angle)",
-        "scratch": "point towards [-45]",
+        "scratch": "point in direction [-45]",
         "help": "Turn the `self` Sprite to point in the direction given by `angle`, which measures degrees anticlockwise (counter-clockwise) from its original orientation.  To give a direction in terms of rotation clockwise, use a negative value for `angle`.\n\n```\n# Point (1/8)th turn clockwise\n# compared to original costume:\nself.point_degrees(-45)\n```"
     },
     {
@@ -23,7 +23,7 @@
         "actorKind": "sprite",
         "python": "self.point_to_mouse_pointer()",
         "scratch": "point towards (mouse pointer v)",
-        "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards where the mouse pointer is:\nself.point_to_mouse_pointer()\n```"
+        "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards the mouse pointer:\nself.point_to_mouse_pointer()\n```"
     },
     {
         "kind": "block",
@@ -37,7 +37,7 @@
         "actorKind": "sprite",
         "python": "self.go_to_mouse_pointer()",
         "scratch": "go to (mouse pointer v)",
-        "help": "Move the `self` Sprite to the position of the mouse pointer.\n\n```\n# Move to where the mouse pointer is:\nself.go_to_mouse_pointer()\n```"
+        "help": "Move the `self` Sprite to the position of the mouse pointer.\n\n```\n# Move to the mouse pointer:\nself.go_to_mouse_pointer()\n```"
     },
     {
         "kind": "block",
