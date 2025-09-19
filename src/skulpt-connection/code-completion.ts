@@ -26,10 +26,6 @@ const completionFromPyTuple = (meta: string | null) => (tup: any) => ({
 const completionsFromPyList = (meta: string | null, lst: any) =>
   lst.v.map(completionFromPyTuple(meta));
 
-// These will be populated in the IIFE below.
-let pytchCompletions: Array<IAceCompletion>;
-let actorCompletions: Array<IAceCompletion>;
-
 // Invoke the Python function _user_facing_completions() and
 // use the provided info on the user-facing attributes of pytch,
 // Actor, Sprite, and Stage.
@@ -62,7 +58,7 @@ const kCompletions = (() => {
 
   // Set top-level var holding completions for "self.":
   //
-  const baseActorCompletions = completionsFromPyList(
+  const actorCompletions = completionsFromPyList(
     "[Spr/Stg]",
     pyCompletionsByKind.mp$subscript(sActor)
   );
@@ -75,7 +71,7 @@ const kCompletions = (() => {
     pyCompletionsByKind.mp$subscript(sStage)
   );
   const actor = [
-    ...baseActorCompletions,
+    ...actorCompletions,
     ...spriteCompletions,
     ...stageCompletions,
   ];
