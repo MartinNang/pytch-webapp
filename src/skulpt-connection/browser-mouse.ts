@@ -61,7 +61,7 @@ export class BrowserMouse {
       const eltRect = canvasDiv.getBoundingClientRect();
       const canvasX0 = eltRect.left + canvasDiv.clientLeft;
       const canvasX = this.clientX - canvasX0;
-      const scaledCanvasX = (canvasX / canvasDiv.clientWidth) * stageWidth;
+      const scaledCanvasX = canvasX * (stageWidth / canvasDiv.clientWidth);
       const rawStageX = scaledCanvasX - stageHalfWidth;
       const stageX = clamp(rawStageX, -stageHalfWidth, stageHalfWidth);
       this.cached_stage_x = stageX;
@@ -75,7 +75,7 @@ export class BrowserMouse {
       const eltRect = canvasDiv.getBoundingClientRect();
       const canvasY0 = eltRect.top + canvasDiv.clientTop;
       const canvasY = this.clientY - canvasY0;
-      const scaledCanvasY = (canvasY / canvasDiv.clientHeight) * stageHeight;
+      const scaledCanvasY = canvasY * (stageHeight / canvasDiv.clientHeight);
       const rawStageY = stageHalfHeight - scaledCanvasY;
       const stageY = clamp(rawStageY, -stageHalfHeight, stageHalfHeight);
       this.cached_stage_y = stageY;
