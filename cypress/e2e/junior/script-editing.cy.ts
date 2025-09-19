@@ -7,6 +7,7 @@ import {
   soleEventHandlerCodeShouldEqual,
   ScriptOps,
   settleModalDialog,
+  launchAdd,
 } from "./utils";
 
 context("Edit Python of scripts", () => {
@@ -70,6 +71,35 @@ context("Edit Python of scripts", () => {
     soleEventHandlerCodeShouldEqual(
       "pytch.broadcast\nself.all_clones\nrubbish.\n"
     );
+  });
+
+  it("actor-kind-specific completions", () => {
+    loadFromZipfile("newly-created-per-method.zip");
+
+    selectSprite("Snake");
+    deleteAllCodeOfSoleHandler();
+
+    cy.get(".ace_editor").type("self.costume");
+    assertNCompletions(4);
+    cy.pytchSendKeysToApp("{enter}{enter}");
+    assertNCompletions(0);
+    cy.pytchSendKeysToApp("self.back");
+    assertNCompletions(2);
+    cy.pytchSendKeysToApp("drop");
+    assertNCompletions(0);
+
+    selectStage();
+    launchAdd.script();
+    settleModalDialog("OK");
+
+    cy.get(".ace_editor").type("self.cos");
+    assertNCompletions(2);
+    cy.pytchSendKeysToApp("tumes");
+    assertNCompletions(0);
+    cy.pytchSendKeysToApp("{enter}{enter}");
+    assertNCompletions(0);
+    cy.pytchSendKeysToApp("self.backdrop");
+    assertNCompletions(4);
   });
 
   it("focuses editor from activity content", () => {
