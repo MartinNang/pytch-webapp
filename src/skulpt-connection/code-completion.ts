@@ -6,6 +6,7 @@
 // based on the public module functions and base-class methods.
 
 import { IAceEditor } from "react-ace/lib/types";
+import { assertNever } from "../utils";
 import { HelpDisplayContext } from "../model/help-sidebar";
 
 declare let Sk: any;
@@ -119,7 +120,21 @@ export class PytchAceAutoCompleter {
       if (prePrefix.endsWith("pytch.")) {
         return kCompletions.pytch;
       } else if (prePrefix.endsWith("self.")) {
-        return kCompletions.actor;
+        switch (this.context.programKind) {
+          case "flat":
+            return kCompletions.actor;
+          case "per-method":
+            switch (this.context.actorKind) {
+              case "sprite":
+                return kCompletions.sprite;
+              case "stage":
+                return kCompletions.stage;
+              default:
+                return assertNever(this.context.actorKind);
+            }
+          default:
+            return assertNever(this.context);
+        }
       } else {
         return [];
       }
