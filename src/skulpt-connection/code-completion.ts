@@ -59,7 +59,7 @@ const kCompletions = (() => {
 
   // Set top-level var holding completions for "pytch.":
   //
-  const pytch = completionsFromPyList(
+  const allPytch = completionsFromPyList(
     null,
     pyCompletionsByKind.mp$subscript(sPytch)
   );
@@ -87,7 +87,12 @@ const kCompletions = (() => {
   const sprite = actorCompletions.concat(spriteCompletions).map(withoutMeta);
   const stage = actorCompletions.concat(stageCompletions).map(withoutMeta);
 
-  return { pytch, actor, sprite, stage };
+  return {
+    allPytch,
+    actor,
+    sprite,
+    stage,
+  };
 })();
 
 export class PytchAceAutoCompleter {
@@ -115,12 +120,13 @@ export class PytchAceAutoCompleter {
 
     const prePrefixLength = lineHead.length - prefix.length;
     const prePrefix = lineHead.substring(0, prePrefixLength);
+    const programKind = this.context.programKind;
 
     const candidates = (() => {
       if (prePrefix.endsWith("pytch.")) {
-        return kCompletions.pytch;
+        return kCompletions.allPytch;
       } else if (prePrefix.endsWith("self.")) {
-        switch (this.context.programKind) {
+        switch (programKind) {
           case "flat":
             return kCompletions.actor;
           case "per-method":
