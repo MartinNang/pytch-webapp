@@ -21,9 +21,9 @@
     {
         "kind": "block",
         "actorKind": "sprite",
-        "python": "self.point_to_mouse_pointer()",
+        "python": "self.point_towards_mouse()",
         "scratch": "point towards (mouse pointer v)",
-        "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards the mouse pointer:\nself.point_to_mouse_pointer()\n```"
+        "help": "Turn the `self` Sprite to point in the direction of the mouse pointer.\n\n```\n# Point towards the mouse pointer:\nself.point_towards_mouse()\n```"
     },
     {
         "kind": "block",
@@ -35,9 +35,9 @@
     {
         "kind": "block",
         "actorKind": "sprite",
-        "python": "self.go_to_mouse_pointer()",
+        "python": "self.go_to_mouse()",
         "scratch": "go to (mouse pointer v)",
-        "help": "Move the `self` Sprite to the position of the mouse pointer.\n\n```\n# Move to the mouse pointer:\nself.go_to_mouse_pointer()\n```"
+        "help": "Move the `self` Sprite to the position of the mouse pointer.\n\n```\n# Move to the mouse pointer:\nself.go_to_mouse()\n```"
     },
     {
         "kind": "block",
@@ -49,9 +49,9 @@
     {
         "kind": "block",
         "actorKind": "sprite",
-        "python": "self.glide_to_mouse_pointer(seconds)",
+        "python": "self.glide_to_mouse(seconds)",
         "scratch": "glide [2.5] secs to (mouse pointer v)",
-        "help": "Glide the `self` Sprite smoothly to the position of the mouse pointer.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the mouse pointer:\nself.glide_to_mouse_pointer(2.5)\n```"
+        "help": "Glide the `self` Sprite smoothly to the position of the mouse pointer.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the mouse pointer:\nself.glide_to_mouse(2.5)\n```"
     },
     {
         "kind": "block",
@@ -546,16 +546,16 @@
     {
         "kind": "block",
         "actorKind": "sprite",
-        "python": "self.touching_mouse_pointer()",
+        "python": "self.touching_mouse",
         "scratch": "<touching (mouse pointer v)>",
-        "help": "Report `True` or `False` according to whether the `self` Sprite is touching the mouse pointer.\n\n```\n# Hide if touching the mouse pointer:\nif self.touching_mouse_pointer():\n    self.hide()\n```"
+        "help": "Report `True` or `False` according to whether the `self` Sprite is touching the mouse pointer.\n\n```\n# Hide if touching the mouse pointer:\nif self.touching_mouse:\n    self.hide()\n```"
     },
     {
 	"kind": "block",
 	"actorKind": "sprite",
-	"python": "self.distance_to_mouse_pointer",
+	"python": "self.distance_to_mouse",
 	"scratch": "(distance to (mouse pointer v))",
-	"help": "Report the distance between the `self` Sprite and the mouse pointer.\n\n```\n# Shrink if too close to mouse:\nif self.distance_to_mouse_pointer < 80:\n    self.set_size(0.5)\n```"
+	"help": "Report the distance between the `self` Sprite and the mouse pointer.\n\n```\n# Shrink if too close to mouse:\nif self.distance_to_mouse < 80:\n    self.set_size(0.5)\n```"
     },
     {
         "kind": "block",
