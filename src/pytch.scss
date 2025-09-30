@@ -191,6 +191,9 @@ $tutorial-display-side-margin: 3rem;
       &:first-child {
         margin-left: 0rem;
       }
+      &:last-child {
+        margin-right: 0rem;
+      }
     }
   }
 }
