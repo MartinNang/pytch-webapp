@@ -197,11 +197,14 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
       return;
     }
 
+    const mOutElt = document.getElementById("pytch-hidden-stdout");
+
     const buildResult = await build(
       state.project,
       (_outputChunk) => {
-        // TODO: Can we do anything useful with Python print() output?
-        return;
+        if (mOutElt != null) {
+          mOutElt.dataset.capturedStdout += _outputChunk;
+        }
       },
       (_pytchError, _errorContext) => {
         // TODO: Could put up button saying "launch Pytch (in new tab)
@@ -211,6 +214,9 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
     );
 
     if (buildResult.kind === BuildOutcomeKind.Success) {
+      if (mOutElt != null) {
+        mOutElt.dataset.capturedStdout = "";
+      }
       noteLaunched();
       incrementBuildSeqnum(); // Rerender Stage; new ProjectEngine.
     } else {
@@ -228,7 +234,7 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
   );
 
   return (
-    <div className="StandalonePlayDemo abs-0000">
+    <main className="StandalonePlayDemo abs-0000">
       <div className="StageWithControls">
         <div className="StageControls" style={widthOfStageStyle}>
           <div className="run-stop-controls">
@@ -239,6 +245,11 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
         </div>
         <DemoContent />
       </div>
-    </div>
+      <pre
+        id="pytch-hidden-stdout"
+        className="d-none"
+        data-captured-stdout=""
+      />
+    </main>
   );
 };
