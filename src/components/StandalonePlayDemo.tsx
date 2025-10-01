@@ -197,11 +197,14 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
       return;
     }
 
+    const mOutElt = document.getElementById("pytch-hidden-stdout");
+
     const buildResult = await build(
       state.project,
       (_outputChunk) => {
-        // TODO: Can we do anything useful with Python print() output?
-        return;
+        if (mOutElt != null) {
+          mOutElt.dataset.capturedStdout += _outputChunk;
+        }
       },
       (_pytchError, _errorContext) => {
         // TODO: Could put up button saying "launch Pytch (in new tab)
