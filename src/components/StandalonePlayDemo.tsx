@@ -234,7 +234,7 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
   );
 
   return (
-    <div className="StandalonePlayDemo abs-0000">
+    <main className="StandalonePlayDemo abs-0000">
       <div className="StageWithControls">
         <div className="StageControls" style={widthOfStageStyle}>
           <div className="run-stop-controls">
@@ -250,6 +250,6 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
         className="d-none"
         data-captured-stdout=""
       />
-    </div>
+    </main>
   );
 };
