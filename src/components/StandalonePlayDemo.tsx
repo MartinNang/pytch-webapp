@@ -239,6 +239,11 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
         </div>
         <DemoContent />
       </div>
+      <pre
+        id="pytch-hidden-stdout"
+        className="d-none"
+        data-captured-stdout=""
+      />
     </div>
   );
 };
