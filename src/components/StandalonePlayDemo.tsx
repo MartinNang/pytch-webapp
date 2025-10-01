@@ -214,6 +214,9 @@ export const StandalonePlayDemo: React.FC<EmptyProps> = () => {
     );
 
     if (buildResult.kind === BuildOutcomeKind.Success) {
+      if (mOutElt != null) {
+        mOutElt.dataset.capturedStdout = "";
+      }
       noteLaunched();
       incrementBuildSeqnum(); // Rerender Stage; new ProjectEngine.
     } else {
