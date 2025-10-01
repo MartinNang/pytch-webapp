@@ -11,4 +11,13 @@ context("Standalone play-demo", () => {
     cy.pytchGreenFlag();
     cy.pytchCanvasShouldBeSolidColour(blueColour);
   });
+
+  function hiddenStdoutShouldEqual(expStdout: string) {
+    cy.waitUntil(() =>
+      cy
+        .get("#pytch-hidden-stdout")
+        .invoke("attr", "data-captured-stdout")
+        .then((stdout) => stdout === expStdout)
+    );
+  }
 });
