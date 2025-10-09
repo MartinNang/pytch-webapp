@@ -1,12 +1,9 @@
 import React from "react";
 import { useStoreState } from "../../store";
-import { useJrEditState, useMappedProgram } from "./hooks";
+import { useActiveActorKind, useJrEditState } from "./hooks";
 
 import { AddSomethingSingleButton } from "./AddSomethingButton";
-import {
-  AssetMetaDataOps,
-  StructuredProgramOps,
-} from "../../model/junior/structured-program";
+import { AssetMetaDataOps } from "../../model/junior/structured-program";
 import { useRunFlow } from "../../model";
 import { AssetsContent } from "./AssetsContent";
 import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
@@ -16,20 +13,9 @@ export const SoundsList = () => {
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
   const activeActorId = useJrEditState((s) => s.activeActor);
-
-  const activeActor = useMappedProgram("<SoundsList>", (program) =>
-    StructuredProgramOps.uniqueActorById(program, activeActorId)
-  );
+  const activeActorKind = useActiveActorKind();
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
-
-  // See comment in CodeEditor.
-  const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
-  if (activeTab !== "sounds") {
-    return false;
-  }
-
-  const actorKind = activeActor.kind;
 
   const actorSounds = AssetMetaDataOps.filterByActorMimeType(
     assets,
@@ -37,14 +23,20 @@ export const SoundsList = () => {
     "audio"
   );
 
+  // See comment in CodeEditor.
+  const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
+  if (activeTab !== "sounds") {
+    return false;
+  }
+
   const assetNamePrefix = `${activeActorId}/`;
-  const operationContextKey = `${activeActor.kind}/audio` as const;
+  const operationContextKey = `${activeActorKind}/audio` as const;
   const addSound = () =>
     runAddAssets({ projectId, operationContextKey, assetNamePrefix });
 
   // Also use this for "key", to make sure the colour switches instantly
   // rather than transitioning when moving from Stage to a Sprite.
-  const addWhat = `${activeActor.kind}-asset` as const;
+  const addWhat = `${activeActorKind}-asset` as const;
 
   return (
     <FocusGroupContainer
@@ -52,7 +44,7 @@ export const SoundsList = () => {
       groupedFocusKey={`ActorProperties/${activeActorId}/sounds`}
     >
       <AssetsContent
-        actorKind={actorKind}
+        actorKind={activeActorKind}
         assetKind="audio"
         assets={actorSounds}
         buttonsPlural={false}
