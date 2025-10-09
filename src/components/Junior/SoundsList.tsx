@@ -1,6 +1,10 @@
 import React from "react";
 import { useStoreState } from "../../store";
-import { useActiveActorKind, useJrEditState } from "./hooks";
+import {
+  useActiveActorKind,
+  useJrEditState,
+  useReorderAssetFromEltFunc,
+} from "./hooks";
 
 import { AddSomethingSingleButton } from "./AddSomethingButton";
 import { AssetMetaDataOps } from "../../model/junior/structured-program";
@@ -23,6 +27,8 @@ export const SoundsList = () => {
     "audio"
   );
 
+  const onReorder = useReorderAssetFromEltFunc(projectId, actorSounds);
+
   // See comment in CodeEditor.
   const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
   if (activeTab !== "sounds") {
@@ -42,6 +48,7 @@ export const SoundsList = () => {
     <FocusGroupContainer
       className="gfs__actorprops__container Junior-SoundsList-container"
       groupedFocusKey={`ActorProperties/${activeActorId}/sounds`}
+      opts={{ onReorder }}
     >
       <AssetsContent
         actorKind={activeActorKind}

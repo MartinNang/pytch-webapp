@@ -21,6 +21,8 @@ import { useFocusContext } from "../hooks/focus-steering";
 import { assertNever, failIfNull } from "../../utils";
 import { kHandlerHatBlockOptions } from "../../model/junior/upsert-hat-block";
 import { ReorderDirection } from "../../model/junior/grouped-focus";
+import { AssetPresentation } from "../../model/asset";
+import { ProjectId } from "../../model/project-core";
 
 type JrEditStateMapper<R> = (state: State<EditState>) => R;
 type JrEditActionsMapper<R> = (actions: Actions<EditState>) => R;
@@ -218,6 +220,56 @@ export const useAssetCardSwapWithAdjacent = (
   const swapWithNext = reorderFun(nextPathname, 1);
 
   return { swapWithPrev, swapWithNext };
+};
+
+const tryAssetIndexFromElt = (elt: HTMLElement): number | undefined => {
+  const assetCardDiv = elt.querySelector(
+    ":scope > div.AssetCard"
+  ) as HTMLDivElement | null;
+  if (assetCardDiv == null) {
+    console.warn("could not find AssetCard within", elt);
+    return;
+  }
+
+  const movingAssetIdxStr = assetCardDiv.dataset.assetIdx;
+  if (movingAssetIdxStr == null) {
+    console.warn("no data-asset-idx attr within", assetCardDiv);
+    return;
+  }
+
+  const movingAssetIdx = parseInt(movingAssetIdxStr);
+  if (isNaN(movingAssetIdx)) {
+    const message = `bad data-asset-idx attr "${movingAssetIdxStr}"`;
+    console.warn(message, assetCardDiv);
+    return;
+  }
+
+  return movingAssetIdx;
+};
+
+export const useReorderAssetFromEltFunc = (
+  projectId: ProjectId,
+  displayedAssets: Array<AssetPresentation>
+) => {
+  const reorderAction = useStoreActions(
+    (a) => a.activeProject.reorderAssetsAndSync
+  );
+
+  return async (elt: HTMLElement, dir: ReorderDirection) => {
+    const assetOffset = dir === "earlier" ? -1 : 1;
+
+    const movingAssetIdx = tryAssetIndexFromElt(elt);
+    if (movingAssetIdx == null) return;
+
+    const movingAssetName = displayedAssets[movingAssetIdx].assetInProject.name;
+
+    const targetAsset = displayedAssets[movingAssetIdx + assetOffset];
+    if (targetAsset == null) return;
+
+    const targetAssetName = targetAsset.assetInProject.name;
+
+    await reorderAction({ projectId, movingAssetName, targetAssetName });
+  };
 };
 
 ////////////////////////////////////////////////////////////////////////////////

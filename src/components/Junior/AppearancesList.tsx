@@ -1,6 +1,10 @@
 import React from "react";
 import { useStoreState } from "../../store";
-import { useActiveActorKind, useJrEditState } from "./hooks";
+import {
+  useActiveActorKind,
+  useJrEditState,
+  useReorderAssetFromEltFunc,
+} from "./hooks";
 import { AssetMetaDataOps } from "../../model/junior/structured-program";
 import {
   AddSomethingButton,
@@ -26,6 +30,8 @@ export const AppearancesList = () => {
     "image"
   );
 
+  const onReorder = useReorderAssetFromEltFunc(projectId, actorAppearances);
+
   // See comment in CodeEditor.
   const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
   if (activeTab !== "appearances") {
@@ -48,6 +54,7 @@ export const AppearancesList = () => {
     <FocusGroupContainer
       className="gfs__actorprops__container Junior-AppearancesList-container"
       groupedFocusKey={`ActorProperties/${activeActorId}/appearances`}
+      opts={{ onReorder }}
     >
       <AssetsContent
         actorKind={activeActorKind}
