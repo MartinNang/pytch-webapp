@@ -10,6 +10,8 @@ export type KeyOrShortcut = Parameters<typeof cy.realPress>[0];
 
 export const kShiftTab: KeyOrShortcut = ["Shift", "Tab"];
 export const kShiftF10: KeyOrShortcut = ["Shift", "F10"];
+export const kCtrlSlash: KeyOrShortcut = ["Control", "/"];
+export const kCtrlDot: KeyOrShortcut = ["Control", "."];
 export const kAltArrowUp: KeyOrShortcut = ["Alt", "ArrowUp"];
 export const kAltArrowDown: KeyOrShortcut = ["Alt", "ArrowDown"];
 export const kAltArrowLeft: KeyOrShortcut = ["Alt", "ArrowLeft"];
@@ -163,9 +165,9 @@ export function assertNoDropdownMenu() {
   cy.get('div[role="menu"].show.dropdown').should("not.exist");
 }
 
-export function summonCcMenuByKbd() {
+export function summonCcMenuByKbd(keyOrShortcut?: KeyOrShortcut) {
   assertNoDropdownMenu();
-  realPress(kShiftF10);
+  realPress(keyOrShortcut ?? kShiftF10);
   cy.get('div[role="menu"].show.dropdown').should("have.length", 1);
 }
 

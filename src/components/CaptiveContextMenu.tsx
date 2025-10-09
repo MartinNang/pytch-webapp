@@ -27,6 +27,14 @@ type ContextT = {
 
 const Context = createContext<ContextT | null>(null);
 
+function isMenuToggleKeyEvent(evt: ReactKeyboardEvent): boolean {
+  return (
+    (evt.shiftKey && evt.key === "F10") ||
+    (evt.ctrlKey && evt.key === "/") ||
+    (evt.ctrlKey && evt.key === ".")
+  );
+}
+
 type ContainerProps = {
   onClick?: MouseEventHandler;
   onKeyDown?: KeyboardEventHandler;
@@ -136,7 +144,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
   // dropdown-menu visible, navigate through non-disabled items,
   // clamping movement at first and last
   const containerKeyDown = (evt: ReactKeyboardEvent) => {
-    if (evt.key === "F10" && evt.shiftKey) {
+    if (isMenuToggleKeyEvent(evt)) {
       toggleShow();
       evt.preventDefault();
       return;
@@ -229,7 +237,7 @@ const DropdownMenu: React.FC<PropsWithChildren<object>> = ({ children }) => {
   const ctx = useNonNullContext(Context);
 
   const onKeydown: KeyboardEventHandler = (evt) => {
-    if (evt.key === "F10" && evt.shiftKey && ctx.show) {
+    if (isMenuToggleKeyEvent(evt) && ctx.show) {
       ctx.setShow(false);
       evt.stopPropagation();
       evt.preventDefault();

@@ -9,6 +9,8 @@ import {
   assertFocus,
   assertNoDropdownMenu,
   chooseCcMenuItem,
+  kCtrlDot,
+  kCtrlSlash,
   kShiftF10,
   kShiftTab,
   realPress,
@@ -56,17 +58,33 @@ context("Actor ccmenu operations", () => {
     });
   });
 
-  [
-    { label: "esc", key: "Escape" as const },
+  const ccmenuKeySpecs = [
     { label: "S-F10", key: kShiftF10 },
-  ].forEach((spec) =>
-    it(`summon and cancel menu (${spec.label}) with kbd`, () => {
-      selectSprite("Snake");
-      summonCcMenuByKbd();
-      realPress(spec.key);
-      assertNoDropdownMenu();
-      assertFocus("actor-card", 1);
-    })
+    { label: "C-/", key: kCtrlSlash },
+    { label: "C-.", key: kCtrlDot },
+  ];
+
+  [{ label: "esc", key: "Escape" as const }, ...ccmenuKeySpecs].forEach(
+    (spec) =>
+      it(`summon and cancel menu (${spec.label}) with kbd`, () => {
+        selectSprite("Snake");
+        summonCcMenuByKbd();
+        realPress(spec.key);
+        assertNoDropdownMenu();
+        assertFocus("actor-card", 1);
+      })
+  );
+
+  ccmenuKeySpecs.forEach((summonSpec) =>
+    ccmenuKeySpecs.forEach((cancelSpec) =>
+      it(`summon ${summonSpec.label} and cxl (${cancelSpec.label})`, () => {
+        selectSprite("Snake");
+        summonCcMenuByKbd(summonSpec.key);
+        realPress(cancelSpec.key);
+        assertNoDropdownMenu();
+        assertFocus("actor-card", 1);
+      })
+    )
   );
 
   [
