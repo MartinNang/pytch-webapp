@@ -13,6 +13,7 @@ import { Actions } from "easy-peasy";
 import { IActiveProject } from "../../../src/model/project";
 import { assertNever, range } from "../../../src/utils";
 import { PytchAppStore } from "../../../src/store";
+import { InfoPanelState } from "../../../src/model/junior/edit-state";
 
 /** Click on the Sprite with the given `spriteName`, thereby selecting
  * it. */
@@ -68,10 +69,40 @@ export function assertActorAspectSelected(tabLabel: ActorAspectTab) {
     .should("have.text", tabLabel);
 }
 
+/** Toggle the collapsed/expanded state of the info panel. */
+export function toggleInfoPanelVisibility() {
+  cy.get("section.Junior-InfoPanel-container button.disclosure-button").click();
+}
+
 /** Click on the given `tabLabel` within the Information pane, thereby
  * selecting that tab.  */
 export function selectInfoPane(tabLabel: "Output" | "Errors") {
   selectPanelTab("Junior-InfoPanel-container", tabLabel);
+}
+
+export function assertInfoPanelState(expState: InfoPanelState) {
+  switch (expState) {
+    case "collapsed":
+      cy.get(".Junior-InfoPanel-container button.collapse-button").should(
+        "not.exist"
+      );
+      cy.get(".Junior-InfoPanel-container button.expand-button").should(
+        "be.visible"
+      );
+      cy.get(".Junior-InfoPanel").should("not.be.visible");
+      break;
+    case "expanded":
+      cy.get(".Junior-InfoPanel-container button.collapse-button").should(
+        "be.visible"
+      );
+      cy.get(".Junior-InfoPanel-container button.expand-button").should(
+        "not.exist"
+      );
+      cy.get(".Junior-InfoPanel").should("be.visible");
+      break;
+    default:
+      assertNever(expState);
+  }
 }
 
 function innerTextsMatch(selector: string, expInnerTexts: Array<string>) {

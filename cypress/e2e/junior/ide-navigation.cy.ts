@@ -2,11 +2,13 @@ import {
   assertActorAspectSelected,
   assertActorSelected,
   assertAspectTabLabels,
+  assertInfoPanelState,
   getActivityBarTab,
   selectActorAspect,
   selectInfoPane,
   selectSprite,
   selectStage,
+  toggleInfoPanelVisibility,
 } from "./utils";
 
 context("Basic use of per-method IDE", () => {
@@ -77,26 +79,22 @@ context("Basic use of per-method IDE", () => {
       cy.contains("Anything your program prints").should("be.visible");
     const assertErrorsVisible = () =>
       cy.contains("Any errors your project").should("be.visible");
-    const assertInfoPaneCollapsed = () => {
-      cy.get(".Junior-InfoPanel-container .tab-content").should(
-        "not.be.visible"
-      );
-    };
-    const clickCollapseExpand = () =>
-      cy.get("button.collapse-or-expand-button").click();
+    const assertInfoPaneCollapsed = () => assertInfoPanelState("collapsed");
 
     selectInfoPane("Output");
     assertOutputVisible();
-    clickCollapseExpand();
+    toggleInfoPanelVisibility();
     assertInfoPaneCollapsed();
-    clickCollapseExpand();
+    toggleInfoPanelVisibility();
     assertOutputVisible();
-    clickCollapseExpand();
+    toggleInfoPanelVisibility();
     assertInfoPaneCollapsed();
+    toggleInfoPanelVisibility();
     selectInfoPane("Output");
     assertOutputVisible();
-    clickCollapseExpand();
+    toggleInfoPanelVisibility();
     assertInfoPaneCollapsed();
+    toggleInfoPanelVisibility();
     selectInfoPane("Errors");
     assertErrorsVisible();
   });
@@ -105,7 +103,7 @@ context("Basic use of per-method IDE", () => {
     selectSprite("Snake");
     selectActorAspect("Sounds");
     selectInfoPane("Errors");
-    cy.get("button.collapse-or-expand-button").click();
+    toggleInfoPanelVisibility();
 
     cy.pytchHomeFromIDE();
     cy.get(".NavBar").contains("My projects").click();

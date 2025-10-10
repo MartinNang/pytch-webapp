@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId, useRef } from "react";
 import { useStoreState } from "../../store";
 import { useJrEditActions, useJrEditState } from "./hooks";
 import { InfoPanelTabKey as TabKey } from "../../model/junior/edit-state";
@@ -45,14 +45,38 @@ const Errors = () => {
   return <div className="ErrorsPane">{content}</div>;
 };
 
+type InfoDisclosureProps = { tabContentId: string };
+const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
+  const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
+  const toggleState = () => toggleStateAction();
+
+  return (
+    <div>
+      <Button
+        variant="outline-secondary"
+        size="sm"
+        className="disclosure-button expand-button m-1"
+        onClick={toggleState}
+        aria-label="Show output and errors"
+        aria-expanded={false}
+        aria-controls={tabContentId}
+      >
+        <FontAwesomeIcon className="me-2" icon="angle-right" />
+        Output and errors
+      </Button>
+    </div>
+  );
+};
+
 export const InfoPanel = () => {
   const activeTab = useJrEditState((s) => s.infoPanelActiveTab);
   const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
   const setActiveTab = useJrEditActions((a) => a.expandAndSetActive);
   const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
+  const tabContentId = useId();
+  const wasCollapsed = useRef<boolean | null>(null);
 
   const toggleState = () => toggleStateAction();
-  const collapseOrExpandIcon = isCollapsed ? "angle-up" : "angle-down";
 
   const classes = classNames(
     "Junior-InfoPanel-container",
@@ -60,20 +84,31 @@ export const InfoPanel = () => {
     { isCollapsed }
   );
 
-  const ariaLabel = "Output, errors";
+  const ariaLabel = "Output and errors";
+
+  const tabPanelClasses = classNames(
+    "Junior-InfoPanel",
+    isCollapsed && "d-none"
+  );
+
+  const maybeFocusButton = (elt: HTMLElement | null) => {
+    if (elt != null && wasCollapsed.current !== isCollapsed) {
+      if (wasCollapsed.current != null) {
+        const mButton = elt.querySelector(
+          ":scope .disclosure-button"
+        ) as HTMLButtonElement | null;
+        mButton?.focus();
+      }
+      wasCollapsed.current = isCollapsed;
+    }
+  };
 
   const Tab = TabWithTypedKey<TabKey>;
   return (
-    <section className={classes} aria-label={ariaLabel}>
-      <Button
-        variant="outline-secondary"
-        className="collapse-or-expand-button"
-        onClick={toggleState}
-      >
-        <FontAwesomeIcon icon={collapseOrExpandIcon} />
-      </Button>
+    <section className={classes} aria-label={ariaLabel} ref={maybeFocusButton}>
       <Tabs
-        className="Junior-InfoPanel"
+        id={tabContentId}
+        className={tabPanelClasses}
         transition={false}
         activeKey={activeTab}
         onSelect={(k) => k && setActiveTab(k as TabKey)}
@@ -85,6 +120,20 @@ export const InfoPanel = () => {
           <Errors />
         </Tab>
       </Tabs>
+      {isCollapsed ? (
+        <InfoDisclosure tabContentId={tabContentId} />
+      ) : (
+        <Button
+          variant="outline-secondary"
+          className="disclosure-button collapse-button"
+          onClick={toggleState}
+          aria-label="Hide output and errors"
+          aria-expanded={true}
+          aria-controls={tabContentId}
+        >
+          <FontAwesomeIcon icon={"window-minimize"} />
+        </Button>
+      )}
     </section>
   );
 };
