@@ -1,4 +1,4 @@
-import React from "react";
+import React, { KeyboardEventHandler } from "react";
 import { ToastContainer, Toast } from "react-bootstrap";
 import {
   useActiveNotableChanges,
@@ -20,9 +20,16 @@ const NotableChangeToast: React.FC<NotableChangeToastProps> = ({
 
   const change = keyedChange.change;
   const description = notableChangeDescription(change);
+
   const deactivate = () => deactivateAction(keyedChange.changeId);
+  const dismissIfEscape: KeyboardEventHandler = (evt) => {
+    if (evt.key === "Escape") {
+      deactivate();
+    }
+  };
+
   return (
-    <Toast onClose={deactivate}>
+    <Toast onClose={deactivate} tabIndex={0} onKeyDown={dismissIfEscape}>
       <Toast.Header>
         <FontAwesomeIcon className="fa-xl me-2" icon="check-square" />
         <strong className="me-auto">{description.header}</strong>

@@ -1,5 +1,6 @@
 import {
   clickUniqueButton,
+  eventHandlerCodeShouldEqual,
   launchAdd,
   launchCropAssetByIndex,
   launchDeleteActorByIndex,
@@ -11,9 +12,14 @@ import {
   selectSprite,
   settleModalDialog,
 } from "./junior/utils";
+import { assertFocus, realPress } from "./keyboard-navigation/utils";
 import { GatedDelay } from "./utils";
 
 ////////////////////////////////////////////////////////////////////////
+
+function assertNoToasts() {
+  cy.get(".toast-body").should("not.exist");
+}
 
 type FailurePredicate = {
   selector: string;
@@ -26,7 +32,20 @@ type ItShowsToastForDescriptor = {
   submit: () => void;
   failurePredicate?: FailurePredicate;
   toastBodyMatch: string | RegExp | null;
+  dismissFun: (gatedDelay: GatedDelay) => void;
 };
+
+function kDismissEffluxionOfTime(gatedDelay: GatedDelay) {
+  gatedDelay.release();
+}
+function kDismissEscapeKey(_gatedDelay: GatedDelay) {
+  cy.get(".toast-container > .toast").focus();
+  realPress("Escape");
+}
+function kDismissSpaceOnCloseButton(_gatedDelay: GatedDelay) {
+  cy.get(".toast-container .toast-header button").focus();
+  realPress("Space");
+}
 
 function itShowsToastFor(label: string, descr: ItShowsToastForDescriptor) {
   const createTest = descr.only ?? false ? it.only : it;
@@ -37,6 +56,7 @@ function itShowsToastFor(label: string, descr: ItShowsToastForDescriptor) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.window().then(async (window: any) => {
       const gatedDelay = GatedDelay.installNew(window);
+      const dismiss = () => descr.dismissFun(gatedDelay);
       descr.submit();
       if (descr.failurePredicate != null) {
         const failPred = descr.failurePredicate;
@@ -48,11 +68,11 @@ function itShowsToastFor(label: string, descr: ItShowsToastForDescriptor) {
           .should("have.length", 1)
           .contains(descr.toastBodyMatch)
           .then(() => {
-            gatedDelay.release();
-            cy.get(".toast-body").should("not.exist");
+            dismiss();
+            assertNoToasts();
           });
       } else {
-        gatedDelay.release();
+        dismiss();
       }
     });
   });
@@ -70,6 +90,7 @@ context("Toasts are generated (s/b/s)", () => {
     setup: launchAdd.sprite,
     submit: () => settleModalDialog("OK"),
     toastBodyMatch: '"Sprite1" added to',
+    dismissFun: kDismissEffluxionOfTime,
   });
 
   itShowsToastFor("rename sprite", {
@@ -79,12 +100,14 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("OK"),
     toastBodyMatch: 'Sprite renamed to "PythonLogo"',
+    dismissFun: kDismissEscapeKey,
   });
 
   itShowsToastFor("delete sprite", {
     setup: () => launchDeleteActorByIndex(1),
     submit: () => settleModalDialog("DELETE"),
     toastBodyMatch: '"Snake" deleted from',
+    dismissFun: kDismissEffluxionOfTime,
   });
 
   itShowsToastFor("rename asset", {
@@ -96,6 +119,7 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("Rename"),
     toastBodyMatch: 'Costume renamed to "two-snakes.png"',
+    dismissFun: kDismissSpaceOnCloseButton,
   });
 
   const goodPngs = [
@@ -123,6 +147,7 @@ context("Toasts are generated (s/b/s)", () => {
       selector: ".RenameAssetModal-failure",
       reportMatch: /this sprite already contains/,
     },
+    dismissFun: kDismissEffluxionOfTime,
   });
 
   itShowsToastFor("crop/rescale image", {
@@ -134,6 +159,7 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("OK"),
     toastBodyMatch: 'Crop/scale for costume "python-logo.png" updated',
+    dismissFun: kDismissSpaceOnCloseButton,
   });
 
   itShowsToastFor("delete costume", {
@@ -144,6 +170,7 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("DELETE"),
     toastBodyMatch: 'Costume "python-logo.png" deleted from',
+    dismissFun: kDismissEffluxionOfTime,
   });
 
   function itShowsToastForAddAssets(
@@ -162,6 +189,11 @@ context("Toasts are generated (s/b/s)", () => {
             reportMatch: failureReportMatch,
           };
 
+    // There is no toast to find if nothing succeeded, in which
+    // case just allow time to pass.
+    const dismissFun =
+      nGood === 0 ? kDismissEffluxionOfTime : kDismissEscapeKey;
+
     itShowsToastFor(`add costumes (${nGood} success, ${nBad} failure)`, {
       setup: () => {
         selectSprite("Snake");
@@ -171,6 +203,7 @@ context("Toasts are generated (s/b/s)", () => {
       submit: () => submitFun("Add to project"),
       failurePredicate,
       toastBodyMatch,
+      dismissFun,
     });
   }
 
@@ -222,6 +255,7 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("OK"),
     toastBodyMatch: /New "start as clone".*Sprite "Snake"/,
+    dismissFun: kDismissEffluxionOfTime,
   });
 
   itShowsToastFor("update script", {
@@ -233,6 +267,7 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("OK"),
     toastBodyMatch: /Script.*changed to "start as clone"/,
+    dismissFun: kDismissEscapeKey,
   });
 
   itShowsToastFor("delete script", {
@@ -243,5 +278,35 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => settleModalDialog("DELETE"),
     toastBodyMatch: /"green flag clicked" script deleted.*"Snake"/,
+    dismissFun: kDismissEffluxionOfTime,
+  });
+});
+
+context("Toasts do not steal focus", () => {
+  beforeEach(() => {
+    cy.pytchResetDatabase();
+    cy.pytchTryUploadZipfiles(["newly-created-per-method.zip"]);
+  });
+
+  it("code editor focus", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cy.window().then(async (window: any) => {
+      const gatedDelay = GatedDelay.installNew(window);
+
+      selectSprite("Snake");
+      selectActorAspect("Code");
+      launchAdd.script();
+      ScriptOps.selectHatBlock("start-as-clone");
+      settleModalDialog("OK");
+      assertFocus("script-code", 1);
+      cy.realType("# HELLO");
+      eventHandlerCodeShouldEqual(1, "# HELLO");
+      cy.get(".toast-body")
+        .should("have.length", 1)
+        .then(() => {
+          gatedDelay.release();
+          assertNoToasts();
+        });
+    });
   });
 });
