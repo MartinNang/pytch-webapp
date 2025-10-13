@@ -15,12 +15,16 @@ import { GatedDelay } from "./utils";
 
 ////////////////////////////////////////////////////////////////////////
 
+type FailurePredicate = {
+  selector: string;
+  reportMatch: string | RegExp;
+};
+
 type ItShowsToastForDescriptor = {
   only?: boolean;
   setup: () => void;
   submit: () => void;
-  failureSelector?: string;
-  failureReportMatch?: string | RegExp;
+  failurePredicate?: FailurePredicate;
   toastBodyMatch: string | RegExp | null;
 };
 
@@ -34,11 +38,9 @@ function itShowsToastFor(label: string, descr: ItShowsToastForDescriptor) {
     cy.window().then(async (window: any) => {
       const gatedDelay = GatedDelay.installNew(window);
       descr.submit();
-      if (descr.failureReportMatch != null) {
-        if (descr.failureSelector == null) {
-          throw new Error("need failureSelector if have failureReportMatch");
-        }
-        cy.get(descr.failureSelector).contains(descr.failureReportMatch);
+      if (descr.failurePredicate != null) {
+        const failPred = descr.failurePredicate;
+        cy.get(failPred.selector).contains(failPred.reportMatch);
         settleModalDialog("OK");
       }
       if (descr.toastBodyMatch != null) {
@@ -117,8 +119,10 @@ context("Toasts are generated (s/b/s)", () => {
     },
     submit: () => clickUniqueButton("Rename"),
     toastBodyMatch: null,
-    failureSelector: ".RenameAssetModal-failure",
-    failureReportMatch: /this sprite already contains/,
+    failurePredicate: {
+      selector: ".RenameAssetModal-failure",
+      reportMatch: /this sprite already contains/,
+    },
   });
 
   itShowsToastFor("crop/rescale image", {
@@ -150,6 +154,14 @@ context("Toasts are generated (s/b/s)", () => {
     const [nGood, nBad] = nGoodAndBad;
     const filePaths = goodPngs.slice(0, nGood).concat(badPngs.slice(0, nBad));
     const submitFun = nBad === 0 ? settleModalDialog : clickUniqueButton;
+    const failurePredicate =
+      failureReportMatch == null
+        ? undefined
+        : {
+            selector: ".modal.add-asset-failures",
+            reportMatch: failureReportMatch,
+          };
+
     itShowsToastFor(`add costumes (${nGood} success, ${nBad} failure)`, {
       setup: () => {
         selectSprite("Snake");
@@ -157,8 +169,7 @@ context("Toasts are generated (s/b/s)", () => {
         launchAdd.assetFromThisDevice(filePaths);
       },
       submit: () => submitFun("Add to project"),
-      failureSelector: ".modal.add-asset-failures",
-      failureReportMatch,
+      failurePredicate,
       toastBodyMatch,
     });
   }
