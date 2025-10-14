@@ -1,52 +1,7 @@
 /// <reference types="cypress" />
 
-type SidebarTestContext = {
-  label: string;
-  containerSelector: string;
-  initialVisibilityPredicate: string;
-  hiddenPredicate: string;
-  openControlSelector: string;
-  closeControlSelector: string;
-  before(): void;
-  ensureSidebarHidden(): void;
-};
-
-const perMethodContainerSelector = ".ActivityContent > .HelpSidebar";
-const perMethodToggleSelector = '.tabkey-icon svg[data-icon="circle-question"]';
-
-const flatIdeContext: SidebarTestContext = {
-  label: "flat",
-  containerSelector: perMethodContainerSelector,
-  initialVisibilityPredicate: "be.visible",
-  hiddenPredicate: "not.exist",
-  openControlSelector: perMethodToggleSelector,
-  closeControlSelector: perMethodToggleSelector,
-  before() {
-    cy.pytchExactlyOneProject();
-  },
-  ensureSidebarHidden() {
-    cy.get(perMethodToggleSelector).click();
-    cy.get(perMethodContainerSelector).should("not.exist");
-  },
-};
-
-const perMethodIdeContext: SidebarTestContext = {
-  label: "per-method",
-  containerSelector: perMethodContainerSelector,
-  initialVisibilityPredicate: "be.visible",
-  hiddenPredicate: "not.exist",
-  openControlSelector: perMethodToggleSelector,
-  closeControlSelector: perMethodToggleSelector,
-  before() {
-    cy.pytchBasicJrProject();
-  },
-  ensureSidebarHidden() {
-    cy.get(perMethodToggleSelector).click();
-    cy.get(perMethodContainerSelector).should("not.exist");
-  },
-};
-
-const sidebarTestContexts = [flatIdeContext, perMethodIdeContext];
+const helpContainerSelector = ".ActivityContent > .HelpSidebar";
+const helpToggleSelector = '.tabkey-icon svg[data-icon="circle-question"]';
 
 const useSectionHeadings = (callback: (headings: Array<string>) => void) => {
   cy.request("data/help-sidebar.json").then((response) => {
@@ -90,15 +45,36 @@ const assertAllSectionsCollapsed = (
     });
 };
 
-sidebarTestContexts.forEach((ctx) =>
-  context(`Help sidebar (${ctx.label})`, () => {
-    const getHelpContainer = () => cy.get(ctx.containerSelector);
+type SidebarTestSpec = {
+  label: string;
+  before(): void;
+};
+
+const flatIdeSpec: SidebarTestSpec = {
+  label: "flat",
+  before() {
+    cy.pytchExactlyOneProject();
+  },
+};
+
+const perMethodIdeSpec: SidebarTestSpec = {
+  label: "per-method",
+  before() {
+    cy.pytchBasicJrProject();
+  },
+};
+
+const sidebarTestSpecs = [flatIdeSpec, perMethodIdeSpec];
+
+sidebarTestSpecs.forEach((spec) =>
+  context(`Help sidebar (${spec.label})`, () => {
+    const getHelpContainer = () => cy.get(helpContainerSelector);
 
     const assertAllCollapsedExcept = (
       allHeadings: Array<string>,
       expandedHeadings: Array<string>
     ) => {
-      assertSectionHeadings(ctx.containerSelector, allHeadings);
+      assertSectionHeadings(helpContainerSelector, allHeadings);
       getHelpContainer()
         .find("details > summary > h1")
         .parent()
@@ -112,25 +88,24 @@ sidebarTestContexts.forEach((ctx) =>
     };
 
     const assertAllCollapsed = (headings: Array<string>) =>
-      assertAllSectionsCollapsed(ctx.containerSelector, headings);
-
-    before(() => {
-      ctx.before();
-      getHelpContainer().should(ctx.initialVisibilityPredicate);
-      ctx.ensureSidebarHidden();
-    });
+      assertAllSectionsCollapsed(helpContainerSelector, headings);
 
     const openSidebar = () => {
-      getHelpContainer().should(ctx.hiddenPredicate);
-      cy.get(ctx.openControlSelector).click();
+      getHelpContainer().should("not.exist");
+      cy.get(helpToggleSelector).click();
       getHelpContainer().should("be.visible");
     };
 
     const closeSidebar = () => {
       getHelpContainer().should("be.visible");
-      cy.get(ctx.closeControlSelector).click();
-      getHelpContainer().should(ctx.hiddenPredicate);
+      cy.get(helpToggleSelector).click();
+      getHelpContainer().should("not.exist");
     };
+
+    before(() => {
+      spec.before();
+      closeSidebar();
+    });
 
     it("allows user to open/close sidebar", () => {
       openSidebar();
@@ -221,15 +196,15 @@ context("Help sidebar (cross-mode)", () => {
     cy.pytchBasicJrProject();
 
     cy.pytchSwitchProject("Test seed project");
-    cy.get(flatIdeContext.containerSelector).should("be.visible");
+    cy.get(helpContainerSelector).should("be.visible");
 
     cy.pytchSwitchProject("Per-method test project");
-    cy.get(perMethodIdeContext.containerSelector).should("be.visible");
-    cy.get(perMethodIdeContext.containerSelector).contains("Sound").click();
+    cy.get(helpContainerSelector).should("be.visible");
+    cy.get(helpContainerSelector).contains("Sound").click();
 
     cy.pytchSwitchProject("Test seed project");
     useSectionHeadings((headings) =>
-      assertAllSectionsCollapsed(flatIdeContext.containerSelector, headings)
+      assertAllSectionsCollapsed(helpContainerSelector, headings)
     );
   });
 });
