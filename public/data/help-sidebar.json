@@ -308,7 +308,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.stop_all_sounds()",
+        "python": "self.stop_all_sounds()",
         "scratch": "stop all sounds",
         "help": "Stop all sounds that are currently playing.\n\n```\n# Make everybody be quiet:\npytch.stop_all_sounds()\n```"
     },
@@ -372,7 +372,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.broadcast(message)",
+        "python": "self.broadcast(message)",
         "scratch": "broadcast [caught-cat v]",
         "help": {
             "flat": "Broadcast the `message`.  This makes any methods with matching `@pytch.when_I_receive()` run.  Your method immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and\n# straight away start barking:\npytch.broadcast(\"caught-cat\")\nself.start_sound(\"woof\")\n```",
@@ -384,7 +384,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.broadcast_and_wait(message)",
+        "python": "self.broadcast_and_wait(message)",
         "scratch": "broadcast [dance v] and wait",
         "help": {
             "flat": "Broadcast the `message`.  This makes any methods with matching `@pytch.when_I_receive()` run.  Your method then waits until all methods which have responded to that message have finished running.\n\n```\n# Tell the dog to dance, and then\n# praise it when it has finished:\npytch.broadcast_and_wait(\"dance\")\nself.say(\"Very good!\")\n```",
@@ -402,7 +402,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.wait_seconds(seconds)",
+        "python": "self.wait_seconds(seconds)",
         "scratch": "wait [0.5] seconds",
         "help": "Pause your code for `seconds` seconds.\n\n```\n# Wait for half a second:\npytch.wait_seconds(0.5)\n```"
     },
@@ -486,7 +486,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.stop_all()",
+        "python": "self.stop_all()",
         "scratch": "stop [all v]",
         "help": "Stop your whole project, exactly as if you had used the red stop button.  (Pytch does not have a way to say *stop other scripts in sprite*.)\n\n```\n# If the player has got enough\n# points, end the whole game:\nif score == 100:\n    pytch.stop_all()\n```"
     },
@@ -504,7 +504,7 @@
     {
         "kind": "block",
         "actorKind": "sprite",
-        "python": "pytch.create_clone_of(self)",
+        "python": "self.create_clone()",
         "scratch": "create clone of [myself v]",
         "help": {
             "flat": "Create a new clone of the `self` Sprite.  Any `@pytch.when_I_start_as_a_clone` methods will run for that new clone.\n\n```\n# Make two extra copies of myself\n# across stage:\npytch.create_clone_of(self)\nself.change_x(50)\npytch.create_clone_of(self)\nself.change_x(50)\n```",
@@ -513,7 +513,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.create_clone_of(sprite_class)",
+        "python": "self.create_clone_of(sprite_class)",
         "scratch": "create clone of [Banana v]",
         "help": {
             "flat": "Create a new clone of the `sprite_class` Sprite.  Any `@pytch.when_I_start_as_a_clone` methods will run for that new clone.\n\n```\nclass Apple(pytch.Sprite):\n    @pytch.when_key_pressed(\"n\")\n    def make_new_Banana(self):\n        pytch.create_clone_of(Banana)\n```",
@@ -571,7 +571,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.key_pressed(key_name)",
+        "python": "self.key_pressed(key_name)",
         "scratch": "<key (a v) pressed?>",
         "help": {
             "flat": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# (This example is for a Sprite.)\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif pytch.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```",
@@ -772,7 +772,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.show_variable(owner, var_name)",
+        "python": "self.show_variable(variable_name)",
         "scratch": "show variable [health v]",
         "help": {
             "flat": "Display a variable-watcher for the variable called `var_name` belonging to `owner`.  Often, `owner` will be the `self` Sprite, or the `Stage`, and usually `var_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show my health:\npytch.show_variable(self, \"health\")\n```\n\nTo show a global variable, use `None` for `owner`.\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```",
@@ -784,7 +784,7 @@
     },
     {
         "kind": "block",
-        "python": "pytch.hide_variable(owner, var_name)",
+        "python": "self.hide_variable(variable_name)",
         "scratch": "hide variable [hi-score v]",
         "help": {
             "flat": "Hide the variable-watcher for the variable called `var_name` belonging to `owner`, if such a watcher exists.  If that variable is not being shown, do nothing.\n\nOften, `owner` will be the `self` Sprite, or the `Stage`, and usually `var_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide the high score:\npytch.hide_variable(self, \"hi_score\")\n```\n\nTo hide a global variable, use `None` for `owner`.\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```",
