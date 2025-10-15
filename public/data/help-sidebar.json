@@ -266,7 +266,7 @@
             "flat": "Start a sound playing.  The given `sound` can either be the name of the sound or its index (zero-based position) in the Sprite's (or Stage's) list of sounds.  Once the sound has started, the Sprite (or Stage) will straight away move on to the next statement in your code.\n\n```\n# (This example is for a Sprite.)\n# Start playing tune, and glide\n# to centre while tune is playing:\nself.start_sound(\"my-song\")\nself.glide_to_xy(0, 0, 1.5)\n```",
             "per-method": {
                 "sprite": "Start a sound playing.  The given `sound` can either be the name of the sound or its index (zero-based position) in the Sprite's list of sounds.  Once the sound has started, the Sprite will straight away move on to the next statement in your code.\n\n```\n# Start playing tune, and glide\n# to centre while tune is playing:\nself.start_sound(\"my-song.mp3\")\nself.glide_to_xy(0, 0, 1.5)\n```",
-                "stage": "Start a sound playing.  The given `sound` can either be the name of the sound or its index (zero-based position) in the Stage's list of sounds.  Once the sound has started, the Stage will straight away move on to the next statement in your code.\n\n```\n# Start playing tune, and count up\n# the score while tune is playing:\nself.start_sound(\"my-song.mp3\")\nfor i in range(5):\n    self.score += 1\n    pytch.wait_seconds(1)\n```"
+                "stage": "Start a sound playing.  The given `sound` can either be the name of the sound or its index (zero-based position) in the Stage's list of sounds.  Once the sound has started, the Stage will straight away move on to the next statement in your code.\n\n```\n# Start playing tune, and count up\n# the score while tune is playing:\nself.start_sound(\"my-song.mp3\")\nfor i in range(5):\n    self.score += 1\n    self.wait_seconds(1)\n```"
             }
         }
     },
@@ -310,7 +310,7 @@
         "kind": "block",
         "python": "self.stop_all_sounds()",
         "scratch": "stop all sounds",
-        "help": "Stop all sounds that are currently playing.\n\n```\n# Make everybody be quiet:\npytch.stop_all_sounds()\n```"
+        "help": "Stop all sounds that are currently playing.\n\n```\n# Make everybody be quiet:\nself.stop_all_sounds()\n```\n\n(You might see `pytch.stop_all_sounds()`, which also works, in older code.)"
     },
 
     {
@@ -375,10 +375,10 @@
         "python": "self.broadcast(message)",
         "scratch": "broadcast [caught-cat v]",
         "help": {
-            "flat": "Broadcast the `message`.  This makes any methods with matching `@pytch.when_I_receive()` run.  Your method immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and\n# straight away start barking:\npytch.broadcast(\"caught-cat\")\nself.start_sound(\"woof\")\n```",
+            "flat": "Broadcast the `message`.  This makes any methods with matching `@pytch.when_I_receive()` run.  Your method immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and\n# straight away start barking:\nself.broadcast(\"caught-cat\")\nself.start_sound(\"woof\")\n```\n\n(You might see `pytch.broadcast()`, which also works, in older code.)",
             "per-method": {
-                "sprite": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and straight\n# away start barking:\npytch.broadcast(\"caught-cat\")\nself.start_sound(\"woof\")\n```",
-                "stage": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and straight\n# away show the sky backdrop:\npytch.broadcast(\"caught-cat\")\nself.switch_backdrop(\"sky.jpg\")\n```"
+                "sprite": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and straight\n# away start barking:\nself.broadcast(\"caught-cat\")\nself.start_sound(\"woof\")\n```\n\n(You might see `pytch.broadcast()`, which also works, in older code.)",
+                "stage": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code immediately continues running after the message has been sent.\n\n```\n# Tell cat it has been caught, and straight\n# away show the sky backdrop:\nself.broadcast(\"caught-cat\")\nself.switch_backdrop(\"sky.jpg\")\n```\n\n(You might see `pytch.broadcast()`, which also works, in older code.)"
             }
         }
     },
@@ -387,10 +387,10 @@
         "python": "self.broadcast_and_wait(message)",
         "scratch": "broadcast [dance v] and wait",
         "help": {
-            "flat": "Broadcast the `message`.  This makes any methods with matching `@pytch.when_I_receive()` run.  Your method then waits until all methods which have responded to that message have finished running.\n\n```\n# Tell the dog to dance, and then\n# praise it when it has finished:\npytch.broadcast_and_wait(\"dance\")\nself.say(\"Very good!\")\n```",
+            "flat": "Broadcast the `message`.  This makes any methods with matching `@pytch.when_I_receive()` run.  Your method then waits until all methods which have responded to that message have finished running.\n\n```\n# Tell the dog to dance, and then\n# praise it when it has finished:\nself.broadcast_and_wait(\"dance\")\nself.say(\"Very good!\")\n```\n\n(You might see `pytch.broadcast_and_wait()`, which also works, in older code.)",
             "per-method": {
-                "sprite": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code then waits until all code which has responded to that message has finished running.\n\n```\n# Tell the dog to dance, and then praise it\n# when it has finished:\npytch.broadcast_and_wait(\"dance\")\nself.say(\"Very good!\")\n```",
-                "stage": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code then waits until all code which has responded to that message has finished running.\n\n```\n# Tell the dog to dance, and then show the\n# sky backdrop when it has finished:\npytch.broadcast_and_wait(\"dance\")\nself.switch_backdrop(\"sky.jpg\")\n```"
+                "sprite": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code then waits until all code which has responded to that message has finished running.\n\n```\n# Tell the dog to dance, and then praise it\n# when it has finished:\nself.broadcast_and_wait(\"dance\")\nself.say(\"Very good!\")\n```\n\n(You might see `pytch.broadcast_and_wait()`, which also works, in older code.)",
+                "stage": "Broadcast the `message`.  This runs any code under a matching *when I receive* hat block.  Your code then waits until all code which has responded to that message has finished running.\n\n```\n# Tell the dog to dance, and then show the\n# sky backdrop when it has finished:\nself.broadcast_and_wait(\"dance\")\nself.switch_backdrop(\"sky.jpg\")\n```\n\n(You might see `pytch.broadcast_and_wait()`, which also works, in older code.)"
             }
         }
     },
@@ -404,7 +404,7 @@
         "kind": "block",
         "python": "self.wait_seconds(seconds)",
         "scratch": "wait [0.5] seconds",
-        "help": "Pause your code for `seconds` seconds.\n\n```\n# Wait for half a second:\npytch.wait_seconds(0.5)\n```"
+        "help": "Pause your code for `seconds` seconds.\n\n```\n# Wait for half a second:\nself.wait_seconds(0.5)\n```\n\n(You might see `pytch.wait_seconds()`, which also works, in older code.)"
     },
     {
         "kind": "non-method-block",
@@ -422,7 +422,7 @@
             "flat": "Run the indented block of code round and round forever.\n\n```\n# (This example is for a Sprite.)\n# Make sure I am always saying the\n# right score:\nwhile True:\n    self.say(score)\n```",
             "per-method": {
                 "sprite": "Run the indented block of code round and round forever.\n\n```\n# Make sure I am always saying the\n# right score:\nwhile True:\n    self.say(score)\n```",
-                "stage": "Run the indented block of code round and round forever.\n\n```\n# Keep cycling through my backdrops,\n# changing twice per second:\nwhile True:\n    self.next_backdrop()\n    pytch.wait_seconds(0.5)\n```"
+                "stage": "Run the indented block of code round and round forever.\n\n```\n# Keep cycling through my backdrops,\n# changing twice per second:\nwhile True:\n    self.next_backdrop()\n    self.wait_seconds(0.5)\n```"
             }
         }
     },
@@ -461,7 +461,7 @@
             "flat": "To get the behaviour of Scratch's *repeat until* block, Python has the `while` statement.  This works the other way round to Scratch's *repeat until* block — Python runs the indented code while the test is *true*, compared to Scratch which runs the contained blocks while the test is *false* (i.e., until it's *true*).  Python's `not` operator can be useful, or you can sometimes rephrase the test instead.\n\n```\n# (This example is for a Sprite.)\n# Move slowly up until I touch\n# the Banana:\nwhile not self.touching(Banana):\n    self.change_y(2)\n```\n\nYou can avoid `not` when using comparison operators — instead of `not n_clicks > 3`, you can say:\n\n```\n# Drift left until I have been\n# clicked more than three times:\nwhile n_clicks <= 3:\n    self.change_x(-2)\n```",
             "per-method": {
                 "sprite": "To get the behaviour of Scratch's *repeat until* block, Python has the `while` statement.  This works the other way round to Scratch's *repeat until* block — Python runs the indented code while the test is *true*, compared to Scratch which runs the contained blocks while the test is *false* (i.e., until it's *true*).  Python's `not` operator can be useful, or you can sometimes rephrase the test instead.\n\n```\n# Move slowly up until I touch\n# the Banana:\nwhile not self.touching(Banana):\n    self.change_y(2)\n```\n\nYou can avoid `not` when using comparison operators — instead of `not n_clicks > 3`, you can say:\n\n```\n# Drift left until I have been\n# clicked more than three times:\nwhile n_clicks <= 3:\n    self.change_x(-2)\n```",
-                "stage": "To get the behaviour of Scratch's *repeat until* block, Python has the `while` statement.  This works the other way round to Scratch's *repeat until* block — Python runs the indented code while the test is *true*, compared to Scratch which runs the contained blocks while the test is *false* (i.e., until it's *true*).  Python's `not` operator can be useful, or you can sometimes rephrase the test instead.\n\n```\n# Keep playing as long as the player\n# has some apples left:\nwhile n_apples > 0:\n    pytch.broadcast_and_wait(\"play\")\n```\n\nYou can avoid `not` when using comparison operators — instead of `not n_bananas_lost > 5`, you can say:\n\n```\n# Keep playing as long as the player has\n# not lost more than five bananas:\nwhile n_bananas_lost <= 5:\n    pytch.broadcast_and_wait(\"play\")\n```"
+                "stage": "To get the behaviour of Scratch's *repeat until* block, Python has the `while` statement.  This works the other way round to Scratch's *repeat until* block — Python runs the indented code while the test is *true*, compared to Scratch which runs the contained blocks while the test is *false* (i.e., until it's *true*).  Python's `not` operator can be useful, or you can sometimes rephrase the test instead.\n\n```\n# Keep playing as long as the player\n# has some apples left:\nwhile n_apples > 0:\n    self.broadcast_and_wait(\"play\")\n```\n\nYou can avoid `not` when using comparison operators — instead of `not n_bananas_lost > 5`, you can say:\n\n```\n# Keep playing as long as the player has\n# not lost more than five bananas:\nwhile n_bananas_lost <= 5:\n    self.broadcast_and_wait(\"play\")\n```"
             }
         }
     },
@@ -470,7 +470,7 @@
         "heading": "Wait until",
         "scratch": "wait until <key (d v) pressed?>",
         "python": "while not your_test:\n    pass",
-        "help": "To get the behaviour of Scratch's *wait until* block, you treat it like an empty *repeat until*, using Python's `while` statement.  This works the other way round to Scratch's *repeat until* block — Python runs the indented code while the test is *true*, compared to Scratch which runs the contained blocks while the test is *false* (i.e., until it's *true*).  Python's `not` operator can be useful, or you can sometimes rephrase the test instead.\n\nTo get *wait until* behaviour, you can use Python's `pass` statement inside the `while`.  The `pass` does nothing, but it is needed because Python needs *some* indented code for the `while` statement.\n\n```\n# Wait until player presses \"d\":\nwhile not pytch.key_pressed(\"d\"):\n    pass\n```\n\nTo replace *wait until score > 3*, you can avoid having to use `not` by saying:\n```\n# Wait until score > 3:\nwhile score <= 3:\n    pass\n```"
+        "help": "To get the behaviour of Scratch's *wait until* block, you treat it like an empty *repeat until*, using Python's `while` statement.  This works the other way round to Scratch's *repeat until* block — Python runs the indented code while the test is *true*, compared to Scratch which runs the contained blocks while the test is *false* (i.e., until it's *true*).  Python's `not` operator can be useful, or you can sometimes rephrase the test instead.\n\nTo get *wait until* behaviour, you can use Python's `pass` statement inside the `while`.  The `pass` does nothing, but it is needed because Python needs *some* indented code for the `while` statement.\n\n```\n# Wait until player presses \"d\":\nwhile not self.key_pressed(\"d\"):\n    pass\n```\n\nTo replace *wait until score > 3*, you can avoid having to use `not` by saying:\n```\n# Wait until score > 3:\nwhile score <= 3:\n    pass\n```"
     },
     {
         "kind": "block",
@@ -488,7 +488,7 @@
         "kind": "block",
         "python": "self.stop_all()",
         "scratch": "stop [all v]",
-        "help": "Stop your whole project, exactly as if you had used the red stop button.  (Pytch does not have a way to say *stop other scripts in sprite*.)\n\n```\n# If the player has got enough\n# points, end the whole game:\nif score == 100:\n    pytch.stop_all()\n```"
+        "help": "Stop your whole project, exactly as if you had used the red stop button.  (Pytch does not have a way to say *stop other scripts in sprite*.)\n\n```\n# If the player has got enough\n# points, end the whole game:\nif score == 100:\n    self.stop_all()\n```\n\n(You might see `pytch.stop_all()`, which also works, in older code.)"
     },
     {
         "kind": "block",
@@ -507,8 +507,8 @@
         "python": "self.create_clone()",
         "scratch": "create clone of [myself v]",
         "help": {
-            "flat": "Create a new clone of the `self` Sprite.  Any `@pytch.when_I_start_as_a_clone` methods will run for that new clone.\n\n```\n# Make two extra copies of myself\n# across stage:\npytch.create_clone_of(self)\nself.change_x(50)\npytch.create_clone_of(self)\nself.change_x(50)\n```",
-            "per-method": "Create a new clone of the `self` Sprite.  Any *when I start as a clone* scripts will run for that new clone.\n\n```\n# Make two extra copies of myself\n# across stage:\npytch.create_clone_of(self)\nself.change_x(50)\npytch.create_clone_of(self)\nself.change_x(50)\n```"
+            "flat": "Create a new clone of the `self` Sprite.  Any `@pytch.when_I_start_as_a_clone` methods will run for that new clone.\n\n```\n# Make two extra copies of myself\n# across stage:\nself.create_clone()\nself.change_x(50)\nself.create_clone()\nself.change_x(50)\n```",
+            "per-method": "Create a new clone of the `self` Sprite.  Any *when I start as a clone* scripts will run for that new clone.\n\n```\n# Make two extra copies of myself\n# across stage:\nself.create_clone()\nself.change_x(50)\nself.create_clone()\nself.change_x(50)\n```"
         }
     },
     {
@@ -516,10 +516,10 @@
         "python": "self.create_clone_of(sprite_class)",
         "scratch": "create clone of [Banana v]",
         "help": {
-            "flat": "Create a new clone of the `sprite_class` Sprite.  Any `@pytch.when_I_start_as_a_clone` methods will run for that new clone.\n\n```\nclass Apple(pytch.Sprite):\n    @pytch.when_key_pressed(\"n\")\n    def make_new_Banana(self):\n        pytch.create_clone_of(Banana)\n```",
+            "flat": "Create a new clone of the `sprite_class` Sprite.  Any `@pytch.when_I_start_as_a_clone` methods will run for that new clone.\n\n```\nclass Apple(pytch.Sprite):\n    @pytch.when_key_pressed(\"n\")\n    def make_new_Banana(self):\n        self.create_clone_of(Banana)\n```\n\n(You might see `pytch.create_clone_of()`, which also works, in older code.)",
             "per-method": {
-                "sprite": "Create a new clone of the `sprite_class` Sprite.  Any *when I start as a clone* scripts in the `sprite_class` Sprite will run for that new clone.\n\nThis example script is in an `Apple` sprite:\n\n```\n# Make a new Banana:\npytch.create_clone_of(Banana)\n```",
-                "stage": "Create a new clone of the `sprite_class` Sprite.  Any *when I start as a clone* scripts in the `sprite_class` Sprite will run for that new clone.\n\n```\n# Make a new Banana:\npytch.create_clone_of(Banana)\n```"
+                "sprite": "Create a new clone of the `sprite_class` Sprite.  Any *when I start as a clone* scripts in the `sprite_class` Sprite will run for that new clone.\n\nThis example script is in an `Apple` sprite:\n\n```\n# Make a new Banana:\nself.create_clone_of(Banana)\n```\n\n(You might see `pytch.create_clone_of()`, which also works, in older code.)",
+                "stage": "Create a new clone of the `sprite_class` Sprite.  Any *when I start as a clone* scripts in the `sprite_class` Sprite will run for that new clone.\n\n```\n# Make a new Banana:\nself.create_clone_of(Banana)\n```\n\n(You might see `pytch.create_clone_of()`, which also works, in older code.)"
             }
         }
     },
@@ -574,10 +574,10 @@
         "python": "self.key_pressed(key_name)",
         "scratch": "<key (a v) pressed?>",
         "help": {
-            "flat": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# (This example is for a Sprite.)\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif pytch.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```",
+            "flat": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# (This example is for a Sprite.)\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)",
             "per-method": {
-                "sprite": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif pytch.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```",
-                "stage": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose backdrop based on whether\n# the \"a\" key is pressed:\nif pytch.key_pressed(\"a\"):\n    self.switch_backdrop(\"cloudy-sky\")\nelse:\n    self.switch_backdrop(\"underwater\")\n```"
+                "sprite": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)",
+                "stage": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose backdrop based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_backdrop(\"cloudy-sky\")\nelse:\n    self.switch_backdrop(\"underwater\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)"
             }
         }
     },
@@ -703,7 +703,7 @@
             "flat": "Report whether `your_test` is *false*.  You often use this as part of an `if` or `while` statement.\n\n```\n# (This example is for a Sprite.)\n# If I am not touching the dog,\n# give player instruction:\nif not self.touching(Dog):\n    self.say(\"Go to the dog!\")\n```",
             "per-method": {
                 "sprite": "Report whether `your_test` is *false*.  You often use this as part of an `if` or `while` statement.\n\n```\n# If I am not touching the dog,\n# give player instruction:\nif not self.touching(Dog):\n    self.say(\"Go to the dog!\")\n```",
-                "stage": "Report whether `your_test` is *false*.  You often use this as part of an `if` or `while` statement.\n\n```\n# If the player isn't pressing \"a\",\n# give them an instruction:\nif not pytch.key_pressed(\"a\"):\n    self.say(\"Go to the dog!\")\n```"
+                "stage": "Report whether `your_test` is *false*.  You often use this as part of an `if` or `while` statement.\n\n```\n# If the player isn't pressing \"a\",\n# give them an instruction:\nif not self.key_pressed(\"a\"):\n    self.say(\"Go to the dog!\")\n```"
             }
         }
     },
@@ -775,10 +775,10 @@
         "python": "self.show_variable(variable_name)",
         "scratch": "show variable [health v]",
         "help": {
-            "flat": "Display a variable-watcher for the variable called `var_name` belonging to `owner`.  Often, `owner` will be the `self` Sprite, or the `Stage`, and usually `var_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show my health:\npytch.show_variable(self, \"health\")\n```\n\nTo show a global variable, use `None` for `owner`.\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```",
+            "flat": "Display a variable-watcher for the variable called `variable_name` belonging to the `self` sprite (or stage).  Usually, `variable_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show my health:\nself.show_variable(\"health\")\n```\n\nTo show a global variable, use this alternative form:\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```\n\n(You might see this general `pytch.show_variable()` form elsewhere in older code.)",
             "per-method": {
-                "sprite": "Display a variable-watcher for the variable called `var_name` belonging to `owner`.  Often, `owner` will be the `self` Sprite, and usually `var_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show my health:\npytch.show_variable(self, \"health\")\n```\n\nTo show a global variable, use `None` for `owner`.\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```",
-                "stage": "Display a variable-watcher for the variable called `var_name` belonging to `owner`.  Often, `owner` will be the `Stage`, and usually `var_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show the high-score, kept by the Stage:\npytch.show_variable(Stage, \"hi_score\")\n```\n\nTo show a global variable, use `None` for `owner`.\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```"
+                "sprite": "Display a variable-watcher for the variable called `variable_name` belonging to the `self` sprite.  Usually, `variable_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show my health:\nself.show_variable(\"health\")\n```\n\nTo show a global variable, use this alternative form:\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```\n\n(You might see this general `pytch.show_variable()` form elsewhere in older code.)",
+                "stage": "Display a variable-watcher for the variable called `variable_name` belonging to the stage.  Usually, `variable_name` will be a literal string, being the name of the variable you would like to show.  A particular variable is only ever shown once, even if `show_variable()` is called many times for that variable.\n\n```\n# Show the high-score, kept by the Stage:\nself.show_variable(\"hi_score\")\n```\n\nTo show a global variable, use this alternative form:\n\n```\n# Show the global \"score\" variable:\npytch.show_variable(None, \"score\")\n```\n\n(You might see this general `pytch.show_variable()` form elsewhere in older code.)"
             }
         }
     },
@@ -787,10 +787,10 @@
         "python": "self.hide_variable(variable_name)",
         "scratch": "hide variable [hi-score v]",
         "help": {
-            "flat": "Hide the variable-watcher for the variable called `var_name` belonging to `owner`, if such a watcher exists.  If that variable is not being shown, do nothing.\n\nOften, `owner` will be the `self` Sprite, or the `Stage`, and usually `var_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide the high score:\npytch.hide_variable(self, \"hi_score\")\n```\n\nTo hide a global variable, use `None` for `owner`.\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```",
+            "flat": "Hide the variable-watcher for the variable called `variable_name` belonging to the `self` sprite (or stage), if such a watcher exists.  If that variable is not being shown, do nothing.\n\nUsually, `variable_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide the high score:\nself.hide_variable(\"hi_score\")\n```\n\nTo hide a global variable, use this alternative form:\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```\n\n(You might see this general `pytch.hide_variable()` form elsewhere in older code.)",
             "per-method": {
-                "sprite": "Hide the variable-watcher for the variable called `var_name` belonging to `owner`, if such a watcher exists.  If that variable is not being shown, do nothing.\n\nOften, `owner` will be the `self` Sprite, and usually `var_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide my health:\npytch.hide_variable(self, \"health\")\n```\n\nTo hide a global variable, use `None` for `owner`.\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```",
-                "stage": "Hide the variable-watcher for the variable called `var_name` belonging to `owner`, if such a watcher exists.  If that variable is not being shown, do nothing.\n\nOften, `owner` will be the `Stage`, and usually `var_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide the high-score, kept by the Stage:\npytch.hide_variable(Stage, \"hi_score\")\n```\n\nTo hide a global variable, use `None` for `owner`.\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```"
+                "sprite": "Hide the variable-watcher for the variable called `variable_name` belonging to the `self` sprite, if such a watcher exists.  If that variable is not being shown, do nothing.\n\nUsually, `variable_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide my health:\nself.hide_variable(\"health\")\n```\n\nTo hide a global variable, use this alternative form with `None` for `owner`.\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```\n\n(You might see this general `pytch.hide_variable()` form elsewhere in older code.)",
+                "stage": "Hide the variable-watcher for the variable called `variable_name` belonging to the stage, if such a watcher exists.  If that variable is not being shown, do nothing.\n\nUsually, `variable_name` will be a literal string, being the name of the variable you would like to hide.\n\n```\n# Hide the high-score, kept by the Stage:\nself.hide_variable(\"hi_score\")\n```\n\nTo hide a global variable, use this alternative form with `None` for `owner`.\n\n```\n# Hide the global \"score\" variable:\npytch.hide_variable(None, \"score\")\n```\n\n(You might see this general `pytch.hide_variable()` form elsewhere in older code.)"
             }
         }
     },
