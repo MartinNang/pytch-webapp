@@ -576,8 +576,8 @@
         "help": {
             "flat": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# (This example is for a Sprite.)\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)",
             "per-method": {
-                "sprite": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_costume(\"flying\")\nelse:\n    self.switch_costume(\"walking\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)",
-                "stage": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose backdrop based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_backdrop(\"cloudy-sky\")\nelse:\n    self.switch_backdrop(\"underwater\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)"
+                "sprite": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose costume based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_costume(\"flying.jpg\")\nelse:\n    self.switch_costume(\"walking.jpg\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)",
+                "stage": "Report `True` or `False` according to whether the player is currently pressing the `key_name` key.\n\n```\n# Choose backdrop based on whether\n# the \"a\" key is pressed:\nif self.key_pressed(\"a\"):\n    self.switch_backdrop(\"cloudy-sky.jpg\")\nelse:\n    self.switch_backdrop(\"underwater.jpg\")\n```\n\n(You might see `pytch.key_pressed()`, which also works, in older code.)"
             }
         }
     },
