@@ -15,6 +15,18 @@ declare let Sk: any;
 // Think it's a bug in Ace's typing that the "message" slot is missing.
 type IAceCompletion = Ace.ValueCompletion & { message: string };
 
+/** Construct an Ace completion object from one of the Python tuples
+ * returned by the Python-side `_user_facing_completions()` function.
+ * Each such tuple has four string elements:
+ *
+ * * identifier (name of attribute of `pytch`, `Stage`, or `Sprite`,
+ *   e.g., `"change_x"`, `"backdrop_number"`, or `"size"`)
+ * * suffix (for a property, the empty string; for a callable, a string
+ *   describing the arguments, such as `"(SIZE)"`)
+ * * kind (the name of the Python type of which this attribute is an
+ *   instance, e.g., `"method"`, `"function"`, `"property"`)
+ * * doc (short summary docstring)
+ **/
 const completionFromPyTuple =
   (meta: string | null) =>
   (tup: any): IAceCompletion => ({
