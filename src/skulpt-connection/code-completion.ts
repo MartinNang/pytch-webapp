@@ -52,9 +52,9 @@ const kPytchPerMethodExclusions = [
   "Sprite",
   "Stage",
   "when_green_flag_clicked",
-  "when_I_receive",
+  "when_I_receive($0)",
   "when_I_start_as_a_clone",
-  "when_key_pressed",
+  "when_key_pressed($0)",
   "when_stage_clicked",
   "when_this_sprite_clicked",
 ];
