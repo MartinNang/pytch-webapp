@@ -44,7 +44,7 @@ const completionFromPyTuple =
 
 const withoutMeta = (completion: IAceCompletion): IAceCompletion => ({
   caption: completion.caption,
-  value: completion.value,
+  snippet: completion.snippet,
   message: completion.message,
 });
 
