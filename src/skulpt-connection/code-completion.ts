@@ -64,7 +64,7 @@ const withoutPerMethodExclusions = (
 ): Array<IAceCompletion> => {
   // Assert that all exclusions are in the original input array, to try
   // to catch typos.
-  const completionValues = completions.map((c) => c.value);
+  const completionValues = completions.map((c) => c.snippet);
   const missingExclusions = kPytchPerMethodExclusions.filter(
     (value) => !completionValues.includes(value)
   );
@@ -76,7 +76,7 @@ const withoutPerMethodExclusions = (
   }
 
   return completions.filter(
-    (completion) => !kPytchPerMethodExclusions.includes(completion.value)
+    (completion) => !kPytchPerMethodExclusions.includes(completion.snippet)
   );
 };
 
