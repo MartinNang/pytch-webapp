@@ -13,7 +13,7 @@ import { Ace } from "ace-builds/ace";
 declare let Sk: any;
 
 // Think it's a bug in Ace's typing that the "message" slot is missing.
-type IAceCompletion = Ace.ValueCompletion & { message: string };
+type IAceCompletion = Ace.SnippetCompletion & { message: string };
 
 /** Construct an Ace completion object from one of the Python tuples
  * returned by the Python-side `_user_facing_completions()` function.
