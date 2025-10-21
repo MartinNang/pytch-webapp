@@ -32,10 +32,11 @@ const completionFromPyTuple =
   (tup: any): IAceCompletion => {
     const identifier: string = tup.v[0].v;
     const suffix: string = tup.v[1].v;
+    const snippet = suffix.startsWith("(") ? `${identifier}($0)` : identifier;
 
     return {
       caption: identifier + suffix,
-      value: tup.v[0].v,
+      snippet,
       meta: meta ?? undefined,
       message: tup.v[3].v,
     };
