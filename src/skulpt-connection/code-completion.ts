@@ -106,15 +106,11 @@ const kCompletions = (() => {
   // Return value is (completions, attrsWithoutDocs); ignore the latter.
   const pyCompletionsByKind = pyCompletionsInfo.v[0];
 
-  // Set top-level var holding completions for "pytch.":
-  //
   const allPytch = completionsFromPyList(
     null,
     pyCompletionsByKind.mp$subscript(sPytch)
   );
 
-  // Set top-level var holding completions for "self.":
-  //
   const actorCompletions = completionsFromPyList(
     "[Spr/Stg]",
     pyCompletionsByKind.mp$subscript(sActor)
