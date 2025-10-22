@@ -58,6 +58,16 @@ type FlatBootData = {
   isTrackingTutorial: boolean;
 };
 
+// "Slice Action" and "Slice Thunk".
+type SAction<PayloadT = void> = Action<EditState, PayloadT>;
+type SThunk<PayloadT, ReturnT = void> = Thunk<
+  EditState,
+  PayloadT,
+  unknown,
+  IPytchAppModel,
+  ReturnT
+>;
+
 export type EditState = {
   mostRecentFocusedEditor: string;
   setMostRecentFocusedEditor: Action<EditState, string>;
