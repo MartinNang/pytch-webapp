@@ -111,6 +111,8 @@ const kCompletions = (() => {
     pyCompletionsByKind.mp$subscript(sPytch)
   );
 
+  const perMethodPytch = withoutPerMethodExclusions(allPytch);
+
   const actorCompletions = completionsFromPyList(
     "[Spr/Stg]",
     pyCompletionsByKind.mp$subscript(sActor)
@@ -132,13 +134,7 @@ const kCompletions = (() => {
   const sprite = actorCompletions.concat(spriteCompletions).map(withoutMeta);
   const stage = actorCompletions.concat(stageCompletions).map(withoutMeta);
 
-  return {
-    allPytch,
-    perMethodPytch: withoutPerMethodExclusions(allPytch),
-    actor,
-    sprite,
-    stage,
-  };
+  return { allPytch, perMethodPytch, actor, sprite, stage };
 })();
 
 export class PytchAceAutoCompleter {
