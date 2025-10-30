@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { assertNever, discardReturnValue } from "../utils";
 import { GoogleUserInfo } from "../storage/google-drive/shared";
 import { CompoundTextInput } from "./CompoundTextInput";
+import { useActionAsEffect } from "./hooks/use-action-as-effect";
 
 export const GoogleGetFilenameFromUserModal = () => {
   const state = useStoreState(
@@ -90,11 +91,8 @@ export const GoogleAuthenticationStatusModal = () => {
   const authState = useStoreState(
     (state) => state.googleDriveImportExport.authState
   );
-  const maybeBoot = useStoreActions((actions) =>
-    discardReturnValue(actions.googleDriveImportExport.maybeBoot)
-  );
 
-  useEffect(maybeBoot);
+  useActionAsEffect((actions) => actions.googleDriveImportExport.maybeBoot);
 
   switch (authState.kind) {
     case "succeeded":
