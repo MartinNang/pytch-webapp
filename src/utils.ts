@@ -252,6 +252,13 @@ export async function fetchArrayBuffer(...args: Parameters<typeof fetch>) {
   return data;
 }
 
+export async function fetchParsedJsonValue(...args: Parameters<typeof fetch>) {
+  const response = await fetch(...args);
+  const text = await response.text();
+  const value = JSON.parse(text);
+  return value;
+}
+
 export type MimeTypedArrayBuffer = {
   mimeType: string;
   data: ArrayBuffer;
