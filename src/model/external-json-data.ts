@@ -8,6 +8,13 @@ type ContentFetchState<ContentT> =
   | { state: "available"; content: ContentT }
   | { state: "error" };
 
+/** Type intended to be used as a model slice representing a piece of
+ * externally-fetched data, which is parsed as JSON and then transformed
+ * into the final "content".  An object of this type is typically
+ * constructed via `externalJsonSlice()`.  Components will typically
+ * only need to refer to the `contentFetchState` slot, and call the
+ * `maybeLoadContent()` thunk via an effect, for which
+ * `useActionAsEffect()` is helpful. */
 export type ExternalJsonSlice<ContentT> = {
   contentFetchState: ContentFetchState<ContentT>;
   setRequestingContent: Action<ExternalJsonSlice<ContentT>>;
@@ -16,6 +23,11 @@ export type ExternalJsonSlice<ContentT> = {
   maybeLoadContent: Thunk<ExternalJsonSlice<ContentT>>;
 };
 
+/** Construct a new object suitable for use as a model slice value.  The
+ * resulting `maybeLoadContent()` thunk fetches JSON from the given
+ * `urlNub` (after conversion to be "within the app"), and then passes
+ * the parsed result through the given `contentFromRawObj()` conversion
+ * function. */
 export function externalJsonSlice<ContentT>(
   urlNub: string,
   contentFromRawObj: (rawObj: unknown) => ContentT
