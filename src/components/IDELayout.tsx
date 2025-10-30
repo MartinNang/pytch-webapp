@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler, useEffect } from "react";
 import classNames from "classnames";
-import { useStoreActions, useStoreState } from "../store";
+import { useStoreState } from "../store";
 import { useJrEditState } from "./Junior/hooks";
 import { assertNever, EmptyProps } from "../utils";
 import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
@@ -12,6 +12,7 @@ import { Modals as PerMethodModals } from "./Junior/Modals";
 import { FlatModals } from "./FlatModals";
 import { useFocusContext } from "./hooks/focus-steering";
 import { NotableChangeToasts } from "./NotableChangeToasts";
+import { useActionAsEffect } from "./hooks/use-action-as-effect";
 
 const Modals: React.FC<EmptyProps> = () => {
   const programKind = useStoreState(
@@ -39,11 +40,8 @@ export const IDELayout: React.FC<EmptyProps> = () => {
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
   );
-  const maybeConnectToLiveReloadServer = useStoreActions(
-    (actions) => actions.reloadServer.maybeConnect
-  );
 
-  useEffect(() => maybeConnectToLiveReloadServer());
+  useActionAsEffect((actions) => actions.reloadServer.maybeConnect);
 
   // Even though we refer to activityContentFullStateLabel, we only want
   // to set the bookmark on initial render; hence empty deps array.

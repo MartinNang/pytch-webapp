@@ -1,7 +1,7 @@
-import React, { CSSProperties, MouseEventHandler, useEffect } from "react";
+import React, { CSSProperties, MouseEventHandler } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
-import { useStoreState, useStoreActions } from "../../store";
+import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nSelectedItemsInGallery } from "../../model/clipart-gallery";
 import {
@@ -11,11 +11,7 @@ import {
   entryMatchesTags,
 } from "../../model/clipart-gallery-core";
 
-import {
-  assertNever,
-  discardReturnValue,
-  mDataAttrIntValue,
-} from "../../utils";
+import { assertNever, mDataAttrIntValue } from "../../utils";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import {
   isInteractable,
@@ -31,6 +27,7 @@ import {
 import { useFocusContext } from "../hooks/focus-steering";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 import { FileProcessingFailures } from "../FileProcessingFailures";
+import { useActionAsEffect } from "../hooks/use-action-as-effect";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -284,11 +281,7 @@ export const AddClipArtModal = () => {
 
   const galleryState = useStoreState((state) => state.clipArtGallery.state);
 
-  const startFetchIfRequired = useStoreActions((actions) =>
-    discardReturnValue(actions.clipArtGallery.startFetchIfRequired)
-  );
-
-  useEffect(startFetchIfRequired);
+  useActionAsEffect((actions) => actions.clipArtGallery.startFetchIfRequired);
 
   return asyncFlowModal(fsmState, (activeState) => {
     const operationContext = activeState.runState.operationContext;
