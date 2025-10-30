@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler, useEffect } from "react";
 import classNames from "classnames";
-import { useStoreActions, useStoreState } from "../store";
+import { useStoreState } from "../store";
 import { useJrEditState } from "./Junior/hooks";
 import { assertNever, EmptyProps } from "../utils";
 import { DivSettingWindowTitle } from "./DivSettingWindowTitle";

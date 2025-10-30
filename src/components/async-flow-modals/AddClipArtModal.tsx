@@ -1,7 +1,7 @@
-import React, { CSSProperties, MouseEventHandler, useEffect } from "react";
+import React, { CSSProperties, MouseEventHandler } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
-import { useStoreState, useStoreActions } from "../../store";
+import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nSelectedItemsInGallery } from "../../model/clipart-gallery";
 import {
@@ -11,11 +11,7 @@ import {
   entryMatchesTags,
 } from "../../model/clipart-gallery-core";
 
-import {
-  assertNever,
-  discardReturnValue,
-  mDataAttrIntValue,
-} from "../../utils";
+import { assertNever, mDataAttrIntValue } from "../../utils";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import {
   isInteractable,

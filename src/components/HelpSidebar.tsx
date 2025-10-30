@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useStoreState, useStoreActions } from "../store";
+import { useStoreState } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   BlockElementDescriptor,
