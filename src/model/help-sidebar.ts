@@ -19,6 +19,7 @@ import {
 } from "./dev-work-context";
 import { activeActorKindSelector } from "../components/Junior/hooks";
 import { kBothActorKinds } from "./junior/structured-program/actor";
+import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 
 export type ElementArray = Array<Element>;
 
@@ -407,7 +408,7 @@ export type HelpSectionContent = {
 type HelpContent = Array<HelpSectionContent>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const groupHelpIntoSections = (rawHelpData: Array<any>): HelpContent => {
+const groupHelpIntoSections = (rawHelpData: any): HelpContent => {
   let currentSection: HelpSectionContent = {
     sectionSlug: "will-be-discarded",
     sectionHeading: "Will be discarded",
@@ -435,51 +436,11 @@ const groupHelpIntoSections = (rawHelpData: Array<any>): HelpContent => {
   return sections;
 };
 
-export type ContentFetchState =
-  | { state: "idle" }
-  | { state: "requesting" }
-  | { state: "available"; content: HelpContent }
-  | { state: "error" };
-
-export interface IHelpSidebar {
-  contentFetchState: ContentFetchState;
-  ensureHaveContent: Thunk<IHelpSidebar, void, void, IPytchAppModel>;
-  setRequestingContent: Action<IHelpSidebar>;
-  setContentFetchError: Action<IHelpSidebar>;
-  setContent: Action<IHelpSidebar, HelpContent>;
-}
-
-export const helpSidebar: IHelpSidebar = {
-  contentFetchState: { state: "idle" },
-
-  setRequestingContent: action((state) => {
-    state.contentFetchState = { state: "requesting" };
-  }),
-  setContentFetchError: action((state) => {
-    state.contentFetchState = { state: "error" };
-  }),
-  setContent: action((state, content) => {
-    state.contentFetchState = { state: "available", content };
-  }),
-  ensureHaveContent: thunk(async (actions, _voidPayload, helpers) => {
-    const state = helpers.getState();
-    if (state.contentFetchState.state !== "idle") return;
-
-    actions.setRequestingContent();
-
-    try {
-      const url = urlWithinApp("/data/help-sidebar.json");
-      const response = await fetch(url);
-      const text = await response.text();
-      const flatData = JSON.parse(text);
-      const content = groupHelpIntoSections(flatData);
-      actions.setContent(content);
-    } catch (err) {
-      console.error("error fetching help sidebar content:", err);
-      actions.setContentFetchError();
-    }
-  }),
-};
+export type IHelpSidebar = ExternalJsonSlice<HelpContent>;
+export const helpSidebar = externalJsonSlice(
+  "/data/help-sidebar.json",
+  groupHelpIntoSections
+);
 
 export function useDevWorkContext(): DevWorkContext {
   return useStoreState((state) => {
