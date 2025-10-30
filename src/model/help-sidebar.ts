@@ -1,9 +1,6 @@
-import { Action, action, thunk, Thunk } from "easy-peasy";
 import { makeScratchSVG } from "./scratchblocks-render";
 import { marked } from "marked";
-import { IPytchAppModel } from ".";
 import { assertNever, failIfNull } from "../utils";
-import { urlWithinApp } from "../env-utils";
 import { PytchProgramKind, PytchProgramAllKinds } from "./pytch-program";
 import {
   ActorKind,
@@ -435,6 +432,8 @@ const groupHelpIntoSections = (rawHelpData: any): HelpContent => {
 
   return sections;
 };
+
+////////////////////////////////////////////////////////////////////////
 
 export type IHelpSidebar = ExternalJsonSlice<HelpContent>;
 export const helpSidebar = externalJsonSlice(
