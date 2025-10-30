@@ -31,6 +31,7 @@ import {
 import { useFocusContext } from "../hooks/focus-steering";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 import { FileProcessingFailures } from "../FileProcessingFailures";
+import { useActionAsEffect } from "../hooks/use-action-as-effect";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -284,11 +285,7 @@ export const AddClipArtModal = () => {
 
   const galleryState = useStoreState((state) => state.clipArtGallery.state);
 
-  const startFetchIfRequired = useStoreActions((actions) =>
-    discardReturnValue(actions.clipArtGallery.startFetchIfRequired)
-  );
-
-  useEffect(startFetchIfRequired);
+  useActionAsEffect((actions) => actions.clipArtGallery.startFetchIfRequired);
 
   return asyncFlowModal(fsmState, (activeState) => {
     const operationContext = activeState.runState.operationContext;
