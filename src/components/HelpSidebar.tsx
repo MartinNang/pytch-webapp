@@ -24,6 +24,7 @@ import { DevWorkContext, DevWorkContextOps } from "../model/dev-work-context";
 import { kFocusGroupItemClassName } from "../model/junior/grouped-focus";
 import { useFocusContext } from "./hooks/focus-steering";
 import { FocusGroupContainer } from "./FocusGroupContainer";
+import { useActionAsEffect } from "./hooks/use-action-as-effect";
 
 interface IScratchAndPython {
   eventDescriptor?: EventDescriptor;
@@ -459,14 +460,10 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
 };
 
 export const HelpSidebar = () => {
-  const ensureHaveContent = useStoreActions(
+  useActionAsEffect(
     (actions) => actions.ideLayout.helpSidebar.ensureHaveContent
   );
   const displayContext = useDevWorkContext();
-
-  useEffect(() => {
-    ensureHaveContent();
-  });
 
   return (
     <div className="HelpSidebar">
