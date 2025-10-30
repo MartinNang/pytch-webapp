@@ -461,7 +461,7 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
 
 export const HelpSidebar = () => {
   useActionAsEffect(
-    (actions) => actions.ideLayout.helpSidebar.ensureHaveContent
+    (actions) => actions.ideLayout.helpSidebar.maybeLoadContent
   );
   const displayContext = useDevWorkContext();
 
