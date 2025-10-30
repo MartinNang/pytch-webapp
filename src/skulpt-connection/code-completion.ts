@@ -13,20 +13,38 @@ import { Ace } from "ace-builds/ace";
 declare let Sk: any;
 
 // Think it's a bug in Ace's typing that the "message" slot is missing.
-type IAceCompletion = Ace.ValueCompletion & { message: string };
+type IAceCompletion = Ace.SnippetCompletion & { message: string };
 
+/** Construct an Ace completion object from one of the Python tuples
+ * returned by the Python-side `_user_facing_completions()` function.
+ * Each such tuple has four string elements:
+ *
+ * * identifier (name of attribute of `pytch`, `Stage`, or `Sprite`,
+ *   e.g., `"change_x"`, `"backdrop_number"`, or `"size"`)
+ * * suffix (for a property, the empty string; for a callable, a string
+ *   describing the arguments, such as `"(SIZE)"`)
+ * * kind (the name of the Python type of which this attribute is an
+ *   instance, e.g., `"method"`, `"function"`, `"property"`)
+ * * doc (short summary docstring)
+ **/
 const completionFromPyTuple =
   (meta: string | null) =>
-  (tup: any): IAceCompletion => ({
-    caption: tup.v[0].v + tup.v[1].v,
-    value: tup.v[0].v,
-    meta: meta ?? undefined,
-    message: tup.v[3].v,
-  });
+  (tup: any): IAceCompletion => {
+    const identifier: string = tup.v[0].v;
+    const suffix: string = tup.v[1].v;
+    const snippet = suffix.startsWith("(") ? `${identifier}($0)` : identifier;
+
+    return {
+      caption: identifier + suffix,
+      snippet,
+      meta: meta ?? undefined,
+      message: tup.v[3].v,
+    };
+  };
 
 const withoutMeta = (completion: IAceCompletion): IAceCompletion => ({
   caption: completion.caption,
-  value: completion.value,
+  snippet: completion.snippet,
   message: completion.message,
 });
 
@@ -34,9 +52,9 @@ const kPytchPerMethodExclusions = [
   "Sprite",
   "Stage",
   "when_green_flag_clicked",
-  "when_I_receive",
+  "when_I_receive($0)",
   "when_I_start_as_a_clone",
-  "when_key_pressed",
+  "when_key_pressed($0)",
   "when_stage_clicked",
   "when_this_sprite_clicked",
 ];
@@ -46,7 +64,7 @@ const withoutPerMethodExclusions = (
 ): Array<IAceCompletion> => {
   // Assert that all exclusions are in the original input array, to try
   // to catch typos.
-  const completionValues = completions.map((c) => c.value);
+  const completionValues = completions.map((c) => c.snippet);
   const missingExclusions = kPytchPerMethodExclusions.filter(
     (value) => !completionValues.includes(value)
   );
@@ -58,7 +76,7 @@ const withoutPerMethodExclusions = (
   }
 
   return completions.filter(
-    (completion) => !kPytchPerMethodExclusions.includes(completion.value)
+    (completion) => !kPytchPerMethodExclusions.includes(completion.snippet)
   );
 };
 
@@ -88,15 +106,13 @@ const kCompletions = (() => {
   // Return value is (completions, attrsWithoutDocs); ignore the latter.
   const pyCompletionsByKind = pyCompletionsInfo.v[0];
 
-  // Set top-level var holding completions for "pytch.":
-  //
   const allPytch = completionsFromPyList(
     null,
     pyCompletionsByKind.mp$subscript(sPytch)
   );
 
-  // Set top-level var holding completions for "self.":
-  //
+  const perMethodPytch = withoutPerMethodExclusions(allPytch);
+
   const actorCompletions = completionsFromPyList(
     "[Spr/Stg]",
     pyCompletionsByKind.mp$subscript(sActor)
@@ -118,13 +134,7 @@ const kCompletions = (() => {
   const sprite = actorCompletions.concat(spriteCompletions).map(withoutMeta);
   const stage = actorCompletions.concat(stageCompletions).map(withoutMeta);
 
-  return {
-    allPytch,
-    perMethodPytch: withoutPerMethodExclusions(allPytch),
-    actor,
-    sprite,
-    stage,
-  };
+  return { allPytch, perMethodPytch, actor, sprite, stage };
 })();
 
 export class PytchAceAutoCompleter {

@@ -60,17 +60,17 @@ context("Edit Python of scripts", () => {
     assertNCompletions(4);
     cy.pytchSendKeysToApp("{downArrow}{enter}");
     assertNCompletions(0);
-    soleEventHandlerCodeShouldEqual("pytch.broadcast");
+    soleEventHandlerCodeShouldEqual("pytch.broadcast()");
 
-    cy.pytchSendKeysToApp("{enter}self.{enter}");
+    cy.pytchSendKeysToApp("{end}{enter}self.{enter}");
     assertNCompletions(0);
-    soleEventHandlerCodeShouldEqual("pytch.broadcast\nself.all_clones");
+    soleEventHandlerCodeShouldEqual("pytch.broadcast()\nself.all_clones()");
 
-    cy.pytchSendKeysToApp("{enter}rubbish.");
+    cy.pytchSendKeysToApp("{end}{enter}rubbish.");
     assertNCompletions(0);
     cy.pytchSendKeysToApp("{enter}");
     soleEventHandlerCodeShouldEqual(
-      "pytch.broadcast\nself.all_clones\nrubbish.\n"
+      "pytch.broadcast()\nself.all_clones()\nrubbish.\n"
     );
   });
 
