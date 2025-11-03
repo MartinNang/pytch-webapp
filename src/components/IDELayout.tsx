@@ -59,6 +59,10 @@ export const IDELayout: React.FC<EmptyProps> = () => {
         case "expanded-lesson":
         case "expanded-tutorial":
           return 1;
+        case "expanded-keynavhelp":
+          console.warn("should not have expanded-keynavhelp on first render");
+          // But return something non-erroneous anyway.
+          return 0;
         default:
           return assertNever(activityContentFullStateLabel);
       }
