@@ -12,6 +12,8 @@ import { useStoreState } from "../../store";
 import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import { useDevWorkContext } from "../../model/help-sidebar";
 
+import "./KeyNavHelpSidebar.scss";
+
 function joinedList(
   keyDescrs: Array<KeyDescriptor>,
   joinText: string
