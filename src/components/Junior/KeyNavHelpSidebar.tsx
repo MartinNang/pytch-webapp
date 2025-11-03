@@ -4,6 +4,7 @@ import { assertNever } from "../../utils";
 import { Row, Col } from "react-bootstrap";
 import {
   KeyDescriptor,
+  SectionEntry,
 } from "../../model/keyboard-shortcuts-help";
 
 function joinedList(
@@ -78,4 +79,15 @@ const ItemContent: React.FC<{ keyDescr: KeyDescriptor; help: string }> = ({
       </Col>
     </Row>
   );
+};
+
+const SectionEntryContent: React.FC<{ entry: SectionEntry }> = ({ entry }) => {
+  switch (entry.kind) {
+    case "text":
+      return <TextContent markdown={entry.markdown} />;
+    case "item":
+      return <ItemContent keyDescr={entry.key} help={entry.help} />;
+    default:
+      return assertNever(entry);
+  }
 };
