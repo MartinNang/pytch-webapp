@@ -1,4 +1,5 @@
 import React from "react";
+import { marked } from "marked";
 import { assertNever } from "../../utils";
 import {
   KeyDescriptor,
@@ -53,4 +54,10 @@ const Key: React.FC<{ keyDescr: KeyDescriptor }> = ({ keyDescr }) => {
     default:
       return assertNever(keyDescr);
   }
+};
+
+const TextContent: React.FC<{ markdown: string }> = ({ markdown }) => {
+  marked.use({ mangle: false, headerIds: false });
+  const html = marked.parse(markdown);
+  return <div dangerouslySetInnerHTML={{ __html: html }} />;
 };
