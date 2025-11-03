@@ -5,6 +5,7 @@ import { MaybeContent as MaybeLessonContent } from "./lesson/MaybeContent";
 import { WidthMonitor } from "./WidthMonitor";
 import { HelpSidebar } from "../HelpSidebar";
 import Tutorial from "../Tutorial";
+import { KeyNavHelpSidebar } from "./KeyNavHelpSidebar";
 
 export const ActivityContent: React.FC<EmptyProps> = () => {
   const s = useJrEditState((s) => s.activityContentState);
@@ -22,6 +23,8 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
             <HelpSidebar />
           </>
         );
+      case "keynavhelp":
+        return <KeyNavHelpSidebar />;
       case "lesson":
       case "specimen":
         // This is a bit of a fudge.  We treat these both as "lesson"

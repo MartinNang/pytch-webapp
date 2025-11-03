@@ -64,6 +64,7 @@
   }
 
   &.activity-content-expanded-specimen main,
+  &.activity-content-expanded-keynavhelp main,
   &.activity-content-expanded-helpsidebar main {
     @include grid-hstack-three(
       $activity-bar-width + $help-sidebar-content-width,
@@ -159,6 +160,7 @@
 }
 
 .ActivityContent {
+  > .KeyNavHelpSidebar,
   > .HelpSidebar {
     padding: 0.5rem;
     background-color: $main-bg-color;

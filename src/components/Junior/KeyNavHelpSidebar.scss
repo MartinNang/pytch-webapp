@@ -1,0 +1,57 @@
+@import "../../pytch-variables.scss";
+
+.KeyNavHelpSidebar {
+  .section-heading {
+    background-color: $pytch-colour-accent-lavender;
+    color: black;
+    margin: 2.5rem 0rem 1rem;
+  }
+
+  .help-key-chord,
+  .help-key-alternatives,
+  .help-key-respective,
+  .help-key-sequence {
+    line-height: 1.6667rem;
+    color: $pytch-colour-main-blue-darkened;
+  }
+
+  span.help-key {
+    font-family: $monospace-fonts;
+    font-size: 15px;
+    padding: 3px;
+    border-radius: 3px;
+    background-color: $pytch-colour-main-blue;
+    color: $pytch-colour-main-yellow;
+  }
+
+  h1 {
+    color: $pytch-colour-main-blue-darkened;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 0.5rem 0rem;
+  }
+  h3 {
+    font-size: 1.125rem;
+    font-style: italic;
+  }
+
+  code {
+    color: black;
+    font-style: italic;
+  }
+
+  .ItemContent .help-text-container {
+    display: grid;
+    grid-template-columns: 0px auto;
+    span {
+      margin-left: -0.5rem;
+      font-weight: bold;
+    }
+    p {
+      margin-bottom: 0px;
+    }
+  }
+}

@@ -19,6 +19,7 @@ type TabKeyUiDetails = { icon: IconName; tooltip: string };
 
 const uiDetailsFromTabKeyLut = new Map<ActivityBarTabKey, TabKeyUiDetails>([
   ["helpsidebar", { icon: "question-circle", tooltip: "Scratch/Python help" }],
+  ["keynavhelp", { icon: "keyboard", tooltip: "Keyboard navigation help" }],
   ["lesson", { icon: "book", tooltip: "Lesson content" }],
   ["tutorial", { icon: "book", tooltip: "Tutorial content" }],
   ["specimen", { icon: "book", tooltip: "Lesson information" }],
@@ -87,12 +88,12 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
   );
 
   const tabs: Array<ActivityBarTabKey> = hasLinkedLesson
-    ? ["helpsidebar", "lesson"]
+    ? ["helpsidebar", "lesson", "keynavhelp"]
     : hasLinkedSpecimen
-    ? ["helpsidebar", "specimen"]
+    ? ["helpsidebar", "specimen", "keynavhelp"]
     : hasLinkedTutorial
-    ? ["helpsidebar", "tutorial"]
-    : ["helpsidebar"];
+    ? ["helpsidebar", "tutorial", "keynavhelp"]
+    : ["helpsidebar", "keynavhelp"];
 
   const focusGroupExtraClass =
     activityContentState.kind === "collapsed" ? "gfs__help__container" : "";

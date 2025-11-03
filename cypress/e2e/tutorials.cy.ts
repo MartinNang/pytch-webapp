@@ -77,7 +77,7 @@ context("Demo of a tutorial", () => {
   });
 
   it("creates project and launches IDE", () => {
-    cy.get(".ActivityBar .ActivityBarTab").should("have.length", 1);
+    cy.get(".ActivityBar .ActivityBarTab").should("have.length", 2);
     assertInIDE("flat");
   });
 

@@ -37,6 +37,7 @@ import {
   faExclamationTriangle,
   faExclamationCircle,
   faWindowMinimize,
+  faKeyboard,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faTimesCircle, faEnvelope } from "@fortawesome/free-regular-svg-icons";
@@ -80,5 +81,6 @@ library.add(
   faExclamationTriangle,
   faExclamationCircle,
   faWindowMinimize,
+  faKeyboard,
   faTimesCircle
 );
