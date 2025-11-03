@@ -9,6 +9,7 @@ import {
   SectionEntry,
 } from "../../model/keyboard-shortcuts-help";
 import { useStoreState } from "../../store";
+import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import { useDevWorkContext } from "../../model/help-sidebar";
 
 function joinedList(
@@ -174,4 +175,16 @@ const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
     default:
       return assertNever(contentState.contentFetchState);
   }
+};
+
+export const KeyNavHelpSidebar: React.FC<EmptyProps> = () => {
+  useActionAsEffect(
+    (actions) => actions.ideLayout.keyboardShortcutsHelpContent.maybeLoadContent
+  );
+
+  return (
+    <div className="KeyNavHelpSidebar" tabIndex={0}>
+      <KeyNavHelpSidebarMaybeContent />
+    </div>
+  );
 };
