@@ -1,13 +1,14 @@
 import React from "react";
 import { marked } from "marked";
-import { assertNever } from "../../utils";
-import { Row, Col, Container } from "react-bootstrap";
+import { assertNever, EmptyProps } from "../../utils";
+import { Row, Col, Container, Spinner } from "react-bootstrap";
 import {
   Content,
   KeyDescriptor,
   Section,
   SectionEntry,
 } from "../../model/keyboard-shortcuts-help";
+import { useStoreState } from "../../store";
 import { useDevWorkContext } from "../../model/help-sidebar";
 
 function joinedList(
@@ -143,4 +144,34 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
       ))}
     </Container>
   );
+};
+
+const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
+  const contentState = useStoreState(
+    (s) => s.ideLayout.keyboardShortcutsHelpContent
+  );
+  switch (contentState.contentFetchState.state) {
+    case "idle":
+    case "requesting":
+      return (
+        <div className="spinner-container">
+          <Spinner animation="border" />
+        </div>
+      );
+    case "available":
+      return (
+        <KeyNavHelpSidebarContent
+          content={contentState.contentFetchState.content}
+        />
+      );
+    case "error":
+      return (
+        <>
+          <h1>Problem</h1>
+          <p>Sorry, there was a problem fetching the help information.</p>
+        </>
+      );
+    default:
+      return assertNever(contentState.contentFetchState);
+  }
 };
