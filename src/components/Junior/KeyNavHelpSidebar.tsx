@@ -1,8 +1,9 @@
 import React from "react";
 import { marked } from "marked";
 import { assertNever } from "../../utils";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import {
+  Content,
   KeyDescriptor,
   Section,
   SectionEntry,
@@ -115,5 +116,31 @@ const SectionContent: React.FC<{ section: Section }> = ({ section }) => {
       </Row>
       <SectionEntriesContent entries={relevantEntries} />
     </div>
+  );
+};
+
+const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
+  content,
+}) => {
+  const workContext = useDevWorkContext();
+
+  const sectionIsRelevant = (section: Section) =>
+    section.forProgramKind == null ||
+    section.forProgramKind === workContext.programKind;
+
+  const relevantSections = content.sections.filter(sectionIsRelevant);
+
+  return (
+    <Container>
+      <h1>Using Pytch with the keyboard</h1>
+      <p>
+        You might prefer to use Pytch mostly with the keyboard (rather than a
+        mouse or trackpad or other pointing device). Here is a summary of some
+        useful keyboard shortcuts.
+      </p>
+      {relevantSections.map((section, idx) => (
+        <SectionContent key={idx} section={section} />
+      ))}
+    </Container>
   );
 };
