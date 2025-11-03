@@ -71,6 +71,10 @@ import {
   DeleteManyProjectsFlow,
   deleteManyProjectsFlow,
 } from "./user-interactions/delete-many-projects";
+import {
+  KeyboardShortcutsHelpContent,
+  keyboardShortcutsHelpContent,
+} from "./keyboard-shortcuts-help";
 
 export interface IStageDisplaySize {
   width: number;
@@ -111,6 +115,7 @@ export interface IIDELayout {
   buttonTourProgressIndex: number;
   buttonTourProgressStage: Computed<IIDELayout, ButtonTourStage | null>;
   helpSidebar: IHelpSidebar;
+  keyboardShortcutsHelpContent: KeyboardShortcutsHelpContent;
   _setIsFullScreen: Action<IIDELayout, boolean>;
   setIsFullScreen: Thunk<IIDELayout, boolean>;
   ensureNotFullScreen: Thunk<IIDELayout>;
@@ -278,6 +283,7 @@ export const ideLayout: IIDELayout = {
   }),
 
   helpSidebar,
+  keyboardShortcutsHelpContent,
 };
 
 export interface IUserConfirmations {

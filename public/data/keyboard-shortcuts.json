@@ -1,0 +1,413 @@
+{
+  "sections": [
+    {
+      "heading": "Moving between IDE sections",
+      "entries": [
+        {
+          "kind": "text",
+          "forProgramKind": "per-method",
+          "markdown": "The IDE is divided into sections.  You can use `Tab` and `Shift + Tab` to move between them.  The sections are:\n\n* Activity bar\n* Activity content (if shown)\n* Code, costumes/backdrops, sounds pane\n* Output and errors pane (if shown)\n* Project controls\n* Project stage\n* Stage and sprites pane\n\nSome of these sections contain more than one tab-stop.  For example, a show/hide button or an \"add\" button."
+        },
+        {
+          "kind": "text",
+          "forProgramKind": "flat",
+          "markdown": "The IDE is divided into sections.  You can use `Tab` and `Shift + Tab` to move between them.  The sections are:\n\n* Activity bar\n* Activity content (if shown)\n* Code editor\n* Output and errors pane (if shown)\n* Project controls\n* Project stage\n* Images and sounds pane\n\nSome of these sections contain more than one tab-stop.  For example, a show/hide button or an \"add\" button."
+        },
+        {
+          "kind": "item",
+          "key": "Tab",
+          "help": "Focus the next major section of the IDE"
+        },
+        {
+          "kind": "item",
+          "key": { "kind": "chord", "keys": ["Shift", "Tab"] },
+          "help": "Focus the previous major section of the IDE"
+        }
+      ]
+    },
+    {
+      "heading": "Jumping to IDE sections",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "Tabbing to a particular section can be slow.  You can directly focus some sections with these shortcuts."
+        },
+        {
+          "kind": "item",
+          "key": { "kind": "sequence", "keys": ["g", "h"] },
+          "help": "Focus the **help** area, to refer to help or read a tutorial"
+        },
+        {
+          "kind": "item",
+          "forProgramKind": "per-method",
+          "key": { "kind": "sequence", "keys": ["g", "s"] },
+          "help": "Focus the **sprites and stage** area, to choose which sprite (or the stage) to work with"
+        },
+        {
+          "kind": "item",
+          "forProgramKind": "per-method",
+          "key": { "kind": "sequence", "keys": ["g", "c"] },
+          "help": "Focus the **coding** area, to work with code, costumes, backdrops, or sounds"
+        },
+        {
+          "kind": "item",
+          "forProgramKind": "flat",
+          "key": { "kind": "sequence", "keys": ["g", "a"] },
+          "help": "Focus the **assets** (images and sounds) area"
+        },
+        {
+          "kind": "item",
+          "forProgramKind": "flat",
+          "key": { "kind": "sequence", "keys": ["g", "c"] },
+          "help": "Focus the **code** editor"
+        }
+      ]
+    },
+    {
+      "heading": "Menus",
+      "entries": [
+        {
+          "kind": "text",
+          "forProgramKind": "per-method",
+          "markdown": "Many things in the IDE have menus attached to them.  For example, a Sprite's menu includes entries to go to its code, costumes, or sounds, and also entries to rename or delete that Sprite."
+        },
+        {
+          "kind": "text",
+          "forProgramKind": "flat",
+          "markdown": "Many things in the IDE have menus attached to them.  For example, an image's menu includes entries to crop or scale, or rename, or delete that image."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": [
+              { "kind": "chord", "keys": ["Shift", "F10"] },
+              { "kind": "chord", "keys": ["Ctrl", "/"] },
+              { "kind": "chord", "keys": ["Ctrl", "."] }
+            ]
+          },
+          "help": "Open or close the focused item's menu"
+        },
+        {
+          "kind": "item",
+          "key": "Escape",
+          "help": "Close the menu"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "respective",
+            "keys": ["Up", "Down"]
+          },
+          "help": "Focus the previous / next item in the open menu"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "respective",
+            "keys": ["Home", "End"]
+          },
+          "help": "Focus the first / last item in the open menu"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Space", "Enter"]
+          },
+          "help": "Choose the focused menu item"
+        }
+      ]
+    },
+    {
+      "heading": "Tabbed panes",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "Some areas of the IDE are made up of *tabbed content*, where you choose which content to display from a small set of options.  For example, the *Information* pane has *Output* and *Error* tabs."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Up", "Left"]
+          },
+          "help": "Select the previous tabbed content"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Down", "Right"]
+          },
+          "help": "Select the next tabbed content"
+        },
+        {
+          "kind": "item",
+          "key": "Tab",
+          "help": "Focus the selected content (if possible)"
+        }
+      ]
+    },
+    {
+      "heading": "Activity tab bar",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "Vertically down the left-hand edge of the IDE is the \"activity bar\".  This lets you work with the Scratch-to-Python help information, the tutorial (if you're following one), or this keyboard shortcuts help information."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Up", "Left"]
+          },
+          "help": "Focus the previous activity tab (help, tutorial, etc.)"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Down", "Right"]
+          },
+          "help": "Focus the next activity tab (help, tutorial, etc.)"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Space", "Enter"]
+          },
+          "help": "Collapse or expand the activity for the focused tab"
+        }
+      ]
+    },
+    {
+      "heading": "Scratch-to-Python help",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "If you know how to do something in Scratch, you can look up the matching Pytch method here.  Or you can just browse the Pytch methods to see how to do something.  As in Scratch, the methods are grouped into sections, which can be expanded or collapsed.  Each method has its own help text, including an example of how to use that method."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Up", "Left"]
+          },
+          "help": "Focus the previous section or entry"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Down", "Right"]
+          },
+          "help": "Focus the next section or entry"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Space", "Enter"]
+          },
+          "help": "Collapse or expand the focused section or entry"
+        }
+      ]
+    },
+    {
+      "heading": "Focusing scripts, costumes, backdrops, sounds, sprites",
+      "forProgramKind": "per-method",
+      "entries": [
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Up", "Left"]
+          },
+          "help": "Focus the previous script, costume, etc."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Down", "Right"]
+          },
+          "help": "Focus the next script, costume, etc."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Enter", "Space"]
+          },
+          "help": "Activate the focused sprite; focus the actual code of the focused script; do nothing for costumes, backdrops, sounds"
+        }
+      ]
+    },
+    {
+      "heading": "Focusing images and sounds",
+      "forProgramKind": "flat",
+      "entries": [
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Up", "Left"]
+          },
+          "help": "Focus the previous image or sound"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Down", "Right"]
+          },
+          "help": "Focus the next image or sound"
+        },
+        {
+          "kind": "text",
+          "markdown": "See also the help on **Menus**."
+        }
+      ]
+    },
+    {
+      "heading": "Working with scripts, costumes, backdrops, sounds",
+      "forProgramKind": "per-method",
+      "entries": [
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": [
+              { "kind": "chord", "keys": ["Alt", "Up"] },
+              { "kind": "chord", "keys": ["Alt", "Left"] }
+            ]
+          },
+          "help": "Move the focused script, costume, etc., one place earlier"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": [
+              { "kind": "chord", "keys": ["Alt", "Down"] },
+              { "kind": "chord", "keys": ["Alt", "Right"] }
+            ]
+          },
+          "help": "Move the focused script, costume, etc., one place later"
+        },
+        {
+          "kind": "item",
+          "key": "Delete",
+          "help": "Delete (after confirming) the focused backdrop, costume, or sound"
+        },
+        {
+          "kind": "text",
+          "markdown": "See also the help on **Menus**."
+        }
+      ]
+    },
+    {
+      "heading": "Working with scripts",
+      "forProgramKind": "per-method",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "You can focus the whole script, which lets you do things like move it, delete it, or change its hat block.  To edit a script's code, you first focus the code itself.  While editing code, the `Tab` key is used by the editor to change indentation.  To escape the \"tab trap\" and return focus to the whole script, use the `Escape` key."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Enter", "Space"]
+          },
+          "help": "Focus the actual code of the focused script so you can edit its code"
+        },
+        {
+          "kind": "item",
+          "key": "Escape",
+          "help": "Focus the whole script, not its code, so you can work with the whole script"
+        },
+        {
+          "kind": "text",
+          "markdown": "See also the help on **Menus**."
+        }
+      ]
+    },
+    {
+      "heading": "Working with scripts",
+      "forProgramKind": "flat",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "You can focus the whole coding area as part of tabbing around the IDE.  To edit your code, you first focus the code itself.  While editing code, the `Tab` key is used by the editor to change indentation.  To escape the \"tab trap\" and return focus to the whole coding area, use the `Escape` key."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Enter", "Space"]
+          },
+          "help": "Focus the actual code of your project so you can edit the code"
+        },
+        {
+          "kind": "item",
+          "key": "Escape",
+          "help": "Focus the coding area, not the code, so you can go back to navigating the IDE with the keyboard"
+        }
+      ]
+    },
+    {
+      "heading": "Editing Python code",
+      "entries": [
+        {
+          "kind": "item",
+          "key": { "kind": "chord", "keys": ["Ctrl", "Space"] },
+          "help": "Show autocomplete suggestions after `self.` or `pytch.`"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "respective",
+            "keys": ["Tab", { "kind": "chord", "keys": ["Shift", "Tab"] }]
+          },
+          "help": "Increase / decrease the indentation of current line or selected lines"
+        }
+      ]
+    },
+    {
+      "heading": "Tutorial chapter buttons",
+      "entries": [
+        {
+          "kind": "text",
+          "markdown": "If you are following a tutorial, there is a navigation area which shows \"buttons\" for the chapters.  For space reasons, sometimes not all chapter buttons are shown, but as you navigate, more are revealed."
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Up", "Left"]
+          },
+          "help": "Focus the previous chapter button"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Down", "Right"]
+          },
+          "help": "Focus the next chapter button"
+        },
+        {
+          "kind": "item",
+          "key": {
+            "kind": "alternatives",
+            "keys": ["Space", "Enter"]
+          },
+          "help": "Switch to and focus the chapter for the focused button"
+        }
+      ]
+    }
+  ]
+}
