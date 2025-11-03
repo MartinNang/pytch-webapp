@@ -4,8 +4,10 @@ import { assertNever } from "../../utils";
 import { Row, Col } from "react-bootstrap";
 import {
   KeyDescriptor,
+  Section,
   SectionEntry,
 } from "../../model/keyboard-shortcuts-help";
+import { useDevWorkContext } from "../../model/help-sidebar";
 
 function joinedList(
   keyDescrs: Array<KeyDescriptor>,
@@ -96,3 +98,22 @@ const SectionEntriesContent: React.FC<{
   entries: Array<SectionEntry>;
 }> = ({ entries }) =>
   entries.map((entry, idx) => <SectionEntryContent key={idx} entry={entry} />);
+
+const SectionContent: React.FC<{ section: Section }> = ({ section }) => {
+  const workContext = useDevWorkContext();
+
+  const entryIsRelevant = (entry: SectionEntry) =>
+    entry.forProgramKind == null ||
+    entry.forProgramKind === workContext.programKind;
+
+  const relevantEntries = section.entries.filter(entryIsRelevant);
+
+  return (
+    <div className="SectionContent mb-3">
+      <Row className="section-heading">
+        <h2>{section.heading}</h2>
+      </Row>
+      <SectionEntriesContent entries={relevantEntries} />
+    </div>
+  );
+};
