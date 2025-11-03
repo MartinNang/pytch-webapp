@@ -91,3 +91,8 @@ const SectionEntryContent: React.FC<{ entry: SectionEntry }> = ({ entry }) => {
       return assertNever(entry);
   }
 };
+
+const SectionEntriesContent: React.FC<{
+  entries: Array<SectionEntry>;
+}> = ({ entries }) =>
+  entries.map((entry, idx) => <SectionEntryContent key={idx} entry={entry} />);
