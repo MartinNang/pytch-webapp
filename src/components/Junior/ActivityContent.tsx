@@ -22,6 +22,8 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
             <HelpSidebar />
           </>
         );
+      case "keynavhelp":
+        return <div>TODO</div>;
       case "lesson":
       case "specimen":
         // This is a bit of a fudge.  We treat these both as "lesson"
