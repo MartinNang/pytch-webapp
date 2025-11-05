@@ -287,7 +287,7 @@ context("Create project from specimen", () => {
 
     // Create and open new project from specimen.
     cy.visit(kFlatLessonUrl);
-    cy.get(".activity-bar-tabs > *").should("have.length", 2);
+    cy.get(".activity-bar-tabs > *").should("have.length", 3);
     cy.get(".activity-content-expanded-specimen .specimen-name").contains(
       "Hello World Specimen"
     );
@@ -298,7 +298,7 @@ context("Create project from specimen", () => {
     cy.contains("My projects").click();
     cy.pytchOpenProject("Test seed project");
     cy.get(".activity-content-expanded-helpsidebar");
-    cy.get(".activity-bar-tabs > *").should("have.length", 1);
+    cy.get(".activity-bar-tabs > *").should("have.length", 2);
   });
 
   it("shows linked-content activity pane (per-method)", () => {
