@@ -254,9 +254,16 @@ context("Kbd-nav between lists-of-things", () => {
 
     realPress(kShiftTab);
     assertFocus("activity-tab", "helpsidebar");
+    realPress("ArrowDown", 2);
+    assertFocus("activity-tab", "keynavhelp");
 
     realPress("Tab");
     assertFocus("help-sidebar", [3]);
+
+    realPress(kShiftTab);
+    assertFocus("activity-tab", "keynavhelp");
+    realPress("Tab");
+
     realPress("Enter");
     realPress("ArrowDown");
     realPress("ArrowDown");
@@ -264,7 +271,7 @@ context("Kbd-nav between lists-of-things", () => {
     assertFocus("help-sidebar", [3, 2]);
 
     realPress(kShiftTab);
-    assertFocus("activity-tab", "helpsidebar");
+    assertFocus("activity-tab", "keynavhelp");
 
     realPress("Tab");
     assertFocus("help-sidebar", [3, 2]);
