@@ -1,6 +1,6 @@
 import React, { CSSProperties, MouseEventHandler } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nSelectedItemsInGallery } from "../../model/clipart-gallery";
@@ -314,9 +314,14 @@ export const AddClipArtModal = () => {
         const nSelected = nSelectedItemsInGallery(galleryState, selectedIds);
         const noneSelected = nSelected === 0;
 
-        const buttonContent = noneSelected
-          ? "Add to project"
-          : `Add ${nSelected} to project`;
+        const buttonContent =
+          activeState.kind === "attempting" ? (
+            <Spinner size="sm" />
+          ) : noneSelected ? (
+            <span>Add to project</span>
+          ) : (
+            <span>Add {nSelected} to project</span>
+          );
 
         const selectionProps: SelectionProps = {
           selectedIds,
