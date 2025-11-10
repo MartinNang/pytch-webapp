@@ -348,6 +348,7 @@ export const AddClipArtModal = () => {
                   Cancel
                 </Button>
                 <Button
+                  className="maybe-submit"
                   disabled={!isSubmittable}
                   variant="primary"
                   onClick={settle.submit}
