@@ -314,7 +314,7 @@ export const AddClipArtModal = () => {
         const nSelected = nSelectedItemsInGallery(galleryState, selectedIds);
         const noneSelected = nSelected === 0;
 
-        const addLabel = noneSelected
+        const buttonContent = noneSelected
           ? "Add to project"
           : `Add ${nSelected} to project`;
 
@@ -347,7 +347,7 @@ export const AddClipArtModal = () => {
                   variant="primary"
                   onClick={settle.submit}
                 >
-                  {addLabel}
+                  {buttonContent}
                 </Button>
               </div>
             </Modal.Footer>
