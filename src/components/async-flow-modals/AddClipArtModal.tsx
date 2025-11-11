@@ -223,8 +223,6 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
 
   return (
     <>
-      <ClipArtTagButtonCollection {...{ gallery, selectedTags, onTagClick }} />
-      <div className="modal-separator" />
       <FocusGroupContainer
         groupedFocusKey={groupedFocusKey}
         className="clipart-gallery"
