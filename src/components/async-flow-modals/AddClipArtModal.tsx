@@ -65,60 +65,6 @@ const ClipArtTagButton: React.FC<ClipArtTagButtonProps> = ({
   );
 };
 
-type ClipArtTagButtonCollectionProps = {
-  gallery: ClipArtGalleryData;
-  selectedTags: Array<string>;
-  onTagClick: OnTagClickFun;
-};
-const ClipArtTagButtonCollection: React.FC<ClipArtTagButtonCollectionProps> = ({
-  gallery,
-  selectedTags,
-  onTagClick,
-}) => {
-  const focusCtx = useFocusContext();
-  const allIsSelected = selectedTags.length === 0;
-
-  type MouseEventHandlerFun = (tag: string) => MouseEventHandler<HTMLElement>;
-  const clickFun: MouseEventHandlerFun = (tag: string) => (event) => {
-    onTagClick({ tag, isMultiSelect: event.ctrlKey });
-    focusCtx.onGroupItemClick(event);
-  };
-
-  const onActivate = (elt: HTMLElement) => {
-    const tag = elt.dataset.mediaLibTag;
-    if (tag == null) {
-      console.warn("no media-lib-tag data attr");
-      return;
-    }
-    onTagClick({ tag, isMultiSelect: false });
-  };
-
-  return (
-    <FocusGroupContainer groupedFocusKey="MediaLibTags" opts={{ onActivate }}>
-      <ul className="ClipArtTagButtonCollection">
-        <li key="--all--">
-          <ClipArtTagButton
-            label="All"
-            isSelected={allIsSelected}
-            onClick={clickFun("--all--")}
-            tag={"--all--"}
-          />
-        </li>
-        {gallery.tags.map((tag) => (
-          <li key={tag}>
-            <ClipArtTagButton
-              label={tag}
-              isSelected={selectedTags.indexOf(tag) !== -1}
-              onClick={clickFun(tag)}
-              tag={tag}
-            />
-          </li>
-        ))}
-      </ul>
-    </FocusGroupContainer>
-  );
-};
-
 type ClipArtCardProps = {
   galleryEntry: ClipArtGalleryEntry;
   isSelected: boolean;
