@@ -20,10 +20,7 @@ import {
 import { OnTagClickFun } from "../../model/user-interactions/clipart-gallery-select";
 import { useFlowActions, useFlowState } from "../../model";
 import { FocusGroupContainer } from "../FocusGroupContainer";
-import {
-  focusGroupItemClass,
-  kFocusGroupItemClassName,
-} from "../../model/junior/grouped-focus";
+import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 import { FileProcessingFailures } from "../FileProcessingFailures";
@@ -37,32 +34,6 @@ const styleClampingToSize = (width: number, height: number): CSSProperties => {
   if (height >= width && height > kMaxImageWidthOrHeight)
     return { height: kMaxImageWidthOrHeight };
   return {};
-};
-
-type ClipArtTagButtonProps = {
-  label: string;
-  tag: string;
-  isSelected: boolean;
-  onClick: MouseEventHandler;
-};
-const ClipArtTagButton: React.FC<ClipArtTagButtonProps> = ({
-  label,
-  tag,
-  isSelected,
-  onClick,
-}) => {
-  const baseVariant = label === "All" ? "success" : "primary";
-  const variantPrefix = isSelected ? "" : "outline-";
-  const variant = `${variantPrefix}${baseVariant}`;
-  return (
-    <Button
-      className={kFocusGroupItemClassName}
-      {...{ variant, onClick }}
-      data-media-lib-tag={tag}
-    >
-      {label}
-    </Button>
-  );
 };
 
 type ClipArtCardProps = {
