@@ -12,6 +12,7 @@ import {
 } from "./Junior/AddSomethingButton";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { kFocusGroupFallbackClassName } from "../model/junior/grouped-focus";
+import { useMediaLibFilterTag } from "./hooks/tracked-tutorial";
 
 type AssetCardProps = {
   asset: AssetPresentation;
@@ -38,6 +39,7 @@ export const ProjectAssetList = () => {
     (state) => state.activeProject.syncState.loadState
   );
   const assets = useStoreState((state) => state.activeProject.project.assets);
+  const filterTag = useMediaLibFilterTag();
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
   const operationContextKey = "flat/any" as const;
@@ -47,7 +49,12 @@ export const ProjectAssetList = () => {
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
 
   const launchClipArtModal = () =>
-    runAddClipArt({ projectId, operationContextKey, assetNamePrefix: "" });
+    runAddClipArt({
+      projectId,
+      operationContextKey,
+      assetNamePrefix: "",
+      filterTag,
+    });
 
   switch (loadState) {
     case "pending":
