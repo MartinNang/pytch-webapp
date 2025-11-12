@@ -1,6 +1,11 @@
-import React, { CSSProperties, MouseEventHandler } from "react";
+import React, {
+  ChangeEventHandler,
+  CSSProperties,
+  KeyboardEventHandler,
+  MouseEventHandler,
+} from "react";
 import Modal from "react-bootstrap/Modal";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { Actions } from "easy-peasy";
 import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -93,6 +98,66 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
       </p>
       <p className="clipart-name">{galleryEntry.name}</p>
     </div>
+  );
+};
+
+type MaybeTagFilterSwitchProps = Pick<
+  AddClipArtRunState,
+  "filterTag" | "filterActive"
+>;
+const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
+  filterTag,
+  filterActive,
+}) => {
+  const setFilterActive = useFlowActions(
+    (f) => f.addClipArtFlow.setFilterActive
+  );
+
+  if (filterTag == null) {
+    return <div />;
+  }
+
+  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    // UI says "show all?", so set "filter active" to opposite.
+    setFilterActive(!evt.target.checked);
+  };
+
+  const onKeyDown: KeyboardEventHandler = (evt) => {
+    // Do not perform action if we've received the event from a child.
+    if (evt.target !== evt.currentTarget) return;
+
+    if (evt.key === " " || evt.key === "Enter") {
+      // Toggle:
+      setFilterActive(!filterActive);
+    }
+  };
+
+  const labelContent = (
+    <span className="current-state-label">
+      <span className="when-true">Showing all images</span>
+      <span className="when-false">
+        Showing just images recommended for this tutorial
+      </span>
+    </span>
+  );
+
+  const showAll = !filterActive;
+
+  return (
+    <Form className="all-vs-tutorial-switch">
+      <Form.Label tabIndex={0} onKeyDown={onKeyDown} className="p-2">
+        <span className="pe-5 fw-bold">Show all images?</span>
+        <Form.Check
+          label={labelContent}
+          checked={showAll}
+          aria-checked={showAll}
+          onChange={onSwitchChange}
+          tabIndex={-1}
+          type="switch"
+          id="custom-switch"
+        />
+      </Form.Label>
+    </Form>
   );
 };
 
