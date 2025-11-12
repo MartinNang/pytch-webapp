@@ -16,7 +16,6 @@ import {
   isInteractable,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
-import { OnTagClickFun } from "../../model/user-interactions/clipart-gallery-select";
 import { useFlowActions, useFlowState } from "../../model";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
@@ -95,7 +94,6 @@ type SelectionProps = {
   selectedIds: Array<ClipArtGalleryEntryId>;
   selectItemById: (id: ClipArtGalleryEntryId) => void;
   deselectItemById: (id: ClipArtGalleryEntryId) => void;
-  onTagClick: OnTagClickFun;
 };
 
 type ClipArtGalleryPanelReadyProps = {
@@ -107,7 +105,6 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   selectedIds,
   selectItemById,
   deselectItemById,
-  onTagClick,
 }) => {
   const selectedIdsSet = new Set(selectedIds);
 
@@ -185,7 +182,7 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 
 export const AddClipArtModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.addClipArtFlow);
-  const { selectItemById, deselectItemById, onTagClick } = useFlowActions(
+  const { selectItemById, deselectItemById } = useFlowActions(
     (f) => f.addClipArtFlow
   );
 
@@ -237,7 +234,6 @@ export const AddClipArtModal = () => {
           selectedIds,
           selectItemById,
           deselectItemById,
-          onTagClick,
         };
 
         return (
