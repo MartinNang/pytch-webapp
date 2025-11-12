@@ -44,13 +44,6 @@ type AddClipArtBase = AsyncUserFlowSlice<
   AddAssetsOutcomeNub
 >;
 
-type OnTagClickArgs = {
-  tag: string;
-  isMultiSelect: boolean;
-};
-
-export type OnTagClickFun = (args: OnTagClickArgs) => void;
-
 type SAction<ArgT> = Action<AddClipArtBase, ArgT>;
 
 type AddClipArtActions = {
