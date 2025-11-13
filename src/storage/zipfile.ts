@@ -419,7 +419,7 @@ export const zipfileDataFromProject = async (
   // TODO: Include project summary?
   // TODO: Preserve info on whether tracking tutorial?
   const projectName = project.name;
-  const metaData = { projectName };
+  const metaData = { projectName, linkedContentRef: project.linkedContentRef };
   zipFile.file("meta.json", JSON.stringify(metaData));
 
   zipFile.file("code/code.json", JSON.stringify(project.program));
