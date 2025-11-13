@@ -349,6 +349,8 @@ const parseZipfile_V2_V3 = async (
   if (typeof projectName !== "string")
     throw new Error("project name is not a string");
 
+  const linkedContentRef = linkedContentRefFromMetadata(projectMetadata);
+
   const assetMetadataPath = "assets/metadata.json";
   const assetMetadata = await _jsonOrFail(zip, assetMetadataPath, bareError);
   if (!_isAssetTransformRecordArray(assetMetadata))
@@ -384,7 +386,7 @@ const parseZipfile_V2_V3 = async (
   const summary =
     zipName == null ? undefined : `Created from zipfile "${zipName}"`;
 
-  return { name: projectName, summary, program, assets };
+  return { name: projectName, summary, program, assets, linkedContentRef };
 };
 
 export const projectDescriptor = async (
