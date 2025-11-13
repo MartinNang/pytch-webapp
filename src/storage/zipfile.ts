@@ -330,6 +330,36 @@ function linkedContentRefFromMetadata(
   }
 }
 
+// Does not work for "tracked tutorial" projects, which are those
+// following a flat tutorial.  Once we move the flat tracked tutorial
+// mechanism into the linked content mechanism, this should be a fairly
+// easy fix.
+export function projectSummary(
+  zipName: string | undefined,
+  linkedContentRef: LinkedContentRef
+): string | undefined {
+  const zipFragments =
+    zipName === undefined ? [] : [`Created from zipfile "${zipName}".`];
+
+  const linkFragments = (() => {
+    switch (linkedContentRef.kind) {
+      case "none":
+        return [];
+      case "jr-tutorial":
+        return [`Following the tutorial "${linkedContentRef.name}".`];
+      case "specimen":
+        // TODO: Would be nice to tell them which one.
+        return [`Following a lesson.`];
+      default:
+        return assertNever(linkedContentRef);
+    }
+  })();
+
+  const allFragments = zipFragments.concat(linkFragments);
+
+  return allFragments.length === 0 ? undefined : allFragments.join(" ");
+}
+
 const parseZipfile_V2_V3 = async (
   zip: JSZip,
   programPath: string,
