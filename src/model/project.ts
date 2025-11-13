@@ -5,6 +5,7 @@ import {
   LinkedContentRef,
   kLinkedContentRefNone,
   LinkedContentRefUpdate,
+  LinkedContentRefOfKind,
 } from "./linked-content-core";
 import {
   LinkedContent,
@@ -232,6 +233,19 @@ type HandlerDuplicationAugArgs = {
   descriptor: HandlerDuplicationDescriptor;
   handleHandlerId(uuid: Uuid): void;
 };
+
+function assertLinkedContentRefOfKind<KindT extends LinkedContentKind>(
+  linkedContentRef: LinkedContentRef,
+  requiredContentKind: KindT
+): asserts linkedContentRef is LinkedContentRefOfKind<KindT> {
+  const contentKind = linkedContentRef.kind;
+  if (contentKind !== requiredContentKind) {
+    throw new Error(
+      `required linked-content-kind "${requiredContentKind}"` +
+        ` but have kind "${contentKind}"`
+    );
+  }
+}
 
 function assertLinkedContentSucceededOfKind<KindT extends LinkedContentKind>(
   loadingState: LinkedContentLoadingState,
