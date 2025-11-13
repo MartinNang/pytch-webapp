@@ -371,7 +371,17 @@ const parseZipfile_V2_V3 = async (
     ? PytchProgramOps.fromPythonCode(codeTextOrJson)
     : PytchProgramOps.fromJson(codeTextOrJson);
 
-  const projectMetadata = await _jsonOrFail(zip, "meta.json", bareError);
+  const rawProjectMetadata = await _jsonOrFail(zip, "meta.json", bareError);
+  console.log(rawProjectMetadata, typeof rawProjectMetadata);
+  if (
+    typeof rawProjectMetadata !== "object" ||
+    rawProjectMetadata == null ||
+    Array.isArray(rawProjectMetadata)
+  )
+    throw new Error("project metadata must be non-null object");
+
+  const projectMetadata = rawProjectMetadata as Record<string, unknown>;
+
   const projectName = failIfNull(
     projectMetadata.projectName,
     "could not find project name in metadata"
