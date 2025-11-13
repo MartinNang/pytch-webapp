@@ -413,8 +413,7 @@ const parseZipfile_V2_V3 = async (
       transformFromName.get(a.name) ?? AssetTransformOps.newNoop(a.mimeType),
   }));
 
-  const summary =
-    zipName == null ? undefined : `Created from zipfile "${zipName}"`;
+  const summary = projectSummary(zipName, linkedContentRef);
 
   return { name: projectName, summary, program, assets, linkedContentRef };
 };
