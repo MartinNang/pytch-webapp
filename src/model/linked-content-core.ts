@@ -10,10 +10,11 @@ const zLinkedNoContentRef = z.object({
 });
 export type LinkedNoContentRef = z.infer<typeof zLinkedNoContentRef>;
 
-export type LinkedSpecimenRef = {
-  kind: "specimen";
-  specimenContentHash: SpecimenContentHash;
-};
+const zLinkedSpecimenRef = z.object({
+  kind: z.literal("specimen"),
+  specimenContentHash: z.string(),
+});
+export type LinkedSpecimenRef = z.infer<typeof zLinkedSpecimenRef>;
 
 export type LinkedContentRef =
   | LinkedNoContentRef
