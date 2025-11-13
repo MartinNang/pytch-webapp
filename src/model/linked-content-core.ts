@@ -1,5 +1,5 @@
 import { assertNever } from "../utils";
-import { LinkedJrTutorialRef } from "./junior/jr-tutorial";
+import { zLinkedJrTutorialRef } from "./junior/jr-tutorial";
 import { ProjectId } from "./project-core";
 import * as z from "zod/mini";
 
@@ -16,10 +16,13 @@ const zLinkedSpecimenRef = z.object({
 });
 export type LinkedSpecimenRef = z.infer<typeof zLinkedSpecimenRef>;
 
-export type LinkedContentRef =
-  | LinkedNoContentRef
-  | LinkedJrTutorialRef
-  | LinkedSpecimenRef;
+export const zLinkedContentRef = z.union([
+  zLinkedNoContentRef,
+  zLinkedJrTutorialRef,
+  zLinkedSpecimenRef,
+]);
+
+export type LinkedContentRef = z.infer<typeof zLinkedContentRef>;
 
 export const kLinkedContentRefNone: LinkedContentRef = { kind: "none" };
 
