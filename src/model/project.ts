@@ -775,8 +775,9 @@ export const activeProject: IActiveProject = {
   }),
 
   _increaseNTasksDone: action((state, dNTasks) => {
-    const content = ensureJrTutorial(state);
+    const { content, ref } = ensureJrTutorial(state);
     content.interactionState.nTasksDone += dNTasks;
+    ref.interactionState.nTasksDone += dNTasks;
   }),
   markCurrentTaskDone: thunk((actions) => {
     actions._increaseNTasksDone(1);
