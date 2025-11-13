@@ -441,6 +441,7 @@ export const projectDescriptor = async (
       case 2:
         return await parseZipfile_V2_V3(zip, "code/code.py", zipName);
       case 3:
+      case 4:
         return await parseZipfile_V2_V3(zip, "code/code.json", zipName);
       default:
         throw new Error(`unhandled Pytch zipfile version ${versionNumber}`);
@@ -457,7 +458,7 @@ export const projectDescriptorFromURL = async (
   return projectDescriptor(undefined, data);
 };
 
-const pytchZipfileVersion = 3;
+const pytchZipfileVersion = 4;
 export const zipfileDataFromProject = async (
   project: StoredProjectContent
 ): Promise<Uint8Array> => {
