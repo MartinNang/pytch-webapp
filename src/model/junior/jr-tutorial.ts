@@ -143,11 +143,12 @@ export type JrTutorialEphemeralInteractionState = {
 export type JrTutorialInteractionState = JrTutorialPersistentInteractionState &
   JrTutorialEphemeralInteractionState;
 
-export type LinkedJrTutorialRef = {
-  kind: "jr-tutorial";
-  name: string;
-  interactionState: JrTutorialPersistentInteractionState;
-};
+export const zLinkedJrTutorialRef = z.object({
+  kind: z.literal("jr-tutorial"),
+  name: z.string(),
+  interactionState: zJrTutorialPersistentInteractionState,
+});
+export type LinkedJrTutorialRef = z.infer<typeof zLinkedJrTutorialRef>;
 
 export type LinkedJrTutorial = {
   kind: "jr-tutorial";
