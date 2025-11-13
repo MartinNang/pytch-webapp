@@ -24,6 +24,11 @@ export const zLinkedContentRef = z.union([
 
 export type LinkedContentRef = z.infer<typeof zLinkedContentRef>;
 
+type LinkedContentRefKind = LinkedContentRef["kind"];
+
+export type LinkedContentRefOfKind<KindT extends LinkedContentRefKind> =
+  LinkedContentRef & { kind: KindT };
+
 export const kLinkedContentRefNone: LinkedContentRef = { kind: "none" };
 
 export type LinkedContentRefUpdate = {
