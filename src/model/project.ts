@@ -83,6 +83,7 @@ import {
 import {
   JrTutorialContent,
   LinkedJrTutorial,
+  LinkedJrTutorialRef,
   dereferenceLinkedJrTutorial,
   jrTutorialContentFromHTML,
   makeLinkedJrTutorialRef,
@@ -442,6 +443,11 @@ const handlerInContextById = (
 ): HandlerInActorContext => {
   const program = ensureStructured(project, "handlerInContext()");
   return StructuredProgramOps.handlerInContextById(program, handlerId);
+};
+
+type JrTutorialContentAndRef = {
+  content: LinkedJrTutorial;
+  ref: LinkedJrTutorialRef;
 };
 
 const ensureJrTutorial = (state: State<IActiveProject>): LinkedJrTutorial => {
