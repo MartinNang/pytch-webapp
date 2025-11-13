@@ -2,7 +2,7 @@ import { assert } from "chai";
 import {
   ClipArtGalleryEntry,
   ClipArtGalleryItem,
-  entryMatchesTags,
+  entryMatchesTag,
   nSelectedItemsInEntries,
   unionAllTags,
   selectedEntries,
@@ -70,25 +70,22 @@ describe("Clip art gallery", () => {
     });
   });
 
-  describe("entryMatchesTags", () => {
-    const emptyTagSet = new Set<string>();
-    it("empty tag-set", () => {
-      assert.isTrue(entries.every((e) => entryMatchesTags(e, emptyTagSet)));
+  describe("entryMatchesTag", () => {
+    it("no filter tag", () => {
+      assert.isTrue(entries.every((e) => entryMatchesTag(e, null)));
     });
 
-    const mkTags = (...tags: Array<string>) => new Set<string>(tags);
-
-    it("singleton group, selective tag-set", () => {
-      assert.isTrue(entryMatchesTags(entries[0], mkTags("fruit")));
-      assert.isTrue(entryMatchesTags(entries[0], mkTags("yellow")));
-      assert.isFalse(entryMatchesTags(entries[0], mkTags("orange")));
+    it("singleton group, filter tag", () => {
+      assert.isTrue(entryMatchesTag(entries[0], "fruit"));
+      assert.isTrue(entryMatchesTag(entries[0], "yellow"));
+      assert.isFalse(entryMatchesTag(entries[0], "orange"));
     });
 
-    it("proper group, selective tag-set", () => {
-      assert.isTrue(entryMatchesTags(farmEntry, mkTags("farm", "fruit")));
-      assert.isTrue(entryMatchesTags(farmEntry, mkTags("animal")));
-      assert.isFalse(entryMatchesTags(farmEntry, mkTags("yellow")));
-      assert.isFalse(entryMatchesTags(farmEntry, mkTags("fruit")));
+    it("proper group, filter tag", () => {
+      assert.isTrue(entryMatchesTag(farmEntry, "farm"));
+      assert.isTrue(entryMatchesTag(farmEntry, "animal"));
+      assert.isFalse(entryMatchesTag(farmEntry, "yellow"));
+      assert.isFalse(entryMatchesTag(farmEntry, "fruit"));
     });
   });
 
