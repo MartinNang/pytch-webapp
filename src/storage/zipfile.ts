@@ -241,7 +241,13 @@ const parseZipfile_V1 = async (
   const summary =
     zipName == null ? undefined : `Created from zipfile "${zipName}"`;
 
-  return { name: projectName, summary, program, assets };
+  return {
+    name: projectName,
+    summary,
+    program,
+    assets,
+    linkedContentRef: kLinkedContentRefNone,
+  };
 };
 
 /** Verify that the subdirectory "assets/files", as represented by the
