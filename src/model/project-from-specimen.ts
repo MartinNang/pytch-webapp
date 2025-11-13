@@ -13,6 +13,7 @@ import {
   LessonDescriptor,
   lessonDescriptorFromRelativePath,
 } from "./linked-content";
+import { projectSummary } from "../storage/zipfile";
 import { LinkedContentRef } from "./linked-content-core";
 
 export type StartAfreshOption =
@@ -170,7 +171,7 @@ export let projectFromSpecimenFlow: ProjectFromSpecimenFlow = {
     };
 
     const creationOptions: CreateProjectOptions = {
-      summary: lesson.project.summary,
+      summary: projectSummary(undefined, linkedContentRef),
       program: lesson.project.program,
       assets: lesson.project.assets,
       linkedContentRef,
