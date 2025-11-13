@@ -31,10 +31,10 @@ type AddClipArtRunArgs = {
   filterTag: string | null;
 };
 
-type AddClipArtRunState = {
+export type AddClipArtRunState = {
+  projectId: ProjectId;
   operationContext: AssetOperationContext;
   assetNamePrefix: string;
-  projectId: ProjectId;
   filterTag: string | null;
   filterActive: boolean;
   selectedIds: Array<ClipArtGalleryEntryId>;
