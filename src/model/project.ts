@@ -450,10 +450,17 @@ type JrTutorialContentAndRef = {
   ref: LinkedJrTutorialRef;
 };
 
-const ensureJrTutorial = (state: State<IActiveProject>): LinkedJrTutorial => {
+const ensureJrTutorial = (
+  state: State<IActiveProject>
+): JrTutorialContentAndRef => {
   const contentState = state.linkedContentLoadingState;
   assertLinkedContentSucceededOfKind(contentState, "jr-tutorial");
-  return contentState.content;
+  const content = contentState.content;
+
+  const ref = state.project.linkedContentRef;
+  assertLinkedContentRefOfKind(ref, "jr-tutorial");
+
+  return { content, ref };
 };
 
 /** Create a thunk which performs a specified action and then calls
