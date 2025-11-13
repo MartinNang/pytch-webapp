@@ -150,6 +150,7 @@ export type StandaloneProjectDescriptor = {
   summary?: string;
   program: PytchProgram;
   assets: Array<TransformedAssetDescriptor>;
+  linkedContentRef: LinkedContentRef;
 };
 
 // TODO: Not sure this is the best place for this:
