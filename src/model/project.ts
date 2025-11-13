@@ -759,8 +759,11 @@ export const activeProject: IActiveProject = {
   }),
 
   _setLinkedLessonChapterIndex: action((state, chapterIndex) => {
-    const content = ensureJrTutorial(state);
+    const { content, ref } = ensureJrTutorial(state);
+
     content.interactionState.chapterIndex = chapterIndex;
+    ref.interactionState.chapterIndex = chapterIndex;
+
     // Hide all help stages in all tasks (of all chapters).
     content.interactionState.taskStates.forEach((taskState) => {
       taskState.nHelpStagesShown = 0;
