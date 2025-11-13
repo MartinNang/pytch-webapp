@@ -14,6 +14,11 @@ import {
   PytchProgramKind,
   PytchProgramOps,
 } from "../model/pytch-program";
+import {
+  kLinkedContentRefNone,
+  LinkedContentRef,
+  zLinkedContentRef,
+} from "../model/linked-content-core";
 
 // This is the same as IAddAssetDescriptor; any way to avoid this
 // duplication?
@@ -301,6 +306,22 @@ const validateAssetsLayout = (
       assertNever(programKind);
   }
 };
+
+function linkedContentRefFromMetadata(
+  metadata: Record<string, unknown>
+): LinkedContentRef {
+  if (!Object.hasOwn(metadata, "linkedContentRef")) {
+    return kLinkedContentRefNone;
+  }
+
+  const parse = zLinkedContentRef.safeParse(metadata.linkedContentRef);
+  if (parse.success) {
+    return parse.data;
+  } else {
+    console.warn("Bad linkedContentRef data:", JSON.stringify(parse.error));
+    throw new Error("invalid linkedContentRef data in project metadata");
+  }
+}
 
 const parseZipfile_V2_V3 = async (
   zip: JSZip,
