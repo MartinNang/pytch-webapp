@@ -121,10 +121,11 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   const selectedIdsSet = new Set(selectedIds);
 
   // For an initial implementation, bookmark position in the list
-  // separately depending what tags are selected.  A better alternative
-  // might be to remember a "target" entry and move the bookmark to the
-  // entry closest to it when selectedTags changes, but that's quite a
-  // lot of work for a gain in usability which is not obviously large.
+  // separately depending on whether a tag filter is active.  A better
+  // alternative might be to remember a "target" entry and move the
+  // bookmark to the entry closest to it when filterActive changes, but
+  // that's quite a lot of work for a gain in usability which is not
+  // obviously large.
   const tagLabel = filterActive ? filterTag ?? "__all__" : "__all__";
   const groupedFocusKey = `MediaLibEntries-${tagLabel}`;
 
