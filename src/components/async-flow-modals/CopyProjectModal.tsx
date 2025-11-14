@@ -1,4 +1,9 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  useEffect,
+} from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -10,6 +15,7 @@ import {
 } from "../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
+import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
 
 type TextsForKeepLink = {
@@ -60,6 +66,56 @@ function textsForKeepLink(ref: LinkedContentRef): TextsForKeepLink {
   }
 }
 
+const MaybeKeepContentLinkSwitch: React.FC<{
+  runState: SaveProjectAsRunState;
+}> = ({ runState }) => {
+  const setKeepLink = useFlowActions(
+    (f) => f.saveProjectAsFlow.setCopyKeepsContentLink
+  );
+
+  if (runState.sourceLinkedContentRef.kind === "none") {
+    return false;
+  }
+
+  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    setKeepLink(evt.target.checked);
+  };
+
+  const onKeyDown: KeyboardEventHandler = (evt) => {
+    // Do not perform action if we've received the event from a child.
+    if (evt.target !== evt.currentTarget) return;
+
+    if (evt.key === " " || evt.key === "Enter") {
+      setKeepLink(!runState.copyKeepsContentLink);
+    }
+  };
+
+  const linkTexts = textsForKeepLink(runState.sourceLinkedContentRef);
+
+  const labelContent = (
+    <span className="current-state-label">
+      <span className="when-true">{linkTexts.trueStatus}</span>
+      <span className="when-false">{linkTexts.falseStatus}</span>
+    </span>
+  );
+
+  return (
+    <Form className="keep-content-link-switch">
+      <Form.Label tabIndex={0} onKeyDown={onKeyDown} className="p-2">
+        <span className="pe-5 fw-bold">{linkTexts.question}</span>
+        <Form.Check
+          label={labelContent}
+          checked={runState.copyKeepsContentLink}
+          aria-checked={runState.copyKeepsContentLink}
+          onChange={onSwitchChange}
+          tabIndex={-1}
+          type="switch"
+          id="custom-switch"
+        />
+      </Form.Label>
+    </Form>
+  );
+};
 
 export const CopyProjectModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.saveProjectAsFlow);
