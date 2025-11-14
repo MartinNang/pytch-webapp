@@ -19,6 +19,7 @@ type SaveProjectAsRunArgs = {
 
 type SaveProjectAsRunState = {
   sourceProjectId: ProjectId;
+  sourceLinkedContentRef: LinkedContentRef;
   nameOfCopy: string;
 };
 
@@ -43,6 +44,7 @@ async function prepare(
   await actions.activeProject.requestSyncToStorage();
   return {
     sourceProjectId: args.sourceProjectId,
+    sourceLinkedContentRef: args.sourceLinkedContentRef,
     nameOfCopy: `Copy of ${args.sourceName}`,
   };
 }
