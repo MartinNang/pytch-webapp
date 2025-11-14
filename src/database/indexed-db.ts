@@ -358,7 +358,8 @@ export class DexieStorage extends Dexie {
 
   async copyProject(
     sourceId: ProjectId,
-    destinationName: string
+    destinationName: string,
+    copyKeepsContentLink: boolean
   ): Promise<ProjectId> {
     const tables = [
       this.projectSummaries,
@@ -374,16 +375,18 @@ export class DexieStorage extends Dexie {
       );
       const sourceProjectAssets = await this._assetsOfProject(sourceId);
 
-      // Deliberately do not copy the linkedContent property.  Making a
-      // copy does the job of "detaching" the project from its linked
-      // content.
-      //
-      // TODO: Should we also NOT copy the trackedTutorialRef?
-      //
+      // TODO: Handle tracked tutorial?  Or wait for tracked tutorials
+      // to be brought into the linked-content mechanism, at which point
+      // this should just start working?
+      const linkedContentRef = copyKeepsContentLink
+        ? sourceSummary.linkedContentRef
+        : kLinkedContentRefNone;
+
       const creationOptions = {
         summary: sourceSummary.summary,
         trackedTutorialRef: sourceSummary.trackedTutorialRef,
         program: programRecord.program,
+        linkedContentRef,
       };
       const newProject = await this.createNewProject(
         destinationName,
