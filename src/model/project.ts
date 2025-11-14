@@ -450,10 +450,17 @@ type JrTutorialContentAndRef = {
   ref: LinkedJrTutorialRef;
 };
 
-const ensureJrTutorial = (state: State<IActiveProject>): LinkedJrTutorial => {
+const ensureJrTutorial = (
+  state: State<IActiveProject>
+): JrTutorialContentAndRef => {
   const contentState = state.linkedContentLoadingState;
   assertLinkedContentSucceededOfKind(contentState, "jr-tutorial");
-  return contentState.content;
+  const content = contentState.content;
+
+  const ref = state.project.linkedContentRef;
+  assertLinkedContentRefOfKind(ref, "jr-tutorial");
+
+  return { content, ref };
 };
 
 /** Create a thunk which performs a specified action and then calls
@@ -752,8 +759,11 @@ export const activeProject: IActiveProject = {
   }),
 
   _setLinkedLessonChapterIndex: action((state, chapterIndex) => {
-    const content = ensureJrTutorial(state);
+    const { content, ref } = ensureJrTutorial(state);
+
     content.interactionState.chapterIndex = chapterIndex;
+    ref.interactionState.chapterIndex = chapterIndex;
+
     // Hide all help stages in all tasks (of all chapters).
     content.interactionState.taskStates.forEach((taskState) => {
       taskState.nHelpStagesShown = 0;
@@ -765,8 +775,9 @@ export const activeProject: IActiveProject = {
   }),
 
   _increaseNTasksDone: action((state, dNTasks) => {
-    const content = ensureJrTutorial(state);
+    const { content, ref } = ensureJrTutorial(state);
     content.interactionState.nTasksDone += dNTasks;
+    ref.interactionState.nTasksDone += dNTasks;
   }),
   markCurrentTaskDone: thunk((actions) => {
     actions._increaseNTasksDone(1);
@@ -778,15 +789,15 @@ export const activeProject: IActiveProject = {
   }),
 
   showNextHelpStage: action((state, taskIdx) => {
-    const interactionState = ensureJrTutorial(state).interactionState;
+    const interactionState = ensureJrTutorial(state).content.interactionState;
     interactionState.taskStates[taskIdx].nHelpStagesShown += 1;
   }),
   hideAllHelpStages: action((state, taskIdx) => {
-    const interactionState = ensureJrTutorial(state).interactionState;
+    const interactionState = ensureJrTutorial(state).content.interactionState;
     interactionState.taskStates[taskIdx].nHelpStagesShown = 0;
   }),
   _hideAllCurrentTaskHelpStages: action((state) => {
-    const interactionState = ensureJrTutorial(state).interactionState;
+    const interactionState = ensureJrTutorial(state).content.interactionState;
     // The current task-index is the same as the number of tasks done.
     const taskIdx = interactionState.nTasksDone;
     interactionState.taskStates[taskIdx].nHelpStagesShown = 0;
