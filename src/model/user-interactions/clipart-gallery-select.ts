@@ -56,7 +56,6 @@ type SAction<ArgT> = Action<AddClipArtBase, ArgT>;
 type AddClipArtActions = {
   selectItemById: SAction<ClipArtGalleryEntryId>;
   deselectItemById: SAction<ClipArtGalleryEntryId>;
-  onTagClick: SAction<OnTagClickArgs>;
 };
 
 export type AddClipArtFlow = AddClipArtBase & AddClipArtActions;
@@ -127,22 +126,6 @@ async function attempt(
 
 export let addClipArtFlow: AddClipArtFlow = (() => {
   const specificSlice: AddClipArtActions = {
-    onTagClick: runStateAction((state, { tag, isMultiSelect }) => {
-      if (tag === "--all--") {
-        state.selectedTags = [];
-      } else {
-        if (isMultiSelect) {
-          const mExistingIndex = state.selectedTags.indexOf(tag);
-          if (mExistingIndex === -1) {
-            state.selectedTags.push(tag);
-          } else {
-            state.selectedTags.splice(mExistingIndex, 1);
-          }
-        } else {
-          state.selectedTags = [tag];
-        }
-      }
-    }),
     selectItemById: runStateAction((state, itemId) => {
       if (state.selectedIds.indexOf(itemId) === -1)
         state.selectedIds.push(itemId);
