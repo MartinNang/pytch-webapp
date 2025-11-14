@@ -18,7 +18,10 @@ import {
 } from "../model/asset";
 import { delaySeconds, failIfNull, hexSHA256, PYTCH_CYPRESS } from "../utils";
 import { PytchProgram, PytchProgramOps } from "../model/pytch-program";
-import { AddAssetDescriptorOps } from "../storage/zipfile";
+import {
+  AddAssetDescriptorOps,
+  projectSummary as summaryFromLink,
+} from "../storage/zipfile";
 import {
   SpecimenContentHash,
   LinkedContentRef,
@@ -382,8 +385,14 @@ export class DexieStorage extends Dexie {
         ? sourceSummary.linkedContentRef
         : kLinkedContentRefNone;
 
+      // Summary might be stale if we have detached the link, so
+      // recreate.  This does mean we lose any "created from zipfile
+      // my-cool-project.zip" text but that's better than having an
+      // incorrect "following tutorial shoot-the-fruit" summary.
+      const summary = summaryFromLink(undefined, linkedContentRef);
+
       const creationOptions = {
-        summary: sourceSummary.summary,
+        summary,
         trackedTutorialRef: sourceSummary.trackedTutorialRef,
         program: programRecord.program,
         linkedContentRef,
