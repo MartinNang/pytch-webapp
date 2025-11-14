@@ -3,6 +3,7 @@ import React, {
   ChangeEventHandler,
   KeyboardEventHandler,
   useEffect,
+  useRef,
 } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -120,9 +121,18 @@ const MaybeKeepContentLinkSwitch: React.FC<{
 export const CopyProjectModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.saveProjectAsFlow);
   const { setNameOfCopy } = useFlowActions((f) => f.saveProjectAsFlow);
+  const focusRequired = useRef<boolean>(true);
 
-  const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-  useEffect(flowFocusOrBlurFun(inputRef, fsmState));
+  if (fsmState.kind === "idle") {
+    focusRequired.current = true;
+  }
+
+  const maybeFocusTextInput = (elt: HTMLInputElement | null) => {
+    if (elt != null && focusRequired.current) {
+      setTimeout(() => elt.focus());
+      focusRequired.current = false;
+    }
+  };
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { nameOfCopy } = activeFsmState.runState;
@@ -154,8 +164,7 @@ export const CopyProjectModal = () => {
                 onChange={handleChange}
                 onKeyDown={handleKeyPress}
                 placeholder="Name for copy of project"
-                tabIndex={-1}
-                ref={inputRef}
+                ref={maybeFocusTextInput}
               />
             </Form.Group>
           </Form>
