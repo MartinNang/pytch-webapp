@@ -17,7 +17,7 @@ type SaveProjectAsRunArgs = {
   sourceLinkedContentRef: LinkedContentRef;
 };
 
-type SaveProjectAsRunState = {
+export type SaveProjectAsRunState = {
   sourceProjectId: ProjectId;
   sourceLinkedContentRef: LinkedContentRef;
   copyKeepsContentLink: boolean;
