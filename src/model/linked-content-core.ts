@@ -1,20 +1,28 @@
 import { assertNever } from "../utils";
-import { LinkedJrTutorialRef } from "./junior/jr-tutorial";
+import { zLinkedJrTutorialRef } from "./junior/jr-tutorial";
 import { ProjectId } from "./project-core";
+import * as z from "zod/mini";
 
 export type SpecimenContentHash = string;
 
-export type LinkedNoContentRef = { kind: "none" };
+const zLinkedNoContentRef = z.object({
+  kind: z.literal("none"),
+});
+export type LinkedNoContentRef = z.infer<typeof zLinkedNoContentRef>;
 
-export type LinkedSpecimenRef = {
-  kind: "specimen";
-  specimenContentHash: SpecimenContentHash;
-};
+const zLinkedSpecimenRef = z.object({
+  kind: z.literal("specimen"),
+  specimenContentHash: z.string(),
+});
+export type LinkedSpecimenRef = z.infer<typeof zLinkedSpecimenRef>;
 
-export type LinkedContentRef =
-  | LinkedNoContentRef
-  | LinkedJrTutorialRef
-  | LinkedSpecimenRef;
+export const zLinkedContentRef = z.union([
+  zLinkedNoContentRef,
+  zLinkedJrTutorialRef,
+  zLinkedSpecimenRef,
+]);
+
+export type LinkedContentRef = z.infer<typeof zLinkedContentRef>;
 
 export const kLinkedContentRefNone: LinkedContentRef = { kind: "none" };
 

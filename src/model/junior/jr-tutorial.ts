@@ -6,6 +6,7 @@ import {
 } from "../../utils";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import { EventDescriptor } from "./structured-program";
+import * as z from "zod/mini";
 
 // Use full word "Identifier" so as not to make people think it's a
 // short numeric id, or a Uuid, or anything like that.
@@ -114,12 +115,16 @@ export type JrTutorialContent = {
   nTasksBeforeChapter: Array<number>;
 };
 
+const zJrTutorialPersistentInteractionState = z.object({
+  chapterIndex: z.number(),
+  nTasksDone: z.number(),
+});
+
 /** Aspects of the state of the learner's interaction with the lesson
  * which are persistent in the local IndexedDB. */
-export type JrTutorialPersistentInteractionState = {
-  chapterIndex: number;
-  nTasksDone: number;
-};
+export type JrTutorialPersistentInteractionState = z.infer<
+  typeof zJrTutorialPersistentInteractionState
+>;
 
 /** The state of the learner's interaction with a particular task of the
  * lesson.  There is no slot here for "has the learner marked this task
@@ -138,11 +143,12 @@ export type JrTutorialEphemeralInteractionState = {
 export type JrTutorialInteractionState = JrTutorialPersistentInteractionState &
   JrTutorialEphemeralInteractionState;
 
-export type LinkedJrTutorialRef = {
-  kind: "jr-tutorial";
-  name: string;
-  interactionState: JrTutorialPersistentInteractionState;
-};
+export const zLinkedJrTutorialRef = z.object({
+  kind: z.literal("jr-tutorial"),
+  name: z.string(),
+  interactionState: zJrTutorialPersistentInteractionState,
+});
+export type LinkedJrTutorialRef = z.infer<typeof zLinkedJrTutorialRef>;
 
 export type LinkedJrTutorial = {
   kind: "jr-tutorial";
