@@ -663,6 +663,7 @@ ul.ClipArtTagButtonCollection {
   align-content: center;
 }
 
+.modal.CopyProject .keep-content-link-switch,
 .clipart-header .all-vs-tutorial-switch {
   padding: 0px 1rem;
   justify-self: center;
@@ -698,6 +699,16 @@ ul.ClipArtTagButtonCollection {
     input[aria-checked="false"] + label span.when-false {
       visibility: visible;
     }
+  }
+}
+
+.modal.CopyProject .keep-content-link-switch {
+  label {
+    width: 100%;
+  }
+  .form-switch {
+    margin-top: 0.5rem;
+    display: block;
   }
 }
 
