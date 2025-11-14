@@ -65,6 +65,7 @@ async function attempt(
     actions.projectCollection.requestCopyProjectThenResync({
       sourceProjectId: runState.sourceProjectId,
       nameOfCopy: runState.nameOfCopy,
+      keepContentLink: runState.copyKeepsContentLink,
     })
   );
 
