@@ -2,7 +2,6 @@ import React, {
   ChangeEvent,
   ChangeEventHandler,
   KeyboardEventHandler,
-  useEffect,
   useRef,
 } from "react";
 import Modal from "react-bootstrap/Modal";
@@ -10,7 +9,6 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { assertNever, submitOnEnterKeyFun } from "../../utils";
 import {
-  flowFocusOrBlurFun,
   isInteractable,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
