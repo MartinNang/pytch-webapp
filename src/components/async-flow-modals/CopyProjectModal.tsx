@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { submitOnEnterKeyFun } from "../../utils";
+import { assertNever, submitOnEnterKeyFun } from "../../utils";
 import {
   flowFocusOrBlurFun,
   isInteractable,
@@ -10,6 +10,56 @@ import {
 } from "../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
+import { LinkedContentRef } from "../../model/linked-content-core";
+
+type TextsForKeepLink = {
+  question: JSX.Element;
+  trueStatus: JSX.Element;
+  falseStatus: JSX.Element;
+};
+function textsForKeepLink(ref: LinkedContentRef): TextsForKeepLink {
+  switch (ref.kind) {
+    case "none": {
+      // Should not see this, but just in case:
+      const textSpan = (
+        <span>(This project is not connected to anything.)</span>
+      );
+      return {
+        question: textSpan,
+        trueStatus: textSpan,
+        falseStatus: textSpan,
+      };
+    }
+    case "jr-tutorial":
+      return {
+        question: (
+          <span>
+            Make copy follow tutorial <i>{ref.name}</i>?
+          </span>
+        ),
+        trueStatus: <span>Copy will follow tutorial.</span>,
+        falseStatus: (
+          <span>
+            Copy will <b>not</b> follow tutorial.
+          </span>
+        ),
+      };
+    case "specimen":
+      // Would be nice to know which one, but we don't have that info.
+      return {
+        question: <span>Make copy be linked to lesson?</span>,
+        trueStatus: <span>Copy will be linked to lesson.</span>,
+        falseStatus: (
+          <span>
+            Copy will <b>not</b> be linked to lesson.
+          </span>
+        ),
+      };
+    default:
+      return assertNever(ref);
+  }
+}
+
 
 export const CopyProjectModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.saveProjectAsFlow);
