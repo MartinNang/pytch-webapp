@@ -155,6 +155,7 @@ export const CopyProjectModal = () => {
           <Modal.Title>Copy project</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <MaybeKeepContentLinkSwitch runState={activeFsmState.runState} />
           <Form>
             <Form.Group>
               <Form.Control
