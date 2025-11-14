@@ -9,10 +9,12 @@ import {
   VoidOutcome,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { LinkedContentRef } from "../linked-content-core";
 
 type SaveProjectAsRunArgs = {
   sourceProjectId: ProjectId;
   sourceName: string;
+  sourceLinkedContentRef: LinkedContentRef;
 };
 
 type SaveProjectAsRunState = {
