@@ -28,6 +28,7 @@ type AddClipArtRunArgs = {
   projectId: ProjectId;
   operationContextKey: AssetOperationContextKey;
   assetNamePrefix: string;
+  filterTag: string | null;
 };
 
 type AddClipArtRunState = {
@@ -64,6 +65,8 @@ async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
     projectId: args.projectId,
     operationContext,
     assetNamePrefix: args.assetNamePrefix,
+    filterTag: args.filterTag, // TODO: Preserve one run to next?
+    filterActive: args.filterTag != null,
     selectedIds: [],
   };
 }
