@@ -9,6 +9,7 @@ import {
   ClipArtGalleryData,
   ClipArtGalleryEntryId,
   ClipArtGalleryEntry,
+  entryMatchesTag,
 } from "../../model/clipart-gallery-core";
 
 import { assertNever, mDataAttrIntValue } from "../../utils";
@@ -112,6 +113,8 @@ type ClipArtGalleryPanelReadyProps = {
 const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   gallery,
   selectedIds,
+  filterTag,
+  filterActive,
   selectItemById,
   deselectItemById,
 }) => {
@@ -122,7 +125,7 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   // might be to remember a "target" entry and move the bookmark to the
   // entry closest to it when selectedTags changes, but that's quite a
   // lot of work for a gain in usability which is not obviously large.
-  const tagLabel = "__all__";
+  const tagLabel = filterActive ? filterTag ?? "__all__" : "__all__";
   const groupedFocusKey = `MediaLibEntries-${tagLabel}`;
 
   const onActivate = (elt: HTMLElement) => {
@@ -140,6 +143,9 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   const preventDefaultAfterOnActivate = true;
 
   const allEntries = gallery.entries;
+  const entriesToShow = filterActive
+    ? allEntries.filter((entry) => entryMatchesTag(entry, filterTag))
+    : allEntries;
 
   return (
     <>
@@ -149,7 +155,7 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
         opts={{ onActivate, preventDefaultAfterOnActivate }}
       >
         <ul className="ClipArtEntriesList">
-          {allEntries.map((entry) => {
+          {entriesToShow.map((entry) => {
             const isSelected = selectedIdsSet.has(entry.id);
             return (
               <li key={entry.id} className="ClipArtEntryItem">
