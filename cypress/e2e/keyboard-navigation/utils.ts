@@ -51,6 +51,17 @@ export function activateKeyPressedOption(browserKeyName: string): void {
 
 ////////////////////////////////////////////////////////////////////////
 
+export function toggleAllAssetsVsTutorialOnly(
+  expectedNewState: boolean,
+  expNewNEntries: number
+) {
+  cy.get(".all-vs-tutorial-switch").as("form").click();
+  cy.get("@form").find(`input[aria-checked="${expectedNewState}"]`);
+  cy.get("ul.ClipArtEntriesList li").should("have.length", expNewNEntries);
+}
+
+////////////////////////////////////////////////////////////////////////
+
 function helpEntrySelector(sectionIdx: number, entryIdx: number) {
   const sectionIdx1b = sectionIdx + 1;
   const entryIdx1b = entryIdx + 2; // Skip first child (<summary> elt)
@@ -225,7 +236,7 @@ type FocusableAreaKind =
   | "sound-card"
   | "medialib-tag"
   | "medialib-entry"
-  | "medialib-all-vs-tutorial-switch"
+  | "medialib-filter-switch"
   | "medialib-cancel-button"
   | "flat-asset"
   | "green-flag"
@@ -296,7 +307,7 @@ export function assertFocus(
     | "msg-rcvd-input"
     | "hat-block-cancel-button"
     | "key-pressed-dropdown"
-    | "medialib-all-vs-tutorial-switch"
+    | "medialib-filter-switch"
     | "medialib-cancel-button"
     | "tutorial-content"
     | "green-flag"
@@ -528,7 +539,7 @@ export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
           ` li:nth-child(${childIdx1b}) div.clipart-card`
         );
       }
-      case "medialib-all-vs-tutorial-switch": {
+      case "medialib-filter-switch": {
         return "form.all-vs-tutorial-switch > label";
       }
       case "medialib-cancel-button": {
