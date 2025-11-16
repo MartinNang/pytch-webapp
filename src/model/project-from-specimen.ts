@@ -13,6 +13,8 @@ import {
   LessonDescriptor,
   lessonDescriptorFromRelativePath,
 } from "./linked-content";
+import { projectSummary } from "../storage/zipfile";
+import { LinkedContentRef } from "./linked-content-core";
 
 export type StartAfreshOption =
   | { kind: "create"; lesson: LessonDescriptor }
@@ -163,14 +165,16 @@ export let projectFromSpecimenFlow: ProjectFromSpecimenFlow = {
   createFromSpecimen: thunk(async (actions, lesson, helpers) => {
     const allActions = helpers.getStoreActions();
 
+    const linkedContentRef: LinkedContentRef = {
+      kind: "specimen",
+      specimenContentHash: lesson.specimenContentHash,
+    };
+
     const creationOptions: CreateProjectOptions = {
-      summary: lesson.project.summary,
+      summary: projectSummary(undefined, linkedContentRef),
       program: lesson.project.program,
       assets: lesson.project.assets,
-      linkedContentRef: {
-        kind: "specimen",
-        specimenContentHash: lesson.specimenContentHash,
-      },
+      linkedContentRef,
     };
 
     actions.setState({ state: "creating-new" });

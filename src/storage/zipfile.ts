@@ -14,6 +14,11 @@ import {
   PytchProgramKind,
   PytchProgramOps,
 } from "../model/pytch-program";
+import {
+  kLinkedContentRefNone,
+  LinkedContentRef,
+  zLinkedContentRef,
+} from "../model/linked-content-core";
 
 // This is the same as IAddAssetDescriptor; any way to avoid this
 // duplication?
@@ -145,6 +150,7 @@ export type StandaloneProjectDescriptor = {
   summary?: string;
   program: PytchProgram;
   assets: Array<TransformedAssetDescriptor>;
+  linkedContentRef: LinkedContentRef;
 };
 
 // TODO: Not sure this is the best place for this:
@@ -235,7 +241,13 @@ const parseZipfile_V1 = async (
   const summary =
     zipName == null ? undefined : `Created from zipfile "${zipName}"`;
 
-  return { name: projectName, summary, program, assets };
+  return {
+    name: projectName,
+    summary,
+    program,
+    assets,
+    linkedContentRef: kLinkedContentRefNone,
+  };
 };
 
 /** Verify that the subdirectory "assets/files", as represented by the
@@ -302,10 +314,57 @@ const validateAssetsLayout = (
   }
 };
 
-const parseZipfile_V2_V3 = async (
+function linkedContentRefFromMetadata(
+  metadata: Record<string, unknown>
+): LinkedContentRef {
+  if (!Object.hasOwn(metadata, "linkedContentRef")) {
+    return kLinkedContentRefNone;
+  }
+
+  const parse = zLinkedContentRef.safeParse(metadata.linkedContentRef);
+  if (parse.success) {
+    return parse.data;
+  } else {
+    console.warn("Bad linkedContentRef data:", JSON.stringify(parse.error));
+    throw new Error("invalid linkedContentRef data in project metadata");
+  }
+}
+
+// Does not work for "tracked tutorial" projects, which are those
+// following a flat tutorial.  Once we move the flat tracked tutorial
+// mechanism into the linked content mechanism, this should be a fairly
+// easy fix.
+export function projectSummary(
+  zipName: string | undefined,
+  linkedContentRef: LinkedContentRef
+): string | undefined {
+  const zipFragments =
+    zipName === undefined ? [] : [`Created from zipfile "${zipName}".`];
+
+  const linkFragments = (() => {
+    switch (linkedContentRef.kind) {
+      case "none":
+        return [];
+      case "jr-tutorial":
+        return [`Following the tutorial "${linkedContentRef.name}".`];
+      case "specimen":
+        // TODO: Would be nice to tell them which one.
+        return [`Following a lesson.`];
+      default:
+        return assertNever(linkedContentRef);
+    }
+  })();
+
+  const allFragments = zipFragments.concat(linkFragments);
+
+  return allFragments.length === 0 ? undefined : allFragments.join(" ");
+}
+
+const parseZipfile_V2_V3_V4 = async (
   zip: JSZip,
   programPath: string,
-  zipName?: string
+  zipName: string | undefined,
+  heedLinkedContentRef: boolean
 ): Promise<StandaloneProjectDescriptor> => {
   const codeZipObj = _zipObjOrFail(zip, programPath, bareError);
   const codeTextOrJson = await codeZipObj.async("text");
@@ -313,13 +372,27 @@ const parseZipfile_V2_V3 = async (
     ? PytchProgramOps.fromPythonCode(codeTextOrJson)
     : PytchProgramOps.fromJson(codeTextOrJson);
 
-  const projectMetadata = await _jsonOrFail(zip, "meta.json", bareError);
+  const rawProjectMetadata = await _jsonOrFail(zip, "meta.json", bareError);
+  console.log(rawProjectMetadata, typeof rawProjectMetadata);
+  if (
+    typeof rawProjectMetadata !== "object" ||
+    rawProjectMetadata == null ||
+    Array.isArray(rawProjectMetadata)
+  )
+    throw new Error("project metadata must be non-null object");
+
+  const projectMetadata = rawProjectMetadata as Record<string, unknown>;
+
   const projectName = failIfNull(
     projectMetadata.projectName,
     "could not find project name in metadata"
   );
   if (typeof projectName !== "string")
     throw new Error("project name is not a string");
+
+  const linkedContentRef = heedLinkedContentRef
+    ? linkedContentRefFromMetadata(projectMetadata)
+    : kLinkedContentRefNone;
 
   const assetMetadataPath = "assets/metadata.json";
   const assetMetadata = await _jsonOrFail(zip, assetMetadataPath, bareError);
@@ -353,10 +426,9 @@ const parseZipfile_V2_V3 = async (
       transformFromName.get(a.name) ?? AssetTransformOps.newNoop(a.mimeType),
   }));
 
-  const summary =
-    zipName == null ? undefined : `Created from zipfile "${zipName}"`;
+  const summary = projectSummary(zipName, linkedContentRef);
 
-  return { name: projectName, summary, program, assets };
+  return { name: projectName, summary, program, assets, linkedContentRef };
 };
 
 export const projectDescriptor = async (
@@ -370,9 +442,21 @@ export const projectDescriptor = async (
       case 1:
         return await parseZipfile_V1(zip, zipName);
       case 2:
-        return await parseZipfile_V2_V3(zip, "code/code.py", zipName);
+        return await parseZipfile_V2_V3_V4(zip, "code/code.py", zipName, false);
       case 3:
-        return await parseZipfile_V2_V3(zip, "code/code.json", zipName);
+        return await parseZipfile_V2_V3_V4(
+          zip,
+          "code/code.json",
+          zipName,
+          false
+        );
+      case 4:
+        return await parseZipfile_V2_V3_V4(
+          zip,
+          "code/code.json",
+          zipName,
+          true
+        );
       default:
         throw new Error(`unhandled Pytch zipfile version ${versionNumber}`);
     }
@@ -388,7 +472,7 @@ export const projectDescriptorFromURL = async (
   return projectDescriptor(undefined, data);
 };
 
-const pytchZipfileVersion = 3;
+const pytchZipfileVersion = 4;
 export const zipfileDataFromProject = async (
   project: StoredProjectContent
 ): Promise<Uint8Array> => {
@@ -398,7 +482,7 @@ export const zipfileDataFromProject = async (
   // TODO: Include project summary?
   // TODO: Preserve info on whether tracking tutorial?
   const projectName = project.name;
-  const metaData = { projectName };
+  const metaData = { projectName, linkedContentRef: project.linkedContentRef };
   zipFile.file("meta.json", JSON.stringify(metaData));
 
   zipFile.file("code/code.json", JSON.stringify(project.program));
