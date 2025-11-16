@@ -225,6 +225,7 @@ type FocusableAreaKind =
   | "sound-card"
   | "medialib-tag"
   | "medialib-entry"
+  | "medialib-all-vs-tutorial-switch"
   | "medialib-cancel-button"
   | "flat-asset"
   | "green-flag"
@@ -295,6 +296,7 @@ export function assertFocus(
     | "msg-rcvd-input"
     | "hat-block-cancel-button"
     | "key-pressed-dropdown"
+    | "medialib-all-vs-tutorial-switch"
     | "medialib-cancel-button"
     | "tutorial-content"
     | "green-flag"
@@ -525,6 +527,9 @@ export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
           `ul.ClipArtEntriesList` +
           ` li:nth-child(${childIdx1b}) div.clipart-card`
         );
+      }
+      case "medialib-all-vs-tutorial-switch": {
+        return "form.all-vs-tutorial-switch > label";
       }
       case "medialib-cancel-button": {
         return ".clipart-footer button:first-child";
