@@ -633,7 +633,11 @@ ul.ClipArtTagButtonCollection {
 
 .clipart-gallery {
   overflow-y: scroll;
-  max-height: 30rem;
+
+  // TODO: This is a complete fudge; 240px was set by trial and error.
+  // Would be better to compute from margins, paddings, etc.
+  max-height: calc(100vh - 240px);
+
   ul {
     list-style-type: none;
     display: flex;
@@ -653,9 +657,48 @@ ul.ClipArtTagButtonCollection {
   }
 }
 
-.clipart-body .modal-separator {
-  margin: 0.5rem 0px 0.75rem;
-  border-bottom: 1px solid $border-color;
+.modal-header.clipart-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-content: center;
+}
+
+.clipart-header .all-vs-tutorial-switch {
+  padding: 0px 1rem;
+  justify-self: center;
+  user-select: none;
+
+  label.form-label {
+    background-color: $secondary-bg-color;
+    &:hover {
+      background: $hover-secondary-bg-color;
+    }
+    border-radius: 4px;
+    margin-bottom: 0px;
+  }
+
+  label,
+  input {
+    cursor: pointer;
+  }
+
+  .form-switch {
+    display: inline-block;
+    label .current-state-label {
+      display: grid;
+      > * {
+        grid-column: 1;
+        grid-row: 1;
+        visibility: hidden;
+      }
+    }
+    input[aria-checked="true"] + label span.when-true {
+      visibility: visible;
+    }
+    input[aria-checked="false"] + label span.when-false {
+      visibility: visible;
+    }
+  }
 }
 
 .modal-footer.clipart-footer {

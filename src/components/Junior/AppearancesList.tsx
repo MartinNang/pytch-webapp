@@ -14,12 +14,14 @@ import { AssetsContent } from "./AssetsContent";
 import { useRunFlow } from "../../model";
 import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
 import { FocusGroupContainer } from "../FocusGroupContainer";
+import { useMediaLibFilterTag } from "../hooks/tracked-tutorial";
 
 export const AppearancesList = () => {
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
   const activeActorId = useJrEditState((s) => s.activeActor);
   const activeActorKind = useActiveActorKind();
+  const filterTag = useMediaLibFilterTag();
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
@@ -44,7 +46,12 @@ export const AppearancesList = () => {
     runAddAssets({ projectId, operationContextKey, assetNamePrefix });
 
   const addFromMediaLibrary = () =>
-    runAddClipArt({ projectId, operationContextKey, assetNamePrefix });
+    runAddClipArt({
+      projectId,
+      operationContextKey,
+      assetNamePrefix,
+      filterTag,
+    });
 
   // Also use this for "key", to make sure the colour switches instantly
   // rather than transitioning when moving from Stage to a Sprite.

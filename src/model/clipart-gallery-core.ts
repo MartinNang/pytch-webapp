@@ -30,10 +30,10 @@ export const unionAllTags = (
   return Array.from(tags.values()).sort();
 };
 
-export const entryMatchesTags = (
+export const entryMatchesTag = (
   entry: ClipArtGalleryEntry,
-  tagSet: Set<string>
-): boolean => tagSet.size === 0 || entry.tags.some((tag) => tagSet.has(tag));
+  tag: string | null
+): boolean => tag == null || entry.tags.indexOf(tag) !== -1;
 
 /** **Update in place** the `url` properties of all items contained
  * within the given `entries`.  The `url` is computed by prefixing the

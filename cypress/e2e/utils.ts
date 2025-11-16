@@ -2,6 +2,7 @@ import { PytchProgramKind } from "../../src/model/pytch-program";
 import { assertNever, promiseAndResolve } from "../../src/utils";
 
 export const kExpNTutorials = 18;
+export const kExpNMediaLibEntries = 52;
 
 /** Set up request intercepts for a specimen for use in tests. */
 export function initSpecimenIntercepts() {

@@ -1,93 +1,17 @@
 /// <reference types="cypress" />
 
-import { launchAdd } from "./junior/utils";
-import { kExpNTutorials } from "./utils";
+import { launchAdd, selectActorAspect } from "./junior/utils";
+import { kExpNMediaLibEntries } from "./utils";
 
-context("can filter media library by tags", () => {
-  before(() => {
-    cy.pytchExactlyOneProject();
-  });
-
-  beforeEach(launchAdd.assetFromMediaLibrary);
-
-  afterEach(() => {
-    cy.get("button").contains("Cancel").click();
-  });
-
-  type IsActive = "active" | "inactive";
-
-  const getButtons = (isActive: IsActive, variant: string) => {
-    const clsFragment = isActive === "active" ? "" : "outline-";
-    const cls = `btn-${clsFragment}${variant}`;
-    return cy.get(`.ClipArtTagButtonCollection li button.${cls}`);
-  };
-
-  const getAllButton = (isActive: IsActive) => getButtons(isActive, "success");
-
-  const getAllNamedTagButtons = (isActive: IsActive) =>
-    getButtons(isActive, "primary");
-
-  const getNamedTagButton = (tagMatch: string, isActive: IsActive) =>
-    getAllNamedTagButtons(isActive).contains(tagMatch);
-
-  const clickNamedTagButton = (
-    tagMatch: string,
-    clickOptions?: Partial<Cypress.ClickOptions>
-  ) => {
-    cy.get(".ClipArtTagButtonCollection li button")
-      .contains(tagMatch)
-      .click(clickOptions);
-  };
-
-  const expectNEntries = (expNEntries: number) => {
-    cy.get(".clipart-card").should("have.length", expNEntries);
-  };
-
-  const expectButtonStates = (
-    expNActive: number,
-    expNInactive: number,
-    expAllIsActive: IsActive
-  ) => {
-    getAllButton(expAllIsActive);
-    getAllNamedTagButtons("active").should("have.length", expNActive);
-    getAllNamedTagButtons("inactive").should("have.length", expNInactive);
-  };
-
-  it("starts with all selected", () => {
-    expectButtonStates(0, kExpNTutorials, "active");
-  });
-
-  it("can choose single tags", () => {
-    clickNamedTagButton("Chase!");
-    expectButtonStates(1, kExpNTutorials - 1, "inactive");
-    getNamedTagButton("Chase!", "active");
-    expectNEntries(3);
-
-    clickNamedTagButton("Bunner");
-    expectButtonStates(1, kExpNTutorials - 1, "inactive");
-    getNamedTagButton("Bunner", "active");
-    expectNEntries(8);
-  });
-
-  it("can choose multiple tags", () => {
-    clickNamedTagButton("Chase!");
-    clickNamedTagButton("Bunner", { controlKey: true });
-    expectButtonStates(2, kExpNTutorials - 2, "inactive");
-    getNamedTagButton("Chase!", "active");
-    getNamedTagButton("Bunner", "active");
-    expectNEntries(11);
-  });
-});
+const launchChooseClipArt = () => {
+  launchAdd.assetFromMediaLibrary();
+  cy.contains("Add to project").should("be.disabled");
+};
 
 context("Add clipart from library, handling errors", () => {
   const clickAddN = (expAddN: number) => {
     const expLabel = `Add ${expAddN} to project`;
     cy.get("button").contains(expLabel).click();
-  };
-
-  const launchChooseClipArt = () => {
-    launchAdd.assetFromMediaLibrary();
-    cy.contains("Add to project").should("be.disabled");
   };
 
   const attemptChooseClipArt = (
@@ -199,4 +123,92 @@ context("Add clipart from library, handling errors", () => {
     cy.contains("OK").click();
     cy.pytchShouldShowAssets([...startTestAssets, "orange.png", "bird.png"]);
   });
+});
+
+const assertNEntries = (expNEntries: number) => {
+  cy.get("ul.ClipArtEntriesList li").should("have.length", expNEntries);
+};
+
+context("All/just-tut switch", () => {
+  const assertMediaLibSwitchState = (
+    expState: "absent" | "all" | "just-this-tutorial"
+  ) => {
+    if (expState === "absent") {
+      cy.get(".all-vs-tutorial-switch").should("not.exist");
+    } else {
+      const expBool = expState === "all";
+      cy.get(`.all-vs-tutorial-switch input[aria-checked="${expBool}"]`);
+    }
+  };
+
+  [
+    {
+      label: "per-method",
+      prepare: () => {
+        cy.pytchBasicJrProject();
+        selectActorAspect("Backdrops");
+      },
+    },
+    {
+      label: "flat",
+      prepare: cy.pytchExactlyOneProject,
+    },
+  ].forEach((spec) =>
+    it(`shows no switch if not linked (${spec.label})`, () => {
+      spec.prepare();
+      launchChooseClipArt();
+      assertMediaLibSwitchState("absent");
+      assertNEntries(kExpNMediaLibEntries);
+    })
+  );
+
+  [
+    {
+      label: "per-method",
+      tutorialSlug: "script-by-script-boing",
+      expNEntries: 4,
+      preLaunch: () => selectActorAspect("Backdrops"),
+    },
+    {
+      label: "flat",
+      tutorialSlug: "boing",
+      expNEntries: 3,
+      preLaunch: () => void 0,
+    },
+  ].forEach((spec) =>
+    it(`shows all/just-tutorial assets (${spec.label})`, () => {
+      cy.pytchProjectFollowingTutorial(spec.tutorialSlug);
+      spec.preLaunch();
+      launchChooseClipArt();
+
+      assertMediaLibSwitchState("just-this-tutorial");
+      assertNEntries(spec.expNEntries);
+
+      cy.get(".all-vs-tutorial-switch").click();
+      assertMediaLibSwitchState("all");
+      assertNEntries(kExpNMediaLibEntries);
+
+      cy.get(".all-vs-tutorial-switch").click();
+      assertMediaLibSwitchState("just-this-tutorial");
+      assertNEntries(spec.expNEntries);
+    })
+  );
+});
+
+context("Layout on short screens", () => {
+  [1200, 1000, 800, 640].forEach((viewportHeight) =>
+    it(`fits on screen (${viewportHeight}h)`, () => {
+      cy.viewport(1600, viewportHeight);
+      cy.pytchProjectFollowingTutorial();
+      cy.contains("Images and sounds").click();
+      launchChooseClipArt();
+      cy.get(".all-vs-tutorial-switch").click();
+      assertNEntries(kExpNMediaLibEntries);
+
+      cy.get(".modal-body").then(($elts) => {
+        const elt = $elts[0] as HTMLDivElement;
+        cy.wrap(elt.clientHeight).should("be.lte", viewportHeight - 60);
+      });
+    })
+  );
 });

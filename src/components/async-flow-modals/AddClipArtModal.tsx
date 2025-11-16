@@ -1,6 +1,12 @@
-import React, { CSSProperties, MouseEventHandler } from "react";
+import React, {
+  ChangeEventHandler,
+  CSSProperties,
+  KeyboardEventHandler,
+  MouseEventHandler,
+} from "react";
 import Modal from "react-bootstrap/Modal";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
+import { Actions } from "easy-peasy";
 import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nSelectedItemsInGallery } from "../../model/clipart-gallery";
@@ -8,7 +14,7 @@ import {
   ClipArtGalleryData,
   ClipArtGalleryEntryId,
   ClipArtGalleryEntry,
-  entryMatchesTags,
+  entryMatchesTag,
 } from "../../model/clipart-gallery-core";
 
 import { assertNever, mDataAttrIntValue } from "../../utils";
@@ -17,17 +23,17 @@ import {
   isInteractable,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
-import { OnTagClickFun } from "../../model/user-interactions/clipart-gallery-select";
 import { useFlowActions, useFlowState } from "../../model";
 import { FocusGroupContainer } from "../FocusGroupContainer";
-import {
-  focusGroupItemClass,
-  kFocusGroupItemClassName,
-} from "../../model/junior/grouped-focus";
+import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 import { FileProcessingFailures } from "../FileProcessingFailures";
 import { useActionAsEffect } from "../hooks/use-action-as-effect";
+import {
+  AddClipArtFlow,
+  AddClipArtRunState,
+} from "../../model/user-interactions/clipart-gallery-select";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -37,86 +43,6 @@ const styleClampingToSize = (width: number, height: number): CSSProperties => {
   if (height >= width && height > kMaxImageWidthOrHeight)
     return { height: kMaxImageWidthOrHeight };
   return {};
-};
-
-type ClipArtTagButtonProps = {
-  label: string;
-  tag: string;
-  isSelected: boolean;
-  onClick: MouseEventHandler;
-};
-const ClipArtTagButton: React.FC<ClipArtTagButtonProps> = ({
-  label,
-  tag,
-  isSelected,
-  onClick,
-}) => {
-  const baseVariant = label === "All" ? "success" : "primary";
-  const variantPrefix = isSelected ? "" : "outline-";
-  const variant = `${variantPrefix}${baseVariant}`;
-  return (
-    <Button
-      className={kFocusGroupItemClassName}
-      {...{ variant, onClick }}
-      data-media-lib-tag={tag}
-    >
-      {label}
-    </Button>
-  );
-};
-
-type ClipArtTagButtonCollectionProps = {
-  gallery: ClipArtGalleryData;
-  selectedTags: Array<string>;
-  onTagClick: OnTagClickFun;
-};
-const ClipArtTagButtonCollection: React.FC<ClipArtTagButtonCollectionProps> = ({
-  gallery,
-  selectedTags,
-  onTagClick,
-}) => {
-  const focusCtx = useFocusContext();
-  const allIsSelected = selectedTags.length === 0;
-
-  type MouseEventHandlerFun = (tag: string) => MouseEventHandler<HTMLElement>;
-  const clickFun: MouseEventHandlerFun = (tag: string) => (event) => {
-    onTagClick({ tag, isMultiSelect: event.ctrlKey });
-    focusCtx.onGroupItemClick(event);
-  };
-
-  const onActivate = (elt: HTMLElement) => {
-    const tag = elt.dataset.mediaLibTag;
-    if (tag == null) {
-      console.warn("no media-lib-tag data attr");
-      return;
-    }
-    onTagClick({ tag, isMultiSelect: false });
-  };
-
-  return (
-    <FocusGroupContainer groupedFocusKey="MediaLibTags" opts={{ onActivate }}>
-      <ul className="ClipArtTagButtonCollection">
-        <li key="--all--">
-          <ClipArtTagButton
-            label="All"
-            isSelected={allIsSelected}
-            onClick={clickFun("--all--")}
-            tag={"--all--"}
-          />
-        </li>
-        {gallery.tags.map((tag) => (
-          <li key={tag}>
-            <ClipArtTagButton
-              label={tag}
-              isSelected={selectedTags.indexOf(tag) !== -1}
-              onClick={clickFun(tag)}
-              tag={tag}
-            />
-          </li>
-        ))}
-      </ul>
-    </FocusGroupContainer>
-  );
 };
 
 type ClipArtCardProps = {
@@ -175,13 +101,75 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
   );
 };
 
-type SelectionProps = {
-  selectedIds: Array<ClipArtGalleryEntryId>;
-  selectedTags: Array<string>;
-  selectItemById: (id: ClipArtGalleryEntryId) => void;
-  deselectItemById: (id: ClipArtGalleryEntryId) => void;
-  onTagClick: OnTagClickFun;
+type MaybeTagFilterSwitchProps = Pick<
+  AddClipArtRunState,
+  "filterTag" | "filterActive"
+>;
+const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
+  filterTag,
+  filterActive,
+}) => {
+  const setFilterActive = useFlowActions(
+    (f) => f.addClipArtFlow.setFilterActive
+  );
+
+  if (filterTag == null) {
+    return <div />;
+  }
+
+  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    // UI says "show all?", so set "filter active" to opposite.
+    setFilterActive(!evt.target.checked);
+  };
+
+  const onKeyDown: KeyboardEventHandler = (evt) => {
+    // Do not perform action if we've received the event from a child.
+    if (evt.target !== evt.currentTarget) return;
+
+    if (evt.key === " " || evt.key === "Enter") {
+      // Toggle:
+      setFilterActive(!filterActive);
+    }
+  };
+
+  const labelContent = (
+    <span className="current-state-label">
+      <span className="when-true">Showing all images</span>
+      <span className="when-false">
+        Showing just images recommended for this tutorial
+      </span>
+    </span>
+  );
+
+  const showAll = !filterActive;
+
+  return (
+    <Form className="all-vs-tutorial-switch">
+      <Form.Label tabIndex={0} onKeyDown={onKeyDown} className="p-2">
+        <span className="pe-5 fw-bold">Show all images?</span>
+        <Form.Check
+          label={labelContent}
+          checked={showAll}
+          aria-checked={showAll}
+          onChange={onSwitchChange}
+          tabIndex={-1}
+          type="switch"
+          id="custom-switch"
+        />
+      </Form.Label>
+    </Form>
+  );
 };
+
+type SelectionState = Pick<
+  AddClipArtRunState,
+  "selectedIds" | "filterTag" | "filterActive"
+>;
+type SelectionActions = Pick<
+  Actions<AddClipArtFlow>,
+  "selectItemById" | "deselectItemById"
+>;
+type SelectionProps = SelectionState & SelectionActions;
 
 type ClipArtGalleryPanelReadyProps = {
   gallery: ClipArtGalleryData;
@@ -190,22 +178,21 @@ type ClipArtGalleryPanelReadyProps = {
 const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   gallery,
   selectedIds,
-  selectedTags,
+  filterTag,
+  filterActive,
   selectItemById,
   deselectItemById,
-  onTagClick,
 }) => {
   const selectedIdsSet = new Set(selectedIds);
-  const selectedTagsSet = new Set<string>(selectedTags);
 
   // For an initial implementation, bookmark position in the list
-  // separately depending what tags are selected.  A better alternative
-  // might be to remember a "target" entry and move the bookmark to the
-  // entry closest to it when selectedTags changes, but that's quite a
-  // lot of work for a gain in usability which is not obviously large.
-  let sortedTags = selectedTags.slice();
-  sortedTags.sort();
-  const groupedFocusKey = `MediaLibEntries-${sortedTags.join("/")}`;
+  // separately depending on whether a tag filter is active.  A better
+  // alternative might be to remember a "target" entry and move the
+  // bookmark to the entry closest to it when filterActive changes, but
+  // that's quite a lot of work for a gain in usability which is not
+  // obviously large.
+  const tagLabel = filterActive ? filterTag ?? "__all__" : "__all__";
+  const groupedFocusKey = `MediaLibEntries-${tagLabel}`;
 
   const onActivate = (elt: HTMLElement) => {
     const entryId = mDataAttrIntValue(elt, "mediaLibEntryId");
@@ -221,19 +208,20 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
 
   const preventDefaultAfterOnActivate = true;
 
+  const allEntries = gallery.entries;
+  const entriesToShow = filterActive
+    ? allEntries.filter((entry) => entryMatchesTag(entry, filterTag))
+    : allEntries;
+
   return (
     <>
-      <ClipArtTagButtonCollection {...{ gallery, selectedTags, onTagClick }} />
-      <div className="modal-separator" />
       <FocusGroupContainer
         groupedFocusKey={groupedFocusKey}
         className="clipart-gallery"
         opts={{ onActivate, preventDefaultAfterOnActivate }}
       >
         <ul className="ClipArtEntriesList">
-          {gallery.entries.map((entry) => {
-            if (!entryMatchesTags(entry, selectedTagsSet)) return null;
-
+          {entriesToShow.map((entry) => {
             const isSelected = selectedIdsSet.has(entry.id);
             return (
               <li key={entry.id} className="ClipArtEntryItem">
@@ -275,7 +263,7 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 
 export const AddClipArtModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.addClipArtFlow);
-  const { selectItemById, deselectItemById, onTagClick } = useFlowActions(
+  const { selectItemById, deselectItemById } = useFlowActions(
     (f) => f.addClipArtFlow
   );
 
@@ -307,7 +295,7 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds, selectedTags } = activeState.runState;
+        const { selectedIds, filterTag, filterActive } = activeState.runState;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
@@ -325,16 +313,20 @@ export const AddClipArtModal = () => {
 
         const selectionProps: SelectionProps = {
           selectedIds,
-          selectedTags,
+          filterTag,
+          filterActive,
           selectItemById,
           deselectItemById,
-          onTagClick,
         };
 
         return (
           <Modal onHide={settle.cancel} animation={false} show={true} size="xl">
-            <Modal.Header closeButton={isInteractable(activeState)}>
+            <Modal.Header
+              className="clipart-header"
+              closeButton={isInteractable(activeState)}
+            >
               <Modal.Title>Choose some images</Modal.Title>
+              <MaybeTagFilterSwitch {...{ filterTag, filterActive }} />
             </Modal.Header>
             <Modal.Body className="clipart-body">
               <ClipArtGalleryPanel {...selectionProps} />

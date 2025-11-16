@@ -20,6 +20,7 @@ import {
   AsyncUserFlowSlice,
   AttemptOutcome,
   runStateAction,
+  setRunStateProp,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
@@ -27,13 +28,15 @@ type AddClipArtRunArgs = {
   projectId: ProjectId;
   operationContextKey: AssetOperationContextKey;
   assetNamePrefix: string;
+  filterTag: string | null;
 };
 
-type AddClipArtRunState = {
+export type AddClipArtRunState = {
+  projectId: ProjectId;
   operationContext: AssetOperationContext;
   assetNamePrefix: string;
-  projectId: ProjectId;
-  selectedTags: Array<string>;
+  filterTag: string | null;
+  filterActive: boolean;
   selectedIds: Array<ClipArtGalleryEntryId>;
 };
 
@@ -44,19 +47,12 @@ type AddClipArtBase = AsyncUserFlowSlice<
   AddAssetsOutcomeNub
 >;
 
-type OnTagClickArgs = {
-  tag: string;
-  isMultiSelect: boolean;
-};
-
-export type OnTagClickFun = (args: OnTagClickArgs) => void;
-
 type SAction<ArgT> = Action<AddClipArtBase, ArgT>;
 
 type AddClipArtActions = {
   selectItemById: SAction<ClipArtGalleryEntryId>;
   deselectItemById: SAction<ClipArtGalleryEntryId>;
-  onTagClick: SAction<OnTagClickArgs>;
+  setFilterActive: SAction<boolean>;
 };
 
 export type AddClipArtFlow = AddClipArtBase & AddClipArtActions;
@@ -69,7 +65,8 @@ async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
     projectId: args.projectId,
     operationContext,
     assetNamePrefix: args.assetNamePrefix,
-    selectedTags: [], // TODO: Can we preserve from one run to the next?
+    filterTag: args.filterTag, // TODO: Preserve one run to next?
+    filterActive: args.filterTag != null,
     selectedIds: [],
   };
 }
@@ -127,22 +124,7 @@ async function attempt(
 
 export let addClipArtFlow: AddClipArtFlow = (() => {
   const specificSlice: AddClipArtActions = {
-    onTagClick: runStateAction((state, { tag, isMultiSelect }) => {
-      if (tag === "--all--") {
-        state.selectedTags = [];
-      } else {
-        if (isMultiSelect) {
-          const mExistingIndex = state.selectedTags.indexOf(tag);
-          if (mExistingIndex === -1) {
-            state.selectedTags.push(tag);
-          } else {
-            state.selectedTags.splice(mExistingIndex, 1);
-          }
-        } else {
-          state.selectedTags = [tag];
-        }
-      }
-    }),
+    setFilterActive: setRunStateProp("filterActive"),
     selectItemById: runStateAction((state, itemId) => {
       if (state.selectedIds.indexOf(itemId) === -1)
         state.selectedIds.push(itemId);

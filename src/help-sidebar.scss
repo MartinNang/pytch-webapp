@@ -16,8 +16,6 @@ $block-category-backgrounds: (
   "instances": $pytch-colour-main-blue,
 );
 
-$hovered-method-bg: darken($secondary-bg-color, 5);
-
 @each $cat, $bg in $block-category-backgrounds {
   .HelpSidebarSection.category-#{$cat} {
     --pytch-help-category-background: #{$bg};
@@ -180,7 +178,7 @@ $hovered-method-bg: darken($secondary-bg-color, 5);
     background-color: $secondary-bg-color;
 
     &:hover {
-      background-color: $hovered-method-bg;
+      background-color: $hover-secondary-bg-color;
     }
 
     h2 code {
