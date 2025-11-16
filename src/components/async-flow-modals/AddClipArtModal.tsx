@@ -8,7 +8,6 @@ import {
   ClipArtGalleryData,
   ClipArtGalleryEntryId,
   ClipArtGalleryEntry,
-  entryMatchesTags,
 } from "../../model/clipart-gallery-core";
 
 import { assertNever, mDataAttrIntValue } from "../../utils";
@@ -113,16 +112,14 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   onTagClick,
 }) => {
   const selectedIdsSet = new Set(selectedIds);
-  const selectedTagsSet = new Set<string>(selectedTags);
 
   // For an initial implementation, bookmark position in the list
   // separately depending what tags are selected.  A better alternative
   // might be to remember a "target" entry and move the bookmark to the
   // entry closest to it when selectedTags changes, but that's quite a
   // lot of work for a gain in usability which is not obviously large.
-  let sortedTags = selectedTags.slice();
-  sortedTags.sort();
-  const groupedFocusKey = `MediaLibEntries-${sortedTags.join("/")}`;
+  const tagLabel = "__all__";
+  const groupedFocusKey = `MediaLibEntries-${tagLabel}`;
 
   const onActivate = (elt: HTMLElement) => {
     const entryId = mDataAttrIntValue(elt, "mediaLibEntryId");
@@ -138,6 +135,8 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
 
   const preventDefaultAfterOnActivate = true;
 
+  const allEntries = gallery.entries;
+
   return (
     <>
       <FocusGroupContainer
@@ -146,9 +145,7 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
         opts={{ onActivate, preventDefaultAfterOnActivate }}
       >
         <ul className="ClipArtEntriesList">
-          {gallery.entries.map((entry) => {
-            if (!entryMatchesTags(entry, selectedTagsSet)) return null;
-
+          {allEntries.map((entry) => {
             const isSelected = selectedIdsSet.has(entry.id);
             return (
               <li key={entry.id} className="ClipArtEntryItem">
