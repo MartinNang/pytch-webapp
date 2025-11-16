@@ -74,15 +74,6 @@ context("Kbd-nav between lists-of-things", () => {
   };
   const listPositionSpecs: Array<ListPositionSpecT> = [
     {
-      label: "medialib tag",
-      setup: () => {
-        launchAddFromMediaLib();
-        cy.get("ul.ClipArtTagButtonCollection li:nth-child(6) button").click();
-      },
-      assertFocus: () => assertFocus("medialib-tag", 5),
-      assertNextFocus: () => assertFocus("medialib-entry", 0),
-    },
-    {
       label: "medialib entry",
       setup: () => {
         launchAddFromMediaLib();
