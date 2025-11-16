@@ -9,14 +9,18 @@ import {
   VoidOutcome,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { LinkedContentRef } from "../linked-content-core";
 
 type SaveProjectAsRunArgs = {
   sourceProjectId: ProjectId;
   sourceName: string;
+  sourceLinkedContentRef: LinkedContentRef;
 };
 
-type SaveProjectAsRunState = {
+export type SaveProjectAsRunState = {
   sourceProjectId: ProjectId;
+  sourceLinkedContentRef: LinkedContentRef;
+  copyKeepsContentLink: boolean;
   nameOfCopy: string;
 };
 
@@ -30,6 +34,7 @@ type SAction<ArgT> = Action<SaveProjectAsBase, ArgT>;
 
 type SaveProjectAsActions = {
   setNameOfCopy: SAction<string>;
+  setCopyKeepsContentLink: SAction<boolean>;
 };
 
 export type SaveProjectAsFlow = SaveProjectAsBase & SaveProjectAsActions;
@@ -41,6 +46,8 @@ async function prepare(
   await actions.activeProject.requestSyncToStorage();
   return {
     sourceProjectId: args.sourceProjectId,
+    sourceLinkedContentRef: args.sourceLinkedContentRef,
+    copyKeepsContentLink: true,
     nameOfCopy: `Copy of ${args.sourceName}`,
   };
 }
@@ -58,6 +65,7 @@ async function attempt(
     actions.projectCollection.requestCopyProjectThenResync({
       sourceProjectId: runState.sourceProjectId,
       nameOfCopy: runState.nameOfCopy,
+      keepContentLink: runState.copyKeepsContentLink,
     })
   );
 
@@ -72,6 +80,7 @@ async function attempt(
 export let saveProjectAsFlow: SaveProjectAsFlow = (() => {
   const specificSlice: SaveProjectAsActions = {
     setNameOfCopy: setRunStateProp("nameOfCopy"),
+    setCopyKeepsContentLink: setRunStateProp("copyKeepsContentLink"),
   };
   return asyncUserFlowSlice(specificSlice, { prepare, isSubmittable, attempt });
 })();

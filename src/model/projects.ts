@@ -32,6 +32,7 @@ export interface ICreateProjectDescriptor {
 export interface ICopyProjectDescriptor {
   sourceProjectId: ProjectId;
   nameOfCopy: string;
+  keepContentLink: boolean;
 }
 
 export interface ITrackedTutorialRef {
@@ -244,7 +245,8 @@ export const projectCollection: IProjectCollection = {
   requestCopyProjectThenResync: thunk(async (actions, saveAsDescriptor) => {
     const newId = await copyProject(
       saveAsDescriptor.sourceProjectId,
-      saveAsDescriptor.nameOfCopy
+      saveAsDescriptor.nameOfCopy,
+      saveAsDescriptor.keepContentLink
     );
 
     actions.noteDatabaseChange();

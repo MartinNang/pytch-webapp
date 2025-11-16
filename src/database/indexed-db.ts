@@ -18,7 +18,10 @@ import {
 } from "../model/asset";
 import { delaySeconds, failIfNull, hexSHA256, PYTCH_CYPRESS } from "../utils";
 import { PytchProgram, PytchProgramOps } from "../model/pytch-program";
-import { AddAssetDescriptorOps } from "../storage/zipfile";
+import {
+  AddAssetDescriptorOps,
+  projectSummary as summaryFromLink,
+} from "../storage/zipfile";
 import {
   SpecimenContentHash,
   LinkedContentRef,
@@ -358,7 +361,8 @@ export class DexieStorage extends Dexie {
 
   async copyProject(
     sourceId: ProjectId,
-    destinationName: string
+    destinationName: string,
+    copyKeepsContentLink: boolean
   ): Promise<ProjectId> {
     const tables = [
       this.projectSummaries,
@@ -374,16 +378,24 @@ export class DexieStorage extends Dexie {
       );
       const sourceProjectAssets = await this._assetsOfProject(sourceId);
 
-      // Deliberately do not copy the linkedContent property.  Making a
-      // copy does the job of "detaching" the project from its linked
-      // content.
-      //
-      // TODO: Should we also NOT copy the trackedTutorialRef?
-      //
+      // TODO: Handle tracked tutorial?  Or wait for tracked tutorials
+      // to be brought into the linked-content mechanism, at which point
+      // this should just start working?
+      const linkedContentRef = copyKeepsContentLink
+        ? sourceSummary.linkedContentRef
+        : kLinkedContentRefNone;
+
+      // Summary might be stale if we have detached the link, so
+      // recreate.  This does mean we lose any "created from zipfile
+      // my-cool-project.zip" text but that's better than having an
+      // incorrect "following tutorial shoot-the-fruit" summary.
+      const summary = summaryFromLink(undefined, linkedContentRef);
+
       const creationOptions = {
-        summary: sourceSummary.summary,
+        summary,
         trackedTutorialRef: sourceSummary.trackedTutorialRef,
         program: programRecord.program,
+        linkedContentRef,
       };
       const newProject = await this.createNewProject(
         destinationName,

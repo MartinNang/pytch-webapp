@@ -152,7 +152,11 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onShowTooltips = () => initiateButtonTour();
 
   const runSaveProjectAs = useRunFlow((f) => f.saveProjectAsFlow);
-  const copyArgs = { sourceProjectId: project.id, sourceName: project.name };
+  const copyArgs = {
+    sourceProjectId: project.id,
+    sourceName: project.name,
+    sourceLinkedContentRef: project.linkedContentRef,
+  };
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
 
   const fullScreenButton = (
