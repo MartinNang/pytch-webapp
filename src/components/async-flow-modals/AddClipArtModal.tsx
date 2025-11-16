@@ -321,8 +321,12 @@ export const AddClipArtModal = () => {
 
         return (
           <Modal onHide={settle.cancel} animation={false} show={true} size="xl">
-            <Modal.Header closeButton={isInteractable(activeState)}>
+            <Modal.Header
+              className="clipart-header"
+              closeButton={isInteractable(activeState)}
+            >
               <Modal.Title>Choose some images</Modal.Title>
+              <MaybeTagFilterSwitch {...{ filterTag, filterActive }} />
             </Modal.Header>
             <Modal.Body className="clipart-body">
               <ClipArtGalleryPanel {...selectionProps} />
