@@ -97,7 +97,7 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
 
 type SelectionState = Pick<
   AddClipArtRunState,
-  "selectedIds"
+  "selectedIds" | "filterTag" | "filterActive"
 >;
 type SelectionActions = Pick<
   Actions<AddClipArtFlow>,
@@ -223,7 +223,7 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds } = activeState.runState;
+        const { selectedIds, filterTag, filterActive } = activeState.runState;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
@@ -241,6 +241,8 @@ export const AddClipArtModal = () => {
 
         const selectionProps: SelectionProps = {
           selectedIds,
+          filterTag,
+          filterActive,
           selectItemById,
           deselectItemById,
         };
