@@ -633,7 +633,11 @@ ul.ClipArtTagButtonCollection {
 
 .clipart-gallery {
   overflow-y: scroll;
-  max-height: 30rem;
+
+  // TODO: This is a complete fudge; 240px was set by trial and error.
+  // Would be better to compute from margins, paddings, etc.
+  max-height: calc(100vh - 240px);
+
   ul {
     list-style-type: none;
     display: flex;
