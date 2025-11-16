@@ -93,7 +93,6 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
 
 type SelectionProps = {
   selectedIds: Array<ClipArtGalleryEntryId>;
-  selectedTags: Array<string>;
   selectItemById: (id: ClipArtGalleryEntryId) => void;
   deselectItemById: (id: ClipArtGalleryEntryId) => void;
   onTagClick: OnTagClickFun;
@@ -106,7 +105,6 @@ type ClipArtGalleryPanelReadyProps = {
 const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   gallery,
   selectedIds,
-  selectedTags,
   selectItemById,
   deselectItemById,
   onTagClick,
@@ -219,7 +217,7 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds, selectedTags } = activeState.runState;
+        const { selectedIds } = activeState.runState;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
@@ -237,7 +235,6 @@ export const AddClipArtModal = () => {
 
         const selectionProps: SelectionProps = {
           selectedIds,
-          selectedTags,
           selectItemById,
           deselectItemById,
           onTagClick,
