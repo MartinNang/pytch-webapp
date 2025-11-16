@@ -1,6 +1,7 @@
 import React, { CSSProperties, MouseEventHandler } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button, Spinner } from "react-bootstrap";
+import { Actions } from "easy-peasy";
 import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nSelectedItemsInGallery } from "../../model/clipart-gallery";
@@ -23,6 +24,10 @@ import { useFocusContext } from "../hooks/focus-steering";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 import { FileProcessingFailures } from "../FileProcessingFailures";
 import { useActionAsEffect } from "../hooks/use-action-as-effect";
+import {
+  AddClipArtFlow,
+  AddClipArtRunState,
+} from "../../model/user-interactions/clipart-gallery-select";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -90,11 +95,15 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
   );
 };
 
-type SelectionProps = {
-  selectedIds: Array<ClipArtGalleryEntryId>;
-  selectItemById: (id: ClipArtGalleryEntryId) => void;
-  deselectItemById: (id: ClipArtGalleryEntryId) => void;
-};
+type SelectionState = Pick<
+  AddClipArtRunState,
+  "selectedIds"
+>;
+type SelectionActions = Pick<
+  Actions<AddClipArtFlow>,
+  "selectItemById" | "deselectItemById"
+>;
+type SelectionProps = SelectionState & SelectionActions;
 
 type ClipArtGalleryPanelReadyProps = {
   gallery: ClipArtGalleryData;
