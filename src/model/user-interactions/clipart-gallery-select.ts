@@ -20,6 +20,7 @@ import {
   AsyncUserFlowSlice,
   AttemptOutcome,
   runStateAction,
+  setRunStateProp,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
@@ -33,6 +34,8 @@ type AddClipArtRunState = {
   operationContext: AssetOperationContext;
   assetNamePrefix: string;
   projectId: ProjectId;
+  filterTag: string | null;
+  filterActive: boolean;
   selectedIds: Array<ClipArtGalleryEntryId>;
 };
 
@@ -48,6 +51,7 @@ type SAction<ArgT> = Action<AddClipArtBase, ArgT>;
 type AddClipArtActions = {
   selectItemById: SAction<ClipArtGalleryEntryId>;
   deselectItemById: SAction<ClipArtGalleryEntryId>;
+  setFilterActive: SAction<boolean>;
 };
 
 export type AddClipArtFlow = AddClipArtBase & AddClipArtActions;
@@ -117,6 +121,7 @@ async function attempt(
 
 export let addClipArtFlow: AddClipArtFlow = (() => {
   const specificSlice: AddClipArtActions = {
+    setFilterActive: setRunStateProp("filterActive"),
     selectItemById: runStateAction((state, itemId) => {
       if (state.selectedIds.indexOf(itemId) === -1)
         state.selectedIds.push(itemId);
