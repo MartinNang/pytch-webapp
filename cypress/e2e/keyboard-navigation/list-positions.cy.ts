@@ -77,6 +77,7 @@ context("Kbd-nav between lists-of-things", () => {
       label: "medialib entry",
       setup: () => {
         launchAddFromMediaLib();
+        toggleAllAssetsVsTutorialOnly(true, kExpNMediaLibEntries);
         cy.get(
           "ul.ClipArtEntriesList li:nth-child(11) div.clipart-card"
         ).click();
