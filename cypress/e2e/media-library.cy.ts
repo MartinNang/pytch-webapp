@@ -2,15 +2,15 @@
 
 import { launchAdd } from "./junior/utils";
 
+const launchChooseClipArt = () => {
+  launchAdd.assetFromMediaLibrary();
+  cy.contains("Add to project").should("be.disabled");
+};
+
 context("Add clipart from library, handling errors", () => {
   const clickAddN = (expAddN: number) => {
     const expLabel = `Add ${expAddN} to project`;
     cy.get("button").contains(expLabel).click();
-  };
-
-  const launchChooseClipArt = () => {
-    launchAdd.assetFromMediaLibrary();
-    cy.contains("Add to project").should("be.disabled");
   };
 
   const attemptChooseClipArt = (
