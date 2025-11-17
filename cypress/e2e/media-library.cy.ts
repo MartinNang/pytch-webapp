@@ -194,3 +194,21 @@ context("All/just-tut switch", () => {
     })
   );
 });
+
+context("Layout on short screens", () => {
+  [1200, 1000, 800, 640].forEach((viewportHeight) =>
+    it(`fits on screen (${viewportHeight}h)`, () => {
+      cy.viewport(1600, viewportHeight);
+      cy.pytchProjectFollowingTutorial();
+      cy.contains("Images and sounds").click();
+      launchChooseClipArt();
+      cy.get(".all-vs-tutorial-switch").click();
+      assertNEntries(kExpNMediaLibEntries);
+
+      cy.get(".modal-body").then(($elts) => {
+        const elt = $elts[0] as HTMLDivElement;
+        cy.wrap(elt.clientHeight).should("be.lte", viewportHeight - 60);
+      });
+    })
+  );
+});
