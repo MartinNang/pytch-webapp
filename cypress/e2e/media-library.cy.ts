@@ -135,4 +135,8 @@ context("All/just-tut switch", () => {
       cy.get(`.all-vs-tutorial-switch input[aria-checked="${expBool}"]`);
     }
   };
+
+  const assertNEntries = (expNEntries: number) => {
+    cy.get("ul.ClipArtEntriesList li").should("have.length", expNEntries);
+  };
 });
