@@ -161,4 +161,36 @@ context("All/just-tut switch", () => {
       assertNEntries(kExpNMediaLibEntries);
     })
   );
+
+  [
+    {
+      label: "per-method",
+      tutorialSlug: "script-by-script-boing",
+      expNEntries: 4,
+      preLaunch: () => selectActorAspect("Backdrops"),
+    },
+    {
+      label: "flat",
+      tutorialSlug: "boing",
+      expNEntries: 3,
+      preLaunch: () => void 0,
+    },
+  ].forEach((spec) =>
+    it(`shows all/just-tutorial assets (${spec.label})`, () => {
+      cy.pytchProjectFollowingTutorial(spec.tutorialSlug);
+      spec.preLaunch();
+      launchChooseClipArt();
+
+      assertMediaLibSwitchState("just-this-tutorial");
+      assertNEntries(spec.expNEntries);
+
+      cy.get(".all-vs-tutorial-switch").click();
+      assertMediaLibSwitchState("all");
+      assertNEntries(kExpNMediaLibEntries);
+
+      cy.get(".all-vs-tutorial-switch").click();
+      assertMediaLibSwitchState("just-this-tutorial");
+      assertNEntries(spec.expNEntries);
+    })
+  );
 });
