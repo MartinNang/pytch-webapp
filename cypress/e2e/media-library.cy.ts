@@ -123,3 +123,6 @@ context("Add clipart from library, handling errors", () => {
     cy.pytchShouldShowAssets([...startTestAssets, "orange.png", "bird.png"]);
   });
 });
+
+context("All/just-tut switch", () => {
+});
