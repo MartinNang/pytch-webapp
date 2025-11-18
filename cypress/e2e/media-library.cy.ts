@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
-import { launchAdd } from "./junior/utils";
+import { launchAdd, selectActorAspect } from "./junior/utils";
+import { kExpNMediaLibEntries } from "./utils";
 
 const launchChooseClipArt = () => {
   launchAdd.assetFromMediaLibrary();
@@ -139,4 +140,25 @@ context("All/just-tut switch", () => {
   const assertNEntries = (expNEntries: number) => {
     cy.get("ul.ClipArtEntriesList li").should("have.length", expNEntries);
   };
+
+  [
+    {
+      label: "per-method",
+      prepare: () => {
+        cy.pytchBasicJrProject();
+        selectActorAspect("Backdrops");
+      },
+    },
+    {
+      label: "flat",
+      prepare: cy.pytchExactlyOneProject,
+    },
+  ].forEach((spec) =>
+    it(`shows no switch if not linked (${spec.label})`, () => {
+      spec.prepare();
+      launchChooseClipArt();
+      assertMediaLibSwitchState("absent");
+      assertNEntries(kExpNMediaLibEntries);
+    })
+  );
 });
