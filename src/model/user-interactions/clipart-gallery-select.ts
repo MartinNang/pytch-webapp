@@ -144,3 +144,11 @@ export let addClipArtFlow: AddClipArtFlow = (() => {
     onCompleted: onAddAssetsCompleted,
   });
 })();
+
+export function initialFilterStateFromFilterTag(
+  filterTag: string | null
+): AddClipArtFilterState {
+  return filterTag == null
+    ? { kind: "always-all" }
+    : { kind: "switchable", tag: filterTag, active: true };
+}
