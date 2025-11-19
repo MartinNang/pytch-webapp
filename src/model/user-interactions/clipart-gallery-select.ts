@@ -132,7 +132,11 @@ async function attempt(
 
 export let addClipArtFlow: AddClipArtFlow = (() => {
   const specificSlice: AddClipArtActions = {
-    setFilterActive: setRunStateProp("filterActive"),
+    setFilterActive: runStateAction((state, filterActive) => {
+      if (state.filterState.kind !== "switchable")
+        throw new Error('state-kind must be "switchable"');
+      state.filterState.active = filterActive;
+    }),
     selectItemById: runStateAction((state, itemId) => {
       if (state.selectedIds.indexOf(itemId) === -1)
         state.selectedIds.push(itemId);
