@@ -34,6 +34,7 @@ import {
   AddClipArtFlow,
   AddClipArtRunState,
 } from "../../model/user-interactions/clipart-gallery-select";
+import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -116,6 +117,25 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
   if (filterTag == null) {
     return <div />;
   }
+
+  const setFilterActiveNegated = (showAll: boolean) => {
+    setFilterActive(!showAll);
+  };
+
+  const texts: TwoStateSwitchTexts = {
+    question: <span>Show all images?</span>,
+    trueStatus: <span>Showing all images</span>,
+    falseStatus: <span>Showing just images recommended for this tutorial</span>,
+  };
+
+  return (
+    <TwoStateSwitch
+      className="all-vs-tutorial-switch"
+      texts={texts}
+      boolState={!filterActive}
+      setBoolState={setFilterActiveNegated}
+    />
+  );
 };
 
 type SelectionState = Pick<
