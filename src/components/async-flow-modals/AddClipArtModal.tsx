@@ -134,10 +134,7 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
   );
 };
 
-type SelectionState = Pick<
-  AddClipArtRunState,
-  "selectedIds" | "filterTag" | "filterActive"
->;
+type SelectionState = Pick<AddClipArtRunState, "selectedIds" | "filterState">;
 type SelectionActions = Pick<
   Actions<AddClipArtFlow>,
   "selectItemById" | "deselectItemById"
@@ -151,8 +148,7 @@ type ClipArtGalleryPanelReadyProps = {
 const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   gallery,
   selectedIds,
-  filterTag,
-  filterActive,
+  filterState,
   selectItemById,
   deselectItemById,
 }) => {
