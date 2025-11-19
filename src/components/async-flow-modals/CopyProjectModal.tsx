@@ -16,13 +16,9 @@ import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
+import { TwoStateSwitchTexts } from "../TwoStateSwitch";
 
-type TextsForKeepLink = {
-  question: JSX.Element;
-  trueStatus: JSX.Element;
-  falseStatus: JSX.Element;
-};
-function textsForKeepLink(ref: LinkedContentRef): TextsForKeepLink {
+function textsForKeepLink(ref: LinkedContentRef): TwoStateSwitchTexts {
   switch (ref.kind) {
     case "none": {
       // Should not see this, but just in case:
