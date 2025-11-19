@@ -102,19 +102,15 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
   );
 };
 
-type MaybeTagFilterSwitchProps = Pick<
-  AddClipArtRunState,
-  "filterTag" | "filterActive"
->;
+type MaybeTagFilterSwitchProps = Pick<AddClipArtRunState, "filterState">;
 const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
-  filterTag,
-  filterActive,
+  filterState,
 }) => {
   const setFilterActive = useFlowActions(
     (f) => f.addClipArtFlow.setFilterActive
   );
 
-  if (filterTag == null) {
+  if (filterState.kind === "always-all") {
     return <div />;
   }
 
@@ -132,7 +128,7 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
     <TwoStateSwitch
       className="all-vs-tutorial-switch"
       texts={texts}
-      boolState={!filterActive}
+      boolState={!filterState.active}
       setBoolState={setFilterActiveNegated}
     />
   );
