@@ -39,8 +39,7 @@ export type AddClipArtRunState = {
   projectId: ProjectId;
   operationContext: AssetOperationContext;
   assetNamePrefix: string;
-  filterTag: string | null;
-  filterActive: boolean;
+  filterState: AddClipArtFilterState;
   selectedIds: Array<ClipArtGalleryEntryId>;
 };
 
