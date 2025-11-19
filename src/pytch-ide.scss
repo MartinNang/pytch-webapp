@@ -703,9 +703,13 @@ ul.ClipArtTagButtonCollection {
 }
 
 .modal.CopyProject .keep-content-link-switch {
+  padding: 0px;
+  margin-bottom: 1rem;
+
   label {
     width: 100%;
   }
+
   .form-switch {
     margin-top: 0.5rem;
     display: block;
