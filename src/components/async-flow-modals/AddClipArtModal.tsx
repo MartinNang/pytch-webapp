@@ -265,7 +265,7 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds, filterTag, filterActive } = activeState.runState;
+        const { selectedIds, filterState } = activeState.runState;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
@@ -283,8 +283,7 @@ export const AddClipArtModal = () => {
 
         const selectionProps: SelectionProps = {
           selectedIds,
-          filterTag,
-          filterActive,
+          filterState,
           selectItemById,
           deselectItemById,
         };
@@ -296,7 +295,7 @@ export const AddClipArtModal = () => {
               closeButton={isInteractable(activeState)}
             >
               <Modal.Title>Choose some images</Modal.Title>
-              <MaybeTagFilterSwitch {...{ filterTag, filterActive }} />
+              <MaybeTagFilterSwitch filterState={filterState} />
             </Modal.Header>
             <Modal.Body className="clipart-body">
               <ClipArtGalleryPanel {...selectionProps} />
