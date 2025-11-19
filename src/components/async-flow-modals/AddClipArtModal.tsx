@@ -178,9 +178,10 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   const preventDefaultAfterOnActivate = true;
 
   const allEntries = gallery.entries;
-  const entriesToShow = filterActive
-    ? allEntries.filter((entry) => entryMatchesTag(entry, filterTag))
-    : allEntries;
+  const entriesToShow =
+    filterState.kind === "switchable" && filterState.active
+      ? allEntries.filter((entry) => entryMatchesTag(entry, filterState.tag))
+      : allEntries;
 
   return (
     <>
