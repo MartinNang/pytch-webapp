@@ -33,6 +33,7 @@ import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import {
   AddClipArtFlow,
   AddClipArtRunState,
+  groupedFocusKeyFromFilterState,
 } from "../../model/user-interactions/clipart-gallery-select";
 import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
 
@@ -160,8 +161,7 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   // bookmark to the entry closest to it when filterActive changes, but
   // that's quite a lot of work for a gain in usability which is not
   // obviously large.
-  const tagLabel = filterActive ? filterTag ?? "__all__" : "__all__";
-  const groupedFocusKey = `MediaLibEntries-${tagLabel}`;
+  const groupedFocusKey = groupedFocusKeyFromFilterState(filterState);
 
   const onActivate = (elt: HTMLElement) => {
     const entryId = mDataAttrIntValue(elt, "mediaLibEntryId");
