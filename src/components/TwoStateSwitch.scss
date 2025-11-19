@@ -1,0 +1,39 @@
+@import "../pytch-variables.scss";
+
+.TwoStateSwitch {
+  padding: 0px 1rem;
+  justify-self: center;
+  user-select: none;
+
+  label.form-label {
+    background-color: $secondary-bg-color;
+    &:hover {
+      background: $hover-secondary-bg-color;
+    }
+    border-radius: 4px;
+    margin-bottom: 0px;
+  }
+
+  label,
+  input {
+    cursor: pointer;
+  }
+
+  .form-switch {
+    display: inline-block;
+    label .current-state-label {
+      display: grid;
+      > * {
+        grid-column: 1;
+        grid-row: 1;
+        visibility: hidden;
+      }
+    }
+    input[aria-checked="true"] + label span.when-true {
+      visibility: visible;
+    }
+    input[aria-checked="false"] + label span.when-false {
+      visibility: visible;
+    }
+  }
+}

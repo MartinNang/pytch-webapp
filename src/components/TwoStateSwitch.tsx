@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import { Form } from "react-bootstrap";
 import classNames from "classnames";
+import "./TwoStateSwitch.scss";
 
 export type TwoStateSwitchTexts = {
   question: JSX.Element;
