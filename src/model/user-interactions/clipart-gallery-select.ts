@@ -31,6 +31,10 @@ type AddClipArtRunArgs = {
   filterTag: string | null;
 };
 
+export type AddClipArtFilterState =
+  | { kind: "always-all" }
+  | { kind: "switchable"; tag: string; active: boolean };
+
 export type AddClipArtRunState = {
   projectId: ProjectId;
   operationContext: AssetOperationContext;
