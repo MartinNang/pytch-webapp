@@ -64,12 +64,17 @@ async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
   const operationContext = assetOperationContextFromKey(
     args.operationContextKey
   );
+
+  // TODO: Preserve this from one run to the next?
+  const filterState: AddClipArtFilterState = initialFilterStateFromFilterTag(
+    args.filterTag
+  );
+
   return {
     projectId: args.projectId,
     operationContext,
     assetNamePrefix: args.assetNamePrefix,
-    filterTag: args.filterTag, // TODO: Preserve one run to next?
-    filterActive: args.filterTag != null,
+    filterState,
     selectedIds: [],
   };
 }
