@@ -15,8 +15,14 @@ import { useRunFlow } from "../../model";
 import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { useMediaLibFilterTag } from "../hooks/tracked-tutorial";
+import { useFocusContext } from "../hooks/focus-steering";
+import {
+  groupedFocusKeyFromFilterState,
+  initialFilterStateFromFilterTag,
+} from "../../model/user-interactions/clipart-gallery-select";
 
 export const AppearancesList = () => {
+  const focusContext = useFocusContext("per-method");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
   const activeActorId = useJrEditState((s) => s.activeActor);
@@ -46,6 +52,11 @@ export const AppearancesList = () => {
     runAddAssets({ projectId, operationContextKey, assetNamePrefix });
 
   const addFromMediaLibrary = () => {
+    const initialFilterState = initialFilterStateFromFilterTag(filterTag);
+    focusContext.setPendingGroupFocusKey(
+      groupedFocusKeyFromFilterState(initialFilterState)
+    );
+
     runAddClipArt({
       projectId,
       operationContextKey,
