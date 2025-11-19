@@ -71,45 +71,6 @@ const MaybeKeepContentLinkSwitch: React.FC<{
   if (runState.sourceLinkedContentRef.kind === "none") {
     return false;
   }
-
-  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    setKeepLink(evt.target.checked);
-  };
-
-  const onKeyDown: KeyboardEventHandler = (evt) => {
-    // Do not perform action if we've received the event from a child.
-    if (evt.target !== evt.currentTarget) return;
-
-    if (evt.key === " " || evt.key === "Enter") {
-      setKeepLink(!runState.copyKeepsContentLink);
-    }
-  };
-
-  const linkTexts = textsForKeepLink(runState.sourceLinkedContentRef);
-
-  const labelContent = (
-    <span className="current-state-label">
-      <span className="when-true">{linkTexts.trueStatus}</span>
-      <span className="when-false">{linkTexts.falseStatus}</span>
-    </span>
-  );
-
-  return (
-    <Form className="keep-content-link-switch">
-      <Form.Label tabIndex={0} onKeyDown={onKeyDown} className="p-2">
-        <span className="pe-5 fw-bold">{linkTexts.question}</span>
-        <Form.Check
-          label={labelContent}
-          checked={runState.copyKeepsContentLink}
-          aria-checked={runState.copyKeepsContentLink}
-          onChange={onSwitchChange}
-          tabIndex={-1}
-          type="switch"
-          id="custom-switch"
-        />
-      </Form.Label>
-    </Form>
-  );
 };
 
 export const CopyProjectModal = () => {
