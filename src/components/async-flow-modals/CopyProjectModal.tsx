@@ -16,7 +16,7 @@ import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
-import { TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
 
 function textsForKeepLink(ref: LinkedContentRef): TwoStateSwitchTexts {
   switch (ref.kind) {
@@ -71,6 +71,15 @@ const MaybeKeepContentLinkSwitch: React.FC<{
   if (runState.sourceLinkedContentRef.kind === "none") {
     return false;
   }
+
+  return (
+    <TwoStateSwitch
+      className="keep-content-link-switch"
+      texts={textsForKeepLink(runState.sourceLinkedContentRef)}
+      boolState={runState.copyKeepsContentLink}
+      setBoolState={setKeepLink}
+    />
+  );
 };
 
 export const CopyProjectModal = () => {
