@@ -125,6 +125,10 @@ context("Add clipart from library, handling errors", () => {
   });
 });
 
+const assertNEntries = (expNEntries: number) => {
+  cy.get("ul.ClipArtEntriesList li").should("have.length", expNEntries);
+};
+
 context("All/just-tut switch", () => {
   const assertMediaLibSwitchState = (
     expState: "absent" | "all" | "just-this-tutorial"
@@ -135,10 +139,6 @@ context("All/just-tut switch", () => {
       const expBool = expState === "all";
       cy.get(`.all-vs-tutorial-switch input[aria-checked="${expBool}"]`);
     }
-  };
-
-  const assertNEntries = (expNEntries: number) => {
-    cy.get("ul.ClipArtEntriesList li").should("have.length", expNEntries);
   };
 
   [
