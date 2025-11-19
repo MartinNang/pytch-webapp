@@ -22,6 +22,7 @@ import {
   runStateAction,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { assertNever } from "../../utils";
 
 type AddClipArtRunArgs = {
   projectId: ProjectId;
@@ -152,6 +153,23 @@ export let addClipArtFlow: AddClipArtFlow = (() => {
     onCompleted: onAddAssetsCompleted,
   });
 })();
+
+const kTagForShowAll = "__all__";
+export function groupedFocusKeyFromFilterState(
+  filterState: AddClipArtFilterState
+): string {
+  const tagLabel = (() => {
+    switch (filterState.kind) {
+      case "always-all":
+        return kTagForShowAll;
+      case "switchable":
+        return filterState.active ? filterState.tag : kTagForShowAll;
+      default:
+        return assertNever(filterState);
+    }
+  })();
+  return `MediaLibEntries-${tagLabel}`;
+}
 
 export function initialFilterStateFromFilterTag(
   filterTag: string | null
