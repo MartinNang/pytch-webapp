@@ -45,13 +45,14 @@ export const AppearancesList = () => {
   const addFromDevice = () =>
     runAddAssets({ projectId, operationContextKey, assetNamePrefix });
 
-  const addFromMediaLibrary = () =>
+  const addFromMediaLibrary = () => {
     runAddClipArt({
       projectId,
       operationContextKey,
       assetNamePrefix,
       filterTag,
     });
+  };
 
   // Also use this for "key", to make sure the colour switches instantly
   // rather than transitioning when moving from Stage to a Sprite.

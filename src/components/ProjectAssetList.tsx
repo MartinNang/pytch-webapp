@@ -48,13 +48,14 @@ export const ProjectAssetList = () => {
 
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
 
-  const launchClipArtModal = () =>
+  const launchClipArtModal = () => {
     runAddClipArt({
       projectId,
       operationContextKey,
       assetNamePrefix: "",
       filterTag,
     });
+  };
 
   switch (loadState) {
     case "pending":
