@@ -1,5 +1,6 @@
 import { DiffViewKind, PrettyPrintedLine } from "../../../src/model/code-diff";
-import { assertInIDE } from "../utils";
+import { LinkedJrTutorialRef } from "../../../src/model/junior/jr-tutorial";
+import { assertInIDE, withDownloadedZipfile } from "../utils";
 import {
   assertActorNames,
   clickUniqueSelected,
@@ -95,6 +96,32 @@ context("Navigation of per-method lesson", () => {
       jumpToChapter(i);
       assertChapterNumber(i);
     }
+  });
+
+  it("fresh interaction state in zipfile", () => {
+    const assertInteractionStateInZip = (
+      expChapterIndex: number,
+      expNTasksDone: number
+    ) => {
+      withDownloadedZipfile("click", async (fileFromZip) => {
+        const meta = JSON.parse(await fileFromZip("meta.json").async("string"));
+        const lcRef = meta.linkedContentRef as LinkedJrTutorialRef;
+        expect(lcRef.kind).equal("jr-tutorial");
+        expect(lcRef.interactionState.chapterIndex).equal(expChapterIndex);
+        expect(lcRef.interactionState.nTasksDone).equal(expNTasksDone);
+      });
+    };
+
+    assertInteractionStateInZip(0, 0);
+
+    let expNTasks = 0;
+    const expChapterIndex = 4;
+    for (let i = 0; i < expChapterIndex; ++i) {
+      advanceToNextChapter(i);
+      expNTasks += nTasksByChapter[i];
+    }
+
+    assertInteractionStateInZip(expChapterIndex, expNTasks);
   });
 
   it("saves chapter state per project", () => {
