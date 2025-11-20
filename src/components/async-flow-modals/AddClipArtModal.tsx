@@ -34,6 +34,7 @@ import {
   AddClipArtFlow,
   AddClipArtRunState,
 } from "../../model/user-interactions/clipart-gallery-select";
+import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -117,47 +118,23 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
     return <div />;
   }
 
-  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    // UI says "show all?", so set "filter active" to opposite.
-    setFilterActive(!evt.target.checked);
+  const setFilterActiveNegated = (showAll: boolean) => {
+    setFilterActive(!showAll);
   };
 
-  const onKeyDown: KeyboardEventHandler = (evt) => {
-    // Do not perform action if we've received the event from a child.
-    if (evt.target !== evt.currentTarget) return;
-
-    if (evt.key === " " || evt.key === "Enter") {
-      // Toggle:
-      setFilterActive(!filterActive);
-    }
+  const texts: TwoStateSwitchTexts = {
+    question: <span>Show all images?</span>,
+    trueStatus: <span>Showing all images</span>,
+    falseStatus: <span>Showing just images recommended for this tutorial</span>,
   };
-
-  const labelContent = (
-    <span className="current-state-label">
-      <span className="when-true">Showing all images</span>
-      <span className="when-false">
-        Showing just images recommended for this tutorial
-      </span>
-    </span>
-  );
-
-  const showAll = !filterActive;
 
   return (
-    <Form className="all-vs-tutorial-switch">
-      <Form.Label tabIndex={0} onKeyDown={onKeyDown} className="p-2">
-        <span className="pe-5 fw-bold">Show all images?</span>
-        <Form.Check
-          label={labelContent}
-          checked={showAll}
-          aria-checked={showAll}
-          onChange={onSwitchChange}
-          tabIndex={-1}
-          type="switch"
-          id="custom-switch"
-        />
-      </Form.Label>
-    </Form>
+    <TwoStateSwitch
+      className="all-vs-tutorial-switch"
+      texts={texts}
+      boolState={!filterActive}
+      setBoolState={setFilterActiveNegated}
+    />
   );
 };
 

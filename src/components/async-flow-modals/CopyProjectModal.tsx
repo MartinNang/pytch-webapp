@@ -1,9 +1,4 @@
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  KeyboardEventHandler,
-  useRef,
-} from "react";
+import React, { ChangeEvent, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -16,13 +11,9 @@ import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
+import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
 
-type TextsForKeepLink = {
-  question: JSX.Element;
-  trueStatus: JSX.Element;
-  falseStatus: JSX.Element;
-};
-function textsForKeepLink(ref: LinkedContentRef): TextsForKeepLink {
+function textsForKeepLink(ref: LinkedContentRef): TwoStateSwitchTexts {
   switch (ref.kind) {
     case "none": {
       // Should not see this, but just in case:
@@ -76,43 +67,13 @@ const MaybeKeepContentLinkSwitch: React.FC<{
     return false;
   }
 
-  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    setKeepLink(evt.target.checked);
-  };
-
-  const onKeyDown: KeyboardEventHandler = (evt) => {
-    // Do not perform action if we've received the event from a child.
-    if (evt.target !== evt.currentTarget) return;
-
-    if (evt.key === " " || evt.key === "Enter") {
-      setKeepLink(!runState.copyKeepsContentLink);
-    }
-  };
-
-  const linkTexts = textsForKeepLink(runState.sourceLinkedContentRef);
-
-  const labelContent = (
-    <span className="current-state-label">
-      <span className="when-true">{linkTexts.trueStatus}</span>
-      <span className="when-false">{linkTexts.falseStatus}</span>
-    </span>
-  );
-
   return (
-    <Form className="keep-content-link-switch">
-      <Form.Label tabIndex={0} onKeyDown={onKeyDown} className="p-2">
-        <span className="pe-5 fw-bold">{linkTexts.question}</span>
-        <Form.Check
-          label={labelContent}
-          checked={runState.copyKeepsContentLink}
-          aria-checked={runState.copyKeepsContentLink}
-          onChange={onSwitchChange}
-          tabIndex={-1}
-          type="switch"
-          id="custom-switch"
-        />
-      </Form.Label>
-    </Form>
+    <TwoStateSwitch
+      className="keep-content-link-switch"
+      texts={textsForKeepLink(runState.sourceLinkedContentRef)}
+      boolState={runState.copyKeepsContentLink}
+      setBoolState={setKeepLink}
+    />
   );
 };
 

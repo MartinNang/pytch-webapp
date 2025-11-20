@@ -1,0 +1,88 @@
+import React, {
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useId,
+} from "react";
+import { Form } from "react-bootstrap";
+import classNames from "classnames";
+import "./TwoStateSwitch.scss";
+
+export type TwoStateSwitchTexts = {
+  question: JSX.Element;
+  trueStatus: JSX.Element;
+  falseStatus: JSX.Element;
+};
+
+type TwoStateSwitchProps = {
+  texts: TwoStateSwitchTexts;
+  boolState: boolean;
+  setBoolState: (newState: boolean) => void;
+  className?: string;
+};
+export const TwoStateSwitch: React.FC<TwoStateSwitchProps> = ({
+  texts,
+  boolState,
+  setBoolState,
+  className,
+}) => {
+  const formLabelId = `tss__${useId()}`;
+
+  // Bit of trial and error to get this set of functions working.  The
+  // complication is that we want the overall Form.Label to be clickable
+  // as opposed to just the switch and its label, and to be what gets
+  // focus.
+
+  const onLabelKeyDown: KeyboardEventHandler = (evt) => {
+    if (evt.key === " " || evt.key === "Enter") {
+      setBoolState(!boolState);
+    }
+  };
+
+  const onLabelClick = () => {
+    setBoolState(!boolState);
+  };
+
+  const labelContent = (
+    <span className="current-state-label" onClick={onLabelClick}>
+      <span className="when-true">{texts.trueStatus}</span>
+      <span className="when-false">{texts.falseStatus}</span>
+    </span>
+  );
+
+  const onSwitchChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    setBoolState(evt.target.checked);
+  };
+
+  // We want the whole label to be focused, not the switch itself.
+  const onSwitchClick: MouseEventHandler = () => {
+    document.getElementById(formLabelId)?.focus();
+  };
+
+  // The onClick handler for the <Form.Check> seems to also handle
+  // clicks on the containing <Form.Label>.  Looks like native
+  // behaviour?
+
+  const cls = classNames("TwoStateSwitch", className);
+  return (
+    <Form className={cls}>
+      <Form.Label
+        id={formLabelId}
+        className="p-2"
+        tabIndex={0}
+        onKeyDown={onLabelKeyDown}
+      >
+        <span className="pe-5 fw-bold">{texts.question}</span>
+        <Form.Check
+          type="switch"
+          tabIndex={-1}
+          label={labelContent}
+          checked={boolState}
+          aria-checked={boolState}
+          onChange={onSwitchChange}
+          onClick={onSwitchClick}
+        />
+      </Form.Label>
+    </Form>
+  );
+};
