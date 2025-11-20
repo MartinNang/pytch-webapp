@@ -1,8 +1,7 @@
 /// <reference types="cypress" />
 
-import JSZip from "jszip";
 import { stageHalfHeight, stageHalfWidth } from "../../src/constants";
-import { assertCopiedText } from "./utils";
+import { assertCopiedText, withDownloadedZipfile } from "./utils";
 
 context("Stage control actions", () => {
   before(() => {
@@ -65,27 +64,27 @@ context("Stage control actions", () => {
     const fullLabel = `can create a zipfile ready for download (${spec.kind})`;
     it(fullLabel, () => {
       withDownloadedZipfile(spec.kind, async (existingFile) => {
-          const codeJson = await existingFile("code/code.json").async("string");
-          const program = JSON.parse(codeJson);
-          expect(program.kind).equal("flat");
-          expect(program.text).equal("import pytch\n\n");
+        const codeJson = await existingFile("code/code.json").async("string");
+        const program = JSON.parse(codeJson);
+        expect(program.kind).equal("flat");
+        expect(program.text).equal("import pytch\n\n");
 
-          // Following file lengths taken from originals.
+        // Following file lengths taken from originals.
 
-          const imageData = await existingFile(
-            "assets/files/red-rectangle-80-60.png"
-          ).async("uint8array");
-          expect(imageData.byteLength).equal(217);
+        const imageData = await existingFile(
+          "assets/files/red-rectangle-80-60.png"
+        ).async("uint8array");
+        expect(imageData.byteLength).equal(217);
 
-          const soundData = await existingFile(
-            "assets/files/sine-1kHz-2s.mp3"
-          ).async("uint8array");
-          expect(soundData.byteLength).equal(32853);
+        const soundData = await existingFile(
+          "assets/files/sine-1kHz-2s.mp3"
+        ).async("uint8array");
+        expect(soundData.byteLength).equal(32853);
 
-          const assetMetadata = await existingFile(
-            "assets/metadata.json"
-          ).async("string");
-          expect(assetMetadata.length).greaterThan(0);
+        const assetMetadata = await existingFile("assets/metadata.json").async(
+          "string"
+        );
+        expect(assetMetadata.length).greaterThan(0);
       });
     });
   });
