@@ -13,6 +13,11 @@ import {
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { kFocusGroupFallbackClassName } from "../model/junior/grouped-focus";
 import { useMediaLibFilterTag } from "./hooks/tracked-tutorial";
+import {
+  groupedFocusKeyFromFilterState,
+  initialFilterStateFromFilterTag,
+} from "../model/user-interactions/clipart-gallery-select";
+import { useFocusContext } from "./hooks/focus-steering";
 
 type AssetCardProps = {
   asset: AssetPresentation;
@@ -34,6 +39,7 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
 };
 
 export const ProjectAssetList = () => {
+  const focusContext = useFocusContext("flat");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const loadState = useStoreState(
     (state) => state.activeProject.syncState.loadState
@@ -49,6 +55,11 @@ export const ProjectAssetList = () => {
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
 
   const launchClipArtModal = () => {
+    const initialFilterState = initialFilterStateFromFilterTag(filterTag);
+    focusContext.setPendingGroupFocusKey(
+      groupedFocusKeyFromFilterState(initialFilterState)
+    );
+
     runAddClipArt({
       projectId,
       operationContextKey,
