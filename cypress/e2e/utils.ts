@@ -1,3 +1,4 @@
+import JSZip from "jszip";
 import { PytchProgramKind } from "../../src/model/pytch-program";
 import { assertNever, promiseAndResolve } from "../../src/utils";
 
@@ -265,6 +266,54 @@ export function assertInIDE(programKind: PytchProgramKind) {
 export function jumpToTutorialChapter(chapterIndex: number) {
   const selector = `.progress-node-hover-target[data-chapter-index="${chapterIndex}"]`;
   cy.get(selector).click();
+}
+
+////////////////////////////////////////////////////////////////////////
+
+export function withDownloadedZipfile(
+  launchMethod: "click" | "enter",
+  fn: (fileFromZip: (path: string) => JSZip.JSZipObject) => void
+) {
+  cy.pytchChooseDropdownEntry("Download");
+  // We have 'instant delays', so never see the "Preparing" bit.
+  cy.contains("Download zipfile");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cy.window().then(async (window: any) => {
+    let pytchCypress = window["PYTCH_CYPRESS"];
+    pytchCypress["latestDownloadZipfile"] = null;
+
+    cy.get(".modal-body input").type(`{selectAll}cool-project`);
+
+    if (launchMethod === "click") {
+      cy.get("button").contains("Download").click();
+    } else {
+      cy.get(".modal-body input").type("{enter}");
+    }
+
+    const latestDownload = () => pytchCypress["latestDownloadZipfile"];
+    cy.waitUntil(() => latestDownload() != null).then(async () => {
+      const download = latestDownload();
+
+      expect(download.filename).equal("cool-project.zip");
+
+      const blob = download.blob;
+      const zipFile = await JSZip().loadAsync(blob);
+
+      const existingFile = (path: string): JSZip.JSZipObject => {
+        // Unclear why TypeScript tells me this returns JSZipObject
+        // when the type file says it return JSZipObject | null.
+        const obj = zipFile.file(path);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        expect(obj, `file "${path}" within zip`).not.null;
+
+        // TypeScript doesn't understand Cypress control flow, so cast:
+        return obj as JSZip.JSZipObject;
+      };
+
+      fn(existingFile);
+    });
+  });
 }
 
 ////////////////////////////////////////////////////////////////////////
