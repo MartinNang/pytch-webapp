@@ -20,6 +20,7 @@ export const FocusGroupContainer: React.FC<
       ref={focusContext.groupContainerRefCallback(opts)}
       className={classNames(kFocusGroupContainerClassName, className)}
       data-grouped-focus-key={groupedFocusKey}
+      tabIndex={-1}
     >
       {children}
     </div>
