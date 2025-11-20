@@ -116,3 +116,18 @@ make_zipfile() {
        assets/files/snake/images
     make_zipfile v3-jr-asset-file-too-deep
 )
+(
+    make_content_v4_jr
+    echo '{2, 3' > meta.json
+    make_zipfile v4-jr-metadata-malformed-json
+)
+(
+    make_content_v4_jr
+    echo '[2, 3, 4]' > meta.json
+    make_zipfile v4-jr-metadata-not-object
+)
+(
+    make_content_v4_jr
+    echo '{ "projectName": "Hello", "linkedContentRef": { "kind": "banana" } }' > meta.json
+    make_zipfile v4-jr-bad-content-link
+)
