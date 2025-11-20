@@ -3,9 +3,11 @@ import { LinkedJrTutorialRef } from "../../../src/model/junior/jr-tutorial";
 import { assertInIDE, withDownloadedZipfile } from "../utils";
 import {
   assertActorNames,
+  assertTwoStateSwitchState,
   clickUniqueSelected,
   getActivityBarTab,
   renameProject,
+  settleModalDialog,
 } from "./utils";
 
 context("Navigation of per-method lesson", () => {
@@ -122,6 +124,37 @@ context("Navigation of per-method lesson", () => {
     }
 
     assertInteractionStateInZip(expChapterIndex, expNTasks);
+  });
+
+  it("obeys keep-link setting", () => {
+    cy.title().should("not.match", /Pytch: Copy of/);
+    for (let i = 0; i !== 3; ++i) advanceToNextChapter(i);
+
+    cy.pytchChooseDropdownEntry("Make a copy");
+    assertTwoStateSwitchState("keep-content-link-switch", true);
+    settleModalDialog("Make a copy");
+
+    cy.title().should("match", /Pytch: Copy of/);
+    assertChapterNumber(3);
+    cy.get('.LearnerTask[data-task-index="6"][data-task-kind="current"]');
+
+    // help-sidebar, lesson, keynav-help-sidebar
+    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 3);
+  });
+
+  it("obeys sever-link setting", () => {
+    cy.title().should("not.match", /Pytch: Copy of/);
+
+    cy.pytchChooseDropdownEntry("Make a copy");
+    cy.get(".TwoStateSwitch.keep-content-link-switch").click();
+    assertTwoStateSwitchState("keep-content-link-switch", false);
+    settleModalDialog("Make a copy");
+
+    cy.title().should("match", /Pytch: Copy of/);
+    cy.get(".Junior-LessonContent").should("not.exist");
+
+    // help-sidebar, keynav-help-sidebar
+    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 2);
   });
 
   it("saves chapter state per project", () => {
