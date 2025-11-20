@@ -1,4 +1,5 @@
 import { blueColour } from "./crop-scale-constants";
+import { assertInIDE } from "./utils";
 
 context("Upload project from zipfile", () => {
   beforeEach(() => {
@@ -67,6 +68,19 @@ context("Upload project from zipfile", () => {
     cy.get("button.btn-close").click();
     cy.contains("My projects");
     cy.contains("Hello world");
+  });
+
+  it("extracts link to jr-tutorial", () => {
+    cy.pytchTryUploadZipfiles(["v4-jr-linked-to-tutorial.zip"]);
+    assertInIDE("per-method");
+
+    // The known-good chapter-index and n-tasks-done values here are
+    // taken from the script which created the zipfile:
+    //
+    // ${GIT_ROOT}/cypress/fixtures/project-zipfiles/make.sh
+    //
+    cy.get("span.chapter-number").should("have.text", "3 —");
+    cy.get('.LearnerTask[data-task-index="10"][data-task-kind="current"]');
   });
 
   [
