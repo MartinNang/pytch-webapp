@@ -138,6 +138,18 @@ context("Upload project from zipfile", () => {
       zipfile: "v3-jr-asset-file-too-shallow.zip",
       expError: 'top-level entry "python-logo.png"',
     },
+    {
+      zipfile: "v4-jr-metadata-malformed-json.zip",
+      expError: 'could not parse contents of "meta.json"',
+    },
+    {
+      zipfile: "v4-jr-metadata-not-object.zip",
+      expError: "metadata must be non-null",
+    },
+    {
+      zipfile: "v4-jr-bad-content-link",
+      expError: "invalid linkedContentRef data",
+    },
   ].forEach((spec) => {
     it(`rejects zipfile "${spec.zipfile}"`, () => {
       cy.pytchTryUploadZipfiles([spec.zipfile]);
