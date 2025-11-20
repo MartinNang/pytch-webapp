@@ -69,8 +69,6 @@ context("Stage control actions", () => {
         let pytchCypress = window["PYTCH_CYPRESS"];
         pytchCypress["latestDownloadZipfile"] = null;
 
-        const latestDownload = () => pytchCypress["latestDownloadZipfile"];
-
         cy.get(".modal-body input").type(`{selectAll}cool-project`);
 
         if (spec.kind === "click") {
@@ -79,6 +77,7 @@ context("Stage control actions", () => {
           cy.get(".modal-body input").type("{enter}");
         }
 
+        const latestDownload = () => pytchCypress["latestDownloadZipfile"];
         cy.waitUntil(() => latestDownload() != null).then(async () => {
           const download = latestDownload();
 
