@@ -56,7 +56,10 @@ context("Stage control actions", () => {
   // "C-return" in editor?  If user uses browser back button to return
   // to "My Projects"?
 
-  const downloadInitiationTestSpecs = [{ kind: "click" }, { kind: "enter" }];
+  const downloadInitiationTestSpecs = [
+    { kind: "click" },
+    { kind: "enter" },
+  ] as const;
 
   downloadInitiationTestSpecs.forEach((spec) => {
     const fullLabel = `can create a zipfile ready for download (${spec.kind})`;
