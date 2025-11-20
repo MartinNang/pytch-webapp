@@ -118,7 +118,7 @@ context("Kbd-nav of activity bar", () => {
     },
   ];
   initBookmarkSpecs.forEach((spec) =>
-    it.only(`init bookmarked tab (${spec.label})`, () => {
+    it(`init bookmarked tab (${spec.label})`, () => {
       spec.setup();
       cy.get("main").focus();
       realPress("Tab");
