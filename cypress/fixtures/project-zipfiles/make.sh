@@ -145,3 +145,16 @@ make_zipfile() {
 EOT
     make_zipfile v4-jr-linked-to-tutorial
 )
+(
+    make_content_v4_jr
+    cat << EOT > meta.json
+{
+    "projectName": "Hello",
+    "linkedContentRef": {
+        "kind": "specimen",
+        "specimenContentHash": "1234"
+    }
+}
+EOT
+    make_zipfile v4-jr-linked-to-specimen
+)
