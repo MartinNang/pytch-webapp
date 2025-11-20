@@ -131,3 +131,17 @@ make_zipfile() {
     echo '{ "projectName": "Hello", "linkedContentRef": { "kind": "banana" } }' > meta.json
     make_zipfile v4-jr-bad-content-link
 )
+(
+    make_content_v4_jr
+    cat << EOT > meta.json
+{
+    "projectName": "Hello",
+    "linkedContentRef": {
+        "kind": "jr-tutorial",
+        "name": "script-by-script-boing",
+        "interactionState": { "chapterIndex": 3, "nTasksDone": 10 }
+    }
+}
+EOT
+    make_zipfile v4-jr-linked-to-tutorial
+)
