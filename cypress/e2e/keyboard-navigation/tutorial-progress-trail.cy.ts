@@ -120,11 +120,12 @@ context("Tutorial progress trail (locked per-method)", () => {
     ]);
 
     // Should not be able to change focus to a locked chapter's node.
-    // This click will go through and focus <main>.
+    // This click will go through and focus the containing focus-group
+    // div for the progress trail.
     jumpToTutorialChapter(4);
 
-    // Get back to progress trail from <main>:
-    realPress("Tab", 2);
+    // Advance to the progress trail node:
+    realPress("Tab");
     assertNodeFocused(1);
   });
 });
