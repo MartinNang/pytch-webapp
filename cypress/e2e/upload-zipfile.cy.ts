@@ -83,6 +83,18 @@ context("Upload project from zipfile", () => {
     cy.get('.LearnerTask[data-task-index="10"][data-task-kind="current"]');
   });
 
+  it("extracts link to lesson specimen", () => {
+    cy.intercept("GET", "**/_by_content_hash_/1234.zip", {
+      fixture: "lesson-specimens/per-method-blue-invaders.zip",
+    });
+    cy.pytchTryUploadZipfiles(["v4-jr-linked-to-specimen.zip"]);
+    assertInIDE("per-method");
+    cy.get(".Junior-LessonContent-HeaderBar .specimen-name").should(
+      "have.text",
+      "Script-by-script Blue Invaders"
+    );
+  });
+
   [
     {
       zipfile: "not-even-a-zipfile.zip",
