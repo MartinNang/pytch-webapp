@@ -64,42 +64,7 @@ context("Stage control actions", () => {
   downloadInitiationTestSpecs.forEach((spec) => {
     const fullLabel = `can create a zipfile ready for download (${spec.kind})`;
     it(fullLabel, () => {
-      cy.pytchChooseDropdownEntry("Download");
-      // We have 'instant delays', so never see the "Preparing" bit.
-      cy.contains("Download zipfile");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.window().then(async (window: any) => {
-        let pytchCypress = window["PYTCH_CYPRESS"];
-        pytchCypress["latestDownloadZipfile"] = null;
-
-        cy.get(".modal-body input").type(`{selectAll}cool-project`);
-
-        if (spec.kind === "click") {
-          cy.get("button").contains("Download").click();
-        } else {
-          cy.get(".modal-body input").type("{enter}");
-        }
-
-        const latestDownload = () => pytchCypress["latestDownloadZipfile"];
-        cy.waitUntil(() => latestDownload() != null).then(async () => {
-          const download = latestDownload();
-
-          expect(download.filename).equal("cool-project.zip");
-
-          const blob = download.blob;
-          const zipFile = await JSZip().loadAsync(blob);
-
-          const existingFile = (path: string): JSZip.JSZipObject => {
-            // Unclear why TypeScript tells me this returns JSZipObject
-            // when the type file says it return JSZipObject | null.
-            const obj = zipFile.file(path);
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            expect(obj, `file "${path}" within zip`).not.null;
-
-            // TypeScript doesn't understand Cypress control flow, so cast:
-            return obj as JSZip.JSZipObject;
-          };
-
+      withDownloadedZipfile(spec.kind, async (existingFile) => {
           const codeJson = await existingFile("code/code.json").async("string");
           const program = JSON.parse(codeJson);
           expect(program.kind).equal("flat");
@@ -121,7 +86,6 @@ context("Stage control actions", () => {
             "assets/metadata.json"
           ).async("string");
           expect(assetMetadata.length).greaterThan(0);
-        });
       });
     });
   });
