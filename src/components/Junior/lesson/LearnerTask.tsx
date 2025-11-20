@@ -328,6 +328,8 @@ export const LearnerTask: React.FC<LearnerTaskProps> = ({
     <Alert
       transition={false}
       key={keyPath}
+      data-task-index={task.index}
+      data-task-kind={kind}
       variant={alertVariant}
       className={classes}
     >

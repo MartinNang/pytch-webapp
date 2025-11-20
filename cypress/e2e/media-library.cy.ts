@@ -1,6 +1,10 @@
 /// <reference types="cypress" />
 
-import { launchAdd, selectActorAspect } from "./junior/utils";
+import {
+  assertTwoStateSwitchState,
+  launchAdd,
+  selectActorAspect,
+} from "./junior/utils";
 import { kExpNMediaLibEntries } from "./utils";
 
 const launchChooseClipArt = () => {
@@ -136,8 +140,7 @@ context("All/just-tut switch", () => {
     if (expState === "absent") {
       cy.get(".all-vs-tutorial-switch").should("not.exist");
     } else {
-      const expBool = expState === "all";
-      cy.get(`.all-vs-tutorial-switch input[aria-checked="${expBool}"]`);
+      assertTwoStateSwitchState("all-vs-tutorial-switch", expState === "all");
     }
   };
 

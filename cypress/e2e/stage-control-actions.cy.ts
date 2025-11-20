@@ -1,8 +1,7 @@
 /// <reference types="cypress" />
 
-import JSZip from "jszip";
 import { stageHalfHeight, stageHalfWidth } from "../../src/constants";
-import { assertCopiedText } from "./utils";
+import { assertCopiedText, withDownloadedZipfile } from "./utils";
 
 context("Stage control actions", () => {
   before(() => {
@@ -56,70 +55,36 @@ context("Stage control actions", () => {
   // "C-return" in editor?  If user uses browser back button to return
   // to "My Projects"?
 
-  const downloadInitiationTestSpecs = [{ kind: "click" }, { kind: "enter" }];
+  const downloadInitiationTestSpecs = [
+    { kind: "click" },
+    { kind: "enter" },
+  ] as const;
 
   downloadInitiationTestSpecs.forEach((spec) => {
     const fullLabel = `can create a zipfile ready for download (${spec.kind})`;
     it(fullLabel, () => {
-      cy.pytchChooseDropdownEntry("Download");
-      // We have 'instant delays', so never see the "Preparing" bit.
-      cy.contains("Download zipfile");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.window().then(async (window: any) => {
-        let pytchCypress = window["PYTCH_CYPRESS"];
-        pytchCypress["latestDownloadZipfile"] = null;
+      withDownloadedZipfile(spec.kind, async (existingFile) => {
+        const codeJson = await existingFile("code/code.json").async("string");
+        const program = JSON.parse(codeJson);
+        expect(program.kind).equal("flat");
+        expect(program.text).equal("import pytch\n\n");
 
-        const latestDownload = () => pytchCypress["latestDownloadZipfile"];
+        // Following file lengths taken from originals.
 
-        cy.get(".modal-body input").type(`{selectAll}cool-project`);
+        const imageData = await existingFile(
+          "assets/files/red-rectangle-80-60.png"
+        ).async("uint8array");
+        expect(imageData.byteLength).equal(217);
 
-        if (spec.kind === "click") {
-          cy.get("button").contains("Download").click();
-        } else {
-          cy.get(".modal-body input").type("{enter}");
-        }
+        const soundData = await existingFile(
+          "assets/files/sine-1kHz-2s.mp3"
+        ).async("uint8array");
+        expect(soundData.byteLength).equal(32853);
 
-        cy.waitUntil(() => latestDownload() != null).then(async () => {
-          const download = latestDownload();
-
-          expect(download.filename).equal("cool-project.zip");
-
-          const blob = download.blob;
-          const zipFile = await JSZip().loadAsync(blob);
-
-          const existingFile = (path: string): JSZip.JSZipObject => {
-            // Unclear why TypeScript tells me this returns JSZipObject
-            // when the type file says it return JSZipObject | null.
-            const obj = zipFile.file(path);
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            expect(obj, `file "${path}" within zip`).not.null;
-
-            // TypeScript doesn't understand Cypress control flow, so cast:
-            return obj as JSZip.JSZipObject;
-          };
-
-          const codeJson = await existingFile("code/code.json").async("string");
-          const program = JSON.parse(codeJson);
-          expect(program.kind).equal("flat");
-          expect(program.text).equal("import pytch\n\n");
-
-          // Following file lengths taken from originals.
-
-          const imageData = await existingFile(
-            "assets/files/red-rectangle-80-60.png"
-          ).async("uint8array");
-          expect(imageData.byteLength).equal(217);
-
-          const soundData = await existingFile(
-            "assets/files/sine-1kHz-2s.mp3"
-          ).async("uint8array");
-          expect(soundData.byteLength).equal(32853);
-
-          const assetMetadata = await existingFile(
-            "assets/metadata.json"
-          ).async("string");
-          expect(assetMetadata.length).greaterThan(0);
-        });
+        const assetMetadata = await existingFile("assets/metadata.json").async(
+          "string"
+        );
+        expect(assetMetadata.length).greaterThan(0);
       });
     });
   });

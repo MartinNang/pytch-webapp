@@ -21,6 +21,13 @@ make_content_v3_jr() {
     unzip -q ../simple-pytchjr-project.zip
 }
 
+make_content_v4_jr() {
+    rm -rf tmp-content
+    mkdir tmp-content
+    cd tmp-content
+    unzip -q ../simple-v4-jr.zip
+}
+
 make_zipfile() {
     rm -f ../$1.zip
     zip -qr ../$1.zip *
@@ -108,4 +115,46 @@ make_zipfile() {
     cp assets/files/59b7387f-f975-4866-8876-08b762623062/python-logo.png \
        assets/files/snake/images
     make_zipfile v3-jr-asset-file-too-deep
+)
+(
+    make_content_v4_jr
+    echo '{2, 3' > meta.json
+    make_zipfile v4-jr-metadata-malformed-json
+)
+(
+    make_content_v4_jr
+    echo '[2, 3, 4]' > meta.json
+    make_zipfile v4-jr-metadata-not-object
+)
+(
+    make_content_v4_jr
+    echo '{ "projectName": "Hello", "linkedContentRef": { "kind": "banana" } }' > meta.json
+    make_zipfile v4-jr-bad-content-link
+)
+(
+    make_content_v4_jr
+    cat << EOT > meta.json
+{
+    "projectName": "Hello",
+    "linkedContentRef": {
+        "kind": "jr-tutorial",
+        "name": "script-by-script-boing",
+        "interactionState": { "chapterIndex": 3, "nTasksDone": 10 }
+    }
+}
+EOT
+    make_zipfile v4-jr-linked-to-tutorial
+)
+(
+    make_content_v4_jr
+    cat << EOT > meta.json
+{
+    "projectName": "Hello",
+    "linkedContentRef": {
+        "kind": "specimen",
+        "specimenContentHash": "1234"
+    }
+}
+EOT
+    make_zipfile v4-jr-linked-to-specimen
 )

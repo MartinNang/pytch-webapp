@@ -735,3 +735,14 @@ export const assertProgressTrailChapters = (
     expect(gotChapterLockeds).deep.equal(expChapterLockeds);
   });
 };
+
+/** Assert that there is a `TwoStateSwitch` component visible with the
+ * given `className`, whose switch is in the given `expState`. */
+export const assertTwoStateSwitchState = (
+  className: string,
+  expState: boolean
+) => {
+  const selector = `.TwoStateSwitch.${className} input[type="checkbox"]`;
+  const expStateStr = expState.toString();
+  cy.get(selector).should("have.attr", "aria-checked", expStateStr);
+};

@@ -1,4 +1,5 @@
 import { blueColour } from "./crop-scale-constants";
+import { assertInIDE } from "./utils";
 
 context("Upload project from zipfile", () => {
   beforeEach(() => {
@@ -69,6 +70,31 @@ context("Upload project from zipfile", () => {
     cy.contains("Hello world");
   });
 
+  it("extracts link to jr-tutorial", () => {
+    cy.pytchTryUploadZipfiles(["v4-jr-linked-to-tutorial.zip"]);
+    assertInIDE("per-method");
+
+    // The known-good chapter-index and n-tasks-done values here are
+    // taken from the script which created the zipfile:
+    //
+    // ${GIT_ROOT}/cypress/fixtures/project-zipfiles/make.sh
+    //
+    cy.get("span.chapter-number").should("have.text", "3 —");
+    cy.get('.LearnerTask[data-task-index="10"][data-task-kind="current"]');
+  });
+
+  it("extracts link to lesson specimen", () => {
+    cy.intercept("GET", "**/_by_content_hash_/1234.zip", {
+      fixture: "lesson-specimens/per-method-blue-invaders.zip",
+    });
+    cy.pytchTryUploadZipfiles(["v4-jr-linked-to-specimen.zip"]);
+    assertInIDE("per-method");
+    cy.get(".Junior-LessonContent-HeaderBar .specimen-name").should(
+      "have.text",
+      "Script-by-script Blue Invaders"
+    );
+  });
+
   [
     {
       zipfile: "not-even-a-zipfile.zip",
@@ -137,6 +163,18 @@ context("Upload project from zipfile", () => {
     {
       zipfile: "v3-jr-asset-file-too-shallow.zip",
       expError: 'top-level entry "python-logo.png"',
+    },
+    {
+      zipfile: "v4-jr-metadata-malformed-json.zip",
+      expError: 'could not parse contents of "meta.json"',
+    },
+    {
+      zipfile: "v4-jr-metadata-not-object.zip",
+      expError: "metadata must be non-null",
+    },
+    {
+      zipfile: "v4-jr-bad-content-link",
+      expError: "invalid linkedContentRef data",
     },
   ].forEach((spec) => {
     it(`rejects zipfile "${spec.zipfile}"`, () => {

@@ -33,14 +33,15 @@ context("Kbd-nav of activity bar", () => {
     }
 
     assertFocusAfterKey("ArrowDown", "tutorial");
-    assertFocusAfterKey("ArrowDown", "tutorial");
-    assertFocusAfterKey("ArrowUp", "helpsidebar");
-    assertFocusAfterKey("End", "tutorial");
+    assertFocusAfterKey("ArrowDown", "keynavhelp");
+    assertFocusAfterKey("ArrowUp", "tutorial");
+    assertFocusAfterKey("End", "keynavhelp");
     assertFocusAfterKey("Home", "helpsidebar");
     assertFocusAfterKey("Home", "helpsidebar");
     assertFocusAfterKey("ArrowRight", "tutorial");
-    assertFocusAfterKey("ArrowRight", "tutorial");
-    assertFocusAfterKey("ArrowLeft", "helpsidebar");
+    assertFocusAfterKey("ArrowRight", "keynavhelp");
+    assertFocusAfterKey("ArrowRight", "keynavhelp");
+    assertFocusAfterKey("ArrowLeft", "tutorial");
     assertFocusAfterKey("ArrowLeft", "helpsidebar");
     assertFocusAfterKey("ArrowRight", "tutorial");
 
@@ -56,10 +57,16 @@ context("Kbd-nav of activity bar", () => {
     assertActivityAfterEnter("Junior-LessonContent");
     assertActivityAfterEnter(null);
     assertActivityAfterEnter("Junior-LessonContent");
+
     assertFocusAfterKey("ArrowUp", "helpsidebar");
     assertActivityAfterEnter("HelpSidebar");
     assertActivityAfterEnter(null);
     assertActivityAfterEnter("HelpSidebar");
+
+    assertFocusAfterKey("End", "keynavhelp");
+    assertActivityAfterEnter("KeyNavHelpSidebar");
+    assertActivityAfterEnter(null);
+    assertActivityAfterEnter("KeyNavHelpSidebar");
   });
 
   type InitBookmarkSpecT = {
@@ -118,7 +125,7 @@ context("Kbd-nav of activity bar", () => {
     },
   ];
   initBookmarkSpecs.forEach((spec) =>
-    it.only(`init bookmarked tab (${spec.label})`, () => {
+    it(`init bookmarked tab (${spec.label})`, () => {
       spec.setup();
       cy.get("main").focus();
       realPress("Tab");

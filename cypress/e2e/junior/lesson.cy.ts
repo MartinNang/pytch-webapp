@@ -1,10 +1,13 @@
 import { DiffViewKind, PrettyPrintedLine } from "../../../src/model/code-diff";
-import { assertInIDE } from "../utils";
+import { LinkedJrTutorialRef } from "../../../src/model/junior/jr-tutorial";
+import { assertInIDE, withDownloadedZipfile } from "../utils";
 import {
   assertActorNames,
+  assertTwoStateSwitchState,
   clickUniqueSelected,
   getActivityBarTab,
   renameProject,
+  settleModalDialog,
 } from "./utils";
 
 context("Navigation of per-method lesson", () => {
@@ -95,6 +98,63 @@ context("Navigation of per-method lesson", () => {
       jumpToChapter(i);
       assertChapterNumber(i);
     }
+  });
+
+  it("fresh interaction state in zipfile", () => {
+    const assertInteractionStateInZip = (
+      expChapterIndex: number,
+      expNTasksDone: number
+    ) => {
+      withDownloadedZipfile("click", async (fileFromZip) => {
+        const meta = JSON.parse(await fileFromZip("meta.json").async("string"));
+        const lcRef = meta.linkedContentRef as LinkedJrTutorialRef;
+        expect(lcRef.kind).equal("jr-tutorial");
+        expect(lcRef.interactionState.chapterIndex).equal(expChapterIndex);
+        expect(lcRef.interactionState.nTasksDone).equal(expNTasksDone);
+      });
+    };
+
+    assertInteractionStateInZip(0, 0);
+
+    let expNTasks = 0;
+    const expChapterIndex = 4;
+    for (let i = 0; i < expChapterIndex; ++i) {
+      advanceToNextChapter(i);
+      expNTasks += nTasksByChapter[i];
+    }
+
+    assertInteractionStateInZip(expChapterIndex, expNTasks);
+  });
+
+  it("obeys keep-link setting", () => {
+    cy.title().should("not.match", /Pytch: Copy of/);
+    for (let i = 0; i !== 3; ++i) advanceToNextChapter(i);
+
+    cy.pytchChooseDropdownEntry("Make a copy");
+    assertTwoStateSwitchState("keep-content-link-switch", true);
+    settleModalDialog("Make a copy");
+
+    cy.title().should("match", /Pytch: Copy of/);
+    assertChapterNumber(3);
+    cy.get('.LearnerTask[data-task-index="6"][data-task-kind="current"]');
+
+    // help-sidebar, lesson, keynav-help-sidebar
+    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 3);
+  });
+
+  it("obeys sever-link setting", () => {
+    cy.title().should("not.match", /Pytch: Copy of/);
+
+    cy.pytchChooseDropdownEntry("Make a copy");
+    cy.get(".TwoStateSwitch.keep-content-link-switch").click();
+    assertTwoStateSwitchState("keep-content-link-switch", false);
+    settleModalDialog("Make a copy");
+
+    cy.title().should("match", /Pytch: Copy of/);
+    cy.get(".Junior-LessonContent").should("not.exist");
+
+    // help-sidebar, keynav-help-sidebar
+    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 2);
   });
 
   it("saves chapter state per project", () => {
