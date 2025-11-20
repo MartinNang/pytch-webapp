@@ -1,11 +1,6 @@
-import React, {
-  ChangeEventHandler,
-  CSSProperties,
-  KeyboardEventHandler,
-  MouseEventHandler,
-} from "react";
+import React, { CSSProperties, MouseEventHandler } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { Actions } from "easy-peasy";
 import { useStoreState } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,6 +28,7 @@ import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import {
   AddClipArtFlow,
   AddClipArtRunState,
+  groupedFocusKeyFromFilterState,
 } from "../../model/user-interactions/clipart-gallery-select";
 import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
 
@@ -102,19 +98,15 @@ const ClipArtCard: React.FC<ClipArtCardProps> = ({
   );
 };
 
-type MaybeTagFilterSwitchProps = Pick<
-  AddClipArtRunState,
-  "filterTag" | "filterActive"
->;
+type MaybeTagFilterSwitchProps = Pick<AddClipArtRunState, "filterState">;
 const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
-  filterTag,
-  filterActive,
+  filterState,
 }) => {
   const setFilterActive = useFlowActions(
     (f) => f.addClipArtFlow.setFilterActive
   );
 
-  if (filterTag == null) {
+  if (filterState.kind === "always-all") {
     return <div />;
   }
 
@@ -132,16 +124,13 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
     <TwoStateSwitch
       className="all-vs-tutorial-switch"
       texts={texts}
-      boolState={!filterActive}
+      boolState={!filterState.active}
       setBoolState={setFilterActiveNegated}
     />
   );
 };
 
-type SelectionState = Pick<
-  AddClipArtRunState,
-  "selectedIds" | "filterTag" | "filterActive"
->;
+type SelectionState = Pick<AddClipArtRunState, "selectedIds" | "filterState">;
 type SelectionActions = Pick<
   Actions<AddClipArtFlow>,
   "selectItemById" | "deselectItemById"
@@ -155,8 +144,7 @@ type ClipArtGalleryPanelReadyProps = {
 const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   gallery,
   selectedIds,
-  filterTag,
-  filterActive,
+  filterState,
   selectItemById,
   deselectItemById,
 }) => {
@@ -168,8 +156,7 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   // bookmark to the entry closest to it when filterActive changes, but
   // that's quite a lot of work for a gain in usability which is not
   // obviously large.
-  const tagLabel = filterActive ? filterTag ?? "__all__" : "__all__";
-  const groupedFocusKey = `MediaLibEntries-${tagLabel}`;
+  const groupedFocusKey = groupedFocusKeyFromFilterState(filterState);
 
   const onActivate = (elt: HTMLElement) => {
     const entryId = mDataAttrIntValue(elt, "mediaLibEntryId");
@@ -186,9 +173,10 @@ const ClipArtGalleryPanelReady: React.FC<ClipArtGalleryPanelReadyProps> = ({
   const preventDefaultAfterOnActivate = true;
 
   const allEntries = gallery.entries;
-  const entriesToShow = filterActive
-    ? allEntries.filter((entry) => entryMatchesTag(entry, filterTag))
-    : allEntries;
+  const entriesToShow =
+    filterState.kind === "switchable" && filterState.active
+      ? allEntries.filter((entry) => entryMatchesTag(entry, filterState.tag))
+      : allEntries;
 
   return (
     <>
@@ -272,7 +260,7 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds, filterTag, filterActive } = activeState.runState;
+        const { selectedIds, filterState } = activeState.runState;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
@@ -290,8 +278,7 @@ export const AddClipArtModal = () => {
 
         const selectionProps: SelectionProps = {
           selectedIds,
-          filterTag,
-          filterActive,
+          filterState,
           selectItemById,
           deselectItemById,
         };
@@ -303,7 +290,7 @@ export const AddClipArtModal = () => {
               closeButton={isInteractable(activeState)}
             >
               <Modal.Title>Choose some images</Modal.Title>
-              <MaybeTagFilterSwitch {...{ filterTag, filterActive }} />
+              <MaybeTagFilterSwitch filterState={filterState} />
             </Modal.Header>
             <Modal.Body className="clipart-body">
               <ClipArtGalleryPanel {...selectionProps} />

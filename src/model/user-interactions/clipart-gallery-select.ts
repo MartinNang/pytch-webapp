@@ -20,9 +20,9 @@ import {
   AsyncUserFlowSlice,
   AttemptOutcome,
   runStateAction,
-  setRunStateProp,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { assertNever } from "../../utils";
 
 type AddClipArtRunArgs = {
   projectId: ProjectId;
@@ -31,12 +31,15 @@ type AddClipArtRunArgs = {
   filterTag: string | null;
 };
 
+export type AddClipArtFilterState =
+  | { kind: "always-all" }
+  | { kind: "switchable"; tag: string; active: boolean };
+
 export type AddClipArtRunState = {
   projectId: ProjectId;
   operationContext: AssetOperationContext;
   assetNamePrefix: string;
-  filterTag: string | null;
-  filterActive: boolean;
+  filterState: AddClipArtFilterState;
   selectedIds: Array<ClipArtGalleryEntryId>;
 };
 
@@ -61,12 +64,17 @@ async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
   const operationContext = assetOperationContextFromKey(
     args.operationContextKey
   );
+
+  // TODO: Preserve this from one run to the next?
+  const filterState: AddClipArtFilterState = initialFilterStateFromFilterTag(
+    args.filterTag
+  );
+
   return {
     projectId: args.projectId,
     operationContext,
     assetNamePrefix: args.assetNamePrefix,
-    filterTag: args.filterTag, // TODO: Preserve one run to next?
-    filterActive: args.filterTag != null,
+    filterState,
     selectedIds: [],
   };
 }
@@ -124,7 +132,11 @@ async function attempt(
 
 export let addClipArtFlow: AddClipArtFlow = (() => {
   const specificSlice: AddClipArtActions = {
-    setFilterActive: setRunStateProp("filterActive"),
+    setFilterActive: runStateAction((state, filterActive) => {
+      if (state.filterState.kind !== "switchable")
+        throw new Error('state-kind must be "switchable"');
+      state.filterState.active = filterActive;
+    }),
     selectItemById: runStateAction((state, itemId) => {
       if (state.selectedIds.indexOf(itemId) === -1)
         state.selectedIds.push(itemId);
@@ -141,3 +153,28 @@ export let addClipArtFlow: AddClipArtFlow = (() => {
     onCompleted: onAddAssetsCompleted,
   });
 })();
+
+const kTagForShowAll = "__all__";
+export function groupedFocusKeyFromFilterState(
+  filterState: AddClipArtFilterState
+): string {
+  const tagLabel = (() => {
+    switch (filterState.kind) {
+      case "always-all":
+        return kTagForShowAll;
+      case "switchable":
+        return filterState.active ? filterState.tag : kTagForShowAll;
+      default:
+        return assertNever(filterState);
+    }
+  })();
+  return `MediaLibEntries-${tagLabel}`;
+}
+
+export function initialFilterStateFromFilterTag(
+  filterTag: string | null
+): AddClipArtFilterState {
+  return filterTag == null
+    ? { kind: "always-all" }
+    : { kind: "switchable", tag: filterTag, active: true };
+}
