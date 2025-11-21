@@ -1,5 +1,5 @@
 import React from "react";
-import Alert from "react-bootstrap/Alert";
+import Card from "react-bootstrap/Card";
 
 type NoContentHelpProps = {
   actorKind: string;
@@ -13,11 +13,11 @@ export const NoContentHelp: React.FC<NoContentHelpProps> = ({
 }) => {
   const buttonOrButtons = buttonsPlural ? "buttons" : "button";
   return (
-    <Alert className="NoContentHelp" variant="primary">
+    <Card className="NoContentHelp" body>
       <p>
         Your {actorKind} has no {contentKind} yet. Use the {buttonOrButtons}{" "}
         below to add one!
       </p>
-    </Alert>
+    </Card>
   );
 };
