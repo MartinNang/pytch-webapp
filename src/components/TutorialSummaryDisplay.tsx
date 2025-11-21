@@ -84,43 +84,43 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
           <Card.Title>{tutorial.metadata.displayName}</Card.Title>
         </Card.Header>
         <Card.Body ref={alertRef}>
-        {tutorial.metadata.difficulty && (
-          <div className="info-badges">
-            {/* The className is not used in CSS but is used in e2e tests. */}
-            <p className="tag-difficulty">{tutorial.metadata.difficulty}</p>
-            <EditorKindThumbnail programKind={programKind} size="sm" />
+          {tutorial.metadata.difficulty && (
+            <div className="info-badges">
+              {/* The className is not used in CSS but is used in e2e tests. */}
+              <p className="tag-difficulty">{tutorial.metadata.difficulty}</p>
+              <EditorKindThumbnail programKind={programKind} size="sm" />
+            </div>
+          )}
+          <div className="button-bar" ref={buttonsRef}>
+            {showDemoButton && (
+              <Button
+                title="Try this project"
+                disabled={loadingSomeTutorial}
+                variant="outline-primary"
+                onClick={launchDemo}
+              >
+                Demo
+              </Button>
+            )}
+            <Button
+              title="Learn how to make this project"
+              disabled={loadingSomeTutorial}
+              variant="outline-primary"
+              onClick={launchTutorial}
+            >
+              Tutorial
+            </Button>
+            {showShareButton && (
+              <Button
+                title="Share this project"
+                disabled={loadingSomeTutorial}
+                variant="outline-primary"
+                onClick={launchShare}
+              >
+                Share
+              </Button>
+            )}
           </div>
-        )}
-        <div className="button-bar" ref={buttonsRef}>
-          {showDemoButton && (
-            <Button
-              title="Try this project"
-              disabled={loadingSomeTutorial}
-              variant="outline-primary"
-              onClick={launchDemo}
-            >
-              Demo
-            </Button>
-          )}
-          <Button
-            title="Learn how to make this project"
-            disabled={loadingSomeTutorial}
-            variant="outline-primary"
-            onClick={launchTutorial}
-          >
-            Tutorial
-          </Button>
-          {showShareButton && (
-            <Button
-              title="Share this project"
-              disabled={loadingSomeTutorial}
-              variant="outline-primary"
-              onClick={launchShare}
-            >
-              Share
-            </Button>
-          )}
-        </div>
         </Card.Body>
       </Card>
     </li>
