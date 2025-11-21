@@ -106,6 +106,9 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
     }
   };
 
+  // The click handling for tracking the group focus bookmark is a bit
+  // spread out to cover the various cases.
+
   return (
     <li>
       <CaptiveContextMenu.Container
