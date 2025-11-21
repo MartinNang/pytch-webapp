@@ -31,9 +31,16 @@ export const allTutorialSummaries = async () => {
     metadata.displayName = displayName;
 
     patchImageSrcURLs(slug, div);
+
+    // The title (H1) will be rendered separately, from the displayName
+    // metadata property computed above.
+    const contentNodes = Array.from(div.childNodes).filter(
+      (n) => n.nodeName !== "H1"
+    );
+
     summaries.push({
       slug,
-      contentNodes: Array.from(div.childNodes),
+      contentNodes,
       metadata,
     });
   });
