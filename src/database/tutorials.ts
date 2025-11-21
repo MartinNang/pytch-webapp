@@ -38,11 +38,7 @@ export const allTutorialSummaries = async () => {
       (n) => n.nodeName !== "H1"
     );
 
-    summaries.push({
-      slug,
-      contentNodes,
-      metadata,
-    });
+    summaries.push({ slug, contentNodes, metadata });
   });
 
   return summaries;
