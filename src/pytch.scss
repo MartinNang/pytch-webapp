@@ -153,6 +153,7 @@ $tutorial-display-side-margin: 3rem;
 //
 // TODO: Tidy up duplication of styling here vs in project-list.scss
 //
+.TutorialCard,
 .ProjectCard {
   border: 1px solid $border-subdued-color;
   border-radius: calc(var(--bs-card-border-radius) + 0.25px);
@@ -177,9 +178,11 @@ $tutorial-display-side-margin: 3rem;
   }
 }
 
-.alert.TutorialCard {
+.TutorialCard {
   background-color: $secondary-bg-color;
   position: relative;
+  margin-bottom: 2rem;
+
   .info-badges {
     position: absolute;
     top: 0.5rem;
