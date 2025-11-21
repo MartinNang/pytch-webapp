@@ -150,6 +150,25 @@ $tutorial-display-side-margin: 3rem;
   }
 }
 
+//
+// TODO: Tidy up duplication of styling here vs in project-list.scss
+//
+.ProjectCard {
+  .card-header {
+    position: relative;
+    background-color: $pytch-colour-accent-lavender;
+    .h5 {
+      margin: 0.25rem 0px;
+      text-align: center;
+      font-size: 1.25rem;
+    }
+  }
+  .card-body {
+    position: relative;
+    background-color: $secondary-bg-color;
+  }
+}
+
 .alert.TutorialCard {
   background-color: $secondary-bg-color;
   position: relative;
