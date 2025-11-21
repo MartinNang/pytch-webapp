@@ -113,7 +113,7 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
         className={focusGroupItemClass("ProjectCard-wrapper")}
         onActivate={onActivate}
       >
-        <Card className="ProjectCard">
+        <Card className="ProjectCard" onClick={focusContext.onGroupItemClick}>
           <Card.Header>
             <Card.Title className="project-name">
               {project.summary.name}
