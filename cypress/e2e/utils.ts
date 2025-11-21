@@ -78,6 +78,14 @@ export function interceptDemoZipfile(demoStem: string) {
   });
 }
 
+/** Assuming we're on the "My projects" page, click the project card at
+ * the given `projectIndex`.  This will open the project if we're not in
+ * "selection mode", or toggle the selection status of that project if
+ * we are in "selection mode". */
+export const clickProjectCard = (projectIndex: number) => {
+  cy.get(".ProjectList ol li").eq(projectIndex).click();
+};
+
 /** Assuming we're on the "My projects" page, focus the project card at
  * the given `projectIndex` by clicking.  We can't click on the body of
  * the card because that would open the project.  Instead we, by
