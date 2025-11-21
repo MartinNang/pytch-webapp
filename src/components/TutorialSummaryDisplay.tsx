@@ -4,7 +4,7 @@ import {
   ITutorialSummary,
   SingleTutorialDisplayKind,
 } from "../model/tutorials";
-import Alert from "react-bootstrap/Alert";
+import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import LoadingOverlay from "./LoadingOverlay";
 import { PytchProgramKind } from "../model/pytch-program";
@@ -79,12 +79,11 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
       <LoadingOverlay show={loadingThisTutorial}>
         <p>Creating project for tutorial...</p>
       </LoadingOverlay>
-      <Alert
-        data-slug={tutorial.slug}
-        className="TutorialCard"
-        variant="success"
-        ref={alertRef}
-      >
+      <Card data-slug={tutorial.slug} className="TutorialCard">
+        <Card.Header>
+          <Card.Title>{tutorial.metadata.displayName}</Card.Title>
+        </Card.Header>
+        <Card.Body ref={alertRef}>
         {tutorial.metadata.difficulty && (
           <div className="info-badges">
             {/* The className is not used in CSS but is used in e2e tests. */}
@@ -122,7 +121,8 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
             </Button>
           )}
         </div>
-      </Alert>
+        </Card.Body>
+      </Card>
     </li>
   );
 };
