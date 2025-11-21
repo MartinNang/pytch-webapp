@@ -169,20 +169,8 @@ $project-display-side-margin: 3rem;
 }
 
 .ProjectCard {
-  border: 1px solid $border-subdued-color;
-  border-radius: calc(var(--bs-card-border-radius) + 0.25px);
   cursor: pointer;
   margin-bottom: 0px;
-
-  .card-header {
-    border-radius: var(--bs-card-inner-border-radius)
-      var(--bs-card-inner-border-radius) 0px 0px;
-  }
-
-  .card-body {
-    border-radius: 0px 0px var(--bs-card-inner-border-radius)
-      var(--bs-card-inner-border-radius);
-  }
 
   .dropdown-wrapper {
     position: absolute;
