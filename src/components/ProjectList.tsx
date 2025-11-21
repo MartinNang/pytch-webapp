@@ -5,10 +5,10 @@ import React, {
 } from "react";
 import { IDisplayedProjectSummary, LoadingStatus } from "../model/projects";
 import { useStoreState, useStoreActions } from "../store";
-import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import NavBanner from "./NavBanner";
+import Card from "react-bootstrap/Card";
 import { pathWithinApp } from "../env-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
@@ -113,23 +113,11 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
         className={focusGroupItemClass("ProjectCard-wrapper")}
         onActivate={onActivate}
       >
-        <Alert className="ProjectCard" variant="success">
-          <div
-            className="project-card-content"
-            data-project-id={project.summary.id}
-          >
-            <span
-              className={`selection-check${maybeSelectedExtraClass}`}
-              onClick={onToggleIsSelected}
-            >
-              <FontAwesomeIcon className="fa-lg" icon="check-circle" />
-            </span>
-            <div className="project-description">
-              <p className="project-name">{project.summary.name}</p>
-              <MtimeDisplay mtime={project.summary.mtime} />
-              <p className="project-summary">{summary}</p>
-            </div>
-            <EditorKindThumbnail programKind={project.summary.programKind} />
+        <Card className="ProjectCard">
+          <Card.Header>
+            <Card.Title className="project-name">
+              {project.summary.name}
+            </Card.Title>
             <div
               className="dropdown-wrapper"
               onClick={(e) => {
@@ -154,8 +142,26 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
                 </CaptiveContextMenu.DropdownItem>
               </CaptiveContextMenu.DropdownMenu>
             </div>
-          </div>
-        </Alert>
+          </Card.Header>
+          <Card.Body>
+            <div
+              className="project-card-content"
+              data-project-id={project.summary.id}
+            >
+              <span
+                className={`selection-check${maybeSelectedExtraClass}`}
+                onClick={onToggleIsSelected}
+              >
+                <FontAwesomeIcon className="fa-lg" icon="check-circle" />
+              </span>
+              <div className="project-description">
+                <MtimeDisplay mtime={project.summary.mtime} />
+                <p className="project-summary">{summary}</p>
+              </div>
+              <EditorKindThumbnail programKind={project.summary.programKind} />
+            </div>
+          </Card.Body>
+        </Card>
       </CaptiveContextMenu.Container>
     </li>
   );
