@@ -95,9 +95,7 @@ $tutorial-display-side-margin: 3rem;
       margin: auto;
       max-width: 52rem;
       p {
-        margin: 0px;
-        padding: 1.25rem 0px;
-        font-size: 1.125rem;
+        font-size: 18px;
       }
 
       div:after {
@@ -109,7 +107,7 @@ $tutorial-display-side-margin: 3rem;
   }
   .image-container {
     float: right;
-    margin: 2.5rem 2rem 0rem 2rem;
+    margin: 0.5rem 2rem;
   }
   .dropdown-wrapper {
     float: right;
