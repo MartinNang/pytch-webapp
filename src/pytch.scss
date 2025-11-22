@@ -179,7 +179,7 @@ $tutorial-display-side-margin: 3rem;
 .TutorialCard {
   background-color: $secondary-bg-color;
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 
   .tutorial-card-header {
     .difficulty-badge {
@@ -234,16 +234,16 @@ $tutorial-display-side-margin: 3rem;
     }
   }
 
-  .button-bar {
-    display: inline-block;
-    button {
-      margin: 0.5rem 1.5rem 1.5rem;
+  .card-footer {
+    background-color: $secondary-bg-color;
+  }
 
-      &:first-child {
-        margin-left: 0rem;
-      }
-      &:last-child {
-        margin-right: 0rem;
+  .button-bar {
+    text-align: center;
+    button {
+      margin: 0.25rem 0.5rem;
+      @media (width >= 768px) {
+        margin: 0.25rem 1.5rem;
       }
     }
   }
