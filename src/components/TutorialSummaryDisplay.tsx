@@ -74,6 +74,15 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
     kind === "tutorial-and-demo" || kind === "tutorial-demo-and-share";
   const showShareButton = kind === "tutorial-demo-and-share";
 
+  // The className is not used in CSS but is used in e2e tests.
+  const maybeDifficultyBadge = tutorial.metadata.difficulty && (
+    <p className="tag-difficulty m-0">
+      <span className="d-inline-block">{tutorial.metadata.difficulty}</span>
+    </p>
+  );
+
+  const kindBadge = <EditorKindThumbnail programKind={programKind} size="sm" />;
+
   return (
     <li>
       <LoadingOverlay show={loadingThisTutorial}>
@@ -81,16 +90,13 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
       </LoadingOverlay>
       <Card data-slug={tutorial.slug} className="TutorialCard">
         <Card.Header>
-          <Card.Title>{tutorial.metadata.displayName}</Card.Title>
+          <div className="tutorial-card-header">
+            <div className="difficulty-badge">{maybeDifficultyBadge}</div>
+            <Card.Title as="h3">{tutorial.metadata.displayName}</Card.Title>
+            <div className="program-kind-badge">{kindBadge}</div>
+          </div>
         </Card.Header>
         <Card.Body ref={alertRef}>
-          {tutorial.metadata.difficulty && (
-            <div className="info-badges">
-              {/* The className is not used in CSS but is used in e2e tests. */}
-              <p className="tag-difficulty">{tutorial.metadata.difficulty}</p>
-              <EditorKindThumbnail programKind={programKind} size="sm" />
-            </div>
-          )}
           <div className="button-bar" ref={buttonsRef}>
             {showDemoButton && (
               <Button
