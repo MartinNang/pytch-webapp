@@ -183,15 +183,39 @@ $tutorial-display-side-margin: 3rem;
   position: relative;
   margin-bottom: 2rem;
 
-  .info-badges {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+  .tutorial-card-header {
+    .difficulty-badge {
+      grid-area: difficulty;
+      text-align: left;
+      align-self: center;
+    }
+    .card-title {
+      grid-area: title;
+      align-self: center;
+    }
+    .program-kind-badge {
+      grid-area: prog-kind;
+      text-align: right;
+    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "difficulty prog-kind" "title title";
 
-    display: flex;
-    flex-direction: row;
-    align-items: start;
+    h3 {
+      text-align: center;
+      margin: 0.75rem 0px 0.5rem;
+    }
 
+    @media (width >= 768px) {
+      grid-template-columns: 2fr 7fr 2fr;
+      grid-template-areas: "difficulty title prog-kind";
+      h3 {
+        margin: 0px;
+      }
+    }
+  }
+
+  .card-header {
     .EditorKindThumbnail {
       &,
       img {
@@ -202,10 +226,13 @@ $tutorial-display-side-margin: 3rem;
       margin-left: 0.75rem;
     }
 
-    p {
-      padding: 0.25rem 0.5rem;
-      background-color: mintcream;
-      border-radius: 5px;
+    p.tag-difficulty {
+      font-size: 15px;
+      span {
+        background-color: mintcream;
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+      }
     }
   }
 
