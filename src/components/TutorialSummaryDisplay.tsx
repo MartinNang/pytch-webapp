@@ -48,7 +48,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
 
     if (elt.hasAttribute("data-populated")) return;
     for (const ch of tutorial.contentNodes) {
-      elt.insertBefore(ch, buttonsElt);
+      elt.appendChild(ch);
     }
     elt.setAttribute("data-populated", "yes");
   });
@@ -96,7 +96,8 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
             <div className="program-kind-badge">{kindBadge}</div>
           </div>
         </Card.Header>
-        <Card.Body ref={alertRef}>
+        <Card.Body ref={alertRef} />
+        <Card.Footer>
           <div className="button-bar" ref={buttonsRef}>
             {showDemoButton && (
               <Button
@@ -127,7 +128,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
               </Button>
             )}
           </div>
-        </Card.Body>
+        </Card.Footer>
       </Card>
     </li>
   );
