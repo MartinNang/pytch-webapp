@@ -134,18 +134,18 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
               You have already started work on <em>{flowState.projectName}</em>
             </h2>
             <h3>Open a fresh copy of the lesson’s code:</h3>
-            <ul className="project-from-specimen-choices">
+            <ol className="project-from-specimen-choices">
               <CreateNewOptionCard option={flowState.startAfreshOption} />
-            </ul>
+            </ol>
             <h3>Open an existing project for this lesson:</h3>
-            <ul className="project-from-specimen-choices">
+            <ol className="project-from-specimen-choices">
               {flowState.existingProjectOptions.map((projectSummary) => (
                 <OpenExistingOptionCard
                   key={projectSummary.id}
                   projectSummary={projectSummary}
                 />
               ))}
-            </ul>
+            </ol>
           </>
         );
       }
