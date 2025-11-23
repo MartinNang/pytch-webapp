@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { demoURLFromId } from "../storage/zipfile";
 import { useStoreActions, useStoreState } from "../store";
 import NavBanner from "./NavBanner";
-import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import LoadingOverlay from "./LoadingOverlay";
 import { Link } from "./LinkWithinApp";
 import { useParams } from "react-router-dom";
 import { EmptyProps } from "../utils";
+import { Card } from "react-bootstrap";
 
 export const DemoFromZipfileURL: React.FC<EmptyProps> = () => {
   const params = useParams();
@@ -87,9 +87,9 @@ export const DemoFromZipfileURL: React.FC<EmptyProps> = () => {
             <LoadingOverlay show={isCreating}>
               <p>Creating project for demo...</p>
             </LoadingOverlay>
-            <Alert className="TutorialCard demo-only" variant="success">
+            <Card body className="TutorialCard demo-only">
               {content}
-            </Alert>
+            </Card>
           </li>
         </ul>
       </div>
