@@ -4,7 +4,7 @@ import { EmptyProps, assertNever } from "../utils";
 import { useParams } from "react-router-dom";
 import { IProjectSummary } from "../model/projects";
 import NavBanner from "./NavBanner";
-import { Alert, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { MtimeDisplay } from "./MtimeDisplay";
 import { StartAfreshOption } from "../model/project-from-specimen";
 
@@ -26,7 +26,11 @@ const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
       className="project-from-specimen-candidate start-afresh"
       data-start-afresh-kind={option.kind}
     >
-      <Alert className="ProjectCard" variant="success" onClick={startAfresh}>
+      <Card className="ProjectCard" onClick={startAfresh}>
+        <Card.Header>
+          <Card.Title>Create a new project</Card.Title>
+        </Card.Header>
+        <Card.Body>
         <div className="project-card-content">
           <div className="project-description">
             <p className="project-name">
@@ -34,11 +38,12 @@ const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
             </p>
           </div>
           <div className="dropdown-wrapper">
-            {/* Click on button passes up to <Alert>'s handler. */}
+            {/* Click on button passes up to <Card>'s handler. */}
             <Button>Start again</Button>
           </div>
         </div>
-      </Alert>
+        </Card.Body>
+      </Card>
     </li>
   );
 };
@@ -61,10 +66,13 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
       className="project-from-specimen-candidate open-existing"
       data-project-id={projectSummary.id}
     >
-      <Alert className="ProjectCard" variant="success" onClick={openExisting}>
+      <Card className="ProjectCard" onClick={openExisting}>
+        <Card.Header>
+          <Card.Title>{projectSummary.name}</Card.Title>
+        </Card.Header>
+        <Card.Body>
         <div className="project-card-content">
           <div className="project-description">
-            <p className="project-name">{projectSummary.name}</p>
             <MtimeDisplay mtime={projectSummary.mtime} />
             {
               /* We'll omit the <P> for an empty summary; this is OK. */
@@ -77,7 +85,8 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
             <Button>Open</Button>
           </div>
         </div>
-      </Alert>
+        </Card.Body>
+      </Card>
     </li>
   );
 };
