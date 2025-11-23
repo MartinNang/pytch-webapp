@@ -53,6 +53,21 @@
   outline: none;
 }
 
+.CodeDiffHelpModal {
+  .card {
+    background-color: $secondary-bg-color;
+    margin: 1.5rem 0px;
+
+    &:first-child {
+      margin-top: 0px;
+    }
+
+    p {
+      margin: 0.5rem;
+    }
+  }
+}
+
 .CodeDiffHelpModal span.add-code-icon,
 div.patch-container .copy-hint span.add-code-icon {
   background-color: #8aef8a;
