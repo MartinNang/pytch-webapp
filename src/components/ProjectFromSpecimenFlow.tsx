@@ -7,8 +7,12 @@ import NavBanner from "./NavBanner";
 import { Button, Card } from "react-bootstrap";
 import { MtimeDisplay } from "./MtimeDisplay";
 import { StartAfreshOption } from "../model/project-from-specimen";
+import classNames from "classnames";
 
 // Styling for these is in the project-list.scss file.
+
+const candidateClassname = (kind: "start-afresh" | "open-existing"): string =>
+  classNames("project-from-specimen-candidate", "ProjectCard-wrapper", kind);
 
 type CreateNewOptionCardProps = { option: StartAfreshOption };
 const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
@@ -23,7 +27,7 @@ const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
 
   return (
     <li
-      className="project-from-specimen-candidate start-afresh"
+      className={candidateClassname("start-afresh")}
       data-start-afresh-kind={option.kind}
     >
       <Card className="ProjectCard" onClick={startAfresh}>
@@ -63,7 +67,7 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
 
   return (
     <li
-      className="project-from-specimen-candidate open-existing"
+      className={candidateClassname("open-existing")}
       data-project-id={projectSummary.id}
     >
       <Card className="ProjectCard" onClick={openExisting}>
