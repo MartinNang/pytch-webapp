@@ -29,7 +29,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
 
   const runShareTutorial = useRunFlow((f) => f.shareTutorialFlow);
 
-  const alertRef: React.RefObject<HTMLDivElement> = createRef();
+  const cardRef: React.RefObject<HTMLDivElement> = createRef();
   const buttonsRef: React.RefObject<HTMLDivElement> = createRef();
 
   const maybeSlugCreating = useStoreState(
@@ -42,7 +42,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
   const loadingThisTutorial = maybeSlugCreating === tutorial.slug;
 
   useEffect(() => {
-    let elt = alertRef.current;
+    let elt = cardRef.current;
     const buttonsElt = buttonsRef.current;
     if (elt == null || buttonsElt == null) return;
 
@@ -96,7 +96,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
             <div className="program-kind-badge">{kindBadge}</div>
           </div>
         </Card.Header>
-        <Card.Body ref={alertRef} />
+        <Card.Body ref={cardRef} />
         <Card.Footer>
           <div className="button-bar" ref={buttonsRef}>
             {showDemoButton && (
