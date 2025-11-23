@@ -129,7 +129,7 @@ context("Front page", () => {
         return style.getPropertyValue("display") === "block";
       });
     const assertVisibleCardNames = (expNames: Array<string>) => {
-      cy.get(".alert.TutorialMiniCard")
+      cy.get(".card.TutorialMiniCard")
         .should("have.length", kTotalNCards)
         .then(($alerts) => {
           const gotNames = visibleCards($alerts).map(
@@ -169,7 +169,7 @@ context("Front page", () => {
 
     it("launches demo", () => {
       cy.viewport(1440, 960);
-      cy.get(".alert.TutorialMiniCard").contains("Boing").click();
+      cy.get(".card.TutorialMiniCard").contains("Boing").click();
       cy.get(".Junior-InfoPanel");
       cy.get(".ReadOnlyOverlay").should("not.exist");
       cy.go("back");
