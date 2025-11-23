@@ -23,14 +23,22 @@ export const allTutorialSummaries = async () => {
     const div = elt as HTMLDivElement;
     const slug = failIfNull(div.dataset.tutorialName, "no slug found");
 
+    const h1 = failIfNull(div.querySelector("h1"), "no h1 found");
+    const displayName = h1.innerText;
+
     const metadata_string = div.dataset.metadataJson || "{}";
     const metadata = JSON.parse(metadata_string);
+    metadata.displayName = displayName;
+
     patchImageSrcURLs(slug, div);
-    summaries.push({
-      slug,
-      contentNodes: Array.from(div.childNodes),
-      metadata,
-    });
+
+    // The title (H1) will be rendered separately, from the displayName
+    // metadata property computed above.
+    const contentNodes = Array.from(div.childNodes).filter(
+      (n) => n.nodeName !== "H1"
+    );
+
+    summaries.push({ slug, contentNodes, metadata });
   });
 
   return summaries;

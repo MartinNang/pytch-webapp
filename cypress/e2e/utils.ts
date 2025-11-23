@@ -78,6 +78,14 @@ export function interceptDemoZipfile(demoStem: string) {
   });
 }
 
+/** Assuming we're on the "My projects" page, click the project card at
+ * the given `projectIndex`.  This will open the project if we're not in
+ * "selection mode", or toggle the selection status of that project if
+ * we are in "selection mode". */
+export const clickProjectCard = (projectIndex: number) => {
+  cy.get(".ProjectList ol li").eq(projectIndex).click();
+};
+
 /** Assuming we're on the "My projects" page, focus the project card at
  * the given `projectIndex` by clicking.  We can't click on the body of
  * the card because that would open the project.  Instead we, by
@@ -174,15 +182,13 @@ export function assertProjectsSelected(
 }
 
 /** Assuming we're on the "Tutorials" page, launch the Share modal for
- * the unique tutorial whose name matches the given `nameMatch`. */
-export const launchShareTutorialModal = (nameMatch: string) => {
-  cy.get("ul.tutorial-list li")
-    .contains(nameMatch)
+ * the unique tutorial with the given `slug`. */
+export const launchShareTutorialModal = (slug: string) => {
+  cy.get(`ul.tutorial-list li div[data-slug="${slug}"]`)
     .should("have.length", 1)
-    .parent()
-    .within(() => {
-      cy.get("button").contains("Share").click();
-    });
+    .find("button")
+    .contains("Share")
+    .click();
 };
 
 /** Assuming we're on the "My project" page, launch the "Create project"

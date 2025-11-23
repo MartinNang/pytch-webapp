@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from "react";
-import Alert from "react-bootstrap/Alert";
 import { useStoreActions, useStoreState } from "../store";
 import { envVarOrFail } from "../env-utils";
 import LoadingOverlay from "./LoadingOverlay";
 import classNames from "classnames";
+import { Card } from "react-bootstrap";
 
 // TODO: Replace this temporary solution with something more integrated
 // with the pytch-tutorials repo.
@@ -41,13 +41,13 @@ const TutorialMiniCard: React.FC<TutorialMiniCardProps> = ({
     ? () => void 0
     : () => createDemoFromTutorial(slug);
 
-  const alertClass = classNames(
+  const cardClass = classNames(
     "TutorialMiniCard",
     loadingSomeDemo ? "disabled" : "enabled"
   );
 
   return (
-    <Alert className={alertClass} onClick={maybeLaunchDemo}>
+    <Card body className={cardClass} onClick={maybeLaunchDemo}>
       <h3>{title}</h3>
       <p className="screenshot-container">
         <img
@@ -60,7 +60,7 @@ const TutorialMiniCard: React.FC<TutorialMiniCardProps> = ({
       <LoadingOverlay show={loadingThisDemo}>
         <p>Loading...</p>
       </LoadingOverlay>
-    </Alert>
+    </Card>
   );
 };
 

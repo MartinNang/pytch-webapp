@@ -4,7 +4,7 @@ import {
   ITutorialSummary,
   SingleTutorialDisplayKind,
 } from "../model/tutorials";
-import Alert from "react-bootstrap/Alert";
+import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import LoadingOverlay from "./LoadingOverlay";
 import { PytchProgramKind } from "../model/pytch-program";
@@ -29,7 +29,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
 
   const runShareTutorial = useRunFlow((f) => f.shareTutorialFlow);
 
-  const alertRef: React.RefObject<HTMLDivElement> = createRef();
+  const cardRef: React.RefObject<HTMLDivElement> = createRef();
   const buttonsRef: React.RefObject<HTMLDivElement> = createRef();
 
   const maybeSlugCreating = useStoreState(
@@ -42,13 +42,13 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
   const loadingThisTutorial = maybeSlugCreating === tutorial.slug;
 
   useEffect(() => {
-    let elt = alertRef.current;
+    let elt = cardRef.current;
     const buttonsElt = buttonsRef.current;
     if (elt == null || buttonsElt == null) return;
 
     if (elt.hasAttribute("data-populated")) return;
     for (const ch of tutorial.contentNodes) {
-      elt.insertBefore(ch, buttonsElt);
+      elt.appendChild(ch);
     }
     elt.setAttribute("data-populated", "yes");
   });
@@ -74,55 +74,62 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
     kind === "tutorial-and-demo" || kind === "tutorial-demo-and-share";
   const showShareButton = kind === "tutorial-demo-and-share";
 
+  // The className is not used in CSS but is used in e2e tests.
+  const maybeDifficultyBadge = tutorial.metadata.difficulty && (
+    <p className="tag-difficulty m-0">
+      <span className="d-inline-block">{tutorial.metadata.difficulty}</span>
+    </p>
+  );
+
+  const kindBadge = <EditorKindThumbnail programKind={programKind} size="sm" />;
+
   return (
     <li>
       <LoadingOverlay show={loadingThisTutorial}>
         <p>Creating project for tutorial...</p>
       </LoadingOverlay>
-      <Alert
-        data-slug={tutorial.slug}
-        className="TutorialCard"
-        variant="success"
-        ref={alertRef}
-      >
-        {tutorial.metadata.difficulty && (
-          <div className="info-badges">
-            {/* The className is not used in CSS but is used in e2e tests. */}
-            <p className="tag-difficulty">{tutorial.metadata.difficulty}</p>
-            <EditorKindThumbnail programKind={programKind} size="sm" />
+      <Card data-slug={tutorial.slug} className="TutorialCard">
+        <Card.Header>
+          <div className="tutorial-card-header">
+            <div className="difficulty-badge">{maybeDifficultyBadge}</div>
+            <Card.Title as="h3">{tutorial.metadata.displayName}</Card.Title>
+            <div className="program-kind-badge">{kindBadge}</div>
           </div>
-        )}
-        <div className="button-bar" ref={buttonsRef}>
-          {showDemoButton && (
+        </Card.Header>
+        <Card.Body ref={cardRef} />
+        <Card.Footer>
+          <div className="button-bar" ref={buttonsRef}>
+            {showDemoButton && (
+              <Button
+                title="Try this project"
+                disabled={loadingSomeTutorial}
+                variant="outline-primary"
+                onClick={launchDemo}
+              >
+                Demo
+              </Button>
+            )}
             <Button
-              title="Try this project"
+              title="Learn how to make this project"
               disabled={loadingSomeTutorial}
               variant="outline-primary"
-              onClick={launchDemo}
+              onClick={launchTutorial}
             >
-              Demo
+              Tutorial
             </Button>
-          )}
-          <Button
-            title="Learn how to make this project"
-            disabled={loadingSomeTutorial}
-            variant="outline-primary"
-            onClick={launchTutorial}
-          >
-            Tutorial
-          </Button>
-          {showShareButton && (
-            <Button
-              title="Share this project"
-              disabled={loadingSomeTutorial}
-              variant="outline-primary"
-              onClick={launchShare}
-            >
-              Share
-            </Button>
-          )}
-        </div>
-      </Alert>
+            {showShareButton && (
+              <Button
+                title="Share this project"
+                disabled={loadingSomeTutorial}
+                variant="outline-primary"
+                onClick={launchShare}
+              >
+                Share
+              </Button>
+            )}
+          </div>
+        </Card.Footer>
+      </Card>
     </li>
   );
 };

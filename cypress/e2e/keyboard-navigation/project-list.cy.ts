@@ -3,6 +3,7 @@ import {
   assertModalWithTitle,
   assertNoModal,
   assertProjectsSelected,
+  clickProjectCard,
   focusProjectCardViaMouse,
 } from "../utils";
 import { assertFocus, chooseCcMenuItem, kShiftTab, realPress } from "./utils";
@@ -132,6 +133,14 @@ context("My projects list", () => {
 
     realPress(kShiftTab, 2);
     assertFocus("selected-projects-back-button");
+  });
+
+  it("bookmark tracks multiple selection", () => {
+    focusProjectCardViaMouse(1);
+    realPress("x");
+    clickProjectCard(0);
+    realPress("ArrowDown");
+    assertFocus("project-card", 1);
   });
 
   function selectTwoProjects() {

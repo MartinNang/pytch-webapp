@@ -449,7 +449,8 @@ context("Modals are cancelled when navigating away", () => {
 
   itCanAbandon("share tutorial", {
     page: { kind: "tutorials" },
-    runModal: () => launchShareTutorialModal("Shoot the fruit"),
+    runModal: () =>
+      launchShareTutorialModal("script-by-script-shoot-the-fruit"),
   });
 
   itCanAbandon("code diff help", {

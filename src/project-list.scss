@@ -168,16 +168,18 @@ $project-display-side-margin: 3rem;
   margin: 0.5rem 0px;
 }
 
-.alert.ProjectCard {
-  background-color: $secondary-bg-color;
-  border-color: $border-subdued-color;
+.ProjectCard {
   cursor: pointer;
   margin-bottom: 0px;
 
   .dropdown-wrapper {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     align-self: flex-start;
   }
   .dropdown-toggle {
+    font-size: 1.125rem;
     display: grid;
     grid-template-columns: auto auto;
     place-items: center center;

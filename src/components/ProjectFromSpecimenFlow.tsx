@@ -4,11 +4,15 @@ import { EmptyProps, assertNever } from "../utils";
 import { useParams } from "react-router-dom";
 import { IProjectSummary } from "../model/projects";
 import NavBanner from "./NavBanner";
-import { Alert, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { MtimeDisplay } from "./MtimeDisplay";
 import { StartAfreshOption } from "../model/project-from-specimen";
+import classNames from "classnames";
 
 // Styling for these is in the project-list.scss file.
+
+const candidateClassname = (kind: "start-afresh" | "open-existing"): string =>
+  classNames("project-from-specimen-candidate", "ProjectCard-wrapper", kind);
 
 type CreateNewOptionCardProps = { option: StartAfreshOption };
 const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
@@ -23,22 +27,27 @@ const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
 
   return (
     <li
-      className="project-from-specimen-candidate start-afresh"
+      className={candidateClassname("start-afresh")}
       data-start-afresh-kind={option.kind}
     >
-      <Alert className="ProjectCard" variant="success" onClick={startAfresh}>
-        <div className="project-card-content">
-          <div className="project-description">
-            <p className="project-name">
-              <em>Start again with this lesson’s code</em>
-            </p>
+      <Card className="ProjectCard" onClick={startAfresh}>
+        <Card.Header>
+          <Card.Title>Create a new project</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <div className="project-card-content">
+            <div className="project-description">
+              <p className="project-name">
+                <em>Start again with this lesson’s code</em>
+              </p>
+            </div>
+            <div className="dropdown-wrapper">
+              {/* Click on button passes up to <Card>'s handler. */}
+              <Button>Start again</Button>
+            </div>
           </div>
-          <div className="dropdown-wrapper">
-            {/* Click on button passes up to <Alert>'s handler. */}
-            <Button>Start again</Button>
-          </div>
-        </div>
-      </Alert>
+        </Card.Body>
+      </Card>
     </li>
   );
 };
@@ -58,26 +67,30 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
 
   return (
     <li
-      className="project-from-specimen-candidate open-existing"
+      className={candidateClassname("open-existing")}
       data-project-id={projectSummary.id}
     >
-      <Alert className="ProjectCard" variant="success" onClick={openExisting}>
-        <div className="project-card-content">
-          <div className="project-description">
-            <p className="project-name">{projectSummary.name}</p>
-            <MtimeDisplay mtime={projectSummary.mtime} />
-            {
-              /* We'll omit the <P> for an empty summary; this is OK. */
-              projectSummary.summary && (
-                <p className="project-summary">{projectSummary.summary}</p>
-              )
-            }
+      <Card className="ProjectCard" onClick={openExisting}>
+        <Card.Header>
+          <Card.Title>{projectSummary.name}</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <div className="project-card-content">
+            <div className="project-description">
+              <MtimeDisplay mtime={projectSummary.mtime} />
+              {
+                /* We'll omit the <P> for an empty summary; this is OK. */
+                projectSummary.summary && (
+                  <p className="project-summary">{projectSummary.summary}</p>
+                )
+              }
+            </div>
+            <div className="dropdown-wrapper">
+              <Button>Open</Button>
+            </div>
           </div>
-          <div className="dropdown-wrapper">
-            <Button>Open</Button>
-          </div>
-        </div>
-      </Alert>
+        </Card.Body>
+      </Card>
     </li>
   );
 };
@@ -125,18 +138,18 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
               You have already started work on <em>{flowState.projectName}</em>
             </h2>
             <h3>Open a fresh copy of the lesson’s code:</h3>
-            <ul className="project-from-specimen-choices">
+            <ol className="project-from-specimen-choices">
               <CreateNewOptionCard option={flowState.startAfreshOption} />
-            </ul>
+            </ol>
             <h3>Open an existing project for this lesson:</h3>
-            <ul className="project-from-specimen-choices">
+            <ol className="project-from-specimen-choices">
               {flowState.existingProjectOptions.map((projectSummary) => (
                 <OpenExistingOptionCard
                   key={projectSummary.id}
                   projectSummary={projectSummary}
                 />
               ))}
-            </ul>
+            </ol>
           </>
         );
       }

@@ -165,7 +165,7 @@ context("Work with suggested tutorials", () => {
 context("Tutorial share feature", () => {
   it("Allows user to copy links", () => {
     cy.visit("/tutorials");
-    launchShareTutorialModal("Bunner");
+    launchShareTutorialModal("bunner");
     cy.get("button[title*='only']").click();
     assertCopiedText((text) => text.endsWith("suggested-tutorial/bunner"));
   });

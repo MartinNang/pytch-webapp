@@ -95,9 +95,7 @@ $tutorial-display-side-margin: 3rem;
       margin: auto;
       max-width: 52rem;
       p {
-        margin: 0px;
-        padding: 1.25rem 0px;
-        font-size: 1.125rem;
+        font-size: 18px;
       }
 
       div:after {
@@ -109,7 +107,7 @@ $tutorial-display-side-margin: 3rem;
   }
   .image-container {
     float: right;
-    margin: 2.5rem 2rem 0rem 2rem;
+    margin: 0.5rem 2rem;
   }
   .dropdown-wrapper {
     float: right;
@@ -150,18 +148,72 @@ $tutorial-display-side-margin: 3rem;
   }
 }
 
-.alert.TutorialCard {
+//
+// TODO: Tidy up duplication of styling here vs in project-list.scss
+//
+.TutorialCard,
+.ProjectCard {
+  border: 1px solid $border-subdued-color;
+  border-radius: calc(var(--bs-card-border-radius) + 0.25px);
+
+  .card-header {
+    position: relative;
+    background-color: $pytch-colour-accent-lavender;
+    border-radius: var(--bs-card-inner-border-radius)
+      var(--bs-card-inner-border-radius) 0px 0px;
+
+    .h5 {
+      margin: 0.25rem 0px;
+      text-align: center;
+      font-size: 1.25rem;
+    }
+  }
+  .card-body {
+    position: relative;
+    background-color: $secondary-bg-color;
+    border-radius: 0px 0px var(--bs-card-inner-border-radius)
+      var(--bs-card-inner-border-radius);
+  }
+}
+
+.TutorialCard {
   background-color: $secondary-bg-color;
   position: relative;
-  .info-badges {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+  margin-bottom: 3rem;
 
-    display: flex;
-    flex-direction: row;
-    align-items: start;
+  .tutorial-card-header {
+    .difficulty-badge {
+      grid-area: difficulty;
+      text-align: left;
+      align-self: center;
+    }
+    .card-title {
+      grid-area: title;
+      align-self: center;
+    }
+    .program-kind-badge {
+      grid-area: prog-kind;
+      text-align: right;
+    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "difficulty prog-kind" "title title";
 
+    h3 {
+      text-align: center;
+      margin: 0.75rem 0px 0.5rem;
+    }
+
+    @media (width >= 768px) {
+      grid-template-columns: 2fr 7fr 2fr;
+      grid-template-areas: "difficulty title prog-kind";
+      h3 {
+        margin: 0px;
+      }
+    }
+  }
+
+  .card-header {
     .EditorKindThumbnail {
       &,
       img {
@@ -172,27 +224,26 @@ $tutorial-display-side-margin: 3rem;
       margin-left: 0.75rem;
     }
 
-    p {
-      padding: 0.25rem 0.5rem;
-      background-color: mintcream;
-      border-radius: 5px;
+    p.tag-difficulty {
+      font-size: 15px;
+      span {
+        background-color: mintcream;
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+      }
     }
   }
 
-  h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+  .card-footer {
+    background-color: $secondary-bg-color;
   }
-  .button-bar {
-    display: inline-block;
-    button {
-      margin: 0.5rem 1.5rem 1.5rem;
 
-      &:first-child {
-        margin-left: 0rem;
-      }
-      &:last-child {
-        margin-right: 0rem;
+  .button-bar {
+    text-align: center;
+    button {
+      margin: 0.25rem 0.5rem;
+      @media (width >= 768px) {
+        margin: 0.25rem 1.5rem;
       }
     }
   }
