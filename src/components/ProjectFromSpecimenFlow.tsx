@@ -35,17 +35,17 @@ const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
           <Card.Title>Create a new project</Card.Title>
         </Card.Header>
         <Card.Body>
-        <div className="project-card-content">
-          <div className="project-description">
-            <p className="project-name">
-              <em>Start again with this lesson’s code</em>
-            </p>
+          <div className="project-card-content">
+            <div className="project-description">
+              <p className="project-name">
+                <em>Start again with this lesson’s code</em>
+              </p>
+            </div>
+            <div className="dropdown-wrapper">
+              {/* Click on button passes up to <Card>'s handler. */}
+              <Button>Start again</Button>
+            </div>
           </div>
-          <div className="dropdown-wrapper">
-            {/* Click on button passes up to <Card>'s handler. */}
-            <Button>Start again</Button>
-          </div>
-        </div>
         </Card.Body>
       </Card>
     </li>
@@ -75,20 +75,20 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
           <Card.Title>{projectSummary.name}</Card.Title>
         </Card.Header>
         <Card.Body>
-        <div className="project-card-content">
-          <div className="project-description">
-            <MtimeDisplay mtime={projectSummary.mtime} />
-            {
-              /* We'll omit the <P> for an empty summary; this is OK. */
-              projectSummary.summary && (
-                <p className="project-summary">{projectSummary.summary}</p>
-              )
-            }
+          <div className="project-card-content">
+            <div className="project-description">
+              <MtimeDisplay mtime={projectSummary.mtime} />
+              {
+                /* We'll omit the <P> for an empty summary; this is OK. */
+                projectSummary.summary && (
+                  <p className="project-summary">{projectSummary.summary}</p>
+                )
+              }
+            </div>
+            <div className="dropdown-wrapper">
+              <Button>Open</Button>
+            </div>
           </div>
-          <div className="dropdown-wrapper">
-            <Button>Open</Button>
-          </div>
-        </div>
         </Card.Body>
       </Card>
     </li>
