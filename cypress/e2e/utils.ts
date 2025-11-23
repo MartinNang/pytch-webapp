@@ -182,15 +182,13 @@ export function assertProjectsSelected(
 }
 
 /** Assuming we're on the "Tutorials" page, launch the Share modal for
- * the unique tutorial whose name matches the given `nameMatch`. */
-export const launchShareTutorialModal = (nameMatch: string) => {
-  cy.get("ul.tutorial-list li")
-    .contains(nameMatch)
+ * the unique tutorial with the given `slug`. */
+export const launchShareTutorialModal = (slug: string) => {
+  cy.get(`ul.tutorial-list li div[data-slug="${slug}"]`)
     .should("have.length", 1)
-    .parent()
-    .within(() => {
-      cy.get("button").contains("Share").click();
-    });
+    .find("button")
+    .contains("Share")
+    .click();
 };
 
 /** Assuming we're on the "My project" page, launch the "Create project"
