@@ -68,7 +68,7 @@ class AnonymousSession {
         if (data !== "") {
           const saltedDataStr = this.salt + data;
           const saltedDataU8s = new TextEncoder().encode(saltedDataStr);
-          const dataHash = await hexSHA256(saltedDataU8s);
+          const dataHash = await hexSHA256(saltedDataU8s.buffer);
           suffix = `.${dataHash}`;
         }
 

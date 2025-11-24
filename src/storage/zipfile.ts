@@ -475,7 +475,7 @@ export const projectDescriptorFromURL = async (
 const pytchZipfileVersion = 4;
 export const zipfileDataFromProject = async (
   project: StoredProjectContent
-): Promise<Uint8Array> => {
+): Promise<Uint8Array<ArrayBuffer>> => {
   const zipFile = new JSZip();
   zipFile.file("version.json", JSON.stringify({ pytchZipfileVersion }));
 
@@ -512,7 +512,7 @@ export const zipfileDataFromProject = async (
 
   zipFile.file(`assets/metadata.json`, assetMetadataJSON);
 
-  return await zipFile.generateAsync({ type: "uint8array" });
+  return (await zipFile.generateAsync({ type: "uint8array" })).slice();
 };
 
 export const demoURLFromId = (id: string): string => {
