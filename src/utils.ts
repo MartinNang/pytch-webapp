@@ -129,7 +129,7 @@ export function onChangeFun<EltType extends HTMLElement & WithStringValue>(
 }
 
 export function focusOrBlurFun<Elt extends HTMLElement>(
-  elementRef: React.RefObject<Elt>,
+  elementRef: React.RefObject<Elt | null>,
   isActive: boolean,
   isInteractable: boolean
 ) {
