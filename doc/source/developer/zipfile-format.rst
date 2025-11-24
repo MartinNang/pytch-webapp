@@ -224,7 +224,7 @@ Metadata
 The ``meta.json`` file contains an object in JSON, with the following
 properties.
 
-.. code-block:: text
+.. code-block:: json
 
    {
      "projectName": "Chase the banana!"
