@@ -30,7 +30,7 @@ export const CreateProjectModal = () => {
     (f) => f.createProjectFlow
   );
 
-  const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  const inputRef = React.useRef<HTMLInputElement>(null);
   useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {

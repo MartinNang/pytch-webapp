@@ -16,7 +16,7 @@ export const ChooseFiles: React.FC<{
   tryProcess: (files: FileList) => void;
   dismiss: () => void;
 }> = (props) => {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isAwaiting = props.status === "interacting";
   const isTrying = props.status === "attempting";

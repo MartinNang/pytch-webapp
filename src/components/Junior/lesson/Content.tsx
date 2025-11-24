@@ -8,7 +8,7 @@ import { WidthMonitor } from "../WidthMonitor";
 import { useMappedLinkedJrTutorial } from "./hooks";
 
 export const Content: React.FC<EmptyProps> = () => {
-  const contentRef = createRef<HTMLDivElement>();
+  const contentRef = React.useRef<HTMLDivElement>(null);
   const chapterIdx = useMappedLinkedJrTutorial(
     (tutorial) => tutorial.interactionState.chapterIndex
   );

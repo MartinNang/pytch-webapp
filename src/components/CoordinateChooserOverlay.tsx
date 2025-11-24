@@ -18,7 +18,7 @@ export const CoordinateChooserOverlay: React.FC<EmptyProps> = () => {
   );
   const doCopy = () => copyAction();
 
-  const divRef = createRef<HTMLDivElement>();
+  const divRef = React.useRef<HTMLDivElement>(null);
 
   const handleKeyDown: React.KeyboardEventHandler = (event) => {
     if (event.key === "Escape") {

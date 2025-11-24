@@ -328,7 +328,7 @@ const MaybeProjectList: React.FC<EmptyProps> = () => {
     doLoadingWork();
   });
 
-  const paneRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const paneRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     deactivateProject();

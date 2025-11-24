@@ -130,7 +130,7 @@ export const UpsertHandlerModal = () => {
     (a) => a.upsertHatBlockFlow.setChosenKind
   );
 
-  const ulRef: React.RefObject<HTMLUListElement> = createRef();
+  const ulRef = React.useRef<HTMLUListElement>(null);
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { mode, chosenKind, keyIfChosen, messageIfChosen, actorKind } =

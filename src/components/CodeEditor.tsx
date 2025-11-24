@@ -35,7 +35,7 @@ const ReadOnlyOverlay = () => {
 
 const CodeAceEditor = () => {
   const codeText = useFlatCodeText("CodeAceEditor");
-  const aceRef: React.RefObject<AceEditor> = React.createRef();
+  const aceRef = React.useRef<AceEditor>(null);
 
   const saveIsPending = useStoreState(
     (state) => state.activeProject.syncState.loadState === "pending"

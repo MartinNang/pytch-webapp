@@ -15,7 +15,7 @@ export const RenameAssetModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameAssetFlow);
   const { setNewStem } = useFlowActions((f) => f.renameAssetFlow);
 
-  const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  const inputRef = React.useRef<HTMLInputElement>(null);
   useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {

@@ -14,7 +14,7 @@ import { useStoreState } from "../../../store";
 // (reasonably enough) renders poorly on Safari.
 type ToCEntryProps = { key: React.Key; titleElt: HTMLElement };
 const ToCEntry: React.FC<ToCEntryProps> = (props) => {
-  const liRef = React.createRef<HTMLLIElement>();
+  const liRef = React.useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     let liElt = liRef.current;

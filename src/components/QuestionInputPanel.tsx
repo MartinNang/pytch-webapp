@@ -15,7 +15,7 @@ const QuestionInputPanel = () => {
 
   const isInteractable = state === "interactable";
 
-  const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  const inputRef = React.useRef<HTMLInputElement>(null);
   useEffect(focusOrBlurFun(inputRef, isInteractable, isInteractable));
 
   if (!isInteractable) {
