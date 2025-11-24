@@ -22,6 +22,27 @@ The remainder of the zipfile is laid out according to the version
 number stored there.
 
 
+Pytch zipfile version 4
+-----------------------
+
+A version-4 Pytch zipfile is the same as a version-3 zipfile, with the
+following addition to the metadata.
+
+The top-level ``meta.json`` file contains the following properties:
+
+``projectName`` — string
+  Displayed name of the project.  (This property has existed since v1
+  of the zipfile format.)
+
+``linkedContentRef`` — object **[new in v4]**
+  Reference to the content to which this project is linked.  In
+  summary, this can be nothing (for a standalone project), a
+  per-method tutorial, or a lesson specimen.  (Currently, "flat"
+  tutorials are handled separately, a design wart which hopefully will
+  be removed one day.)  See source for details, starting with
+  definition of the type ``LinkedContentRef``.
+
+
 Pytch zipfile version 3
 -----------------------
 
