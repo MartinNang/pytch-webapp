@@ -17,8 +17,8 @@ import "./KeyNavHelpSidebar.scss";
 function joinedList(
   keyDescrs: Array<KeyDescriptor>,
   joinText: string
-): JSX.Element {
-  let pieces: Array<JSX.Element> = [];
+): React.JSX.Element {
+  let pieces: Array<React.JSX.Element> = [];
   keyDescrs.forEach((keyDescr, idx) => {
     const keyElt = <Key key={idx} keyDescr={keyDescr} />;
     pieces.push(

@@ -151,7 +151,7 @@ type OutcomesOfKindProps = {
 };
 
 type OutcomesOfKindListProps = OutcomesOfKindProps & {
-  intro: JSX.Element;
+  intro: React.JSX.Element;
   className: string;
 };
 

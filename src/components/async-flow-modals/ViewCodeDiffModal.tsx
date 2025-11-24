@@ -13,7 +13,7 @@ const PreTableDatum: React.FC<PreTableDatumProps> = ({ content }) => (
   </td>
 );
 
-type DiffTableRowProps = { a?: JSX.Element; b?: JSX.Element };
+type DiffTableRowProps = { a?: React.JSX.Element; b?: React.JSX.Element };
 const DiffTableRow: React.FC<DiffTableRowProps> = ({ a, b }) => (
   <tr>
     {a ?? <td />}
@@ -31,7 +31,7 @@ const SideBySideDiffContribution: React.FC<SideBySideDiffContributionProps> = ({
       // Use loop because we want to generate an array as long as the
       // longer of the two.
       const nLines = Math.max(change.aLines.length, change.bLines.length);
-      let trElts: Array<JSX.Element> = [];
+      let trElts: Array<React.JSX.Element> = [];
       for (let i = 0; i !== nLines; ++i) {
         const tdA = <PreTableDatum content={change.aLines[i]} />;
         const tdB = <PreTableDatum content={change.bLines[i]} />;

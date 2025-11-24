@@ -29,7 +29,7 @@ const ActorThumbnail: React.FC<ActorThumbnailProps> = ({ id }) => {
     )
   );
 
-  const wrap = (content: JSX.Element) => (
+  const wrap = (content: React.JSX.Element) => (
     <div className="thumbnail">{content}</div>
   );
 

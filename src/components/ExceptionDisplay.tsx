@@ -4,7 +4,7 @@ import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
 import Button from "react-bootstrap/Button";
 import { envVarOrDefault } from "../env-utils";
 
-export function ExceptionDisplay(props: FallbackProps): JSX.Element {
+export function ExceptionDisplay(props: FallbackProps): React.JSX.Element {
   const { error } = props;
 
   // Use <a> in the below, rather than <LinkWithinApp>, to ensure true
