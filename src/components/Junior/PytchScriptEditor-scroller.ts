@@ -68,7 +68,11 @@ export function scrollCursorRowIntoView(handlerId: string) {
   const cursorLineRect =
     cursorLine != null
       ? cursorLine.getBoundingClientRect()
-      : impliedRowRange(parentDiv, cursorRow1b, editor.getFontSize());
+      : impliedRowRange(
+          parentDiv,
+          cursorRow1b,
+          editor.getFontSize().toString()
+        );
   if (isNull(cursorLineRect, "cursorLineRect")) return;
 
   const codeEditorRect = codeEditorDiv.getBoundingClientRect();
