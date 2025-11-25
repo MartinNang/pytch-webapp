@@ -1,4 +1,4 @@
-import React, { useEffect, createRef } from "react";
+import React, { useEffect } from "react";
 import { useStoreActions, useStoreState } from "../store";
 import {
   ITutorialSummary,

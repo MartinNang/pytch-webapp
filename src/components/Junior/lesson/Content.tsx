@@ -1,4 +1,4 @@
-import React, { createRef } from "react";
+import React from "react";
 import { EmptyProps } from "../../../utils";
 import { ChapterNavigation } from "./ChapterNavigation";
 import { Chapter } from "./Chapter";

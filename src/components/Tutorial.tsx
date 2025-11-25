@@ -1,4 +1,4 @@
-import React, { ClipboardEventHandler, createRef, useRef } from "react";
+import React, { ClipboardEventHandler, useRef } from "react";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
 import Button from "react-bootstrap/Button";
