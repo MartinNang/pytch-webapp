@@ -63,7 +63,6 @@
     "eslint": "^9.14.0",
     "eslint-plugin-react": "^7.37.0",
     "prettier": "^3.0.0",
-    "raw.macro": "^0.7.0",
     "sass": "^1.63.6",
     "ts-mocha": "^10.0.0",
     "typescript": "^5.6.3",
