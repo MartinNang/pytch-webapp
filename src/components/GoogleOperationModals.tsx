@@ -14,7 +14,7 @@ export const GoogleGetFilenameFromUserModal = () => {
     (actions) => actions.googleDriveImportExport.chooseFilenameFlow
   );
 
-  const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // This doesn't work when running the development server in
@@ -151,7 +151,7 @@ type OutcomesOfKindProps = {
 };
 
 type OutcomesOfKindListProps = OutcomesOfKindProps & {
-  intro: JSX.Element;
+  intro: React.JSX.Element;
   className: string;
 };
 

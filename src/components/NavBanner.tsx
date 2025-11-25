@@ -10,7 +10,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
-  const menuRef = React.createRef<HTMLDivElement>();
+  const menuRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const menuDiv = menuRef.current;

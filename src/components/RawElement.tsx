@@ -11,7 +11,7 @@ interface RawElementProps {
 }
 
 const RawElement = ({ className, element }: RawElementProps) => {
-  const ref: React.RefObject<HTMLDivElement> = React.createRef();
+  const ref = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const elt = ref.current;

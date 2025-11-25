@@ -87,7 +87,7 @@ const AccordionTextSignifier: React.FC<EmptyProps> = () => (
 const ScratchBlockMaybeDraggable: React.FC<
   IScratchAndPython & { workContext: DevWorkContext }
 > = (props) => {
-  const scratchRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const scratchRef = React.useRef<HTMLDivElement>(null);
 
   // Fudge to indicate whether dragging should be possible:
   const eventDescriptor =
@@ -119,7 +119,7 @@ const ScratchBlockMaybeDraggable: React.FC<
 };
 
 const HelpText: React.FC<{ help: ElementArray }> = (props) => {
-  const helpRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const helpRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const helpDiv = helpRef.current;

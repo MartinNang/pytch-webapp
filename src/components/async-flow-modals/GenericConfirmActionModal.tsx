@@ -10,13 +10,13 @@ import { useEffect, useRef } from "react";
 
 type GenericConfirmActionModalProps<RunStateT> = {
   activeFsmState: ActiveAsyncUserFlowFsmState<RunStateT, unknown>;
-  headerContent: JSX.Element;
-  bodyContent: JSX.Element;
+  headerContent: React.JSX.Element;
+  bodyContent: React.JSX.Element;
   confirmButtonText?: string;
 };
 export function GenericConfirmActionModal<RunStateT>(
   props: GenericConfirmActionModalProps<RunStateT>
-): JSX.Element {
+): React.JSX.Element {
   const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     cancelButtonRef.current?.focus();

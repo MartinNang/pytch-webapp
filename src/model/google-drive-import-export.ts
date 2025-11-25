@@ -430,7 +430,10 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
         const file: AsyncFile = {
           name: () => Promise.resolve(filename),
           mimeType: () => Promise.resolve("application/zip"),
-          data: () => zipfileDataFromProject(descriptor.project),
+          data: async () => {
+            const u8Array = await zipfileDataFromProject(descriptor.project);
+            return u8Array.buffer;
+          },
         };
 
         await navGuard.throwIfAbandoned(api.exportFile(tokenInfo, file));

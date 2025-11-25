@@ -1,7 +1,14 @@
 import { State, Actions } from "easy-peasy";
 import { PytchProgramOps } from "../../model/pytch-program";
 import { useStoreActions, useStoreState } from "../../store";
-import { useDrag, useDrop } from "react-dnd";
+import {
+  ConnectDragPreview,
+  ConnectDragSource,
+  ConnectDropTarget,
+  useDrag,
+  useDrop,
+} from "react-dnd";
+import { useCallback } from "react";
 
 import { IPytchAppModel } from "../../model";
 import { EditState } from "../../model/junior/edit-state";
@@ -86,6 +93,38 @@ export const useActorNubs = () => {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+// General helpers for drag/drop.
+// https://github.com/react-dnd/react-dnd/issues/3655#issuecomment-2578808024
+
+function useRefFromConnector(connector: (el: HTMLElement) => void) {
+  return useCallback(
+    (element: HTMLElement | null) => {
+      if (element) {
+        connector(element);
+      }
+    },
+    [connector]
+  );
+}
+
+function refFromDragConnector<PropsT>([props, connector, preview]: [
+  PropsT,
+  ConnectDragSource,
+  ConnectDragPreview,
+]) {
+  const ref = useRefFromConnector(connector);
+  return [props, ref, preview] as const;
+}
+
+function refFromDropConnector<PropsT>([props, connector]: [
+  PropsT,
+  ConnectDropTarget,
+]) {
+  const ref = useRefFromConnector(connector);
+  return [props, ref] as const;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Helpers for drag/drop of Pytch scripts.
 
 type PytchScriptDragItem = { handlerId: Uuid };
@@ -95,21 +134,23 @@ export const usePytchScriptDrag = (handlerId: Uuid) => {
   const setScriptDragInProgress = useJrEditActions(
     (a) => a.setScriptDragInProgress
   );
-  return useDrag<PytchScriptDragItem, void, PytchScriptDragProps>(
-    () => ({
-      type: "pytch-script",
-      item: () => {
-        setScriptDragInProgress(true);
-        return { handlerId };
-      },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
+  return refFromDragConnector(
+    useDrag<PytchScriptDragItem, void, PytchScriptDragProps>(
+      () => ({
+        type: "pytch-script",
+        item: () => {
+          setScriptDragInProgress(true);
+          return { handlerId };
+        },
+        collect: (monitor) => ({
+          isDragging: monitor.isDragging(),
+        }),
+        end: () => {
+          setScriptDragInProgress(false);
+        },
       }),
-      end: () => {
-        setScriptDragInProgress(false);
-      },
-    }),
-    [setScriptDragInProgress]
+      [setScriptDragInProgress]
+    )
   );
 };
 
@@ -119,22 +160,24 @@ export const usePytchScriptDrop = (actorId: Uuid, handlerId: Uuid) => {
     (actions) => actions.activeProject.reorderHandlers
   );
 
-  return useDrop<PytchScriptDragItem, void, PytchScriptDropProps>(
-    () => ({
-      accept: "pytch-script",
-      canDrop: (item) => item.handlerId !== handlerId,
-      drop: (item) => {
-        reorderHandlers({
-          actorId,
-          movingHandlerId: item.handlerId,
-          targetHandlerId: handlerId,
-        });
-      },
-      collect: (monitor) => ({
-        hasDragItemOver: monitor.canDrop() && monitor.isOver(),
+  return refFromDropConnector(
+    useDrop<PytchScriptDragItem, void, PytchScriptDropProps>(
+      () => ({
+        accept: "pytch-script",
+        canDrop: (item) => item.handlerId !== handlerId,
+        drop: (item) => {
+          reorderHandlers({
+            actorId,
+            movingHandlerId: item.handlerId,
+            targetHandlerId: handlerId,
+          });
+        },
+        collect: (monitor) => ({
+          hasDragItemOver: monitor.canDrop() && monitor.isOver(),
+        }),
       }),
-    }),
-    [reorderHandlers]
+      [reorderHandlers]
+    )
   );
 };
 
@@ -145,12 +188,14 @@ type AssetCardDragItem = { fullPathname: string };
 
 type AssetCardDragProps = { isDragging: boolean };
 export const useAssetCardDrag = (fullPathname: string, allowed: boolean) => {
-  return useDrag<AssetCardDragItem, void, AssetCardDragProps>(() => ({
-    canDrag: allowed,
-    type: "jr-asset-card",
-    item: { fullPathname },
-    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-  }));
+  return refFromDragConnector(
+    useDrag<AssetCardDragItem, void, AssetCardDragProps>(() => ({
+      canDrag: allowed,
+      type: "jr-asset-card",
+      item: { fullPathname },
+      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    }))
+  );
 };
 
 type AssetCardDropProps = { hasDragItemOver: boolean };
@@ -160,21 +205,23 @@ export const useAssetCardDrop = (fullPathname: string, allowed: boolean) => {
     (actions) => actions.activeProject.reorderAssetsAndSync
   );
 
-  return useDrop<AssetCardDragItem, void, AssetCardDropProps>(() => ({
-    accept: "jr-asset-card",
-    canDrop: (item) => allowed && item.fullPathname !== fullPathname,
-    drop: (item) => {
-      console.log("Dropping!", item);
-      reorderAssets({
-        projectId,
-        movingAssetName: item.fullPathname,
-        targetAssetName: fullPathname,
-      });
-    },
-    collect: (monitor) => ({
-      hasDragItemOver: monitor.canDrop() && monitor.isOver(),
-    }),
-  }));
+  return refFromDropConnector(
+    useDrop<AssetCardDragItem, void, AssetCardDropProps>(() => ({
+      accept: "jr-asset-card",
+      canDrop: (item) => allowed && item.fullPathname !== fullPathname,
+      drop: (item) => {
+        console.log("Dropping!", item);
+        reorderAssets({
+          projectId,
+          movingAssetName: item.fullPathname,
+          targetAssetName: fullPathname,
+        });
+      },
+      collect: (monitor) => ({
+        hasDragItemOver: monitor.canDrop() && monitor.isOver(),
+      }),
+    }))
+  );
 };
 
 export type AssetCardSwapWithAdjacentFuns = {
@@ -283,20 +330,22 @@ export const useHelpHatBlockDrag = (eventDescriptor?: EventDescriptor) => {
   const setScriptDragInProgress = useJrEditActions(
     (a) => a.setScriptDragInProgress
   );
-  return useDrag<HelpHatBlockDragItem, void, HelpHatBlockDragProps>(
-    () => ({
-      canDrag: eventDescriptor != null,
-      type: "help-hat-block",
-      item: () => {
-        setScriptDragInProgress(true);
-        return { eventDescriptor };
-      },
-      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-      end: () => {
-        setScriptDragInProgress(false);
-      },
-    }),
-    [eventDescriptor, setScriptDragInProgress]
+  return refFromDragConnector(
+    useDrag<HelpHatBlockDragItem, void, HelpHatBlockDragProps>(
+      () => ({
+        canDrag: eventDescriptor != null,
+        type: "help-hat-block",
+        item: () => {
+          setScriptDragInProgress(true);
+          return { eventDescriptor };
+        },
+        collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+        end: () => {
+          setScriptDragInProgress(false);
+        },
+      }),
+      [eventDescriptor, setScriptDragInProgress]
+    )
   );
 };
 
@@ -305,17 +354,23 @@ export const useHelpHatBlockDrop = (actorId: Uuid) => {
     (actions) => actions.activeProject.upsertHandler
   );
 
-  return useDrop<HelpHatBlockDragItem, void, HelpHatBlockDropProps>(
-    () => ({
-      accept: "help-hat-block",
-      drop: (item) => {
-        const eventDescriptor = item.eventDescriptor;
-        if (eventDescriptor == null) return; // Shouldn't happen.
-        upsertHandler({ action: { kind: "insert" }, actorId, eventDescriptor });
-      },
-      collect: (monitor) => ({ hasDragItemOver: monitor.isOver() }),
-    }),
-    [actorId]
+  return refFromDropConnector(
+    useDrop<HelpHatBlockDragItem, void, HelpHatBlockDropProps>(
+      () => ({
+        accept: "help-hat-block",
+        drop: (item) => {
+          const eventDescriptor = item.eventDescriptor;
+          if (eventDescriptor == null) return; // Shouldn't happen.
+          upsertHandler({
+            action: { kind: "insert" },
+            actorId,
+            eventDescriptor,
+          });
+        },
+        collect: (monitor) => ({ hasDragItemOver: monitor.isOver() }),
+      }),
+      [actorId]
+    )
   );
 };
 

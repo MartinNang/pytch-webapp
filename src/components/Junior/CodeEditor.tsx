@@ -1,4 +1,4 @@
-import React, { createRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useStoreState, useStoreActions } from "../../store";
 import classNames from "classnames";
 
@@ -62,7 +62,7 @@ const ScriptsEditor = () => {
     PYTCH_CYPRESS().currentProgramActions = actions.activeProject;
   });
 
-  const scriptsDivRef = createRef<HTMLDivElement>();
+  const scriptsDivRef = React.useRef<HTMLDivElement>(null);
 
   const actorId = useJrEditState((s) => s.activeActor);
 

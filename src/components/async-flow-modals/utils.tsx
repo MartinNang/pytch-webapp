@@ -9,7 +9,7 @@ export function asyncFlowModal<RunStateT, AttemptOutcomeNubT>(
   fsmState: AsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>,
   contentFun: (
     fsmState: ActiveAsyncUserFlowFsmState<RunStateT, AttemptOutcomeNubT>
-  ) => JSX.Element
+  ) => React.JSX.Element
 ) {
   if (fsmState.kind === "idle") {
     return null;

@@ -3,7 +3,7 @@ import { scrollTopFromPageKey } from "../../../model/junior/jr-tutorial";
 
 export type DivScrollerProps = {
   pageKey: number;
-  containerDivRef: React.RefObject<HTMLDivElement>;
+  containerDivRef: React.RefObject<HTMLDivElement | null>;
 };
 
 /** Remember the scroll position of each individual "page".  (In both

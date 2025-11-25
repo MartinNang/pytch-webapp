@@ -1,4 +1,4 @@
-import React, { ClipboardEventHandler, createRef, useRef } from "react";
+import React, { ClipboardEventHandler, useRef } from "react";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
 import Button from "react-bootstrap/Button";
@@ -458,7 +458,7 @@ const ActiveTutorial = () => {
   // preserved within a chapter but reset when moving to another
   // chapter.
 
-  const chapterContainerRef: React.RefObject<HTMLDivElement> = createRef();
+  const chapterContainerRef = React.useRef<HTMLDivElement>(null);
   const chapterIndex = useMappedTrackedTutorial(
     (tutorial) => tutorial.activeChapterIndex
   );

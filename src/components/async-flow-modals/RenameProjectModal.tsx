@@ -15,7 +15,7 @@ export const RenameProjectModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameProjectFlow);
   const { setNewName } = useFlowActions((f) => f.renameProjectFlow);
 
-  const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  const inputRef = React.useRef<HTMLInputElement>(null);
   useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {

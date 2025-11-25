@@ -51,7 +51,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
   const focusContext = useFocusContext("per-method");
   const [dragProps, dragRef, preview] = usePytchScriptDrag(handlerId);
   const [dropProps, dropRef] = usePytchScriptDrop(actorId, handlerId);
-  const aceParentRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const aceParentRef = React.useRef<HTMLDivElement>(null);
 
   const handlerEvent = useMappedProgram(
     "<PytchScriptEditor>",

@@ -462,7 +462,7 @@ export function settleFunctions<RunStateT>(
 // Helper for passing to useEffect() to give focus to an input element
 
 export function flowFocusOrBlurFun<Elt extends HTMLElement, RunStateT>(
-  elementRef: React.RefObject<Elt>,
+  elementRef: React.RefObject<Elt | null>,
   fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
 ) {
   return () => {
@@ -472,7 +472,6 @@ export function flowFocusOrBlurFun<Elt extends HTMLElement, RunStateT>(
 
     const element = elementRef.current;
     if (element == null) {
-      // Shouldn't happen.
       return;
     }
 

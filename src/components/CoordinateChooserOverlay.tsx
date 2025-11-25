@@ -1,5 +1,5 @@
 import React from "react";
-import { createRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useStoreActions, useStoreState } from "../store";
 import { EmptyProps } from "../utils";
 
@@ -18,7 +18,7 @@ export const CoordinateChooserOverlay: React.FC<EmptyProps> = () => {
   );
   const doCopy = () => copyAction();
 
-  const divRef = createRef<HTMLDivElement>();
+  const divRef = React.useRef<HTMLDivElement>(null);
 
   const handleKeyDown: React.KeyboardEventHandler = (event) => {
     if (event.key === "Escape") {

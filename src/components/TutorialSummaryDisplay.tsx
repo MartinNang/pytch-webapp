@@ -1,4 +1,4 @@
-import React, { useEffect, createRef } from "react";
+import React, { useEffect } from "react";
 import { useStoreActions, useStoreState } from "../store";
 import {
   ITutorialSummary,
@@ -29,8 +29,8 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
 
   const runShareTutorial = useRunFlow((f) => f.shareTutorialFlow);
 
-  const cardRef: React.RefObject<HTMLDivElement> = createRef();
-  const buttonsRef: React.RefObject<HTMLDivElement> = createRef();
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const buttonsRef = React.useRef<HTMLDivElement>(null);
 
   const maybeSlugCreating = useStoreState(
     (state) => state.tutorialCollection.maybeSlugCreating

@@ -9,9 +9,9 @@ import classNames from "classnames";
 import "./TwoStateSwitch.scss";
 
 export type TwoStateSwitchTexts = {
-  question: JSX.Element;
-  trueStatus: JSX.Element;
-  falseStatus: JSX.Element;
+  question: React.JSX.Element;
+  trueStatus: React.JSX.Element;
+  falseStatus: React.JSX.Element;
 };
 
 type TwoStateSwitchProps = {

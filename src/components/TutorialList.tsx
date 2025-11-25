@@ -37,7 +37,7 @@ const TutorialList: React.FC<EmptyProps> = () => {
     }
   });
 
-  const paneRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const paneRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
     paneRef.current?.focus();
   });

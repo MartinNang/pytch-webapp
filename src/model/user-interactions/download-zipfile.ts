@@ -25,7 +25,7 @@ type DownloadZipfileRunArgs = {
 
 type DownloadZipfileRunState = {
   formatSpecifier: FormatSpecifier;
-  fileContents: Uint8Array;
+  fileContents: Uint8Array<ArrayBuffer>;
   uiFragmentValue: string; // "ui" = "user input"
 };
 

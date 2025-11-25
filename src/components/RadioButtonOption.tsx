@@ -10,7 +10,7 @@ type RadioButtonOptionProps<OptionT extends string> = PropsWithChildren<{
 
 export function RadioButtonOption<OptionT extends string>(
   props: RadioButtonOptionProps<OptionT>
-): JSX.Element {
+): React.JSX.Element {
   const isActive = props.thisOption === props.activeOption;
   const variantPrefix = isActive ? "" : "outline-";
   const variant = `${variantPrefix}success`;

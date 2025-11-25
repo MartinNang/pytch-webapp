@@ -15,7 +15,7 @@ export const DisplayScreenshotModal = () => {
     (f) => f.displayScreenshotFlow
   );
 
-  const imgRef: React.RefObject<HTMLImageElement> = React.createRef();
+  const imgRef = React.useRef<HTMLImageElement>(null);
   useEffect(() => {
     if (isActive(fsmState)) {
       const img = failIfNull(imgRef.current, "imgRef is null");

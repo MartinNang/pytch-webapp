@@ -8,12 +8,16 @@
 import { IAceEditor } from "react-ace/lib/types";
 import { assertNever } from "../utils";
 import { DevWorkContext } from "../model/dev-work-context";
-import { Ace } from "ace-builds/ace";
 
 declare let Sk: any;
 
-// Think it's a bug in Ace's typing that the "message" slot is missing.
-type IAceCompletion = Ace.SnippetCompletion & { message: string };
+// Perhaps with more effort I could work out how to import this type:
+type IAceCompletion = {
+  caption: string;
+  snippet: string;
+  message: string;
+  meta?: string;
+};
 
 /** Construct an Ace completion object from one of the Python tuples
  * returned by the Python-side `_user_facing_completions()` function.

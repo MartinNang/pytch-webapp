@@ -48,8 +48,8 @@ const Stage = () => {
     ensureNotFullScreen: () => ensureNotFullScreen(),
   };
 
-  const canvasRef: React.RefObject<HTMLCanvasElement> = React.createRef();
-  const bubblesRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const bubblesRef = React.useRef<HTMLDivElement>(null);
 
   const browserKeyboardRef = useRef<BrowserKeyboard | null>(null);
   const browserMouseRef = useRef<BrowserMouse | null>(null);
