@@ -18,7 +18,7 @@ import { GatedDelay } from "./utils";
 ////////////////////////////////////////////////////////////////////////
 
 function assertNoToasts() {
-  cy.get(".toast-body").should("not.exist");
+  cy.get(".toast-body").should("have.length", 0);
 }
 
 type FailurePredicate = {
