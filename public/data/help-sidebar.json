@@ -42,6 +42,13 @@
     {
         "kind": "block",
         "actorKind": "sprite",
+        "python": "self.go_to_random_position()",
+        "scratch": "go to (random position v)",
+        "help": "Move the `self` Sprite to a random position on the stage.\n\n```\n# Go somewhere random:\nself.go_to_random_position()\n```"
+    },
+    {
+        "kind": "block",
+        "actorKind": "sprite",
         "python": "self.glide_to_xy(`x`, `y`, `seconds`)",
         "scratch": "glide [2.5] secs to x: [0] y: [0]",
         "help": "Glide the `self` Sprite smoothly to the position (`x`, `y`) on the stage.  The movement will take `seconds` seconds.\n\n```\n# Take 2½ seconds to move smoothly\n# to the centre of the stage:\nself.glide_to_xy(0, 0, 2.5)\n```"
