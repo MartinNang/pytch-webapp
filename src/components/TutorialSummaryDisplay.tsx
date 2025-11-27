@@ -61,9 +61,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
     createDemoFromTutorial(tutorial.slug);
   };
 
-  const h1s = tutorial.contentNodes.filter((n) => n.nodeName === "H1");
-  const maybeDisplayName = h1s.length === 0 ? null : h1s[0].textContent;
-  const displayName = maybeDisplayName ?? "Unknown project";
+  const displayName = tutorial.metadata.displayName;
 
   const launchShare = () => {
     const shareInfo = { slug: tutorial.slug, displayName, programKind };
@@ -92,7 +90,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
         <Card.Header>
           <div className="tutorial-card-header">
             <div className="difficulty-badge">{maybeDifficultyBadge}</div>
-            <Card.Title as="h3">{tutorial.metadata.displayName}</Card.Title>
+            <Card.Title as="h3">{displayName}</Card.Title>
             <div className="program-kind-badge">{kindBadge}</div>
           </div>
         </Card.Header>
