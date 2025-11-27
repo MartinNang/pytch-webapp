@@ -136,20 +136,20 @@ export const usePytchScriptDrag = (handlerId: Uuid) => {
   );
   return refFromDragConnector(
     useDrag<PytchScriptDragItem, void, PytchScriptDragProps>(
-    () => ({
-      type: "pytch-script",
-      item: () => {
-        setScriptDragInProgress(true);
-        return { handlerId };
-      },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
+      () => ({
+        type: "pytch-script",
+        item: () => {
+          setScriptDragInProgress(true);
+          return { handlerId };
+        },
+        collect: (monitor) => ({
+          isDragging: monitor.isDragging(),
+        }),
+        end: () => {
+          setScriptDragInProgress(false);
+        },
       }),
-      end: () => {
-        setScriptDragInProgress(false);
-      },
-    }),
-    [setScriptDragInProgress]
+      [setScriptDragInProgress]
     )
   );
 };
@@ -162,21 +162,21 @@ export const usePytchScriptDrop = (actorId: Uuid, handlerId: Uuid) => {
 
   return refFromDropConnector(
     useDrop<PytchScriptDragItem, void, PytchScriptDropProps>(
-    () => ({
-      accept: "pytch-script",
-      canDrop: (item) => item.handlerId !== handlerId,
-      drop: (item) => {
-        reorderHandlers({
-          actorId,
-          movingHandlerId: item.handlerId,
-          targetHandlerId: handlerId,
-        });
-      },
-      collect: (monitor) => ({
-        hasDragItemOver: monitor.canDrop() && monitor.isOver(),
+      () => ({
+        accept: "pytch-script",
+        canDrop: (item) => item.handlerId !== handlerId,
+        drop: (item) => {
+          reorderHandlers({
+            actorId,
+            movingHandlerId: item.handlerId,
+            targetHandlerId: handlerId,
+          });
+        },
+        collect: (monitor) => ({
+          hasDragItemOver: monitor.canDrop() && monitor.isOver(),
+        }),
       }),
-    }),
-    [reorderHandlers]
+      [reorderHandlers]
     )
   );
 };
@@ -190,11 +190,12 @@ type AssetCardDragProps = { isDragging: boolean };
 export const useAssetCardDrag = (fullPathname: string, allowed: boolean) => {
   return refFromDragConnector(
     useDrag<AssetCardDragItem, void, AssetCardDragProps>(() => ({
-    canDrag: allowed,
-    type: "jr-asset-card",
-    item: { fullPathname },
-    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-  })));
+      canDrag: allowed,
+      type: "jr-asset-card",
+      item: { fullPathname },
+      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    }))
+  );
 };
 
 type AssetCardDropProps = { hasDragItemOver: boolean };
@@ -206,20 +207,21 @@ export const useAssetCardDrop = (fullPathname: string, allowed: boolean) => {
 
   return refFromDropConnector(
     useDrop<AssetCardDragItem, void, AssetCardDropProps>(() => ({
-    accept: "jr-asset-card",
-    canDrop: (item) => allowed && item.fullPathname !== fullPathname,
-    drop: (item) => {
-      console.log("Dropping!", item);
-      reorderAssets({
-        projectId,
-        movingAssetName: item.fullPathname,
-        targetAssetName: fullPathname,
-      });
-    },
-    collect: (monitor) => ({
-      hasDragItemOver: monitor.canDrop() && monitor.isOver(),
-    }),
-  })));
+      accept: "jr-asset-card",
+      canDrop: (item) => allowed && item.fullPathname !== fullPathname,
+      drop: (item) => {
+        console.log("Dropping!", item);
+        reorderAssets({
+          projectId,
+          movingAssetName: item.fullPathname,
+          targetAssetName: fullPathname,
+        });
+      },
+      collect: (monitor) => ({
+        hasDragItemOver: monitor.canDrop() && monitor.isOver(),
+      }),
+    }))
+  );
 };
 
 export type AssetCardSwapWithAdjacentFuns = {
@@ -330,19 +332,19 @@ export const useHelpHatBlockDrag = (eventDescriptor?: EventDescriptor) => {
   );
   return refFromDragConnector(
     useDrag<HelpHatBlockDragItem, void, HelpHatBlockDragProps>(
-    () => ({
-      canDrag: eventDescriptor != null,
-      type: "help-hat-block",
-      item: () => {
-        setScriptDragInProgress(true);
-        return { eventDescriptor };
-      },
-      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-      end: () => {
-        setScriptDragInProgress(false);
-      },
-    }),
-    [eventDescriptor, setScriptDragInProgress]
+      () => ({
+        canDrag: eventDescriptor != null,
+        type: "help-hat-block",
+        item: () => {
+          setScriptDragInProgress(true);
+          return { eventDescriptor };
+        },
+        collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+        end: () => {
+          setScriptDragInProgress(false);
+        },
+      }),
+      [eventDescriptor, setScriptDragInProgress]
     )
   );
 };
@@ -354,16 +356,20 @@ export const useHelpHatBlockDrop = (actorId: Uuid) => {
 
   return refFromDropConnector(
     useDrop<HelpHatBlockDragItem, void, HelpHatBlockDropProps>(
-    () => ({
-      accept: "help-hat-block",
-      drop: (item) => {
-        const eventDescriptor = item.eventDescriptor;
-        if (eventDescriptor == null) return; // Shouldn't happen.
-        upsertHandler({ action: { kind: "insert" }, actorId, eventDescriptor });
-      },
-      collect: (monitor) => ({ hasDragItemOver: monitor.isOver() }),
-    }),
-    [actorId]
+      () => ({
+        accept: "help-hat-block",
+        drop: (item) => {
+          const eventDescriptor = item.eventDescriptor;
+          if (eventDescriptor == null) return; // Shouldn't happen.
+          upsertHandler({
+            action: { kind: "insert" },
+            actorId,
+            eventDescriptor,
+          });
+        },
+        collect: (monitor) => ({ hasDragItemOver: monitor.isOver() }),
+      }),
+      [actorId]
     )
   );
 };
