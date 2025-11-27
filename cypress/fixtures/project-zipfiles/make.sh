@@ -21,6 +21,13 @@ make_content_v3_jr() {
     unzip -q ../simple-pytchjr-project.zip
 }
 
+make_content_v4_jr() {
+    rm -rf tmp-content
+    mkdir tmp-content
+    cd tmp-content
+    unzip -q ../simple-v4-jr.zip
+}
+
 make_zipfile() {
     rm -f ../$1.zip
     zip -qr ../$1.zip *
