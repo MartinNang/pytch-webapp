@@ -363,7 +363,8 @@ export function projectSummary(
 const parseZipfile_V2_V3 = async (
   zip: JSZip,
   programPath: string,
-  zipName?: string
+  zipName: string | undefined,
+  heedLinkedContentRef: boolean
 ): Promise<StandaloneProjectDescriptor> => {
   const codeZipObj = _zipObjOrFail(zip, programPath, bareError);
   const codeTextOrJson = await codeZipObj.async("text");
@@ -389,7 +390,9 @@ const parseZipfile_V2_V3 = async (
   if (typeof projectName !== "string")
     throw new Error("project name is not a string");
 
-  const linkedContentRef = linkedContentRefFromMetadata(projectMetadata);
+  const linkedContentRef = heedLinkedContentRef
+    ? linkedContentRefFromMetadata(projectMetadata)
+    : kLinkedContentRefNone;
 
   const assetMetadataPath = "assets/metadata.json";
   const assetMetadata = await _jsonOrFail(zip, assetMetadataPath, bareError);
@@ -439,10 +442,11 @@ export const projectDescriptor = async (
       case 1:
         return await parseZipfile_V1(zip, zipName);
       case 2:
-        return await parseZipfile_V2_V3(zip, "code/code.py", zipName);
+        return await parseZipfile_V2_V3(zip, "code/code.py", zipName, false);
       case 3:
+        return await parseZipfile_V2_V3(zip, "code/code.json", zipName, false);
       case 4:
-        return await parseZipfile_V2_V3(zip, "code/code.json", zipName);
+        return await parseZipfile_V2_V3(zip, "code/code.json", zipName, true);
       default:
         throw new Error(`unhandled Pytch zipfile version ${versionNumber}`);
     }
