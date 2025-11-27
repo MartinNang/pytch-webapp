@@ -360,7 +360,7 @@ export function projectSummary(
   return allFragments.length === 0 ? undefined : allFragments.join(" ");
 }
 
-const parseZipfile_V2_V3 = async (
+const parseZipfile_V2_V3_V4 = async (
   zip: JSZip,
   programPath: string,
   zipName: string | undefined,
@@ -442,11 +442,21 @@ export const projectDescriptor = async (
       case 1:
         return await parseZipfile_V1(zip, zipName);
       case 2:
-        return await parseZipfile_V2_V3(zip, "code/code.py", zipName, false);
+        return await parseZipfile_V2_V3_V4(zip, "code/code.py", zipName, false);
       case 3:
-        return await parseZipfile_V2_V3(zip, "code/code.json", zipName, false);
+        return await parseZipfile_V2_V3_V4(
+          zip,
+          "code/code.json",
+          zipName,
+          false
+        );
       case 4:
-        return await parseZipfile_V2_V3(zip, "code/code.json", zipName, true);
+        return await parseZipfile_V2_V3_V4(
+          zip,
+          "code/code.json",
+          zipName,
+          true
+        );
       default:
         throw new Error(`unhandled Pytch zipfile version ${versionNumber}`);
     }
