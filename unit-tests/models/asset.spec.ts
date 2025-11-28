@@ -10,8 +10,6 @@ import {
   UuidOps,
 } from "../../src/model/junior/structured-program";
 
-globalThis.crypto = globalThis.crypto ?? crypto;
-
 describe("Asset operations", () => {
   describe("mime-type operations", () => {
     const Ops = AssetMetaDataOps;
