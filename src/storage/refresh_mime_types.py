@@ -60,7 +60,8 @@ ts_content = f"""// This file has been automatically generated.
 export const typeFromExtension = (() => {{
     const extensionsWithTypes = JSON.parse({data_json_str})
     const typeFromExtensionMap = new Map<string, string>(extensionsWithTypes);
-    return (extension: string) => typeFromExtensionMap.get(extension) || false;
+    return (extension: string) =>
+        typeFromExtensionMap.get(extension.toLowerCase()) || false;
 }})();
 """
 
