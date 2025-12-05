@@ -154,6 +154,15 @@ context("Working with assets of an actor", () => {
     assertCostumeNames(allCostumes);
   });
 
+  it("asset with uppercase filename", () => {
+    const assetFilename = "RECTANGLE-RED-80-60.PNG";
+
+    selectSprite("Snake");
+    selectActorAspect("Costumes");
+    addFromFixture(assetFilename);
+    assertCostumeNames(["python-logo.png", assetFilename]);
+  });
+
   it("has useful UI text for uploading", () => {
     const assertContentCorrect = (headerMatch: string, bodyMatch: string) => {
       launchAdd.assetFromThisDevice();
