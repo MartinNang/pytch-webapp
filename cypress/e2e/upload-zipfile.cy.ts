@@ -42,6 +42,11 @@ context("Upload project from zipfile", () => {
     cy.get(".ActorCardContent").should("have.length", 2);
   });
 
+  it("v4 zipfile uppercase asset filename", () => {
+    cy.pytchTryUploadZipfiles(["uppercase-asset-filename.zip"]);
+    cy.get(".ActorCardContent").should("have.length", 2);
+  });
+
   it("can upload multiple valid zipfiles", () => {
     cy.pytchTryUploadZipfiles([
       "hello-world-format-v1.zip",
