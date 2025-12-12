@@ -17,7 +17,7 @@
     "easy-peasy": "^6.1.0",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
-    "marked": "^5.1.0",
+    "marked": "^17.0.1",
     "mime-types": "^2.1.35",
     "react": "^19.2.0",
     "react-ace": "^14.0.1",
