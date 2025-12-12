@@ -53,7 +53,6 @@ const NavBanner = () => {
         <div className="title-and-version">
             <Link to="/">
                 <img src={ pytchLogo } alt={"Pytch Logo"} height={"70"} />
-                {/*<h1 className="home-link">Pytch</h1>*/}
             </Link>
         </div>
         <div className={burgerClass} onClick={toggleMenu} ref={menuRef}>
