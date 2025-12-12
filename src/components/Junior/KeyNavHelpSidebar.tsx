@@ -1,5 +1,5 @@
 import React from "react";
-import { marked } from "marked";
+import { markedParse } from "../hooks/sync-marked";
 import { assertNever, EmptyProps } from "../../utils";
 import { Row, Col, Container, Spinner } from "react-bootstrap";
 import {
@@ -66,8 +66,7 @@ const Key: React.FC<{ keyDescr: KeyDescriptor }> = ({ keyDescr }) => {
 };
 
 const TextContent: React.FC<{ markdown: string }> = ({ markdown }) => {
-  marked.use({ mangle: false, headerIds: false });
-  const html = marked.parse(markdown);
+  const html = markedParse(markdown);
   return <div dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
