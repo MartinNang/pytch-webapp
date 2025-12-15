@@ -52,7 +52,12 @@ const NavBanner = () => {
       <div className={"NavBarContent"}>
         <div className="title-and-version">
           <Link to="/">
-            <img src={pytchLogo} alt={"Pytch Logo"} height={"70"} />
+            <img
+              className="home-link"
+              src={pytchLogo}
+              alt={"Pytch Logo"}
+              height={"70"}
+            />
           </Link>
         </div>
         <div className={burgerClass} onClick={toggleMenu} ref={menuRef}>
