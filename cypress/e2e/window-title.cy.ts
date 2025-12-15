@@ -18,7 +18,7 @@ context("Browser window title", () => {
   it("navigate around including tutorials", () => {
     cy.visit("/tutorials/");
     cy.title().should("eq", "Pytch: Tutorials");
-    cy.get(".NavBar").contains("Pytch").click();
+    cy.get(".NavBar").find(".home-link").click();
     cy.title().should("eq", "Pytch");
     cy.get(".NavBar").contains("My projects").click();
     cy.title().should("eq", "Pytch: My projects");
