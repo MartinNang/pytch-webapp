@@ -1,7 +1,7 @@
 import React from "react";
 import { EmptyProps } from "../../utils";
 import { welcomeAssetUrl } from "./utils";
-import { DecorativeUnderscore } from "../DecorativeUnderscore";
+import { DecorativeUnderscore } from "../decorations";
 import "./LearnPython.scss";
 import { Link } from "react-router-dom";
 import { sharingUrlFromSlugForDemo } from "../../model/user-interactions/share-tutorial";

@@ -8,6 +8,9 @@ import classNames from "classnames";
 import "../pytch-navbar.scss";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
+import pytchLogo from "../images/pytch.png";
+import { ExternalLinkIndicator } from "./decorations";
+
 const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
@@ -47,40 +50,53 @@ const NavBanner = () => {
 
   return (
     <div className="NavBar">
-      <div className="title-and-version">
-        <Link to="/">
-          <h1 className="home-link">Pytch</h1>
-        </Link>
-      </div>
-      <div className={burgerClass} onClick={toggleMenu} ref={menuRef}>
-        <FontAwesomeIcon icon={burgerIcon} />
-      </div>
-      <ul className={ulClass}>
-        <li>
-          <a href={pytchResearchSiteUrl}>About</a>
-        </li>
-        <li>
-          <a href={`${pytchResearchSiteUrl}lesson-plans`}>Lesson plans</a>
-        </li>
-        <li>
-          <a href={withinSite("/doc/index.html")}>Help</a>
-        </li>
-        <li>
-          <Link to="/tutorials/">Tutorials</Link>
-        </li>
-        <li>
-          <Link to="/my-projects/">My projects</Link>
-        </li>
-        <li>
-          <Link
-            className="contact-us-link"
-            to="/#contact-info"
-            onClick={() => setMenuIsExpanded(false)}
-          >
-            <FontAwesomeIcon icon={["far", "envelope"]} />
+      <div className={"NavBarContent"}>
+        <div className="title-and-version">
+          <Link to="/">
+            <img
+              className="home-link"
+              src={pytchLogo}
+              alt={"Pytch Logo"}
+              height={"70"}
+            />
           </Link>
-        </li>
-      </ul>
+        </div>
+        <div className={burgerClass} onClick={toggleMenu} ref={menuRef}>
+          <FontAwesomeIcon icon={burgerIcon} />
+        </div>
+        <ul className={ulClass}>
+          <li>
+            <a href={pytchResearchSiteUrl}>
+              About
+              <ExternalLinkIndicator />
+            </a>
+          </li>
+          <li>
+            <a href={`${pytchResearchSiteUrl}lesson-plans`}>
+              Lesson plans
+              <ExternalLinkIndicator />
+            </a>
+          </li>
+          <li>
+            <a href={withinSite("/doc/index.html")}>Help</a>
+          </li>
+          <li>
+            <Link to="/tutorials/">Tutorials</Link>
+          </li>
+          <li>
+            <Link to="/my-projects/">My projects</Link>
+          </li>
+          <li>
+            <Link
+              className="contact-us-link"
+              to="/#contact-info"
+              onClick={() => setMenuIsExpanded(false)}
+            >
+              <FontAwesomeIcon icon={["far", "envelope"]} />
+            </Link>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
