@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "../LinkWithinApp";
 import { urlWithinApp } from "../../env-utils";
-import { DecorativeUnderscore } from "../DecorativeUnderscore";
+import { DecorativeUnderscore } from "../decorations";
 import "./Footer.scss";
 
 // TODO: Use research site URL from constants.  Or generalise to function giving

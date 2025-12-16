@@ -9,7 +9,7 @@ import "../pytch-navbar.scss";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import pytchLogo from "../images/pytch.png";
-import { ExternalLinkIndicator } from "./DecorativeUnderscore";
+import { ExternalLinkIndicator } from "./decorations";
 
 const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
