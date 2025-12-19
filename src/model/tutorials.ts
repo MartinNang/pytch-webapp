@@ -71,7 +71,10 @@ export interface ITutorialCollection {
   setAllowRandomChapterAccess: SAction<boolean>;
   loadSummaries: SThunk<void, Promise<void>>;
 
-  createProjectFromTutorial: SThunk<string, Promise<void>>;
+  createProjectFromTutorial: SThunk<
+    CreateProjectFromTutorialArgs,
+    Promise<void>
+  >;
   createDemoFromTutorial: SThunk<string, Promise<void>>;
 
   bootAllowRandomChapterAccessFromQuery: SThunk;
@@ -170,7 +173,8 @@ export const tutorialCollection: ITutorialCollection = {
     actions.setSyncState(SyncState.Syncd);
   }),
 
-  createProjectFromTutorial: thunk(async (actions, tutorialSlug, helpers) => {
+  createProjectFromTutorial: thunk(async (actions, args, helpers) => {
+    const tutorialSlug = args.slug;
     await createProjectFromTutorial(actions, tutorialSlug, helpers, {
       projectCreationArgs: async () => {
         const content = await tutorialContent(tutorialSlug);
