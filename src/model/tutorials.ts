@@ -76,9 +76,7 @@ type ProjectCreationArgs = {
   options: CreateProjectOptions;
 };
 
-type ProjectCreationArgsFun = (
-  tutorialSlug: string
-) => Promise<ProjectCreationArgs>;
+type ProjectCreationArgsFun = () => Promise<ProjectCreationArgs>;
 
 const createProjectFromTutorial = async (
   actions: Actions<ITutorialCollection>,
@@ -101,7 +99,7 @@ const createProjectFromTutorial = async (
 
   actions.setSlugCreating(tutorialSlug);
 
-  const createProjectArgs = await methods.projectCreationArgs(tutorialSlug);
+  const createProjectArgs = await methods.projectCreationArgs();
   const project = await createNewProject(
     createProjectArgs.name,
     createProjectArgs.options
@@ -164,7 +162,7 @@ export const tutorialCollection: ITutorialCollection = {
 
   createProjectFromTutorial: thunk(async (actions, tutorialSlug, helpers) => {
     await createProjectFromTutorial(actions, tutorialSlug, helpers, {
-      projectCreationArgs: async (tutorialSlug: string) => {
+      projectCreationArgs: async () => {
         const content = await tutorialContent(tutorialSlug);
 
         // TODO: Can this be tidied up?
@@ -235,7 +233,7 @@ export const tutorialCollection: ITutorialCollection = {
 
   createDemoFromTutorial: thunk(async (actions, tutorialSlug, helpers) => {
     await createProjectFromTutorial(actions, tutorialSlug, helpers, {
-      projectCreationArgs: async (tutorialSlug: string) => {
+      projectCreationArgs: async () => {
         const content = await tutorialContent(tutorialSlug);
         const summary = `This project is a demo of the tutorial "${tutorialSlug}"`;
         const options: CreateProjectOptions = await (async () => {
