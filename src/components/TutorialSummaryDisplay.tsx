@@ -13,7 +13,7 @@ import { useRunFlow } from "../model";
 
 interface TutorialSummaryDisplayProps {
   tutorial: ITutorialSummary;
-  kind?: SingleTutorialDisplayKind;
+  kind: SingleTutorialDisplayKind;
 }
 
 export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
