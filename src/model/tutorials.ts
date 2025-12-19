@@ -249,36 +249,10 @@ export const tutorialCollection: ITutorialCollection = {
               };
             }
             case "per-method": {
-              const program = PytchProgramOps.newEmpty("per-method");
-
-              // This is clunky; see also other comment above, in the
-              // function `createProjectFromTutorial()`.
-              //
-              // We currently assume that all "per-method" tutorials
-              // should start empty except for a stage with a
-              // solid-white background.  One day this might not always
-              // be true.
-              const stageId = program.program.actors[0].id;
-              const stageImageUrl = urlWithinApp("/assets/solid-white.png");
-              const data = await fetchArrayBuffer(stageImageUrl);
-              const assets: Array<AddAssetDescriptor> = [
-                {
-                  name: `${stageId}/solid-white.png`,
-                  mimeType: "image/png",
-                  data,
-                },
-              ];
-
-              return {
-                summary: `This project is following the tutorial "${tutorialSlug}"`,
-                linkedContentRef: {
-                  kind: "jr-tutorial" as const,
-                  name: tutorialSlug,
-                  interactionState: { chapterIndex: 0, nTasksDone: 0 },
-                },
-                program,
-                assets,
-              };
+              return jrTutorialCheckpointCreateOptions(
+                tutorialSlug,
+                args.chapterIndex
+              );
             }
             default:
               return assertNever(content.programKind);
