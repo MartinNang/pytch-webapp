@@ -52,7 +52,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
   });
 
   const launchTutorial = () => {
-    createProjectFromTutorial(tutorial.slug);
+    createProjectFromTutorial({ slug: tutorial.slug, chapterIndex: 0 });
   };
 
   const launchDemo = () => {
