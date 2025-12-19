@@ -189,6 +189,12 @@ export const tutorialCollection: ITutorialCollection = {
         const options: CreateProjectOptions = await (async () => {
           switch (content.programKind) {
             case "flat": {
+              if (args.chapterIndex !== 0) {
+                throw new Error(
+                  'cannot create project for "flat" tutorial other than at start'
+                );
+              }
+
               return {
                 summary: `This project is following the tutorial "${tutorialSlug}"`,
                 trackedTutorialRef: {
