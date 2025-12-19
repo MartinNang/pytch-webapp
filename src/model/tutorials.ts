@@ -42,33 +42,32 @@ export interface ITutorialSummary {
   metadata: any;
 }
 
+type SAction<PayloadT = void> = Action<ITutorialCollection, PayloadT>;
+type SThunk<PayloadT = void, ReturnT = void> = Thunk<
+  ITutorialCollection,
+  PayloadT,
+  unknown,
+  IPytchAppModel,
+  ReturnT
+>;
+
 export interface ITutorialCollection {
   syncState: SyncState;
   available: Array<ITutorialSummary>;
   maybeSlugCreating: string | undefined;
   allowRandomChapterAccess: boolean;
 
-  setSyncState: Action<ITutorialCollection, SyncState>;
-  setAvailable: Action<ITutorialCollection, Array<ITutorialSummary>>;
-  setSlugCreating: Action<ITutorialCollection, string>;
-  clearSlugCreating: Action<ITutorialCollection>;
-  setAllowRandomChapterAccess: Action<ITutorialCollection, boolean>;
-  loadSummaries: Thunk<ITutorialCollection>;
+  setSyncState: SAction<SyncState>;
+  setAvailable: SAction<Array<ITutorialSummary>>;
+  setSlugCreating: SAction<string>;
+  clearSlugCreating: SAction;
+  setAllowRandomChapterAccess: SAction<boolean>;
+  loadSummaries: SThunk<void, Promise<void>>;
 
-  createProjectFromTutorial: Thunk<
-    ITutorialCollection,
-    string,
-    void,
-    IPytchAppModel
-  >;
-  createDemoFromTutorial: Thunk<
-    ITutorialCollection,
-    string,
-    void,
-    IPytchAppModel
-  >;
+  createProjectFromTutorial: SThunk<string, Promise<void>>;
+  createDemoFromTutorial: SThunk<string, Promise<void>>;
 
-  bootAllowRandomChapterAccessFromQuery: Thunk<ITutorialCollection>;
+  bootAllowRandomChapterAccessFromQuery: SThunk;
 }
 
 type ProjectCreationArgs = {
