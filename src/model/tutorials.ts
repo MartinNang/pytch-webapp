@@ -173,7 +173,7 @@ export const tutorialCollection: ITutorialCollection = {
         // mechanism.
         const options: CreateProjectOptions = await (async () => {
           switch (content.programKind) {
-            case "flat":
+            case "flat": {
               return {
                 summary: `This project is following the tutorial "${tutorialSlug}"`,
                 trackedTutorialRef: {
@@ -182,6 +182,7 @@ export const tutorialCollection: ITutorialCollection = {
                 },
                 program: PytchProgramOps.fromPythonCode(content.initialCode),
               };
+            }
             case "per-method": {
               const program = PytchProgramOps.newEmpty("per-method");
 
