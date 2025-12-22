@@ -167,6 +167,7 @@ export type LinkedJrTutorial = {
 export async function dereferenceLinkedJrTutorial(
   ref: LinkedJrTutorialRef
 ): Promise<LinkedJrTutorial> {
+  // TODO: What happens if a tutorial is deleted?
   const content = await jrTutorialContentFromName(ref.name);
 
   const taskStates: Array<JrTutorialTaskInteractionState> = [];
