@@ -31,6 +31,7 @@ import { ProjectFromSpecimenFlow } from "./components/ProjectFromSpecimenFlow";
 import { DeliberateFailureWithBoundary } from "./components/DeliberateFailure";
 import { fireAndForgetEvent } from "./model/anonymous-instrumentation";
 import { StandalonePlayDemo } from "./components/StandalonePlayDemo";
+import { StartTutorialAtCheckpoint } from "./components/StartTutorialAtCheckpoint";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -108,6 +109,10 @@ function App() {
         {
           path: "suggested-tutorial/:slug",
           element: <SingleTutorial kind="tutorial-only" />,
+        },
+        {
+          path: "tutorial-checkpoint/:slug/:chapterIndex",
+          element: <StartTutorialAtCheckpoint />,
         },
         {
           path: "suggested-demo/:buildId/:demoId",
