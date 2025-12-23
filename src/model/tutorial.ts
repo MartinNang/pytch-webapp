@@ -42,8 +42,7 @@ const fetchTutorialResourceOrThrow = async (relativeUrl: string) => {
 export const tutorialResourceText = async (
   relativeUrl: string
 ): Promise<string> => {
-  const url = tutorialUrl(relativeUrl);
-  const response = await fetch(url);
+  const response = await fetchTutorialResourceOrThrow(relativeUrl);
   return await response.text();
 };
 
