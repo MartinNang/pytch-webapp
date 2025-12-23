@@ -40,7 +40,20 @@ import {
   faWindowMinimize,
   faKeyboard,
   faLanguage,
+  faFloppyDisk,
+  faCamera,
+  faClone,
+  faCode,
+  faDownload,
+  faEllipsisV,
+  faEllipsisH,
+  faShare,
+  faLayerGroup,
+  faSearch,
+  faFlag,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faGoogleDrive } from "@fortawesome/free-brands-svg-icons";
 
 import { faTimesCircle, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 
@@ -86,5 +99,23 @@ library.add(
   faWindowMinimize,
   faKeyboard,
   faLanguage,
-  faTimesCircle
+  faTimesCircle,
+  faFloppyDisk,
+  faCamera,
+  faClone,
+  faCode,
+  faDownload,
+  faEllipsisV,
+  faEllipsisH,
+  faTimesCircle,
+  faShare,
+  faLayerGroup,
+  faSearch,
+  faFlag,
+  faFloppyDisk,
+  faCamera,
+  faClone,
+  faCode,
+  faDownload,
+  faGoogleDrive
 );

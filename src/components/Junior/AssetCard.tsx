@@ -259,7 +259,9 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
     );
 
   return (
-    <CaptiveContextMenu.DropdownMenu>
+    <CaptiveContextMenu.DropdownMenu
+      toggle={<FontAwesomeIcon icon={"caret-down"} />}
+    >
       <CopyAssetNameDropdownItem
         operationScope={operationScope}
         assetName={displayName}

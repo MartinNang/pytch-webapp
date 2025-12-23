@@ -471,8 +471,8 @@ export const HelpSidebar = () => {
 
   return (
     <div className="HelpSidebar">
-      <div className="content">
-        <div className="inner-content">
+      <div className="content h-100">
+        <div className="inner-content h-100">
           <HelpSidebarInnerContent workContext={displayContext} />
         </div>
       </div>

@@ -26,19 +26,6 @@ $stage-controls-height: 37.6px;
   }
   .FullScreenStage {
     margin: auto;
-
-    .run-stop-controls {
-      display: flex;
-      flex-direction: row;
-
-      > * {
-        margin-left: 16px;
-      }
-
-      > *:first-child {
-        margin-left: 0px;
-      }
-    }
   }
 }
 
@@ -126,13 +113,14 @@ $stage-controls-height: 37.6px;
   }
 
   .save-button {
-    span {
-      padding: 4px;
-      border-radius: 4px;
-    }
-    &.unsaved-changes-exist span {
-      background-color: yellow;
+
+    &.unsaved-changes-exist {
+      background-color: $pytch-colour-main-yellow;
       color: black;
+
+      &:hover {
+        background-color: #f1ea8b;
+      }
     }
   }
 }
@@ -182,11 +170,12 @@ $stage-controls-height: 37.6px;
 }
 
 #pytch-canvas {
-  border: $canvas-border-width solid grey;
+  border: $canvas-border-width solid $pytch-colour-main-blue-darkened;
   border-radius: 2px;
   background: white;
   display: block;
   visibility: visible;
+  box-shadow: rgba(99, 99, 99, 0.05) 0px 2px 8px 0px;
 
   &.resize-active {
     visibility: hidden;
@@ -298,13 +287,16 @@ $speech-bubble-max-height: 180px;
   grid-template-rows: auto 1fr;
   position: relative;
   z-index: 0;
-
   /* Override Ace's ordering of fonts to avoid Monaco-related
      mis-rendering in Safari.
      https://github.com/ajaxorg/ace/issues/3385
   */
   .ace_editor {
     font-family: $monospace-fonts;
+  }
+
+  .tab-content {
+    border-radius: 0 0 10px 10px;
   }
 
   .ReadOnlyOverlay {
@@ -418,6 +410,14 @@ $speech-bubble-max-height: 180px;
   }
 }
 
+.StageControlPseudoButton, .save-button {
+  transition: transform 0.1s cubic-bezier(.4,0,.2,1) !important;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
 .StageControlPseudoButton {
   width: 3em;
   height: 36px;
@@ -433,11 +433,17 @@ $speech-bubble-max-height: 180px;
   }
 
   &.GreenFlag {
-    @include as-bootstrap-button(#2c2, #1a1);
+    @include as-bootstrap-button($pytch-colour-accent-cyan, $pytch-colour-accent-cyan);
+    border-radius: 10px 0 0 10px;
+
+    transform-origin: right;
   }
 
   &.RedStop {
-    @include as-bootstrap-button(#e33, #c11);
+    @include as-bootstrap-button($pytch-colour-accent-flame, $pytch-colour-accent-flame);
+    border-radius: 0 10px 10px 0;
+
+    transform-origin: left;
   }
 }
 
@@ -952,4 +958,86 @@ ul.ClipArtTagButtonCollection {
       padding-right: 0.5rem;
     }
   }
+}
+
+.btn-primary {
+  @include as-bootstrap-button(#306998, #306998);
+}
+
+.btn.square-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.run-stop-controls {
+  display: flex;
+  flex-direction: row;
+}
+
+.moreOptionsDropdown {
+
+  .dropdown-menu {
+    transform-origin: top right;
+
+    &.show {
+      transform: scale(1) translateY(2.5rem) translateX(0.02rem) !important;
+    }
+  }
+
+  button.btn.btn-primary {
+    box-shadow: none;
+    background-color: transparent !important;
+    border-color: transparent;
+    color: black;
+
+    &:hover, &:active, &:focus {
+      background-color: #c2d5dd !important;
+      border-color: transparent;
+      color: black;
+    }
+
+    &.show {
+      background-color: #c2d5dd;
+      border-color: transparent;
+      color: black;
+
+      &:hover, &:focus {
+        background-color: #c2d5dd;
+        border-color: transparent;
+        color: black;
+      }
+    }
+
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+.dropdown-menu {
+
+  transition: box-shadow 50ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &.show {
+    border: 0;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    padding: 6px;
+    border-radius: 10px;
+  }
+
+  .dropdown-item {
+    border-radius: 10px;
+    margin: 4px 0;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}
+
+.full-screen {
+  margin-right: auto;
 }

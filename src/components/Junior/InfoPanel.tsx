@@ -53,11 +53,11 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
   const toggleState = () => toggleStateAction();
 
   return (
-    <div>
+    <div className={"h-100"}>
       <Button
         variant="outline-secondary"
         size="sm"
-        className="disclosure-button expand-button m-1"
+        className="disclosure-button expand-button m-0 h-100"
         onClick={toggleState}
         aria-label={t("info.expand-button.aria-label")}
         aria-expanded={false}

@@ -21,6 +21,7 @@ import {
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { useFocusContext } from "../hooks/focus-steering";
 import { Trans, useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** See docstring for `HatBlockContent`. */
 type DisplayVariant = "kind-chosen" | "fully-specified";
@@ -165,7 +166,9 @@ export const HatBlock: React.FC<HatBlockProps> = ({
           event={event}
           variant="fully-specified"
         />
-        <CaptiveContextMenu.DropdownMenu>
+        <CaptiveContextMenu.DropdownMenu
+          toggle={<FontAwesomeIcon icon={"caret-down"} />}
+        >
           <CaptiveContextMenu.DropdownItem onInvoke={onChangeHatBlock}>
             {t("script.action.change-hat-block")}
           </CaptiveContextMenu.DropdownItem>

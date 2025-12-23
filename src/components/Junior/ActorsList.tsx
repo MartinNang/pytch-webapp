@@ -18,6 +18,7 @@ import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { kFocusGroupItemClassName } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
 import { FocusGroupContainer } from "../FocusGroupContainer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type ActorThumbnailProps = { id: Uuid };
 const ActorThumbnail: React.FC<ActorThumbnailProps> = ({ id }) => {
@@ -134,7 +135,9 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   });
 
   return (
-    <CaptiveContextMenu.DropdownMenu>
+    <CaptiveContextMenu.DropdownMenu
+      toggle={<FontAwesomeIcon icon={"caret-down"} />}
+    >
       <CaptiveContextMenu.DropdownItem {...onInvokeProps("code")}>
         {t("actor-action.go-to-code")}
       </CaptiveContextMenu.DropdownItem>
