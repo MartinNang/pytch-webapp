@@ -8,7 +8,7 @@ import { envVarOrDefault } from "../env-utils";
 // other contexts.
 type ExceptionDisplayProps = { error: { message: string } };
 
-export function ExceptionDisplay(props: FallbackProps): React.JSX.Element {
+export const ExceptionDisplay: React.FC<ExceptionDisplayProps> = (props) => {
   const { error } = props;
 
   // Use <a> in the below, rather than <LinkWithinApp>, to ensure true
