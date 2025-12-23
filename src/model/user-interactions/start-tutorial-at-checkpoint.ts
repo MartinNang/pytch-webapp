@@ -1,8 +1,10 @@
-import { IPytchAppModel } from "..";
+import { IPytchAppModel, PytchAppModelActions } from "..";
 import { failIfNull, parsedHtmlBody } from "../../utils";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import {
   AsyncUserFlowSlice,
+  noModalWithVoid,
+  VoidOutcome,
 } from "./async-user-flow";
 
 type StartTutorialAtCheckpointRunArgs = {
@@ -66,4 +68,17 @@ async function prepare(
   );
 
   return { slug, chapterIndex, displayName, displaySummary };
+}
+
+async function attempt(
+  runState: StartTutorialAtCheckpointRunState,
+  actions: PytchAppModelActions
+): Promise<VoidOutcome> {
+  await actions.tutorialCollection.createProjectFromTutorial({
+    slug: runState.slug,
+    chapterIndex: runState.chapterIndex,
+    navigateWithReplace: true,
+  });
+
+  return noModalWithVoid;
 }
