@@ -2,6 +2,8 @@ import { IPytchAppModel, PytchAppModelActions } from "..";
 import { failIfNull, parsedHtmlBody } from "../../utils";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import {
+  alwaysSubmittable,
+  asyncUserFlowSlice,
   AsyncUserFlowSlice,
   noModalWithVoid,
   VoidOutcome,
@@ -82,3 +84,13 @@ async function attempt(
 
   return noModalWithVoid;
 }
+
+// No "pulse notable change" needed because the only non-error outcome
+// is that the user is now looking at a newly-created project, making it
+// obvious that the action has had the desired effect.
+
+export let startTutorialAtCheckpointFlow: StartTutorialAtCheckpointFlow =
+  asyncUserFlowSlice(
+    {},
+    { prepare, isSubmittable: alwaysSubmittable, attempt }
+  );
