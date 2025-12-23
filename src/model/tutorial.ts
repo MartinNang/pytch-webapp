@@ -26,6 +26,19 @@ export const tutorialUrl = (relativeUrl: string) => {
   return [tutorialsDataRoot, relativeUrl].join("/");
 };
 
+const fetchTutorialResourceOrThrow = async (relativeUrl: string) => {
+  const url = tutorialUrl(relativeUrl);
+
+  const response = await fetch(url);
+  if (!response.ok)
+    throw new Error(
+      `failed to fetch tutorial resource "${relativeUrl}":` +
+        ` "${response.statusText}"`
+    );
+
+  return response;
+};
+
 export const tutorialResourceText = async (
   relativeUrl: string
 ): Promise<string> => {
