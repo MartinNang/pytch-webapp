@@ -42,33 +42,32 @@ export interface ITutorialSummary {
   metadata: any;
 }
 
+type SAction<PayloadT = void> = Action<ITutorialCollection, PayloadT>;
+type SThunk<PayloadT = void, ReturnT = void> = Thunk<
+  ITutorialCollection,
+  PayloadT,
+  unknown,
+  IPytchAppModel,
+  ReturnT
+>;
+
 export interface ITutorialCollection {
   syncState: SyncState;
   available: Array<ITutorialSummary>;
   maybeSlugCreating: string | undefined;
   allowRandomChapterAccess: boolean;
 
-  setSyncState: Action<ITutorialCollection, SyncState>;
-  setAvailable: Action<ITutorialCollection, Array<ITutorialSummary>>;
-  setSlugCreating: Action<ITutorialCollection, string>;
-  clearSlugCreating: Action<ITutorialCollection>;
-  setAllowRandomChapterAccess: Action<ITutorialCollection, boolean>;
-  loadSummaries: Thunk<ITutorialCollection>;
+  setSyncState: SAction<SyncState>;
+  setAvailable: SAction<Array<ITutorialSummary>>;
+  setSlugCreating: SAction<string>;
+  clearSlugCreating: SAction;
+  setAllowRandomChapterAccess: SAction<boolean>;
+  loadSummaries: SThunk<void, Promise<void>>;
 
-  createProjectFromTutorial: Thunk<
-    ITutorialCollection,
-    string,
-    void,
-    IPytchAppModel
-  >;
-  createDemoFromTutorial: Thunk<
-    ITutorialCollection,
-    string,
-    void,
-    IPytchAppModel
-  >;
+  createProjectFromTutorial: SThunk<string, Promise<void>>;
+  createDemoFromTutorial: SThunk<string, Promise<void>>;
 
-  bootAllowRandomChapterAccessFromQuery: Thunk<ITutorialCollection>;
+  bootAllowRandomChapterAccessFromQuery: SThunk;
 }
 
 type ProjectCreationArgs = {
@@ -76,9 +75,7 @@ type ProjectCreationArgs = {
   options: CreateProjectOptions;
 };
 
-type ProjectCreationArgsFun = (
-  tutorialSlug: string
-) => Promise<ProjectCreationArgs>;
+type ProjectCreationArgsFun = () => Promise<ProjectCreationArgs>;
 
 const createProjectFromTutorial = async (
   actions: Actions<ITutorialCollection>,
@@ -101,7 +98,7 @@ const createProjectFromTutorial = async (
 
   actions.setSlugCreating(tutorialSlug);
 
-  const createProjectArgs = await methods.projectCreationArgs(tutorialSlug);
+  const createProjectArgs = await methods.projectCreationArgs();
   const project = await createNewProject(
     createProjectArgs.name,
     createProjectArgs.options
@@ -164,7 +161,7 @@ export const tutorialCollection: ITutorialCollection = {
 
   createProjectFromTutorial: thunk(async (actions, tutorialSlug, helpers) => {
     await createProjectFromTutorial(actions, tutorialSlug, helpers, {
-      projectCreationArgs: async (tutorialSlug: string) => {
+      projectCreationArgs: async () => {
         const content = await tutorialContent(tutorialSlug);
 
         // TODO: Can this be tidied up?
@@ -176,7 +173,7 @@ export const tutorialCollection: ITutorialCollection = {
         // mechanism.
         const options: CreateProjectOptions = await (async () => {
           switch (content.programKind) {
-            case "flat":
+            case "flat": {
               return {
                 summary: `This project is following the tutorial "${tutorialSlug}"`,
                 trackedTutorialRef: {
@@ -185,6 +182,7 @@ export const tutorialCollection: ITutorialCollection = {
                 },
                 program: PytchProgramOps.fromPythonCode(content.initialCode),
               };
+            }
             case "per-method": {
               const program = PytchProgramOps.newEmpty("per-method");
 
@@ -235,7 +233,7 @@ export const tutorialCollection: ITutorialCollection = {
 
   createDemoFromTutorial: thunk(async (actions, tutorialSlug, helpers) => {
     await createProjectFromTutorial(actions, tutorialSlug, helpers, {
-      projectCreationArgs: async (tutorialSlug: string) => {
+      projectCreationArgs: async () => {
         const content = await tutorialContent(tutorialSlug);
         const summary = `This project is a demo of the tutorial "${tutorialSlug}"`;
         const options: CreateProjectOptions = await (async () => {

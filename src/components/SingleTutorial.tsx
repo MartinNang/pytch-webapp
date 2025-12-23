@@ -104,7 +104,7 @@ export const SingleTutorial: React.FC<SingleTutorialProps> = ({ kind }) => {
           <Link to="/tutorials/">
             <Button variant="outline-primary">See all tutorials</Button>
           </Link>
-        </p>{" "}
+        </p>
       </div>
     </>
   );
