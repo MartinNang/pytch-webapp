@@ -51,8 +51,7 @@ type PromiseOfAny = Promise<any>;
 export const tutorialResourceParsedJson = async (
   relativeUrl: string
 ): PromiseOfAny => {
-  const url = tutorialUrl(relativeUrl);
-  const response = await fetch(url);
+  const response = await fetchTutorialResourceOrThrow(relativeUrl);
   return await response.json();
 };
 
