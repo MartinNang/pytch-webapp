@@ -4,6 +4,10 @@ import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
 import Button from "react-bootstrap/Button";
 import { envVarOrDefault } from "../env-utils";
 
+// Accept props of broader type than "FallbackProps" to allow use in
+// other contexts.
+type ExceptionDisplayProps = { error: { message: string } };
+
 export function ExceptionDisplay(props: FallbackProps): React.JSX.Element {
   const { error } = props;
 
