@@ -1,4 +1,6 @@
 import { IPytchAppModel } from "..";
+import { failIfNull, parsedHtmlBody } from "../../utils";
+import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import {
   AsyncUserFlowSlice,
 } from "./async-user-flow";
@@ -35,4 +37,33 @@ function validatedArgs(
     throw new Error("no/bad chapter index found in parameters");
 
   return { slug, chapterIndex };
+}
+
+async function prepare(
+  args: StartTutorialAtCheckpointRunArgs
+): Promise<StartTutorialAtCheckpointRunState> {
+  const { slug, chapterIndex } = validatedArgs(args);
+
+  const summaryRelUrl = `${slug}/summary.html`;
+  const summaryHtmlText = await tutorialResourceText(summaryRelUrl);
+  const summaryHtml = parsedHtmlBody(summaryHtmlText, summaryRelUrl);
+
+  // There is some duplication between here and allTutorialSummaries().
+  // Tidy up somehow?
+
+  let summaryDiv = failIfNull(
+    summaryHtml.querySelector("div.tutorial-summary"),
+    "no tutorial-summary div found"
+  );
+
+  const h1 = failIfNull(summaryDiv.querySelector("h1"), "no h1 found");
+  const displayName = h1.innerText;
+
+  patchImageSrcURLs(slug, summaryDiv);
+
+  const displaySummary = Array.from(summaryDiv.childNodes).filter(
+    (node) => node.nodeName !== "H1"
+  );
+
+  return { slug, chapterIndex, displayName, displaySummary };
 }
