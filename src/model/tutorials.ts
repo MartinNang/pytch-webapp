@@ -15,11 +15,9 @@ import { IPytchAppModel, PytchAppModelActions } from ".";
 import { PytchProgramOps } from "./pytch-program";
 import {
   assertNever,
-  fetchArrayBuffer,
   fetchMimeTypedArrayBuffer,
   propSetterAction,
 } from "../utils";
-import { urlWithinApp } from "../env-utils";
 import { tutorialResourceParsedJson, tutorialUrl } from "./tutorial";
 import {
   Uuid,
