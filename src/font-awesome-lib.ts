@@ -38,7 +38,15 @@ import {
   faExclamationCircle,
   faWindowMinimize,
   faKeyboard,
+  faFloppyDisk,
+  faCamera,
+  faClone,
+  faCode,
+  faDownload
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons'
+
 
 import { faTimesCircle, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 
@@ -82,5 +90,11 @@ library.add(
   faExclamationCircle,
   faWindowMinimize,
   faKeyboard,
-  faTimesCircle
+  faTimesCircle,
+  faFloppyDisk,
+  faCamera,
+  faClone,
+  faCode,
+  faDownload,
+  faGoogleDrive
 );

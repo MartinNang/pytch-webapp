@@ -26,19 +26,6 @@ $stage-controls-height: 37.6px;
   }
   .FullScreenStage {
     margin: auto;
-
-    .run-stop-controls {
-      display: flex;
-      flex-direction: row;
-
-      > * {
-        margin-left: 16px;
-      }
-
-      > *:first-child {
-        margin-left: 0px;
-      }
-    }
   }
 }
 
@@ -438,11 +425,13 @@ $speech-bubble-max-height: 180px;
   }
 
   &.GreenFlag {
-    @include as-bootstrap-button(#2c2, #1a1);
+    @include as-bootstrap-button(#00B5B0, #00B5B0);
+    border-radius: 10px 0 0 10px;
   }
 
   &.RedStop {
-    @include as-bootstrap-button(#e33, #c11);
+    @include as-bootstrap-button(#FF5F38, #FF5F38);
+    border-radius: 0 10px 10px 0;
   }
 }
 
@@ -955,4 +944,71 @@ ul.ClipArtTagButtonCollection {
       padding-right: 0.5rem;
     }
   }
+}
+
+.btn-primary {
+  @include as-bootstrap-button(#306998, #306998);
+}
+
+.btn.square-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.run-stop-controls {
+  display: flex;
+  flex-direction: row;
+}
+
+.moreOptionsDropdown button.btn.btn-primary {
+  background-color: transparent;
+  border-color: transparent;
+  color: black;
+}
+
+.moreOptionsDropdown button.btn.btn-primary:hover {
+  background-color: #c2d5dd;
+  border-color: transparent;
+  color: black;
+}
+
+.moreOptionsDropdown button.btn.btn-primary.show {
+  background-color: #c2d5dd;
+  border-color: transparent;
+  color: black;
+}
+
+.moreOptionsDropdown button.btn.btn-primary.show:hover {
+  background-color: #c2d5dd;
+  border-color: transparent;
+  color: black;
+}
+
+.moreOptionsDropdown button.btn.btn-primary::after {
+  display: none !important;
+}
+
+.moreOptionsDropdown .dropdown-menu.show {
+  //background-color: #EBF5F9;
+  //border-color: $pytch-colour-main-blue;
+  border: 0;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  padding: 6px;
+  border-radius: 10px;
+}
+
+.moreOptionsDropdown .dropdown-item {
+  border-radius: 10px;
+  margin: 4px 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.moreOptionsDropdown .dropdown-menu:first-child {
+  margin-top: 0px;
+}
+
+.full-screen {
+  margin-right: auto;
 }
