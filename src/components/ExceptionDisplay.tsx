@@ -1,5 +1,4 @@
 import React from "react";
-import { FallbackProps } from "react-error-boundary";
 import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
 import Button from "react-bootstrap/Button";
 import { envVarOrDefault } from "../env-utils";
@@ -35,4 +34,4 @@ export const ExceptionDisplay: React.FC<ExceptionDisplayProps> = (props) => {
       </div>
     </DivSettingWindowTitle>
   );
-}
+};
