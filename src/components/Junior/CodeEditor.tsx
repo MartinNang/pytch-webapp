@@ -144,7 +144,7 @@ const ScriptsEditor = () => {
       groupedFocusKey={`ActorProperties/${actorId}/code`}
       opts={{ onReorder }}
     >
-      <div ref={scriptsDivRef} className="pt-2 pb-5 Junior-ScriptsEditor">
+      <div ref={scriptsDivRef} className="pt-2 pb-5 Junior-ScriptsEditor flex-grow-1">
         {maybeNoContentHelp}
         <ol className="Junior-ScriptsList">{scriptsContent}</ol>
       </div>

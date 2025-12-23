@@ -47,8 +47,8 @@ const Errors = () => {
 
 type InfoDisclosureProps = { tabContentId: string };
 const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
-  const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
-  const toggleState = () => toggleStateAction();
+    const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
+    const toggleState = () => toggleStateAction();
 
   return (
     <div>
@@ -121,7 +121,7 @@ export const InfoPanel = () => {
         </Tab>
       </Tabs>
       {isCollapsed ? (
-        <InfoDisclosure tabContentId={tabContentId} />
+        <InfoDisclosure tabContentId={tabContentId}/>
       ) : (
         <Button
           variant="outline-secondary"
