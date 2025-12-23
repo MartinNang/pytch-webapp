@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { EmptyProps } from "../utils";
-import { useFlowState } from "../model";
+import { useFlowState, useRunFlow } from "../model";
 import { asyncFlowModal } from "./async-flow-modals/utils";
 import { settleFunctions } from "../model/user-interactions/async-user-flow";
 import { Button, Card, Spinner } from "react-bootstrap";
 import { ExceptionDisplay } from "./ExceptionDisplay";
+import { InertNavBanner } from "./NavBanner";
 
 const Content: React.FC<EmptyProps> = () => {
   const { fsmState } = useFlowState((f) => f.startTutorialAtCheckpointFlow);
@@ -80,4 +82,31 @@ const Content: React.FC<EmptyProps> = () => {
       </div>
     );
   });
+};
+
+export const StartTutorialAtCheckpoint: React.FC<EmptyProps> = () => {
+  const params = useParams();
+  const run = useRunFlow((f) => f.startTutorialAtCheckpointFlow);
+
+  useEffect(() => {
+    // Allow invalid slug or chapterIndex to get fed into the prepare()
+    // or attempt() function of the flow.  If either of those throws an
+    // error, it will be handled by the GenericErrorModal.
+    //
+    // In development mode, the run() will get called twice, and will
+    // log a warning about "expecting idle but preparing".  Should not
+    // happen in production build.
+    //
+    run({ mSlug: params.slug, mChapterIndexStr: params.chapterIndex });
+  });
+
+  return (
+    <>
+      <InertNavBanner />
+      <div className="TutorialList single-tutorial">
+        <h1>This tutorial was suggested for you:</h1>
+        <Content />
+      </div>
+    </>
+  );
 };
