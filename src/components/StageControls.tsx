@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EmptyProps } from "../utils";
 import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content";
 import { pathWithinApp } from "../env-utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
 import { uniqueUserInputFragment } from "../model/compound-text-input";
 import { useResolveStringSpec } from "./hooks/resolve-string-spec";
@@ -53,8 +53,9 @@ const GreenFlag = () => {
       <Button
         className="StageControlPseudoButton GreenFlag"
         onClick={handleClick}
+        aria-label={"Run project"}
       >
-        <FontAwesomeIcon icon="play" />
+        <FontAwesomeIcon icon="flag" aria-hidden={true} />
       </Button>
       <StaticTooltip visible={tooltipIsVisible}>
         <p>{t("tooltip.green-flag")}</p>
@@ -69,8 +70,12 @@ export const RedStop = () => {
     focusStage();
   };
   return (
-    <Button className="StageControlPseudoButton RedStop" onClick={redStop}>
-      <FontAwesomeIcon icon="stop" />
+    <Button
+      className="StageControlPseudoButton RedStop"
+      onClick={redStop}
+      aria-label={"Stop project"}
+    >
+      <FontAwesomeIcon icon="stop" aria-hidden={true} />
     </Button>
   );
 };
@@ -101,17 +106,36 @@ const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
     case "not-yet-started":
     case "pending":
       return (
-        <Dropdown.Item disabled>{t("export-to-google-drive")}</Dropdown.Item>
+        <Dropdown.Item disabled>
+            <FontAwesomeIcon
+              icon="fa-brands fa-google-drive"
+              className={"me-2"}
+              aria-hidden={true}
+            />
+            {t("export-to-google-drive")}
+        </Dropdown.Item>
       );
     case "succeeded":
       return (
         <Dropdown.Item onClick={onExport}>
-          {t("export-to-google-drive")}
+          <FontAwesomeIcon
+            icon="fa-brands fa-google-drive"
+            className={"me-2"}
+            aria-hidden={true}
+          />
+            {t("export-to-google-drive")}
         </Dropdown.Item>
       );
     case "failed":
       return (
-        <Dropdown.Item disabled>{t("google-drive-unavailable")}</Dropdown.Item>
+        <Dropdown.Item disabled>
+          <FontAwesomeIcon
+            icon="fa-brands fa-google-drive"
+            className={"me-2"}
+            aria-hidden={true}
+          />
+            {t("google-drive-unavailable")}
+        </Dropdown.Item>
       );
   }
 };
@@ -135,7 +159,10 @@ const GoToMyProjectsDropdownItem: React.FC<EmptyProps> = () => {
   const navigate = useNavigate();
   const goToMyProjects = () => navigate(pathWithinApp("/my-projects/"));
   return (
-    <Dropdown.Item onClick={goToMyProjects}>{t("page-heading")}</Dropdown.Item>
+    <Dropdown.Item onClick={goToMyProjects}>
+      <FontAwesomeIcon icon="code" className={"me-2"} />
+        {t("page-heading")}
+    </Dropdown.Item>
   );
 };
 
@@ -189,8 +216,12 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
 
   const fullScreenButton = (
-    <Button className="full-screen" onClick={() => setIsFullScreen(true)}>
-      <FontAwesomeIcon className="fa-lg" icon="expand" />
+    <Button
+      className="full-screen square-button"
+      onClick={() => setIsFullScreen(true)}
+      aria-label={"expand"}
+    >
+      <FontAwesomeIcon className="fa-lg" icon="expand" aria-hidden={true} />
     </Button>
   );
 
@@ -210,38 +241,53 @@ export const StageControls: React.FC<EmptyProps> = () => {
         variant={"secondary"}
         onClick={() => setIsFullScreen(false)}
       >
-        <FontAwesomeIcon className="fa-lg" icon="compress" />
+        <FontAwesomeIcon className="fa-lg" icon="compress" aria-hidden={true} />
       </Button>
     </section>
   ) : (
     <section
-      className="StageControls"
-      aria-label={t("stage-controls.aria-label")}
+        className="StageControls"
+        aria-label={t("stage-controls.aria-label")}
     >
-      <GreenFlag />
-      <RedStop />
+      <div className="run-stop-controls">
+        <GreenFlag />
+        <RedStop />
+      </div>
+      {fullScreenButton}
       <Button
-        className={`save-button ${codeStateVsStorage}`}
+        className={`save-button ${codeStateVsStorage} square-button`}
         onClick={handleSave}
+        aria-label={"Save project"}
       >
+        <FontAwesomeIcon className="fa-lg" icon="floppy-disk" />
         <span>{t("project-action.save")}</span>
       </Button>
       {fullScreenButton}
-      <Button onClick={goHome}>
-        <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" />
-      </Button>
-      <DropdownButton align="end" title="⋮">
+      <Link
+        to={"/"}
+        className={"StageControlPseudoButton HomeLink w-auto p-2"}
+        aria-label={"Home"}
+      >
+        <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" aria-hidden={true} />
+        <span className={"ps-1"}>Home</span>
+      </Link>
+      <DropdownButton align="end" title="⋮" className={"moreOptionsDropdown"}>
         <GoToMyProjectsDropdownItem />
         <Dropdown.Item onClick={onScreenshot}>
-          {t("project-action.screenshot")}
+          <FontAwesomeIcon icon="camera" className={"me-2"} />
+            {t("project-action.screenshot")}
         </Dropdown.Item>
+        <Dropdown.Divider />
         <Dropdown.Item onClick={onCreateCopy}>
-          {t("project-action.make-copy")}
+          <FontAwesomeIcon icon="clone" className={"me-2"} />
+            {t("project-action.make-copy")}
         </Dropdown.Item>
         <Dropdown.Item onClick={onDownload}>
-          {t("project-action.download-zip")}
+          <FontAwesomeIcon icon="download" className={"me-2"} />
+            {t("project-action.download-zip")}
         </Dropdown.Item>
         <ExportToDriveDropdownItem />
+        <Dropdown.Divider />
         <LaunchCoordsChooserDropdownItem />
         <Dropdown.Item onClick={onShowTooltips}>
           {t("project-action.show-tooltips")}

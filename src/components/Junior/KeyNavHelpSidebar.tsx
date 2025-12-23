@@ -164,7 +164,7 @@ const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
     case "idle":
     case "requesting":
       return (
-        <div className="spinner-container mt-3 text-center">
+        <div className="spinner-container">
           <Spinner animation="border" />
         </div>
       );

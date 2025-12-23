@@ -120,9 +120,9 @@ export const IDELayout: React.FC<EmptyProps> = () => {
       <Modals />
       <NotableChangeToasts />
       <main tabIndex={-1} onKeyDown={mainOnKeyDown}>
-        <ActivityPane />
-        <EditorAndOutErr />
-        <StageAndActorsOrAssets />
+            <ActivityPane />
+            <EditorAndOutErr />
+            <StageAndActorsOrAssets/>
       </main>
     </DivSettingWindowTitle>
   );

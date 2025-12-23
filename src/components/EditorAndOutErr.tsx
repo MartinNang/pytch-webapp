@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import { useStoreState } from "../store";
-import { useJrEditState } from "./Junior/hooks";
+import { useJrEditActions, useJrEditState } from "./Junior/hooks";
 import { EmptyProps, assertNever } from "../utils";
 import { CodeEditor } from "./CodeEditor";
 import { InfoPanel } from "./Junior/InfoPanel";
@@ -28,10 +28,10 @@ export const EditorAndOutErr: React.FC<EmptyProps> = () => {
   );
 
   const classes = classNames("EditorAndOutErr", { infoPanelIsCollapsed });
-  return (
-    <div className={classes}>
-      <EditorForProgramKind />
-      <InfoPanel />
-    </div>
-  );
+    return (
+      <div className={classes}>
+        <EditorForProgramKind />
+        <InfoPanel />
+      </div>
+    );
 };
