@@ -43,6 +43,12 @@ export interface ITutorialSummary {
   metadata: any;
 }
 
+export type CreateProjectFromTutorialArgs = {
+  slug: string;
+  chapterIndex: number;
+  navigateWithReplace?: boolean;
+};
+
 type SAction<PayloadT = void> = Action<ITutorialCollection, PayloadT>;
 type SThunk<PayloadT = void, ReturnT = void> = Thunk<
   ITutorialCollection,
