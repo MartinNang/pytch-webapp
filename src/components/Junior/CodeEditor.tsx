@@ -140,11 +140,11 @@ const ScriptsEditor = () => {
   //
   return (
     <FocusGroupContainer
-      className="gfs__actorprops__container"
+      className="gfs__actorprops__container d-flex h-100 flex-column"
       groupedFocusKey={`ActorProperties/${actorId}/code`}
       opts={{ onReorder }}
     >
-      <div ref={scriptsDivRef} className="pt-2 pb-5 Junior-ScriptsEditor">
+      <div ref={scriptsDivRef} className="pt-2 pb-5 Junior-ScriptsEditor flex-grow-1">
         {maybeNoContentHelp}
         <ol className="Junior-ScriptsList">{scriptsContent}</ol>
       </div>

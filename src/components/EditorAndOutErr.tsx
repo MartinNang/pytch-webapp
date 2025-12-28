@@ -1,11 +1,19 @@
 import React from "react";
 import classNames from "classnames";
 import { useStoreState } from "../store";
-import { useJrEditState } from "./Junior/hooks";
+import { useJrEditActions, useJrEditState } from "./Junior/hooks";
 import { EmptyProps, assertNever } from "../utils";
 import { CodeEditor } from "./CodeEditor";
 import { InfoPanel } from "./Junior/InfoPanel";
 import { ActorProperties } from "./Junior/ActorProperties";
+import {
+  Group,
+  Panel,
+  PanelSize,
+  Separator,
+  usePanelRef,
+} from "react-resizable-panels";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const EditorForProgramKind: React.FC<EmptyProps> = () => {
   const programKind = useStoreState(
@@ -27,11 +35,23 @@ export const EditorAndOutErr: React.FC<EmptyProps> = () => {
     (s) => s.infoPanelState === "collapsed"
   );
 
+  const infoResizablePanelRef = usePanelRef();
+
   const classes = classNames("EditorAndOutErr", { infoPanelIsCollapsed });
+
   return (
-    <div className={classes}>
-      <EditorForProgramKind />
-      <InfoPanel />
-    </div>
+      <Group className={classes} orientation="vertical">
+        <Panel minSize={240}>
+          <EditorForProgramKind />
+        </Panel>
+        <Separator className={"verticalSeparator customSeparator d-flex justify-content-center align-items-center"}>
+          <div className={"separatorIcon"}>
+            <FontAwesomeIcon icon={"ellipsis-h"} style={{color: "white", position: "relative", top: "-9px", width: "20px"}} />
+          </div>
+        </Separator>
+        <Panel minSize={36} collapsedSize={36} collapsible={true} panelRef={infoResizablePanelRef}>
+          <InfoPanel resizablePanelRef={infoResizablePanelRef}/>
+        </Panel>
+      </Group>
   );
 };

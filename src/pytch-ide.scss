@@ -989,7 +989,7 @@ ul.ClipArtTagButtonCollection {
   display: none !important;
 }
 
-.moreOptionsDropdown .dropdown-menu.show {
+.dropdown-menu.show {
   //background-color: #EBF5F9;
   //border-color: $pytch-colour-main-blue;
   border: 0;
@@ -998,14 +998,14 @@ ul.ClipArtTagButtonCollection {
   border-radius: 10px;
 }
 
-.moreOptionsDropdown .dropdown-item {
+.dropdown-menu .dropdown-item {
   border-radius: 10px;
   margin: 4px 0;
   padding-top: 8px;
   padding-bottom: 8px;
 }
 
-.moreOptionsDropdown .dropdown-menu:first-child {
+.dropdown-menu:first-child {
   margin-top: 0px;
 }
 

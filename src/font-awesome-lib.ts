@@ -42,7 +42,9 @@ import {
   faCamera,
   faClone,
   faCode,
-  faDownload
+  faDownload,
+  faEllipsisV,
+  faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons'
@@ -96,5 +98,7 @@ library.add(
   faClone,
   faCode,
   faDownload,
-  faGoogleDrive
+  faGoogleDrive,
+  faEllipsisV,
+  faEllipsisH
 );

@@ -42,6 +42,7 @@
 
     .ActivityPane {
       @include grid-hstack-two($activity-bar-width, auto);
+      height: 100vh;
     }
 
     @include grid-hstack-three(
@@ -178,29 +179,37 @@
   @include min-dimens-zero();
   @include grid-vstack-two(2fr, 1fr);
 
-  border-left: $panel-divider-border-spec;
+  //border-left: $panel-divider-border-spec;
 
   &.infoPanelIsCollapsed {
     @include grid-vstack-two(1fr, auto);
   }
+
+  height: 100%;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .StageAndActorsOrAssets {
   @include min-dimens-zero();
   @include grid-vstack-two(auto, 1fr);
 
-  border-left: $panel-divider-border-spec;
+  //border-left: $panel-divider-border-spec;
 
   .StageWithControls {
-    background-color: $main-bg-color;
+    background-color: #EBF5F9;
     padding: 6px;
   }
 
   > *:nth-child(2) {
     position: relative;
     background-color: $panel-background;
-    border-top: $panel-divider-border-spec;
+    //border-top: $panel-divider-border-spec;
   }
+
+  height: 100%;
+  padding-right: 6px;
+  padding-bottom: 6px;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -209,6 +218,8 @@
   @include min-dimens-zero();
   @include grid-vstack-two(auto, 1fr);
   position: relative;
+
+  border-radius: 10px;
 
   background-color: $panel-background;
 
@@ -225,6 +236,19 @@
     > li:first-child > button {
       border-left: none;
     }
+
+    button {
+      padding: 8px 20px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  ul.nav-tabs .nav-item:first-child button {
+    border-top-left-radius: 10px;
   }
 
   ul.nav {
@@ -261,6 +285,8 @@
       visibility: visible;
     }
   }
+
+  height: 100%;
 }
 
 .busy-overlay {
@@ -285,7 +311,7 @@
 }
 
 .Junior-InfoPanel-container {
-  border-top: $panel-divider-border-spec;
+  //border-top: $panel-divider-border-spec;
 
   button.collapse-button {
     font-size: 0.75rem;
@@ -306,6 +332,8 @@
       display: none;
     }
   }
+
+  height: 100%;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -687,10 +715,15 @@
         @include background-color-as-button($scratch-hat-block-background);
         cursor: pointer;
         display: block;
-        padding: 0px 6px 0px 2px;
-        border: 1px solid black;
+        //padding: 0px 6px 0px 2px;
+        //border: 1px solid black;
         border-radius: 4px;
         font-size: 0.875rem;
+        padding: 0 8px;
+      }
+
+      .dropdown-toggle:after {
+        display: none;
       }
     }
   }
@@ -941,4 +974,66 @@ $key-chooser-width: 54rem;
 .Junior-LessonContent-container .spinner-container {
   @include full-height-grid-center-center;
   color: #444;
+}
+
+.resizablePanels {
+  height: 100vh;
+  width: 100vw;
+}
+
+.customSeparator {
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.customSeparator:hover {
+  background-color: #306998;
+}
+
+.customSeparator:focus {
+  background-color: #0060DF;
+}
+
+.horizontalSeparator {
+  width: 5px;
+  margin: 6px 0;
+}
+
+.verticalSeparator {
+  height: 5px;
+}
+
+.customSeparator .separatorIcon {
+  color: white;
+  display: block;
+  transition: 0.3s;
+  background-color: #87a3b9;
+
+  border-radius: 2px;
+}
+
+.horizontalSeparator .separatorIcon {
+  width: 5px;
+  padding: 20px 0;
+}
+
+.verticalSeparator .separatorIcon {
+  height: 5px;
+  padding: 0 20px;
+}
+
+.customSeparator:hover .separatorIcon, .customSeparator:focus .separatorIcon {
+  display: block;
+  color: white;
+  background-color: #87a3b9;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.horizontalSeparator:hover .separatorIcon, .customSeparator:focus .separatorIcon {
+  padding: 25px 0;
+}
+
+.verticalSeparator:hover .separatorIcon, .customSeparator:focus .separatorIcon {
+  padding: 0 25px;
 }
