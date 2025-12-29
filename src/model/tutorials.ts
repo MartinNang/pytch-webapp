@@ -126,7 +126,9 @@ const createProjectFromTutorial = async (
   actions.clearSlugCreating();
   methods.completionAction();
   storeActions.projectCollection.noteDatabaseChange();
-  storeActions.navigationRequestQueue.enqueue({ path: `/ide/${project.id}` });
+  storeActions.navigationRequestQueue.enqueue({
+    path: `/ide/${project.id}`,
+  });
 };
 
 export const tutorialCollection: ITutorialCollection = {
