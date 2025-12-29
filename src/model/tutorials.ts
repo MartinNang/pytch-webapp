@@ -175,6 +175,7 @@ export const tutorialCollection: ITutorialCollection = {
 
   createProjectFromTutorial: thunk(async (actions, args, helpers) => {
     const tutorialSlug = args.slug;
+    const navigateWithReplace = args.navigateWithReplace ?? false;
     await createProjectFromTutorial(actions, tutorialSlug, helpers, {
       projectCreationArgs: async () => {
         const content = await tutorialContent(tutorialSlug);
@@ -249,6 +250,7 @@ export const tutorialCollection: ITutorialCollection = {
       completionAction: () => {
         helpers.getStoreActions().ideLayout.dismissButtonTour();
       },
+      navigateOptions: () => ({ replace: navigateWithReplace }),
     });
   }),
 
