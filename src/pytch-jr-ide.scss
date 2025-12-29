@@ -50,6 +50,8 @@
       minmax($min-actor-properties-width, 1fr),
       auto
     );
+
+    background-color: #ebf5f9;
   }
 
   // The special-casing for each type of activity is a bit clunky but
@@ -992,6 +994,7 @@ $key-chooser-width: 54rem;
 
 .customSeparator:focus {
   background-color: #0060DF;
+  border: none;
 }
 
 .horizontalSeparator {
@@ -1026,14 +1029,20 @@ $key-chooser-width: 54rem;
   display: block;
   color: white;
   background-color: #87a3b9;
-  padding-top: 25px;
-  padding-bottom: 25px;
 }
 
-.horizontalSeparator:hover .separatorIcon, .customSeparator:focus .separatorIcon {
+.horizontalSeparator:hover .separatorIcon, .horizontalSeparator:focus .separatorIcon {
   padding: 25px 0;
 }
 
-.verticalSeparator:hover .separatorIcon, .customSeparator:focus .separatorIcon {
+.verticalSeparator:hover .separatorIcon, .verticalSeparator:focus .separatorIcon {
   padding: 0 25px;
+}
+
+.HelpSidebar code {
+  line-break: anywhere;
+}
+
+.CodeEditor {
+  height: 100%;
 }
