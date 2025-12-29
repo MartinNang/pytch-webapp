@@ -421,6 +421,7 @@
 
   &.isActive {
     background-color: $focused-item-background-glow;
+    border-radius: 10px;
   }
 
   .dropdown {
@@ -462,9 +463,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 3px solid;
-    border-radius: 2px;
+    border: 5px solid;
+    border-radius: 10px;
     background-color: white;
+
 
     .label,
     .label > pre {
@@ -636,6 +638,7 @@
     justify-content: center;
     min-height: 2.5rem;
     margin: 0.5rem;
+    padding: 2px;
 
     &.add-script {
       @include background-color-as-button($scratch-hat-block-background);
@@ -655,8 +658,10 @@
 
     span.icon {
       font-size: 1rem;
-      margin-left: 0.75rem;
-      margin-right: 0.75rem;
+      margin-left: 5px;
+      background-color: $pytch-colour-main-blue;
+      border-radius: 10px;
+      padding: 11px;
     }
   }
 }
@@ -985,7 +990,7 @@ $key-chooser-width: 54rem;
 
 .customSeparator {
   border-radius: 2px;
-  transition: 0.3s;
+  transition: 0.3s ease-in-out;
 }
 
 .customSeparator:hover {
@@ -1045,4 +1050,23 @@ $key-chooser-width: 54rem;
 
 .CodeEditor {
   height: 100%;
+}
+
+.gfs__actorprops__container, .gfs__actors__container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gfs__actorprops__container > div:first-child, .gfs__actors__container > .ActorsList:first-child {
+  flex-grow: 1;
+}
+
+.ActorsList {
+  margin: 0;
+  padding: 0;
+}
+
+.add-script span.icon {
+  background-color: lightyellow;
 }
