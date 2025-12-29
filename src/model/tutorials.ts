@@ -26,6 +26,7 @@ import {
   IEmbodyContext,
   StructuredProgramOps,
 } from "./junior/structured-program";
+import { NavigateOptions } from "react-router-dom";
 
 const kAllowRandomChapterAccessSearchParam =
   "allowRandomChapterAccessInTutorials";
@@ -87,6 +88,7 @@ const createProjectFromTutorial = async (
   methods: {
     projectCreationArgs: ProjectCreationArgsFun;
     completionAction: () => void;
+    navigateOptions?: () => NavigateOptions;
   }
 ) => {
   const storeActions = helpers.getStoreActions();
@@ -128,6 +130,7 @@ const createProjectFromTutorial = async (
   storeActions.projectCollection.noteDatabaseChange();
   storeActions.navigationRequestQueue.enqueue({
     path: `/ide/${project.id}`,
+    opts: methods.navigateOptions?.(),
   });
 };
 
