@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { settleModalDialog } from "./junior/utils";
+import { assertJrTutChapterNumber, settleModalDialog } from "./junior/utils";
 
 context("Start jr tutorial at chapter", () => {
   beforeEach(() => {
@@ -35,4 +35,14 @@ context("Start jr tutorial at chapter", () => {
     cy.get(".TutorialList");
     cy.get(".ExceptionDisplay").contains(messageMatch);
   }
+
+  it("start tutorial at specified chapter", () => {
+    cy.visit("/tutorial-checkpoint/script-by-script-boing/6");
+    assertTutorialNameIncludes("a Pong-like game");
+    assertChapterStartContent(6);
+
+    attemptCreateProject();
+    assertJrTutChapterNumber(6);
+    cy.contains("Bounce the ball off the bats");
+  });
 });
