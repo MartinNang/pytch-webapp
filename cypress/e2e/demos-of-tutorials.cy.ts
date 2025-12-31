@@ -10,6 +10,14 @@ context("Demos of all tutorials", () => {
     assertNTutorials();
   });
 
+  function launchNthTutorial(tutorialIndex: number) {
+    const childNumber = tutorialIndex + 1;
+    cy.get(
+      `ul.tutorial-list li:nth-child(${childNumber})` +
+        ' button[title="Learn how to make this project"]'
+    ).click();
+  }
+
   function launchNthTutorialDemo(tutorialIndex: number) {
     const childNumber = tutorialIndex + 1;
     cy.get(
