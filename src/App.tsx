@@ -21,7 +21,7 @@ import "./font-awesome-lib";
 import { AllModals } from "./components/AllModals";
 import { SingleTutorial } from "./components/SingleTutorial";
 import { Link } from "./components/LinkWithinApp";
-import NavBanner from "./components/NavBanner";
+import { NavBanner } from "./components/NavBanner";
 import { DemoFromZipfileURL } from "./components/DemoFromZipfileURL";
 import { useStoreState, useStoreActions } from "./store";
 import { useEffect } from "react";
