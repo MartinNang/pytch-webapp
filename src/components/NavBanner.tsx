@@ -11,7 +11,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import pytchLogo from "../images/pytch.png";
 import { ExternalLinkIndicator } from "./decorations";
 
-const NavBanner = () => {
+export const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
@@ -100,5 +100,3 @@ const NavBanner = () => {
     </div>
   );
 };
-
-export default NavBanner;
