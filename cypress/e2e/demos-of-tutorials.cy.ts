@@ -26,6 +26,15 @@ context("Demos of all tutorials", () => {
     ).click();
   }
 
+  it("can start tutorials", () => {
+    for (let tutIdx = 0; tutIdx !== kExpNTutorials; ++tutIdx) {
+      launchNthTutorial(tutIdx);
+      cy.get(".ActivityContent .ProgressTrail").should("be.visible");
+      cy.pytchHomeFromIDE();
+      cy.get(".NavBar li").contains("Tutorials").click();
+    }
+  });
+
   it("can run demos", () => {
     for (let tutIdx = 0; tutIdx !== kExpNTutorials; ++tutIdx) {
       launchNthTutorialDemo(tutIdx);
