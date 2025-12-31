@@ -18,4 +18,8 @@ context("Start jr tutorial at chapter", () => {
       `Starting at chapter ${expChapterIndex}`
     );
   }
+
+  function attemptCreateProject() {
+    cy.get(".TutorialCard.start-at-chapter button").click();
+  }
 });
