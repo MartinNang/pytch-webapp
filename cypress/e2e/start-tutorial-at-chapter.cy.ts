@@ -45,4 +45,9 @@ context("Start jr tutorial at chapter", () => {
     assertJrTutChapterNumber(6);
     cy.contains("Bounce the ball off the bats");
   });
+
+  it("reject invalid tutorial slug", () => {
+    cy.visit("/tutorial-checkpoint/no-such-tutorial/0");
+    assertError("failed to fetch");
+  });
 });
