@@ -100,3 +100,23 @@ export const NavBanner = () => {
     </div>
   );
 };
+
+/** The `InertNavBanner` can be used when we want something across the
+ * top, but where the user should not be able to navigate anywhere.
+ * Used in the "start tutorial at chapter" pseudo-modal flow. */
+export const InertNavBanner = () => {
+  return (
+    <div className="NavBar inert">
+      <div className="NavBarContent">
+        <div className="title-and-version" style={{ margin: "auto" }}>
+          <img
+            className="home-link"
+            src={pytchLogo}
+            alt="Pytch Logo"
+            height="70"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
