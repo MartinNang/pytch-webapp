@@ -46,7 +46,7 @@ const Content: React.FC<EmptyProps> = () => {
           <li>
             <Card
               data-slug={activeFsmState.runState.slug}
-              className="TutorialCard"
+              className="TutorialCard start-at-chapter"
             >
               <Card.Header>
                 <div className="tutorial-card-header">
@@ -54,7 +54,7 @@ const Content: React.FC<EmptyProps> = () => {
                     {displayName}
                   </Card.Title>
                 </div>
-                <p className="text-center mt-3">
+                <p className="chapter-index-content text-center mt-3">
                   Starting at chapter {chapterIndex}
                 </p>
               </Card.Header>
