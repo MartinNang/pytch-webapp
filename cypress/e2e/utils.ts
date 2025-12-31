@@ -247,6 +247,11 @@ export function assertCopiedText(match: string | ((text: string) => boolean)) {
   );
 }
 
+/** Assert that the webapp is on the front (welcome) page. */
+export function assertOnFrontPage() {
+  cy.get(".welcome-text header .content-text h2").should("have.text", "Pytch");
+}
+
 /** Assert that the webapp is on the IDE for a program of the given
  * `programKind`, and that the program has finished loading. */
 export function assertInIDE(programKind: PytchProgramKind) {
