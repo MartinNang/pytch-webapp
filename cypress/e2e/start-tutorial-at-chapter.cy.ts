@@ -50,4 +50,10 @@ context("Start jr tutorial at chapter", () => {
     cy.visit("/tutorial-checkpoint/no-such-tutorial/0");
     assertError("failed to fetch");
   });
+
+  it("reject invalid chapter index for valid tutorial", () => {
+    cy.visit("/tutorial-checkpoint/script-by-script-boing/42");
+    attemptCreateProject();
+    assertError("chapter 42 not found");
+  });
 });
