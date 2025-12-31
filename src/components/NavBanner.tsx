@@ -50,14 +50,14 @@ export const NavBanner = () => {
 
   return (
     <div className="NavBar">
-      <div className={"NavBarContent"}>
+      <div className="NavBarContent">
         <div className="title-and-version">
           <Link to="/">
             <img
               className="home-link"
               src={pytchLogo}
-              alt={"Pytch Logo"}
-              height={"70"}
+              alt="Pytch Logo"
+              height="70"
             />
           </Link>
         </div>
