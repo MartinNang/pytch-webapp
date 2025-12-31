@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 import { assertJrTutChapterNumber, settleModalDialog } from "./junior/utils";
+import { assertInIDE, assertOnFrontPage } from "./utils";
 
 context("Start jr tutorial at chapter", () => {
   beforeEach(() => {
@@ -55,5 +56,13 @@ context("Start jr tutorial at chapter", () => {
     cy.visit("/tutorial-checkpoint/script-by-script-boing/42");
     attemptCreateProject();
     assertError("chapter 42 not found");
+  });
+
+  it("navigate with replacement", () => {
+    cy.visit("/tutorial-checkpoint/script-by-script-boing/6");
+    attemptCreateProject();
+    assertInIDE("per-method");
+    cy.go("back");
+    assertOnFrontPage();
   });
 });
