@@ -5,6 +5,11 @@ context("Demos of all tutorials", () => {
     cy.get("ul.tutorial-list li").should("have.length", kExpNTutorials);
   }
 
+  beforeEach(() => {
+    cy.pytchResetDatabase({ initialUrl: "/tutorials/" });
+    assertNTutorials();
+  });
+
   function launchNthTutorialDemo(tutorialIndex: number) {
     const childNumber = tutorialIndex + 1;
     cy.get(
@@ -14,9 +19,6 @@ context("Demos of all tutorials", () => {
   }
 
   it("can run demos", () => {
-    cy.pytchResetDatabase({ initialUrl: "/tutorials/" });
-    assertNTutorials();
-
     for (let tutIdx = 0; tutIdx !== kExpNTutorials; ++tutIdx) {
       launchNthTutorialDemo(tutIdx);
       cy.contains("Click the green flag to run");
