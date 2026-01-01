@@ -1,4 +1,4 @@
-import { selectStage } from "../junior/utils";
+import { selectActorAspect, selectSprite, selectStage } from "../junior/utils";
 import { assertInIDE } from "../utils";
 import {
   activateFlatAsset,
@@ -119,6 +119,36 @@ context("Global focus steering shortcuts", () => {
 
       invokeFocusShortcut("h");
       assertFocus("specimen-info");
+    });
+
+    it("multiple costumes", () => {
+      cy.pytchTryUploadZipfiles(["pytch-jr-5-costumes-4-sounds.zip"]);
+      assertInIDE("per-method");
+
+      selectSprite("Snake");
+      selectActorAspect("Sounds");
+
+      invokeFocusShortcut("c");
+      assertFocus("sound-card", 0);
+      realPress("ArrowDown", 2);
+      assertFocus("sound-card", 2);
+
+      invokeFocusShortcut("s");
+      assertFocus("actor-card", 1);
+      invokeFocusShortcut("c");
+      assertFocus("sound-card", 2);
+
+      selectActorAspect("Costumes");
+
+      invokeFocusShortcut("c");
+      assertFocus("appearance-card", 0);
+      realPress("ArrowDown", 3);
+      assertFocus("appearance-card", 3);
+
+      invokeFocusShortcut("s");
+      assertFocus("actor-card", 1);
+      invokeFocusShortcut("c");
+      assertFocus("appearance-card", 3);
     });
   });
 });
