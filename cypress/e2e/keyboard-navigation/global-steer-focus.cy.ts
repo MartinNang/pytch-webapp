@@ -94,4 +94,7 @@ context("Global focus steering shortcuts", () => {
       assertFocus("keynav-help");
     });
   });
+
+  context("per-method IDE", () => {
+  });
 });
