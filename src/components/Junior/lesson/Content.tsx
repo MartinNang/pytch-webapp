@@ -27,7 +27,7 @@ export const Content: React.FC<EmptyProps> = () => {
         <DivScroller pageKey={chapterIdx} containerDivRef={contentRef} />
         <div
           ref={contentRef}
-          className="Junior-LessonContent abs-0000-oflow"
+          className="Junior-LessonContent gfs__help-content abs-0000-oflow"
           tabIndex={0}
         >
           <div className="content">
