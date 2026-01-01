@@ -25,10 +25,8 @@ import {
   StructuredProgramOps,
 } from "./junior/structured-program";
 import { NavigateOptions } from "react-router-dom";
-import {
-  JrTutorialCheckpointSkeleton,
-  LinkedJrTutorialRef,
-} from "./junior/jr-tutorial";
+import { JrTutorialCheckpointSkeleton } from "./junior/jr-tutorial";
+import { kLinkedContentRefNone, LinkedContentRef } from "./linked-content-core";
 
 const kAllowRandomChapterAccessSearchParam =
   "allowRandomChapterAccessInTutorials";
@@ -145,17 +143,31 @@ const createProjectFromTutorial = async (
   });
 };
 
+/** Return a new `CreateProjectOptions` instance specifying that the
+ * to-be-created project should be linked to the tutorial with the given
+ * `tutorialSlug`, starting at the chapter with the given
+ * `chapterIndex`.  As a special case, if `chapterIndex` is `-1`,
+ * instead return options specifying a "demo", i.e., that the project
+ * should have the content of the finished tutorial, but not be linked
+ * to anything.  In either case, the project's summary will describe its
+ * origin.
+ */
 const jrTutorialCheckpointCreateOptions = async (
   tutorialSlug: string,
   chapterIndex: number
 ): Promise<CreateProjectOptions> => {
   const relativeUrl = `${tutorialSlug}/chapter-starts.json`;
+  const demoRequested = chapterIndex === -1;
+
   const checkpointsObj = await tutorialResourceParsedJson(relativeUrl);
 
   // TODO: Parse with zod to validate structure.
   const checkpoints = checkpointsObj as Array<JrTutorialCheckpointSkeleton>;
 
-  const checkpoint = checkpoints[chapterIndex];
+  const checkpoint = demoRequested
+    ? checkpoints[checkpoints.length - 1]
+    : checkpoints[chapterIndex];
+
   if (checkpoint == null) {
     throw new Error(
       `chapter ${chapterIndex} not found in` +
@@ -170,14 +182,20 @@ const jrTutorialCheckpointCreateOptions = async (
   const program = PytchProgramOps.fromStructuredProgram(jrProgram);
   const assets = await embodyContext.allAddAssetDescriptors();
 
-  const linkedContentRef: LinkedJrTutorialRef = {
-    kind: "jr-tutorial",
-    name: tutorialSlug,
-    interactionState: checkpoint.interactionState,
-  };
+  const linkedContentRef: LinkedContentRef = demoRequested
+    ? kLinkedContentRefNone
+    : {
+        kind: "jr-tutorial",
+        name: tutorialSlug,
+        interactionState: checkpoint.interactionState,
+      };
+
+  const summary = demoRequested
+    ? `This project is a demo of the tutorial "${tutorialSlug}"`
+    : `This project is following the tutorial "${tutorialSlug}"`;
 
   return {
-    summary: `This project is following the tutorial "${tutorialSlug}"`,
+    summary,
     linkedContentRef,
     program,
     assets,
@@ -283,17 +301,7 @@ export const tutorialCollection: ITutorialCollection = {
               return { summary, program };
             }
             case "per-method": {
-              const skeletonUrl = `${tutorialSlug}/skeleton-structured-program.json`;
-              const skeleton = await tutorialResourceParsedJson(skeletonUrl);
-              const embodyContext = new EmbodyDemoFromTutorial(tutorialSlug);
-              const structuredProgram = StructuredProgramOps.fromSkeleton(
-                skeleton,
-                embodyContext
-              );
-              const program =
-                PytchProgramOps.fromStructuredProgram(structuredProgram);
-              const assets = await embodyContext.allAddAssetDescriptors();
-              return { summary, program, assets };
+              return jrTutorialCheckpointCreateOptions(tutorialSlug, -1);
             }
             default:
               return assertNever(content.programKind);
