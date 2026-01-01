@@ -1,3 +1,4 @@
+import { selectStage } from "../junior/utils";
 import { assertInIDE } from "../utils";
 import {
   activateFlatAsset,
@@ -96,5 +97,28 @@ context("Global focus steering shortcuts", () => {
   });
 
   context("per-method IDE", () => {
+    it("specimen link", () => {
+      cy.intercept("GET", "**/_by_content_hash_/1234.zip", {
+        fixture: "lesson-specimens/per-method-blue-invaders.zip",
+      });
+      cy.pytchTryUploadZipfiles(["v4-jr-linked-to-specimen.zip"]);
+      assertInIDE("per-method");
+
+      selectStage();
+      assertFocus("actor-card", 0);
+
+      cy.get('button[data-activity-bar-tab="helpsidebar"]').click();
+      realPress("ArrowDown");
+      realPress("Enter");
+
+      invokeFocusShortcut("h");
+      assertFocus("specimen-info");
+
+      invokeFocusShortcut("c");
+      assertFocus("add-script-button");
+
+      invokeFocusShortcut("h");
+      assertFocus("specimen-info");
+    });
   });
 });
