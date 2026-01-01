@@ -96,7 +96,7 @@ export class GlobalFocusSteering {
         this.actionFromSecondKey.set("c", bookmarkedAction("gfs__actorprops"));
         break;
       case "flat":
-        this.actionFromSecondKey.set("h", bookmarkedAction("gfs__help"));
+        this.actionFromSecondKey.set("h", helpContentAction);
         this.actionFromSecondKey.set("a", bookmarkedAction("gfs__flatassets"));
         this.actionFromSecondKey.set(
           "c",
