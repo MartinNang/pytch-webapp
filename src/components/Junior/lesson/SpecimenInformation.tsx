@@ -44,7 +44,10 @@ export const SpecimenInformation: React.FC<EmptyProps> = () => {
       </div>
 
       <div className="Junior-LessonContent-inner-container">
-        <div className="Junior-LessonContent abs-0000-oflow">
+        <div
+          className="Junior-LessonContent gfs__help-content abs-0000-oflow"
+          tabIndex={0}
+        >
           <div className="content">
             <p>
               This project is based on the code for <em>{specimenName}</em>.

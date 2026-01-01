@@ -84,17 +84,19 @@ export class GlobalFocusSteering {
 
     this.actionFromSecondKey.set("p", elementAction("#pytch-speech-bubbles"));
 
+    const helpContentAction = bookmarkedOrElementAction(
+      "gfs__help",
+      ".gfs__help-content"
+    );
+
     switch (pageKind) {
       case "per-method":
-        this.actionFromSecondKey.set(
-          "h",
-          bookmarkedOrElementAction("gfs__help", ".Junior-LessonContent")
-        );
+        this.actionFromSecondKey.set("h", helpContentAction);
         this.actionFromSecondKey.set("s", bookmarkedAction("gfs__actors"));
         this.actionFromSecondKey.set("c", bookmarkedAction("gfs__actorprops"));
         break;
       case "flat":
-        this.actionFromSecondKey.set("h", bookmarkedAction("gfs__help"));
+        this.actionFromSecondKey.set("h", helpContentAction);
         this.actionFromSecondKey.set("a", bookmarkedAction("gfs__flatassets"));
         this.actionFromSecondKey.set(
           "c",
