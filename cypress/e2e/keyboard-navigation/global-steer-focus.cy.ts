@@ -8,6 +8,10 @@ import {
 } from "./utils";
 
 context("Global focus steering shortcuts", () => {
+  // These tests are a bit scrappy, ad-hoc, and near-duplicative, but it
+  // didn't quite seem worth the trouble to try to factor out the common
+  // behaviour.
+
   beforeEach(() => {
     cy.pytchResetDatabase();
   });
