@@ -12,4 +12,7 @@ context("Global focus steering shortcuts", () => {
     realPress("g");
     realPress(key);
   }
+
+  context("flat IDE", () => {
+  });
 });
