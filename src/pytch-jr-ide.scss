@@ -105,19 +105,24 @@
     width: 100%;
     height: $activity-bar-tab-height;
     font-size: 1.5rem;
+
+    color: $inactive-icon-option-color;
+    transition: color 0.15s ease-in-out;
+
     button {
-      width: 100%;
-      height: 100%;
-      color: $inactive-icon-option-color;
+      width: calc($activity-bar-width - 4px);
+      height: calc($activity-bar-tab-height - 4px);
+      color: inherit;
+      background-color: inherit;
       border-width: 0px;
       border-style: none;
-      transition: color 0.15s ease-in-out;
+      padding-inline: 0px;
     }
 
-    &:hover button {
+    &:hover {
       color: $pytch-colour-accent-blue;
     }
-    &.isActive button {
+    &.isActive {
       color: $pytch-colour-main-blue;
       background-color: $pytch-colour-main-yellow;
     }
