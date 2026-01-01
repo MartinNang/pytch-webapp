@@ -88,7 +88,7 @@ export class GlobalFocusSteering {
       case "per-method":
         this.actionFromSecondKey.set(
           "h",
-          bookmarkedOrElementAction("gfs__help", ".Junior-LessonContent")
+          bookmarkedOrElementAction("gfs__help", ".gfs__help-content")
         );
         this.actionFromSecondKey.set("s", bookmarkedAction("gfs__actors"));
         this.actionFromSecondKey.set("c", bookmarkedAction("gfs__actorprops"));
