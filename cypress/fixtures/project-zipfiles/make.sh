@@ -165,3 +165,16 @@ EOT
 EOT
     make_zipfile v4-jr-linked-to-specimen
 )
+(
+    make_content_v4_flat
+    cat << EOT > meta.json
+{
+    "projectName": "Print some things",
+    "linkedContentRef": {
+        "kind": "specimen",
+        "specimenContentHash": "1234"
+    }
+}
+EOT
+    make_zipfile v4-flat-linked-to-specimen
+)
