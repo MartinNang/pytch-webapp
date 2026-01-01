@@ -348,6 +348,12 @@ button.awaiting-action {
   }
 }
 
+.ErrorMessageDisplay {
+  .technical-details .error-message {
+    font-style: italic;
+  }
+}
+
 .ExceptionDisplay {
   @include full-center-middle();
 
