@@ -1,5 +1,6 @@
 import { assertInIDE } from "../utils";
 import {
+  activateFlatAsset,
   assertFocus,
   KeyOrShortcut,
   realPress,
@@ -33,6 +34,64 @@ context("Global focus steering shortcuts", () => {
 
       invokeFocusShortcut("h");
       assertFocus("specimen-info");
+    });
+
+    it("tutorial link", () => {
+      cy.pytchProjectFollowingTutorial();
+      assertInIDE("flat");
+      activateFlatAsset(0);
+
+      invokeFocusShortcut("h");
+      assertFocus("tutorial-content");
+
+      invokeFocusShortcut("a");
+      assertFocus("flat-asset", 0);
+      realPress("ArrowDown", 4);
+      assertFocus("flat-asset", 4);
+
+      invokeFocusShortcut("h");
+      assertFocus("tutorial-content");
+
+      cy.get('button[data-activity-bar-tab="helpsidebar"]')
+        .as("helpButton")
+        .click();
+
+      invokeFocusShortcut("h");
+      assertFocus("help-sidebar", [0]);
+
+      realPress("ArrowDown", 3);
+      realPress("Enter");
+      realPress("ArrowDown", 3);
+      assertFocus("help-sidebar", [3, 2]);
+
+      invokeFocusShortcut("a");
+      assertFocus("flat-asset", 4);
+
+      invokeFocusShortcut("h");
+      assertFocus("help-sidebar", [3, 2]);
+
+      cy.get("@helpButton").click();
+      invokeFocusShortcut("c");
+      assertFocus("flat-code-editor");
+      realPress("Escape");
+      invokeFocusShortcut("h");
+      assertFocus("activity-tab", "helpsidebar");
+
+      realPress("End");
+      assertFocus("activity-tab", "keynavhelp");
+      invokeFocusShortcut("a");
+      assertFocus("flat-asset", 4);
+      invokeFocusShortcut("h");
+      assertFocus("activity-tab", "keynavhelp");
+
+      realPress("Enter");
+      realPress("Tab");
+      assertFocus("keynav-help");
+
+      invokeFocusShortcut("a");
+      assertFocus("flat-asset", 4);
+      invokeFocusShortcut("h");
+      assertFocus("keynav-help");
     });
   });
 });
