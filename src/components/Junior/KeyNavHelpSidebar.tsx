@@ -185,7 +185,7 @@ export const KeyNavHelpSidebar: React.FC<EmptyProps> = () => {
   );
 
   return (
-    <div className="KeyNavHelpSidebar" tabIndex={0}>
+    <div className="KeyNavHelpSidebar gfs__help-content" tabIndex={0}>
       <KeyNavHelpSidebarMaybeContent />
     </div>
   );
