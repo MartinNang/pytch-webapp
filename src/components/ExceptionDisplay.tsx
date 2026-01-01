@@ -2,6 +2,7 @@ import React from "react";
 import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
 import Button from "react-bootstrap/Button";
 import { envVarOrDefault } from "../env-utils";
+import { ErrorMessageDisplay } from "./ErrorMessageDisplay";
 
 // Accept props of broader type than "FallbackProps" to allow use in
 // other contexts.
@@ -18,14 +19,7 @@ export const ExceptionDisplay: React.FC<ExceptionDisplayProps> = (props) => {
       windowTitle="Pytch: Unexpected error"
     >
       <div className="content">
-        <p>
-          Sorry, there was an unexpected problem. Please contact the Pytch team
-          if the problem persists.
-        </p>
-        <p>
-          (Technical details:{" "}
-          <span className="error-message">{error.message}</span>)
-        </p>
+        <ErrorMessageDisplay errorMessage={error.message} />
         <div className="button-container">
           <a href={envVarOrDefault("BASE_URL", "https://pytch.org/")}>
             <Button>Return to Pytch app homepage</Button>
