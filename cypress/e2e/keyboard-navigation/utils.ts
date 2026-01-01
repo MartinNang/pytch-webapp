@@ -212,10 +212,12 @@ type FocusableAreaKind =
   | "selected-projects-back-button"
   | "selected-projects-delete-button"
   | "help-sidebar"
+  | "keynav-help"
   | "actor-property-tab"
   | "info-panel-tab"
   | "info-panel-disclosure-toggle"
   | "flat-code-tab"
+  | "flat-code-editor"
   | "script"
   | "script-code"
   | "hat-block-option"
@@ -243,6 +245,7 @@ type FocusableAreaKind =
   | "stage"
   | "progress-node"
   | "tutorial-content"
+  | "specimen-info"
   | "learner-task-done-button"
   | "learner-task-help-button"
   | "learner-task-diff-tab"
@@ -292,12 +295,14 @@ export function assertFocus(
 
 export function assertFocus(
   area:
+    | "keynav-help"
     | "add-project-button"
     | "project-new-name-input"
     | "selected-projects-back-button"
     | "selected-projects-delete-button"
     | "info-panel-disclosure-toggle"
     | "flat-code-tab"
+    | "flat-code-editor"
     | "key-pressed-cancel-button"
     | "add-script-button"
     | "add-sprite-button"
@@ -310,6 +315,7 @@ export function assertFocus(
     | "medialib-filter-switch"
     | "medialib-cancel-button"
     | "tutorial-content"
+    | "specimen-info"
     | "green-flag"
     | "stage",
   locWithinArea: void
@@ -393,6 +399,9 @@ export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
           }
         }
       }
+      case "keynav-help": {
+        return ".KeyNavHelpSidebar";
+      }
       case "activity-tab": {
         const tabKey = locWithinArea as ActivityBarTabKey;
         return `.activity-bar-tabs button[data-activity-bar-tab="${tabKey}"]`;
@@ -420,6 +429,9 @@ export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
       }
       case "flat-code-tab": {
         return ".CodeEditor ul.nav-tabs li:first-child button";
+      }
+      case "flat-code-editor": {
+        return ".CodeEditor textarea";
       }
       case "script": {
         const scriptIdx = locWithinArea as number;
@@ -561,6 +573,11 @@ export function assertFocus(area: FocusableAreaKind, locWithinArea: any): void {
         return `.progress-node-hover-target[data-chapter-index="${chapIdx}"]`;
       }
       case "tutorial-content": {
+        return ".Junior-LessonContent";
+      }
+      case "specimen-info": {
+        // TODO: Distinguish the various (mis)uses of the
+        // Junior-LessonContent class?
         return ".Junior-LessonContent";
       }
       default:
