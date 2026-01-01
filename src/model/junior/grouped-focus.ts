@@ -668,6 +668,8 @@ export class GroupedFocusManager {
       if (elt == null) {
         if (eltWithHandler != null && onKeyDown != null) {
           eltWithHandler.removeEventListener("keydown", onKeyDown);
+          eltWithHandler = null;
+          onKeyDown = null;
         }
       } else {
         const key = GroupedFocusManager.keyFromElt(elt);
