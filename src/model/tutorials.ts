@@ -143,6 +143,15 @@ const createProjectFromTutorial = async (
   });
 };
 
+/** Return a new `CreateProjectOptions` instance specifying that the
+ * to-be-created project should be linked to the tutorial with the given
+ * `tutorialSlug`, starting at the chapter with the given
+ * `chapterIndex`.  As a special case, if `chapterIndex` is `-1`,
+ * instead return options specifying a "demo", i.e., that the project
+ * should have the content of the finished tutorial, but not be linked
+ * to anything.  In either case, the project's summary will describe its
+ * origin.
+ */
 const jrTutorialCheckpointCreateOptions = async (
   tutorialSlug: string,
   chapterIndex: number
