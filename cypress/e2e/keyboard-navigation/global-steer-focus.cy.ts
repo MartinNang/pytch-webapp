@@ -150,5 +150,81 @@ context("Global focus steering shortcuts", () => {
       invokeFocusShortcut("c");
       assertFocus("appearance-card", 3);
     });
+
+    it("tutorial link", () => {
+      cy.pytchTryUploadZipfiles(["v4-jr-linked-to-tutorial.zip"]);
+      assertInIDE("per-method");
+
+      selectStage();
+      assertFocus("actor-card", 0);
+      realPress("ArrowRight");
+      assertFocus("actor-card", 1);
+
+      invokeFocusShortcut("h");
+      assertFocus("tutorial-content");
+
+      invokeFocusShortcut("c");
+      assertFocus("add-script-button");
+
+      invokeFocusShortcut("s");
+      assertFocus("actor-card", 1);
+
+      cy.get('button[data-activity-bar-tab="helpsidebar"]')
+        .as("helpButton")
+        .click();
+
+      invokeFocusShortcut("h");
+      assertFocus("help-sidebar", [0]);
+
+      realPress("ArrowDown", 3);
+      realPress("Enter");
+      realPress("ArrowDown", 3);
+      assertFocus("help-sidebar", [3, 2]);
+
+      invokeFocusShortcut("s");
+      assertFocus("actor-card", 1);
+
+      invokeFocusShortcut("h");
+      assertFocus("help-sidebar", [3, 2]);
+
+      cy.get("@helpButton").click();
+      invokeFocusShortcut("c");
+      assertFocus("add-script-button");
+      invokeFocusShortcut("h");
+      assertFocus("activity-tab", "helpsidebar");
+
+      realPress("End");
+      assertFocus("activity-tab", "keynavhelp");
+      invokeFocusShortcut("c");
+      assertFocus("add-script-button");
+      invokeFocusShortcut("h");
+      assertFocus("activity-tab", "keynavhelp");
+
+      realPress("Enter");
+      realPress("Tab");
+      assertFocus("keynav-help");
+
+      invokeFocusShortcut("c");
+      assertFocus("add-script-button");
+      invokeFocusShortcut("h");
+      assertFocus("keynav-help");
+
+      selectSprite("Snake");
+      selectActorAspect("Costumes");
+      invokeFocusShortcut("c");
+      assertFocus("appearance-card", 0);
+
+      selectActorAspect("Code");
+      invokeFocusShortcut("h");
+      assertFocus("keynav-help");
+      invokeFocusShortcut("c");
+      assertFocus("script", 0);
+
+      selectActorAspect("Sounds");
+      invokeFocusShortcut("h");
+      assertFocus("keynav-help");
+      invokeFocusShortcut("c");
+      assertFocus("add-sound-button");
+    });
   });
 });
