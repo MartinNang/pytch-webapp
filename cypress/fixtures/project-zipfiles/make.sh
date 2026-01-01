@@ -28,6 +28,13 @@ make_content_v4_jr() {
     unzip -q ../simple-v4-jr.zip
 }
 
+make_content_v4_flat() {
+    rm -rf tmp-content
+    mkdir tmp-content
+    cd tmp-content
+    unzip -q ../v4-print-things.zip
+}
+
 make_zipfile() {
     rm -f ../$1.zip
     zip -qr ../$1.zip *
@@ -157,4 +164,17 @@ EOT
 }
 EOT
     make_zipfile v4-jr-linked-to-specimen
+)
+(
+    make_content_v4_flat
+    cat << EOT > meta.json
+{
+    "projectName": "Print some things",
+    "linkedContentRef": {
+        "kind": "specimen",
+        "specimenContentHash": "1234"
+    }
+}
+EOT
+    make_zipfile v4-flat-linked-to-specimen
 )
