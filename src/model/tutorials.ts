@@ -301,17 +301,7 @@ export const tutorialCollection: ITutorialCollection = {
               return { summary, program };
             }
             case "per-method": {
-              const skeletonUrl = `${tutorialSlug}/skeleton-structured-program.json`;
-              const skeleton = await tutorialResourceParsedJson(skeletonUrl);
-              const embodyContext = new EmbodyDemoFromTutorial(tutorialSlug);
-              const structuredProgram = StructuredProgramOps.fromSkeleton(
-                skeleton,
-                embodyContext
-              );
-              const program =
-                PytchProgramOps.fromStructuredProgram(structuredProgram);
-              const assets = await embodyContext.allAddAssetDescriptors();
-              return { summary, program, assets };
+              return jrTutorialCheckpointCreateOptions(tutorialSlug, -1);
             }
             default:
               return assertNever(content.programKind);
