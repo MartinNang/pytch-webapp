@@ -29,6 +29,7 @@ import {
   JrTutorialCheckpointSkeleton,
   LinkedJrTutorialRef,
 } from "./junior/jr-tutorial";
+import { kLinkedContentRefNone, LinkedContentRef } from "./linked-content-core";
 
 const kAllowRandomChapterAccessSearchParam =
   "allowRandomChapterAccessInTutorials";
@@ -150,12 +151,17 @@ const jrTutorialCheckpointCreateOptions = async (
   chapterIndex: number
 ): Promise<CreateProjectOptions> => {
   const relativeUrl = `${tutorialSlug}/chapter-starts.json`;
+  const demoRequested = chapterIndex === -1;
+
   const checkpointsObj = await tutorialResourceParsedJson(relativeUrl);
 
   // TODO: Parse with zod to validate structure.
   const checkpoints = checkpointsObj as Array<JrTutorialCheckpointSkeleton>;
 
-  const checkpoint = checkpoints[chapterIndex];
+  const checkpoint = demoRequested
+    ? checkpoints[checkpoints.length - 1]
+    : checkpoints[chapterIndex];
+
   if (checkpoint == null) {
     throw new Error(
       `chapter ${chapterIndex} not found in` +
@@ -170,14 +176,20 @@ const jrTutorialCheckpointCreateOptions = async (
   const program = PytchProgramOps.fromStructuredProgram(jrProgram);
   const assets = await embodyContext.allAddAssetDescriptors();
 
-  const linkedContentRef: LinkedJrTutorialRef = {
-    kind: "jr-tutorial",
-    name: tutorialSlug,
-    interactionState: checkpoint.interactionState,
-  };
+  const linkedContentRef: LinkedContentRef = demoRequested
+    ? kLinkedContentRefNone
+    : {
+        kind: "jr-tutorial",
+        name: tutorialSlug,
+        interactionState: checkpoint.interactionState,
+      };
+
+  const summary = demoRequested
+    ? `This project is a demo of the tutorial "${tutorialSlug}"`
+    : `This project is following the tutorial "${tutorialSlug}"`;
 
   return {
-    summary: `This project is following the tutorial "${tutorialSlug}"`,
+    summary,
     linkedContentRef,
     program,
     assets,
