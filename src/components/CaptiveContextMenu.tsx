@@ -245,7 +245,7 @@ const DropdownMenu: React.FC<PropsWithChildren<object>> = ({ children }) => {
       onKeyDown={onKeydown}
       data-captive-context-menu-container-id={ctx.containerId}
     >
-      <Dropdown.Toggle as="div">⋮</Dropdown.Toggle>
+      <Dropdown.Toggle as="div"></Dropdown.Toggle>
       <Dropdown.Menu align="end">{children}</Dropdown.Menu>
     </Dropdown>
   );
