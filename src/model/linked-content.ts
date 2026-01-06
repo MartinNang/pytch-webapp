@@ -15,6 +15,8 @@ import {
   LinkedSpecimenRef,
   SpecimenContentHash,
 } from "./linked-content-core";
+import { PytchProgramKind } from "./pytch-program";
+import { LinkedContentLoadingState } from "./project";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -56,6 +58,7 @@ export function linkedContentIsReferent(
 }
 
 export async function dereferenceLinkedNoContent(
+  _programKind: PytchProgramKind,
   _ref: LinkedNoContentRef
 ): Promise<LinkedNoContent> {
   return kLinkedNoContent;
@@ -84,16 +87,25 @@ export async function lessonDescriptorFromRelativePath(
 }
 
 export async function dereferenceLinkedSpecimen(
+  programKind: PytchProgramKind,
   ref: LinkedSpecimenRef
 ): Promise<LinkedSpecimen> {
   const contentHash = ref.specimenContentHash;
   const relativePath = `_by_content_hash_/${contentHash}`;
   const lesson = await lessonDescriptorFromRelativePath(relativePath);
+
+  const specimenKind = lesson.project.program.kind;
+  if (specimenKind !== programKind) {
+    throw new Error(
+      `project is "${programKind}" but specimen is "${specimenKind}"`
+    );
+  }
+
   return { kind: "specimen", lesson };
 }
 
 type LinkedContentLoadingStateSummary =
-  | { kind: "idle" | "failed" }
+  | (LinkedContentLoadingState & { kind: "idle" | "failed" })
   | { kind: "pending" | "succeeded"; contentKind: LinkedContentKind };
 
 function mapLCLSS(
@@ -103,7 +115,7 @@ function mapLCLSS(
   switch (contentState.kind) {
     case "idle":
     case "failed":
-      return { kind: contentState.kind };
+      return contentState;
     case "succeeded":
       return {
         kind: "succeeded",

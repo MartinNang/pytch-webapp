@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 import {
+  assertShowsLinkedContentError,
   initSpecimenIntercepts,
   kFlatLessonUrl,
   kPerMethodLessonUrl,
@@ -358,5 +359,30 @@ context("Compare user code to original", () => {
     cy.get("button").contains("Compare to original").click();
     cy.get(".ViewCodeDiffModal").find("button").contains("Close").click();
     cy.get(".ViewCodeDiffModal").should("not.exist");
+  });
+});
+
+context("rejects wrong program-kind", () => {
+  beforeEach(() => {
+    cy.pytchResetDatabase();
+    cy.contains("My projects").click();
+  });
+
+  it("flat project but per-method specimen", () => {
+    cy.intercept("GET", "**/_by_content_hash_/1234.zip", {
+      fixture: "lesson-specimens/per-method-blue-invaders.zip",
+    });
+    cy.pytchTryUploadZipfiles(["v4-flat-linked-to-specimen.zip"]);
+
+    assertShowsLinkedContentError(/project.*flat.*specimen.*per-method/);
+  });
+
+  it("per-method project but flat specimen", () => {
+    cy.intercept("GET", "**/_by_content_hash_/1234.zip", {
+      fixture: "lesson-specimens/hello-world-lesson.zip",
+    });
+    cy.pytchTryUploadZipfiles(["v4-jr-linked-to-specimen.zip"]);
+
+    assertShowsLinkedContentError(/project.*per-method.*specimen.*flat/);
   });
 });

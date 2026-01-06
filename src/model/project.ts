@@ -207,7 +207,7 @@ export type LinkedContentLoadingState =
   | { kind: "idle" }
   | { kind: "pending"; projectId: ProjectId; contentRef: LinkedContentRef }
   | { kind: "succeeded"; projectId: ProjectId; content: LinkedContent }
-  | { kind: "failed" };
+  | { kind: "failed"; contentKind: LinkedContentKind; message: string };
 
 type SucceededStateOfKind<KindT extends LinkedContentKind> =
   LinkedContentLoadingState & {
@@ -267,6 +267,7 @@ function assertLinkedContentSucceededOfKind<KindT extends LinkedContentKind>(
 
 type LinkedContentLoadTaskDescriptor = {
   projectId: ProjectId;
+  projectProgramKind: PytchProgramKind;
   linkedContentRef: LinkedContentRef;
 };
 
@@ -878,14 +879,15 @@ export const activeProject: IActiveProject = {
     try {
       const summary = await projectSummary(projectId);
 
+      const descriptor = await projectDescriptor(projectId);
+
       // Just set this off; do not await it.  If the network is slow or
       // broken we don't want to hold up the rest of the student's work.
       actions.doLinkedContentLoadTask({
         projectId,
+        projectProgramKind: descriptor.program.kind,
         linkedContentRef: summary.linkedContentRef,
       });
-
-      const descriptor = await projectDescriptor(projectId);
 
       // TODO: Should the asset-server be local to the project?  Might
       // save all the to/fro with prepare/clear and knowing when to revoke
@@ -962,7 +964,7 @@ export const activeProject: IActiveProject = {
   }),
 
   doLinkedContentLoadTask: thunk(async (actions, taskDescriptor, helpers) => {
-    const { projectId, linkedContentRef } = taskDescriptor;
+    const { projectId, projectProgramKind, linkedContentRef } = taskDescriptor;
     const initialState = helpers.getState().linkedContentLoadingState;
 
     const correctLoadIsPending =
@@ -983,11 +985,20 @@ export const activeProject: IActiveProject = {
       const content = await (() => {
         switch (linkedContentRef.kind) {
           case "none":
-            return dereferenceLinkedNoContent(linkedContentRef);
+            return dereferenceLinkedNoContent(
+              projectProgramKind,
+              linkedContentRef
+            );
           case "jr-tutorial":
-            return dereferenceLinkedJrTutorial(linkedContentRef);
+            return dereferenceLinkedJrTutorial(
+              projectProgramKind,
+              linkedContentRef
+            );
           case "specimen":
-            return dereferenceLinkedSpecimen(linkedContentRef);
+            return dereferenceLinkedSpecimen(
+              projectProgramKind,
+              linkedContentRef
+            );
           default:
             return assertNever(linkedContentRef);
         }
@@ -1006,7 +1017,11 @@ export const activeProject: IActiveProject = {
       }
     } catch (e) {
       console.error("doLinkedContentLoadTask():", e);
-      actions.setLinkedContentLoadingState({ kind: "failed" });
+      actions.setLinkedContentLoadingState({
+        kind: "failed",
+        contentKind: linkedContentRef.kind,
+        message: (e as Error).message ?? "unknown error",
+      });
     }
   }),
 
