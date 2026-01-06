@@ -120,6 +120,9 @@ context("Toasts are generated (s/b/s)", () => {
       cy.get(".CompoundTextInput input").type("{selectAll}{del}two-snakes");
     },
     submit: () => settleModalDialog("Rename"),
+    assertCompletion: () => {
+      assertFocus("appearance-card", 0);
+    },
     toastBodyMatch: 'Costume renamed to "two-snakes.png"',
     dismissFun: kDismissSpaceOnCloseButton,
   });
