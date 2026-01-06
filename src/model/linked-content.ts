@@ -92,6 +92,14 @@ export async function dereferenceLinkedSpecimen(
   const contentHash = ref.specimenContentHash;
   const relativePath = `_by_content_hash_/${contentHash}`;
   const lesson = await lessonDescriptorFromRelativePath(relativePath);
+
+  const specimenKind = lesson.project.program.kind;
+  if (specimenKind !== programKind) {
+    throw new Error(
+      `project is "${programKind}" but specimen is "${specimenKind}"`
+    );
+  }
+
   return { kind: "specimen", lesson };
 }
 
