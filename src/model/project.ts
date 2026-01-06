@@ -267,6 +267,7 @@ function assertLinkedContentSucceededOfKind<KindT extends LinkedContentKind>(
 
 type LinkedContentLoadTaskDescriptor = {
   projectId: ProjectId;
+  projectProgramKind: PytchProgramKind;
   linkedContentRef: LinkedContentRef;
 };
 
