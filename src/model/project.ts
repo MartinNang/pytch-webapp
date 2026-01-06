@@ -878,14 +878,14 @@ export const activeProject: IActiveProject = {
     try {
       const summary = await projectSummary(projectId);
 
+      const descriptor = await projectDescriptor(projectId);
+
       // Just set this off; do not await it.  If the network is slow or
       // broken we don't want to hold up the rest of the student's work.
       actions.doLinkedContentLoadTask({
         projectId,
         linkedContentRef: summary.linkedContentRef,
       });
-
-      const descriptor = await projectDescriptor(projectId);
 
       // TODO: Should the asset-server be local to the project?  Might
       // save all the to/fro with prepare/clear and knowing when to revoke
