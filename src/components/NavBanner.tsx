@@ -111,12 +111,12 @@ export const InertNavBanner = () => {
       <div className="NavBarContent">
         <div className="title-and-version" style={{ margin: "auto" }}>
           <a href={envVarOrDefault("BASE_URL", "https://pytch.org/")}>
-          <img
-            className="home-link"
-            src={pytchLogo}
-            alt="Pytch Logo"
-            height="70"
-          />
+            <img
+              className="home-link"
+              src={pytchLogo}
+              alt="Pytch Logo"
+              height="70"
+            />
           </a>
         </div>
       </div>
