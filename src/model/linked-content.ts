@@ -16,6 +16,7 @@ import {
   SpecimenContentHash,
 } from "./linked-content-core";
 import { PytchProgramKind } from "./pytch-program";
+import { LinkedContentLoadingState } from "./project";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -104,7 +105,7 @@ export async function dereferenceLinkedSpecimen(
 }
 
 type LinkedContentLoadingStateSummary =
-  | { kind: "idle" | "failed" }
+  | (LinkedContentLoadingState & { kind: "idle" | "failed" })
   | { kind: "pending" | "succeeded"; contentKind: LinkedContentKind };
 
 function mapLCLSS(
@@ -114,7 +115,7 @@ function mapLCLSS(
   switch (contentState.kind) {
     case "idle":
     case "failed":
-      return { kind: contentState.kind };
+      return contentState;
     case "succeeded":
       return {
         kind: "succeeded",
