@@ -1017,7 +1017,9 @@ export const activeProject: IActiveProject = {
       }
     } catch (e) {
       console.error("doLinkedContentLoadTask():", e);
-      actions.setLinkedContentLoadingState({ kind: "failed" });
+      actions.setLinkedContentLoadingState({
+        kind: "failed",
+      });
     }
   }),
 
