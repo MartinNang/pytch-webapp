@@ -59,6 +59,7 @@ function itShowsToastFor(label: string, descr: ItShowsToastForDescriptor) {
       const gatedDelay = GatedDelay.installNew(window);
       const dismiss = () => descr.dismissFun(gatedDelay);
       descr.submit();
+      descr.assertCompletion?.();
       if (descr.failurePredicate != null) {
         const failPred = descr.failurePredicate;
         cy.get(failPred.selector).contains(failPred.reportMatch);
