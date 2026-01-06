@@ -1019,6 +1019,8 @@ export const activeProject: IActiveProject = {
       console.error("doLinkedContentLoadTask():", e);
       actions.setLinkedContentLoadingState({
         kind: "failed",
+        contentKind: linkedContentRef.kind,
+        message: (e as Error).message ?? "unknown error",
       });
     }
   }),
