@@ -373,7 +373,6 @@ const parseZipfile_V2_V3_V4 = async (
     : PytchProgramOps.fromJson(codeTextOrJson);
 
   const rawProjectMetadata = await _jsonOrFail(zip, "meta.json", bareError);
-  console.log(rawProjectMetadata, typeof rawProjectMetadata);
   if (
     typeof rawProjectMetadata !== "object" ||
     rawProjectMetadata == null ||
