@@ -885,6 +885,7 @@ export const activeProject: IActiveProject = {
       // broken we don't want to hold up the rest of the student's work.
       actions.doLinkedContentLoadTask({
         projectId,
+        projectProgramKind: descriptor.program.kind,
         linkedContentRef: summary.linkedContentRef,
       });
 
