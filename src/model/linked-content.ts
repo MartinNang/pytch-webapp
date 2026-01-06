@@ -15,6 +15,7 @@ import {
   LinkedSpecimenRef,
   SpecimenContentHash,
 } from "./linked-content-core";
+import { PytchProgramKind } from "./pytch-program";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -56,6 +57,7 @@ export function linkedContentIsReferent(
 }
 
 export async function dereferenceLinkedNoContent(
+  _programKind: PytchProgramKind,
   _ref: LinkedNoContentRef
 ): Promise<LinkedNoContent> {
   return kLinkedNoContent;
@@ -84,6 +86,7 @@ export async function lessonDescriptorFromRelativePath(
 }
 
 export async function dereferenceLinkedSpecimen(
+  programKind: PytchProgramKind,
   ref: LinkedSpecimenRef
 ): Promise<LinkedSpecimen> {
   const contentHash = ref.specimenContentHash;
