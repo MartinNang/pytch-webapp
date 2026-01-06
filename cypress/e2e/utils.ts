@@ -279,6 +279,16 @@ export function jumpToTutorialChapter(chapterIndex: number) {
   cy.get(selector).click();
 }
 
+/** Assuming that the webapp is in the IDE for a project which
+ * supposedly has some linked content, assert that there was in fact an
+ * error loading the content, with technical details matching the given
+ * reg-exp `match`. */
+export function assertShowsLinkedContentError(match: RegExp) {
+  cy.get(".ActivityContent .ErrorMessageDisplay .error-message").contains(
+    match
+  );
+}
+
 ////////////////////////////////////////////////////////////////////////
 
 export function withDownloadedZipfile(
