@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withinSite } from "../env-utils";
+import { envVarOrDefault, withinSite } from "../env-utils";
 import { Link } from "./LinkWithinApp";
 import { pytchResearchSiteUrl } from "../constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -109,12 +109,14 @@ export const InertNavBanner = () => {
     <div className="NavBar inert">
       <div className="NavBarContent">
         <div className="title-and-version" style={{ margin: "auto" }}>
+          <a href={envVarOrDefault("BASE_URL", "https://pytch.org/")}>
           <img
             className="home-link"
             src={pytchLogo}
             alt="Pytch Logo"
             height="70"
           />
+          </a>
         </div>
       </div>
     </div>
