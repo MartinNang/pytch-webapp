@@ -65,4 +65,13 @@ context("Start jr tutorial at chapter", () => {
     cy.go("back");
     assertOnFrontPage();
   });
+
+  it("navigate home outside router", () => {
+    cy.visit("/tutorial-checkpoint/script-by-script-boing/6");
+    cy.get(".home-link").click();
+    assertOnFrontPage();
+    cy.go("back");
+    assertTutorialNameIncludes("a Pong-like game");
+    assertChapterStartContent(6);
+  });
 });
