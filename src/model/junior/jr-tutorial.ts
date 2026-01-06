@@ -4,6 +4,7 @@ import {
   isDivOfClass,
   parsedHtmlBody,
 } from "../../utils";
+import { PytchProgramKind } from "../pytch-program";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import { EventDescriptor } from "./structured-program";
 import { NoIdsStructuredProject } from "./structured-program/skeleton";
@@ -177,6 +178,7 @@ export type LinkedJrTutorial = {
  * state.
  * */
 export async function dereferenceLinkedJrTutorial(
+  programKind: PytchProgramKind,
   ref: LinkedJrTutorialRef
 ): Promise<LinkedJrTutorial> {
   // TODO: What happens if a tutorial is deleted?
