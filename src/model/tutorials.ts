@@ -25,10 +25,7 @@ import {
   StructuredProgramOps,
 } from "./junior/structured-program";
 import { NavigateOptions } from "react-router-dom";
-import {
-  JrTutorialCheckpointSkeleton,
-  LinkedJrTutorialRef,
-} from "./junior/jr-tutorial";
+import { JrTutorialCheckpointSkeleton } from "./junior/jr-tutorial";
 import { kLinkedContentRefNone, LinkedContentRef } from "./linked-content-core";
 
 const kAllowRandomChapterAccessSearchParam =
