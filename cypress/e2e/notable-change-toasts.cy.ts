@@ -30,6 +30,7 @@ type ItShowsToastForDescriptor = {
   only?: boolean;
   setup: () => void;
   submit: () => void;
+  assertCompletion?: () => void;
   failurePredicate?: FailurePredicate;
   toastBodyMatch: string | RegExp | null;
   dismissFun: (gatedDelay: GatedDelay) => void;
@@ -58,6 +59,7 @@ function itShowsToastFor(label: string, descr: ItShowsToastForDescriptor) {
       const gatedDelay = GatedDelay.installNew(window);
       const dismiss = () => descr.dismissFun(gatedDelay);
       descr.submit();
+      descr.assertCompletion?.();
       if (descr.failurePredicate != null) {
         const failPred = descr.failurePredicate;
         cy.get(failPred.selector).contains(failPred.reportMatch);
@@ -118,6 +120,9 @@ context("Toasts are generated (s/b/s)", () => {
       cy.get(".CompoundTextInput input").type("{selectAll}{del}two-snakes");
     },
     submit: () => settleModalDialog("Rename"),
+    assertCompletion: () => {
+      assertFocus("appearance-card", 0);
+    },
     toastBodyMatch: 'Costume renamed to "two-snakes.png"',
     dismissFun: kDismissSpaceOnCloseButton,
   });
