@@ -30,6 +30,7 @@ type ItShowsToastForDescriptor = {
   only?: boolean;
   setup: () => void;
   submit: () => void;
+  assertCompletion?: () => void;
   failurePredicate?: FailurePredicate;
   toastBodyMatch: string | RegExp | null;
   dismissFun: (gatedDelay: GatedDelay) => void;
