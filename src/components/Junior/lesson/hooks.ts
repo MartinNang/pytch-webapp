@@ -11,6 +11,7 @@ const useHasLinkedContentOfKind = (tgtKind: LinkedContentKind): boolean =>
 
     return (
       (loadState.kind === "succeeded" && loadState.content.kind === tgtKind) ||
+      (loadState.kind === "failed" && loadState.contentKind === tgtKind) ||
       (loadState.kind === "pending" && loadState.contentRef.kind === tgtKind)
     );
   });
