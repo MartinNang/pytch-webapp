@@ -181,6 +181,10 @@ export async function dereferenceLinkedJrTutorial(
   programKind: PytchProgramKind,
   ref: LinkedJrTutorialRef
 ): Promise<LinkedJrTutorial> {
+  if (programKind !== "per-method") {
+    throw new Error(`project is "${programKind}" but tutorial is "per-method"`);
+  }
+
   // TODO: What happens if a tutorial is deleted?
   const content = await jrTutorialContentFromName(ref.name);
 
