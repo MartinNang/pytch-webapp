@@ -360,3 +360,10 @@ context("Compare user code to original", () => {
     cy.get(".ViewCodeDiffModal").should("not.exist");
   });
 });
+
+context("rejects wrong program-kind", () => {
+  beforeEach(() => {
+    cy.pytchResetDatabase();
+    cy.contains("My projects").click();
+  });
+});
