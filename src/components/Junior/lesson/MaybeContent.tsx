@@ -27,7 +27,6 @@ export const MaybeContent: React.FC<EmptyProps> = () => {
       }
     }
     case "failed":
-      console.log("have failed to load linked content");
       return (
         <div className="m-4">
           <h2>Problem loading content</h2>
