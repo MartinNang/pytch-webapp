@@ -102,8 +102,9 @@ export const NavBanner = () => {
 };
 
 /** The `InertNavBanner` can be used when we want something across the
- * top, but where the user should not be able to navigate anywhere.
- * Used in the "start tutorial at chapter" pseudo-modal flow. */
+ * top, but where the user should not be able to router-navigate
+ * anywhere.  (A true navigation is OK, which we allow via <a>.)  Used
+ * in the "start tutorial at chapter" pseudo-modal flow. */
 export const InertNavBanner = () => {
   return (
     <div className="NavBar inert">
