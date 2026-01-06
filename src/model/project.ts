@@ -964,7 +964,7 @@ export const activeProject: IActiveProject = {
   }),
 
   doLinkedContentLoadTask: thunk(async (actions, taskDescriptor, helpers) => {
-    const { projectId, linkedContentRef } = taskDescriptor;
+    const { projectId, projectProgramKind, linkedContentRef } = taskDescriptor;
     const initialState = helpers.getState().linkedContentLoadingState;
 
     const correctLoadIsPending =
@@ -985,11 +985,20 @@ export const activeProject: IActiveProject = {
       const content = await (() => {
         switch (linkedContentRef.kind) {
           case "none":
-            return dereferenceLinkedNoContent(linkedContentRef);
+            return dereferenceLinkedNoContent(
+              projectProgramKind,
+              linkedContentRef
+            );
           case "jr-tutorial":
-            return dereferenceLinkedJrTutorial(linkedContentRef);
+            return dereferenceLinkedJrTutorial(
+              projectProgramKind,
+              linkedContentRef
+            );
           case "specimen":
-            return dereferenceLinkedSpecimen(linkedContentRef);
+            return dereferenceLinkedSpecimen(
+              projectProgramKind,
+              linkedContentRef
+            );
           default:
             return assertNever(linkedContentRef);
         }
