@@ -207,7 +207,7 @@ export type LinkedContentLoadingState =
   | { kind: "idle" }
   | { kind: "pending"; projectId: ProjectId; contentRef: LinkedContentRef }
   | { kind: "succeeded"; projectId: ProjectId; content: LinkedContent }
-  | { kind: "failed" };
+  | { kind: "failed"; contentKind: LinkedContentKind; message: string };
 
 type SucceededStateOfKind<KindT extends LinkedContentKind> =
   LinkedContentLoadingState & {
