@@ -111,7 +111,8 @@ export class PytchProgramOps {
       throw new Error("malformed JSON for PytchProgram");
     }
 
-    if (!validatePytchProgramJson(obj)) {
+    const parseResult = zPytchProgram.safeParse(obj);
+    if (!parseResult.success) {
       throw new Error("invalid JSON for PytchProgram");
     }
 
