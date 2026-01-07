@@ -1,9 +1,11 @@
+import * as z from "zod/mini";
 import { Uuid, UuidOps } from "./core-types";
 import { EventHandler, EventHandlerOps } from "./event";
 import { assertNever, hexSHA256 } from "../../../utils";
 import { IEmbodyContext, NoIdActor } from "./skeleton";
 
-export type ActorKind = "sprite" | "stage";
+const zActorKind = z.literal(["sprite", "stage"]);
+export type ActorKind = z.infer<typeof zActorKind>;
 
 export const kBothActorKinds: Array<ActorKind> = ["sprite", "stage"];
 
