@@ -140,11 +140,12 @@ export class EventDescriptorOps {
   }
 }
 
-export type EventHandler = {
-  id: Uuid;
-  event: EventDescriptor;
-  pythonCode: string;
-};
+export const zEventHandler = z.strictObject({
+  id: zUuid,
+  event: zEventDescriptor,
+  pythonCode: z.string(),
+});
+export type EventHandler = z.infer<typeof zEventHandler>;
 
 export class EventHandlerOps {
   /** Return a new `EventHandler` with the given `event` descriptor and
