@@ -1,9 +1,11 @@
+import * as z from "zod/mini";
 import {
   Actor,
   ActorNub,
   ActorOps,
   ActorSummary,
   HandlerInActorContext,
+  zActor,
 } from "./actor";
 import { Uuid } from "./core-types";
 import { EventDescriptor, EventHandler, EventHandlerOps } from "./event";
@@ -12,9 +14,10 @@ import { IEmbodyContext, NoIdsStructuredProject } from "./skeleton";
 import { AssetMetaDataOps } from "./asset";
 import { AssetNameAndType } from "../../../database/indexed-db";
 
-export type StructuredProgram = {
-  actors: Array<Actor>;
-};
+export const zStructuredProgram = z.strictObject({
+  actors: z.array(zActor),
+});
+export type StructuredProgram = z.infer<typeof zStructuredProgram>;
 
 // The layers of types are here because in the app's use-case, we want
 // to share functionality between the "Add Sprite" modal and the "Rename
