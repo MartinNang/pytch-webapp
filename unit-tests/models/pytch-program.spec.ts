@@ -11,6 +11,11 @@ import {
 } from "../../src/model/junior/structured-program";
 import { assetOrderingData, threeSpriteProgram } from "./fixtures";
 
+type BadProgramTestSpec = {
+  description: string;
+  program: object;
+};
+
 describe("PytchProgram operations", () => {
   function assertFlatPython(program: PytchProgram, expCodeText: string) {
     const flatProgram = PytchProgramOps.ensureKind(
