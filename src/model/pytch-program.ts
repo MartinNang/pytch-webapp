@@ -14,17 +14,6 @@ import {
   zStructuredProgram,
 } from "./junior/structured-program/program";
 
-// To regenerate the JavaScript after updating the schema file
-// "pytch-program-schema.json", be in the same directory as
-// this file, then run:
-//
-//   ./refresh-pytch-program-json-validation.sh
-//
-import { validate as _untypedValidate } from "./pytch-program-json-validation";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const validatePytchProgramJson = _untypedValidate as any;
-
 const zPytchProgramFlat = z.strictObject({
   kind: z.literal("flat"),
   text: z.string(),
