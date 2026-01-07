@@ -10,6 +10,7 @@ import {
   UuidOps,
 } from "../../src/model/junior/structured-program";
 import { assetOrderingData, threeSpriteProgram } from "./fixtures";
+import badStructuredPrograms from "./bad-structured-programs.json";
 
 type BadProgramTestSpec = {
   description: string;
@@ -137,6 +138,13 @@ describe("PytchProgram operations", () => {
           () => PytchProgramOps.fromJson(spec.text),
           spec.expMessage
         );
+      })
+    );
+
+    badStructuredPrograms.forEach((badProgram: BadProgramTestSpec) =>
+      it(`rejects ${badProgram.description}`, () => {
+        const badJson = JSON.stringify(badProgram.program);
+        assert.throws(() => PytchProgramOps.fromJson(badJson), "invalid JSON");
       })
     );
   });
