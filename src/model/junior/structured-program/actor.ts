@@ -1,9 +1,11 @@
-import { Uuid, UuidOps } from "./core-types";
-import { EventHandler, EventHandlerOps } from "./event";
+import * as z from "zod/mini";
+import { Uuid, UuidOps, zUuid } from "./core-types";
+import { EventHandler, EventHandlerOps, zEventHandler } from "./event";
 import { assertNever, hexSHA256 } from "../../../utils";
 import { IEmbodyContext, NoIdActor } from "./skeleton";
 
-export type ActorKind = "sprite" | "stage";
+const zActorKind = z.literal(["sprite", "stage"]);
+export type ActorKind = z.infer<typeof zActorKind>;
 
 export const kBothActorKinds: Array<ActorKind> = ["sprite", "stage"];
 
@@ -51,12 +53,13 @@ export class ActorKindOps {
   }
 }
 
-export type Actor = {
-  id: Uuid;
-  kind: ActorKind;
-  name: string;
-  handlers: Array<EventHandler>;
-};
+export const zActor = z.strictObject({
+  id: zUuid,
+  kind: zActorKind,
+  name: z.string(),
+  handlers: z.array(zEventHandler),
+});
+export type Actor = z.infer<typeof zActor>;
 
 type ActorKindAndName = Pick<Actor, "kind" | "name">;
 

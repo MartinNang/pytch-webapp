@@ -7,25 +7,28 @@ import {
   FlattenResults,
   flattenProgram,
 } from "./junior/structured-program";
+import * as z from "zod/mini";
 import {
   StructuredProgram,
   StructuredProgramOps,
+  zStructuredProgram,
 } from "./junior/structured-program/program";
 
-// To regenerate the JavaScript after updating the schema file
-// "pytch-program-schema.json", be in the same directory as
-// this file, then run:
-//
-//   ./refresh-pytch-program-json-validation.sh
-//
-import { validate as _untypedValidate } from "./pytch-program-json-validation";
+const zPytchProgramFlat = z.strictObject({
+  kind: z.literal("flat"),
+  text: z.string(),
+});
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const validatePytchProgramJson = _untypedValidate as any;
+const zPytchProgramPerMethod = z.strictObject({
+  kind: z.literal("per-method"),
+  program: zStructuredProgram,
+});
 
-export type PytchProgram =
-  | { kind: "flat"; text: string }
-  | { kind: "per-method"; program: StructuredProgram };
+export const zPytchProgram = z.discriminatedUnion("kind", [
+  zPytchProgramFlat,
+  zPytchProgramPerMethod,
+]);
+export type PytchProgram = z.infer<typeof zPytchProgram>;
 
 export type PytchProgramKind = PytchProgram["kind"];
 
@@ -97,7 +100,8 @@ export class PytchProgramOps {
       throw new Error("malformed JSON for PytchProgram");
     }
 
-    if (!validatePytchProgramJson(obj)) {
+    const parseResult = zPytchProgram.safeParse(obj);
+    if (!parseResult.success) {
       throw new Error("invalid JSON for PytchProgram");
     }
 

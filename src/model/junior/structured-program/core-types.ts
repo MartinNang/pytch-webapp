@@ -1,4 +1,8 @@
-export type Uuid = string;
+import * as z from "zod/mini";
+
+// We might tighten this one day, but for now:
+export const zUuid = z.string();
+export type Uuid = z.infer<typeof zUuid>;
 
 export class UuidOps {
   /** Create and return a new random `Uuid` value. */

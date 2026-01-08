@@ -1,0 +1,327 @@
+[
+  {
+    "description": "EventDescriptor with extra property",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-1",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-1",
+                "event": {
+                  "kind": "green-flag",
+                  "extraProperty": "should not be here"
+                },
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventDescriptorKeyPressed missing required keyName",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-2",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-2",
+                "event": {
+                  "kind": "key-pressed"
+                },
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventDescriptorKeyPressed with wrong type for keyName",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-3",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-3",
+                "event": {
+                  "kind": "key-pressed",
+                  "keyName": 42
+                },
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventDescriptorMessageReceived missing required message",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-4",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-4",
+                "event": {
+                  "kind": "message-received"
+                },
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventDescriptor with invalid kind",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-5",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-5",
+                "event": {
+                  "kind": "invalid-event-type"
+                },
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventHandler missing required id",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-6",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "event": {
+                  "kind": "green-flag"
+                },
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventHandler missing required field",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-7",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-7",
+                "pythonCode": "pass"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "EventHandler with extra property",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-8",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [
+              {
+                "id": "handler-8",
+                "event": {
+                  "kind": "green-flag"
+                },
+                "pythonCode": "pass",
+                "extraField": "not allowed"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "Actor missing required field",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-9",
+            "name": "TestSprite",
+            "handlers": []
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "Actor with invalid kind value",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-10",
+            "kind": "invalid-actor-kind",
+            "name": "TestSprite",
+            "handlers": []
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "Actor with extra property",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-11",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": [],
+            "extraProperty": "should fail"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "Actor with handlers not an array",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [
+          {
+            "id": "test-id-12",
+            "kind": "sprite",
+            "name": "TestSprite",
+            "handlers": "not-an-array"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "description": "StructuredProgram missing required actors",
+    "program": {
+      "kind": "per-method",
+      "program": {}
+    }
+  },
+  {
+    "description": "StructuredProgram with actors not an array",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": "not-an-array"
+      }
+    }
+  },
+  {
+    "description": "StructuredProgram with extra property",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": [],
+        "extraField": "not allowed"
+      }
+    }
+  },
+  {
+    "description": "PytchProgram with invalid kind",
+    "program": {
+      "kind": "invalid-program-kind",
+      "text": "import pytch"
+    }
+  },
+  {
+    "description": "PytchProgramFlat missing required text",
+    "program": {
+      "kind": "flat"
+    }
+  },
+  {
+    "description": "PytchProgramFlat with text wrong type",
+    "program": {
+      "kind": "flat",
+      "text": 42
+    }
+  },
+  {
+    "description": "PytchProgramFlat with extra property",
+    "program": {
+      "kind": "flat",
+      "text": "import pytch",
+      "extraField": "not allowed"
+    }
+  },
+  {
+    "description": "PytchProgramPerMethod missing required program",
+    "program": {
+      "kind": "per-method"
+    }
+  },
+  {
+    "description": "PytchProgramPerMethod with extra property",
+    "program": {
+      "kind": "per-method",
+      "program": {
+        "actors": []
+      },
+      "extraField": "not allowed"
+    }
+  }
+]

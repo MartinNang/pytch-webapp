@@ -1,13 +1,34 @@
+import * as z from "zod/mini";
 import { assertNever, hexSHA256 } from "../../../utils";
-import { Uuid, UuidOps } from "./core-types";
+import { zUuid, UuidOps } from "./core-types";
 import { NoIdEventHandler } from "./skeleton";
 
-export type EventDescriptor =
-  | { kind: "green-flag" }
-  | { kind: "key-pressed"; keyName: string }
-  | { kind: "message-received"; message: string }
-  | { kind: "start-as-clone" }
-  | { kind: "clicked" };
+const zEventDescriptorGreenFlag = z.strictObject({
+  kind: z.literal("green-flag"),
+});
+const zEventDescriptorActorClicked = z.strictObject({
+  kind: z.literal("clicked"),
+});
+const zEventDescriptorStartAsClone = z.strictObject({
+  kind: z.literal("start-as-clone"),
+});
+const zEventDescriptorKeyPressed = z.strictObject({
+  kind: z.literal("key-pressed"),
+  keyName: z.string(),
+});
+const zEventDescriptorMessageReceived = z.strictObject({
+  kind: z.literal("message-received"),
+  message: z.string(),
+});
+
+const zEventDescriptor = z.discriminatedUnion("kind", [
+  zEventDescriptorGreenFlag,
+  zEventDescriptorActorClicked,
+  zEventDescriptorStartAsClone,
+  zEventDescriptorKeyPressed,
+  zEventDescriptorMessageReceived,
+]);
+export type EventDescriptor = z.infer<typeof zEventDescriptor>;
 
 export type EventDescriptorKind = EventDescriptor["kind"];
 
@@ -119,11 +140,12 @@ export class EventDescriptorOps {
   }
 }
 
-export type EventHandler = {
-  id: Uuid;
-  event: EventDescriptor;
-  pythonCode: string;
-};
+export const zEventHandler = z.strictObject({
+  id: zUuid,
+  event: zEventDescriptor,
+  pythonCode: z.string(),
+});
+export type EventHandler = z.infer<typeof zEventHandler>;
 
 export class EventHandlerOps {
   /** Return a new `EventHandler` with the given `event` descriptor and
