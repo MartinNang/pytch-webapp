@@ -189,7 +189,8 @@
 
   height: 100%;
   padding-top: 6px;
-  padding-bottom: 6px;
+  padding-bottom: 12px;
+  padding-left: 6px;
 }
 
 .StageAndActorsOrAssets {
@@ -214,9 +215,7 @@
   }
 
   height: 100%;
-  padding-right: 6px;
-  padding-bottom: 6px;
-  padding-top: 6px;
+  padding: 6px;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -341,6 +340,7 @@
   }
 
   height: 100%;
+  margin-top: 6px;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -650,7 +650,7 @@
       color: $scratch-hat-block-text-colour;
 
       span.icon {
-        box-shadow: inset #c7a53c 0px 0px 4px;
+        box-shadow: inset #e1bf58 0px 0px 4px;
       }
     }
     &.add-sprite,
@@ -997,75 +997,6 @@ $key-chooser-width: 54rem;
 .Junior-LessonContent-container .spinner-container {
   @include full-height-grid-center-center;
   color: #444;
-}
-
-.resizablePanels {
-  height: 100vh;
-  width: 100vw;
-}
-
-.customSeparator {
-  border-radius: 2px;
-  transition: 0.3s ease-in-out;
-}
-
-.customSeparator:hover {
-  background-color: #306998;
-}
-
-.customSeparator:focus {
-  background-color: #0060DF;
-  border: none;
-}
-
-.horizontalSeparator {
-  width: 5px;
-  margin: 6px 0;
-}
-
-.verticalSeparator {
-  height: 5px;
-}
-
-.customSeparator .separatorIcon {
-  color: white;
-  display: block;
-  transition: 0.3s;
-  background-color: #87a3b9;
-
-  border-radius: 2px;
-}
-
-.horizontalSeparator .separatorIcon {
-  width: 5px;
-  padding: 20px 0;
-}
-
-.verticalSeparator .separatorIcon {
-  height: 5px;
-  padding: 0 20px;
-}
-
-.customSeparator:hover .separatorIcon, .customSeparator:focus .separatorIcon {
-  display: block;
-  color: white;
-  background-color: #87a3b9;
-}
-
-.horizontalSeparator:hover .separatorIcon{
-  padding: 25px 0;
-}
-
-.horizontalSeparator:focus .separatorIcon {
-  padding: 10px 0;
-}
-
-.verticalSeparator:hover .separatorIcon {
-  padding: 0 25px;
-}
-
-.verticalSeparator:focus .separatorIcon {
-  padding: 0 10px;
 }
 
 .HelpSidebar code {

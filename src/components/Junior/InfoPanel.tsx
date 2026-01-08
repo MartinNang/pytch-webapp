@@ -8,7 +8,6 @@ import { ErrorReportList } from "./ErrorReportList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Button } from "react-bootstrap";
-import { PanelImperativeHandle } from "react-resizable-panels";
 
 const StandardOutput = () => {
   // TODO: Remove duplication between this and non-jr component.
@@ -46,22 +45,10 @@ const Errors = () => {
   return <div className="ErrorsPane">{content}</div>;
 };
 
-type InfoDisclosureProps = {
-  tabContentId: string;
-  resizablePanelRef?:
-    | React.RefObject<PanelImperativeHandle | null>
-    | undefined;
-};
-const InfoDisclosure: React.FC<InfoDisclosureProps> = ({
-  tabContentId,
-  resizablePanelRef,
-}) => {
-  const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
-  const toggleState = () => {
-    toggleStateAction();
-    resizablePanelRef?.current.expand();
-    resizablePanelRef?.current.resize(380)
-  };
+type InfoDisclosureProps = { tabContentId: string };
+const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
+    const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
+    const toggleState = () => toggleStateAction();
 
   return (
     <div>
@@ -81,11 +68,7 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({
   );
 };
 
-interface InfoPanelProps {
-  resizablePanelRef?: React.RefObject<PanelImperativeHandle | null>;
-}
-
-export const InfoPanel = ({ resizablePanelRef }: InfoPanelProps) => {
+export const InfoPanel = () => {
   const activeTab = useJrEditState((s) => s.infoPanelActiveTab);
   const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
   const setActiveTab = useJrEditActions((a) => a.expandAndSetActive);
@@ -93,10 +76,7 @@ export const InfoPanel = ({ resizablePanelRef }: InfoPanelProps) => {
   const tabContentId = useId();
   const wasCollapsed = useRef<boolean | null>(null);
 
-  const toggleState = () => {
-    toggleStateAction();
-    resizablePanelRef?.current.collapse();
-  };
+  const toggleState = () => toggleStateAction();
 
   const classes = classNames(
     "Junior-InfoPanel-container",
@@ -141,10 +121,7 @@ export const InfoPanel = ({ resizablePanelRef }: InfoPanelProps) => {
         </Tab>
       </Tabs>
       {isCollapsed ? (
-        <InfoDisclosure
-          tabContentId={tabContentId}
-          resizablePanelRef={resizablePanelRef}
-        />
+        <InfoDisclosure tabContentId={tabContentId}/>
       ) : (
         <Button
           variant="outline-secondary"
