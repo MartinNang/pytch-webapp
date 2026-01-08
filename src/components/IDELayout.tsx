@@ -120,7 +120,7 @@ export const IDELayout: React.FC<EmptyProps> = () => {
       <Modals />
       <NotableChangeToasts />
       <main tabIndex={-1} onKeyDown={mainOnKeyDown}>
-        <Group className={"resizablePanels"}>
+        <Group className={"resizablePanels vw-100"}>
           <Panel minSize={260}>
             <ActivityPane />
           </Panel>

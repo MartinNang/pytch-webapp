@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Button } from "react-bootstrap";
 import { PanelImperativeHandle } from "react-resizable-panels";
+import {minInfoPanelHeight} from "../../constants";
 
 const StandardOutput = () => {
   // TODO: Remove duplication between this and non-jr component.
@@ -56,11 +57,15 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({
   tabContentId,
   resizablePanelRef,
 }) => {
+  const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
   const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
   const toggleState = () => {
-    toggleStateAction();
-    resizablePanelRef?.current.expand();
-    resizablePanelRef?.current.resize(380)
+    console.log('expand panel');
+    if (isCollapsed) {
+      toggleStateAction();
+      resizablePanelRef?.current.expand();
+      if (resizablePanelRef?.current.getSize().inPixels === minInfoPanelHeight) resizablePanelRef.current.resize(380);
+    }
   };
 
   return (
@@ -94,8 +99,11 @@ export const InfoPanel = ({ resizablePanelRef }: InfoPanelProps) => {
   const wasCollapsed = useRef<boolean | null>(null);
 
   const toggleState = () => {
-    toggleStateAction();
-    resizablePanelRef?.current.collapse();
+    console.log('collapse panel');
+    if (!isCollapsed) {
+      toggleStateAction();
+      resizablePanelRef?.current.collapse();
+    }
   };
 
   const classes = classNames(

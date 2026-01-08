@@ -9,11 +9,11 @@ import { ActorProperties } from "./Junior/ActorProperties";
 import {
   Group,
   Panel,
-  PanelSize,
   Separator,
   usePanelRef,
 } from "react-resizable-panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { minInfoPanelHeight } from "../constants";
 
 const EditorForProgramKind: React.FC<EmptyProps> = () => {
   const programKind = useStoreState(
@@ -36,6 +36,8 @@ export const EditorAndOutErr: React.FC<EmptyProps> = () => {
   );
 
   const infoResizablePanelRef = usePanelRef();
+  const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
+  const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
 
   const classes = classNames("EditorAndOutErr", { infoPanelIsCollapsed });
 
@@ -49,7 +51,12 @@ export const EditorAndOutErr: React.FC<EmptyProps> = () => {
             <FontAwesomeIcon icon={"ellipsis-h"} style={{color: "white", position: "relative", top: "-9px", width: "20px"}} />
           </div>
         </Separator>
-        <Panel minSize={36} collapsedSize={36} collapsible={true} panelRef={infoResizablePanelRef}>
+        <Panel minSize={minInfoPanelHeight} collapsedSize={minInfoPanelHeight} collapsible={true} panelRef={infoResizablePanelRef} onResize={(panelSize, id, prevPanelSize) => {
+          console.log('panelSize', panelSize.inPixels);
+          if ((panelSize.inPixels <= minInfoPanelHeight && prevPanelSize?.inPixels > minInfoPanelHeight && !isCollapsed) || panelSize.inPixels > minInfoPanelHeight && prevPanelSize?.inPixels <= minInfoPanelHeight && isCollapsed) {
+            toggleStateAction();
+          }
+        }}>
           <InfoPanel resizablePanelRef={infoResizablePanelRef}/>
         </Panel>
       </Group>
