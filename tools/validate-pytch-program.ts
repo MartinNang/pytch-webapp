@@ -1,3 +1,17 @@
+/** Read from stdin and emit either "OK" if the input parses
+ * successfully as JSON with the structure of a PytchProgram, or an
+ * error if not.
+ *
+ * To run:
+ *
+ * npx tsx tools/validate-pytch-program.ts < maybe-program.json
+ *
+ * or
+ *
+ * extract-program-json-somehow | npx tsx
+ * tools/validate-pytch-program.ts
+ */
+
 import * as fs from "fs";
 import { zPytchProgram } from "../src/model/pytch-program";
 
