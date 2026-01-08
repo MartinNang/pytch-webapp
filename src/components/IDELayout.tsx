@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler, useEffect } from "react";
 import classNames from "classnames";
-import { useStoreState } from "../store";
+import { useStoreActions, useStoreState } from "../store";
 import { useJrEditState } from "./Junior/hooks";
 import { assertNever, EmptyProps } from "../utils";
 import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
@@ -13,6 +13,10 @@ import { FlatModals } from "./FlatModals";
 import { useFocusContext } from "./hooks/focus-steering";
 import { NotableChangeToasts } from "./NotableChangeToasts";
 import { useActionAsEffect } from "./hooks/use-action-as-effect";
+import {Group, Panel, PanelSize, Separator} from "react-resizable-panels";
+import {minStageWidth} from "./Junior/WidthMonitor";
+import { stageWidth } from "../constants";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const Modals: React.FC<EmptyProps> = () => {
   const programKind = useStoreState(
@@ -103,6 +107,10 @@ export const IDELayout: React.FC<EmptyProps> = () => {
     }
   };
 
+  const setStageDisplayWidth = useStoreActions(
+    (actions) => actions.ideLayout.setStageDisplayWidth
+  );
+
   return (
     <DivSettingWindowTitle
       className={classes}
@@ -112,9 +120,32 @@ export const IDELayout: React.FC<EmptyProps> = () => {
       <Modals />
       <NotableChangeToasts />
       <main tabIndex={-1} onKeyDown={mainOnKeyDown}>
+        <Group className={"resizablePanels"}>
+          <Panel minSize={260}>
             <ActivityPane />
+          </Panel>
+          <Separator className={"horizontalSeparator customSeparator d-flex justify-content-center align-items-center"}>
+            <FontAwesomeIcon icon={"ellipsis-v"} className={"separatorIcon"} />
+          </Separator>
+          <Panel minSize={300}>
             <EditorAndOutErr />
+          </Panel>
+          <Separator className={"horizontalSeparator customSeparator d-flex justify-content-center align-items-center"}>
+              <FontAwesomeIcon icon={"ellipsis-v"} className={"separatorIcon"} />
+          </Separator>
+          <Panel minSize={minStageWidth + 20} maxSize={500}
+                 onResize={
+                   ((panelSize: PanelSize) => {
+                     //TODO update stage width
+                     const targetWidth = Math.min(
+                         stageWidth,
+                         Math.max(minStageWidth, panelSize.inPixels - 20)
+                     );
+                     setStageDisplayWidth(targetWidth);
+                   })}>
             <StageAndActorsOrAssets/>
+          </Panel>
+        </Group>
       </main>
     </DivSettingWindowTitle>
   );
