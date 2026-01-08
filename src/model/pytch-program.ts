@@ -24,7 +24,7 @@ const zPytchProgramPerMethod = z.strictObject({
   program: zStructuredProgram,
 });
 
-const zPytchProgram = z.discriminatedUnion("kind", [
+export const zPytchProgram = z.discriminatedUnion("kind", [
   zPytchProgramFlat,
   zPytchProgramPerMethod,
 ]);
