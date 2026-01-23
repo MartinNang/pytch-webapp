@@ -72,7 +72,7 @@
     @include grid-hstack-three(
       $activity-bar-width + $help-sidebar-content-width,
       minmax($min-actor-properties-width, 1fr),
-      auto
+      min-content
     );
   }
 }
@@ -194,7 +194,8 @@
 
   height: 100%;
   padding-top: 6px;
-  padding-bottom: 6px;
+  padding-bottom: 12px;
+  padding-left: 6px;
 }
 
 .StageAndActorsOrAssets {
@@ -216,12 +217,20 @@
     position: relative;
     background-color: $panel-background;
     //border-top: $panel-divider-border-spec;
+    //background-color: $panel-background;
+    //border-top: $panel-divider-border-spec;
+
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   height: 100%;
-  padding-right: 6px;
-  padding-bottom: 6px;
-  padding-top: 6px;
+  padding: 6px;
+  background-color: #ebf5f9;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -262,10 +271,11 @@
   ul.nav-tabs .nav-item:first-child button {
     border-top-left-radius: 10px;
   }
-  
+
   ul.nav {
     border-bottom-color: $panel-background;
-    background-color: $secondary-bg-color;
+    //background-color: $secondary-bg-color;
+    background-color: #f0f0f066;
   }
 
   button.nav-link {
@@ -299,6 +309,13 @@
   }
 
   height: 100%;
+
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .busy-overlay {
@@ -346,6 +363,17 @@
   }
 
   height: 100%;
+  margin-top: 6px;
+
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  display: flex;
+  flex-direction: column;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -476,7 +504,6 @@
     border: 5px solid;
     border-radius: 10px;
     background-color: white;
-
 
     .label,
     .label > pre {
@@ -613,6 +640,7 @@
     border-top-left-radius: 0.75rem;
     background-color: $main-bg-color;
     opacity: 0.6;
+    border-bottom-right-radius: 20px;
   }
 
   .AddSomethingButtonStrip {
@@ -655,7 +683,7 @@
       color: $scratch-hat-block-text-colour;
 
       span.icon {
-        box-shadow: inset #c7a53c 0px 0px 4px;
+        box-shadow: inset #e1bf58 0px 0px 4px;
       }
     }
     &.add-sprite,
@@ -1004,6 +1032,36 @@ $key-chooser-width: 54rem;
   color: #444;
 }
 
+.HelpSidebar code {
+  line-break: anywhere;
+}
+
+.CodeEditor {
+  height: 100%;
+}
+
+.gfs__actorprops__container, .gfs__actors__container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gfs__actorprops__container > div:first-child, .gfs__actors__container > .ActorsList:first-child {
+  flex-grow: 1;
+}
+
+.ActorsList {
+  margin: 0;
+  padding: 0;
+}
+
+.AddSomethingButton.add-script span.icon {
+  background-color: #ffd450;
+}
+
+.disclosure-button.expand-button {
+  border: none;
+}
 .resizablePanels {
   height: 100vh;
 }
