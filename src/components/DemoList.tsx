@@ -13,6 +13,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
+import demos from "../data/demos.json";
 import { Link } from "react-router-dom";
 import { Demo, DemoCard, ProgramType, ProjectType } from "./DemoCard";
 import {PaginationProvider} from "./PaginationProvider";

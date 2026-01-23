@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import {Button, Card, Col, Row} from "react-bootstrap";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

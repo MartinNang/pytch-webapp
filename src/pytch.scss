@@ -589,16 +589,11 @@ button.awaiting-action {
 .demos-content .pill-row {
   position: absolute;
   width: 100%;
-
-  & button {
-    z-index: 1;
-  }
+  z-index: 1;
 }
 
-
-
 .pill-row .pill-icon {
-  background-color: white !important;
+  background-color: white;
   border-radius: 10px;
   display: flex;
   align-self: center;
@@ -619,8 +614,8 @@ button.awaiting-action {
 .pill-row .pill-project-type {
   width: auto;
   margin-left: 8px;
-  border-radius: 20px !important;
-  background-color: #9097FF !important;
+  border-radius: 20px;
+  background-color: #9097FF;
   display: flex;
   height: 31px;
 }
@@ -639,7 +634,7 @@ button.awaiting-action {
 }
 
 .pill-project-type.group-pill {
-  background-color: #EBF5F9 !important;
+  background-color: #EBF5F9;
 }
 
 .page-item a {
@@ -652,7 +647,7 @@ button.awaiting-action {
 }
 
 .pill-project-type.snippet-pill {
-  background-color: #00B5B0 !important;
+  background-color: #00B5B0;
 }
 
 .card {
@@ -770,12 +765,4 @@ font-family: "Hanken Grotesk", sans-serif;
 
 .StageControls .btn {
   box-shadow: rgba(99, 99, 99, 0.05) 0px 2px 8px 0px;
-}
-
-.game-pill, .snippet-pill {
-  cursor: pointer;
-}
-
-.pill-icon {
-  cursor: pointer;
 }
