@@ -211,8 +211,15 @@
 
   > *:nth-child(2) {
     position: relative;
-    background-color: $panel-background;
+    //background-color: $panel-background;
     //border-top: $panel-divider-border-spec;
+
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   height: 100%;
@@ -261,7 +268,8 @@
 
   ul.nav {
     border-bottom-color: $panel-background;
-    background-color: $secondary-bg-color;
+    //background-color: $secondary-bg-color;
+    background-color: #f0f0f066;
   }
 
   button.nav-link {
@@ -295,6 +303,13 @@
   }
 
   height: 100%;
+
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .busy-overlay {
@@ -343,6 +358,16 @@
 
   height: 100%;
   margin-top: 6px;
+
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  display: flex;
+  flex-direction: column;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1026,4 +1051,8 @@ $key-chooser-width: 54rem;
 
 .AddSomethingButton.add-script span.icon {
   background-color: #ffd450;
+}
+
+.disclosure-button.expand-button {
+  border: none;
 }
