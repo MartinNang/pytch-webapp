@@ -10,6 +10,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import pytchLogo from "../images/pytch.png";
 import { ExternalLinkIndicator } from "./decorations";
+import { NavDropdown } from "react-bootstrap";
 
 export const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
@@ -19,13 +20,16 @@ export const NavBanner = () => {
     const menuDiv = menuRef.current;
     if (menuDiv == null) return;
 
-    let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
-      const mMenuDisplay = menuDiv.computedStyleMap().get("display");
-      if (mMenuDisplay == null) return;
 
-      const menuDisplay = mMenuDisplay as CSSKeywordValue;
-      if (menuIsExpanded && menuDisplay.value === "none") {
-        setMenuIsExpanded(false);
+    let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
+      if (window["computedStyleMap"] === 'function'){
+        const mMenuDisplay = menuDiv.computedStyleMap().get("display");
+        if (mMenuDisplay == null) return;
+
+        const menuDisplay = mMenuDisplay as CSSKeywordValue;
+        if (menuIsExpanded && menuDisplay.value === "none") {
+          setMenuIsExpanded(false);
+        }
       }
     });
 
@@ -81,7 +85,10 @@ export const NavBanner = () => {
             <a href={withinSite("/doc/index.html")}>Help</a>
           </li>
           <li>
-            <Link to="/tutorials/">Tutorials</Link>
+            <NavDropdown title="Explore" id="basic-nav-dropdown">
+              <NavDropdown.Item href="/tutorials/">Tutorials</NavDropdown.Item>
+              <NavDropdown.Item href="/demos/">Demos</NavDropdown.Item>
+            </NavDropdown>
           </li>
           <li>
             <Link to="/my-projects/">My projects</Link>

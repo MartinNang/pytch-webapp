@@ -51,7 +51,7 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
   const toggleState = () => toggleStateAction();
 
   return (
-    <div>
+    <div className={"h-100 d-flex"}>
       <Button
         variant="outline-secondary"
         size="sm"

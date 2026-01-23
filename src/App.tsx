@@ -32,6 +32,7 @@ import { DeliberateFailureWithBoundary } from "./components/DeliberateFailure";
 import { fireAndForgetEvent } from "./model/anonymous-instrumentation";
 import { StandalonePlayDemo } from "./components/StandalonePlayDemo";
 import { StartTutorialAtCheckpoint } from "./components/StartTutorialAtCheckpoint";
+import { DemoList } from "./components/DemoList";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -97,6 +98,10 @@ function App() {
         {
           path: "tutorials/",
           element: <TutorialList />,
+        },
+        {
+          path: "demos/",
+          element: <DemoList />,
         },
         {
           path: "ide/:projectIdString",
