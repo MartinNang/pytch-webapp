@@ -42,7 +42,7 @@
 
     .ActivityPane {
       @include grid-hstack-two($activity-bar-width, auto);
-      height: 100vh;
+      height: 100%;
     }
 
     @include grid-hstack-three(
@@ -194,8 +194,7 @@
 
   height: 100%;
   padding-top: 6px;
-  padding-bottom: 12px;
-  padding-left: 6px;
+  padding-bottom: 6px;
 }
 
 .StageAndActorsOrAssets {
@@ -229,7 +228,7 @@
   }
 
   height: 100%;
-  padding: 6px;
+  padding: 6px 6px 6px 0;
   background-color: #ebf5f9;
 }
 
@@ -363,7 +362,7 @@
   }
 
   height: 100%;
-  margin-top: 6px;
+  //margin-top: 6px;
 
   background: rgba(255, 255, 255, 0.7);
   border-radius: 16px;
