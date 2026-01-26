@@ -66,8 +66,11 @@ export const DemoList: React.FC<EmptyProps> = () => {
       );
     }
 
-    if (programType.length > 0) {
-      searchResults = searchResults.filter(demo => demo.programType === programType.toLowerCase());
+    if (programType?.length > 0 && programType !== "Program type") {
+      searchResults = searchResults.filter(demo => {
+        return demo.programType.toLowerCase() === programType.toLowerCase() || (demo.programType === "perMethod" && programType === "Per-method")
+
+      });
     }
 
     if (sortBy.toLowerCase() === SortingOptions.alphabetAsc.toLowerCase()) {
@@ -130,7 +133,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
                                     :
                                     (
                                         <div className={"pill-icon per-method-icon"}>
-                                          <img src={permethodIcon} alt={"per-method project"} />
+                                          <img src={permethodIcon} alt={"per-method project"}/>
                                         </div>
                                     )
                               }
@@ -183,6 +186,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
                               <div>
                                 <Form.Select
                                     key={"ProjectType"}
+                                    value={projectType}
                                   style={{
                                     borderRadius: "10px",
                                     borderTopRightRadius: "0",
@@ -191,13 +195,15 @@ export const DemoList: React.FC<EmptyProps> = () => {
                                     minWidth: "4rem",
                                     borderColor: "#8B8B8B",
                                   }}
-                                  onChange={(e) =>
-                                      setProjectType(e.target.value.toLowerCase())
+                                  onChange={(e) => {
+                                    console.log('e', e.target.value);
+                                    setProjectType(e.target.value)
+                                  }
                                   }
                                 >
-                                  <option>All</option>
-                                  <option>Games</option>
-                                  <option>Snippets</option>
+                                  {Object.values(ProjectType).map((projectType) => (
+                                      <option>{projectType}</option>
+                                  ))}
                                 </Form.Select>
                               </div>
                               <div className="flex-grow-1">
@@ -250,7 +256,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
                                     setProgramType(e.target.value)
                                 }
                             }>
-                            <option hidden={true}>Program type</option>
+                            <option hidden={false}>Program type</option>
                             {Object.values(ProgramType).map((programType) => (
                               <option>{programType}</option>
                             ))}
@@ -284,7 +290,10 @@ export const DemoList: React.FC<EmptyProps> = () => {
                           ProgramType[demo.programType],
                           ProjectType[demo.projectType],
                           demo.projectUrl
-                      )} />
+                      )}
+                      setProjectType={setProjectType}
+                      setProgramType={setProgramType}
+                      />
                     </Col>
                 ))}
               {filteredDemos.length === 0 ?

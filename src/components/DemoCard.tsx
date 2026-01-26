@@ -7,6 +7,8 @@ import {Link} from "react-router-dom";
 
 type DemoCardProps = {
     demo: Demo;
+    setProjectType: (type: string) => void;
+    setProgramType: (type: string) => void;
 }
 
 export enum ProgramType {
@@ -15,9 +17,9 @@ export enum ProgramType {
 }
 
 export enum ProjectType {
+    all ="All",
     game = "Game",
-    snippet = "Snippet",
-    all ="All"
+    snippet = "Snippet"
 }
 
 export class Demo {
@@ -45,6 +47,8 @@ export class Demo {
 
 export const DemoCard: React.FC<DemoCardProps> = ({
                                                       demo,
+    setProjectType,
+    setProgramType,
                                                   }) => {
 
     return (
@@ -54,19 +58,23 @@ export const DemoCard: React.FC<DemoCardProps> = ({
                     {
                         demo.programType === ProgramType.flat ?
                             (
-                                <div className={"pill-icon flat-icon"}>
+                                <div className={"pill-icon flat-icon"} onClick={() => setProgramType(demo.programType.toString())}>
                                     <img src={flatIcon} alt={"flat project"} />
                                 </div>
                             )
                             :
-                            (
-                                <div className={"pill-icon per-method-icon"}>
+                            ( demo.programType === ProgramType.perMethod ?
+                                <div className={"pill-icon per-method-icon"} onClick={() => {
+                                    setProgramType(demo.programType?.toString());
+                                    console.log('setting program type to', demo.programType.toString());
+                                }}>
                                     <img src={permethodIcon} alt={"per-method project"} />
-                                </div>
+                                </div> : undefined
                             )
                     }
 
-                    <div className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}>
+                    <div className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}
+                         onClick={() => setProjectType(demo.projectType)}>
                         <p>{demo.projectType}</p>
                     </div>
                     {
