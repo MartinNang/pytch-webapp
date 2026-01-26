@@ -1,0 +1,18 @@
+{
+  "slug": "",
+  "description": "Three versions, all using W A S D for movement",
+  "chapters": [
+    {
+    "title": "Basic",
+    "content": ""
+    },
+    {
+      "title": "Stay on screen",
+      "content": ""
+    },
+    {
+      "title": "Smoother movement",
+      "content": ""
+    }
+  ]
+}

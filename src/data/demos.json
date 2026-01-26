@@ -1,6 +1,7 @@
 [
   {
     "displayName": "Jumping",
+    "slug": "jumping",
     "summaryMarkdown": "A template for basic platformer jumping.",
     "lastUpdated": "17 Jan 2026",
     "description": "",
@@ -13,6 +14,7 @@
   },
   {
     "displayName": "Moving with Directional Keys",
+    "slug": "smooth-movement",
     "summaryMarkdown": "A cookbook recipe explaining how to implement directional movement using keys.",
     "description": "",
     "lastUpdated": "17 Jan 2021",
