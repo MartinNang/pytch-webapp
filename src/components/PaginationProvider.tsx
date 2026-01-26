@@ -85,6 +85,12 @@ export const PaginationProvider: React.FC<PaginationProviderProps> = ({
                 );
             }
         }
+
+      // render next, last
+      paginationItems.push(
+        <Pagination.Next disabled={activePage === lastPage} onClick={() => setActivePage(activePage+1)}/>,
+        <Pagination.Last disabled={activePage === lastPage} onClick={() => setActivePage(lastPage)}/>
+      );
     }
 
     return (
