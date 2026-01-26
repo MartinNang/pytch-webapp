@@ -158,21 +158,24 @@ $tutorial-display-side-margin: 3rem;
 
   .card-header {
     position: relative;
-    background-color: $pytch-colour-accent-lavender;
+    background-color: #D3D5FF;
     border-radius: var(--bs-card-inner-border-radius)
       var(--bs-card-inner-border-radius) 0px 0px;
+    border: none;
 
     .h5 {
-      margin: 0.25rem 0px;
-      text-align: center;
-      font-size: 1.25rem;
+      margin: 1rem 1.5rem;
+      //text-align: center;
+      font-size: 1.5rem;
     }
   }
   .card-body {
     position: relative;
-    background-color: $secondary-bg-color;
+    background-color: #D3D5FF;
+    //background-color: $secondary-bg-color;
     border-radius: 0px 0px var(--bs-card-inner-border-radius)
       var(--bs-card-inner-border-radius);
+    padding-bottom: 2rem;
   }
 }
 
@@ -586,8 +589,13 @@ button.awaiting-action {
 .demos-content .pill-row {
   position: absolute;
   width: 100%;
-  z-index: 1;
+
+  & div {
+    z-index: 1;
+  }
 }
+
+
 
 .pill-row .pill-icon {
   background-color: white;
@@ -762,4 +770,12 @@ font-family: "Hanken Grotesk", sans-serif;
 
 .StageControls .btn {
   box-shadow: rgba(99, 99, 99, 0.05) 0px 2px 8px 0px;
+}
+
+.game-pill, .snippet-pill {
+  cursor: pointer;
+}
+
+.pill-icon {
+  cursor: pointer;
 }
