@@ -1,0 +1,273 @@
+@import "./pytch-variables.scss";
+
+$chapter-navigation-link-height: 3rem;
+
+.DemoSidebar {
+  overflow-x: clip;
+}
+
+ul.chapters {
+  max-height: $chapter-navigation-link-height * 3;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  overflow-x: clip;
+  scroll-snap-type: y proximity;
+  border-left: 3px $pytch-colour-main-blue-darkened solid;
+
+  /* two items */
+  &:has(li:first-child:nth-last-child(2)),
+  &:has(li:first-child:nth-last-child(2) ~ li) {
+    height: 9rem;
+
+    &:before {
+      inline-size: 2 * $chapter-navigation-link-height;
+    }
+
+    //.chapter-navigation-link {
+    //  top: - 2 * $chapter-navigation-link-height;
+    //}
+  }
+
+  &:before {
+    //content: "";
+    border-left: 3px solid #265378;
+    //margin-left: -1rem;
+    inline-size: 200px;// 3 * $chapter-navigation-link-height;
+    writing-mode: vertical-lr;
+    position: absolute;
+    margin-left: -35px;
+  }
+
+  li {
+    //top: -8rem;
+    position: relative;
+    scroll-snap-align: start;
+    padding-left: 0 !important;
+    margin-left: -2px;
+    top: 0;
+
+    &:first-child {
+      margin-top: 0rem;
+    }
+
+    &:last-child {
+      margin-bottom: 0.5rem;
+    }
+
+    &:before {
+      content: "";
+      //margin-top: -50px;
+      border-bottom: 3px solid #265378;
+      inline-size: 20px;
+      writing-mode: vertical-lr;
+      width: 1rem;
+      //margin-left: -2rem;
+      border-bottom-left-radius: 4px;
+      border-left: 3px solid #265378;
+      position: absolute;
+      margin-top: 0.6rem;
+      display: block;
+    }
+  }
+
+  a {
+    transition:
+            background-color 0.1s cubic-bezier(.25,.8,.25,1),
+            transform 0.1s cubic-bezier(.25,.8,.25,1);
+
+    background-color: transparent !important;
+    color: black !important;
+    //margin-top: 2px;
+
+    margin-left: 2rem;
+    margin-right: 2rem;
+    width: calc(100% - 3rem);
+
+    &.active {
+      background-color: #00B5B0 !important;
+      color: white !important;
+    }
+
+    &:hover:not(.active) {
+      background-color: rgb(193, 238, 237) !important;
+    }
+  }
+}
+
+.chapter-content {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  transition: border-top-left-radius 1s cubic-bezier(.25,.8,.25,1),
+  border-top-right-radius 1s cubic-bezier(.25,.8,.25,1),
+  box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+  background-color: #F8F8F8;
+  //box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  .chapter-heading h2 {
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+
+    p {
+      display: -webkit-box !important;
+      -webkit-box-orient: vertical !important;
+      -webkit-line-clamp: 1 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+  }
+
+  h2 {
+    font-size: 1.15rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  h4 {
+    font-size: 1.05rem;
+  }
+
+  h5 {
+    font-size: 1.03rem;
+  }
+
+  h6 {
+    font-size: 1.02rem;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline !important;
+  }
+
+  .chapter-navigation .btn.btn-primary {
+    height: 36px;
+  }
+
+  .btn.btn-primary {
+    border-radius: 10px;
+    background-color: #306998;
+
+    &:hover {
+      background-color: $pytch-colour-main-blue-darkened;
+    }
+  }
+}
+
+.demo-sub-header {
+  background-color: #265378;
+}
+
+.chapters-overview {
+  background-color: #99E1DF;
+}
+
+.demo-footer {
+  background-color: $pytch-colour-main-blue-darkened;
+  color: white;
+
+  p {
+    font-size: 0.8rem;
+  }
+  button.share-button {
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    border: none;
+
+    &:hover {
+      background-color: lightgray;
+    }
+  }
+}
+
+.linked-projects .card {
+  border-radius: 20px;
+  background-color: #D3D5FF;
+  border: none;
+  max-height: 150px;
+  transition: transform 0.1s cubic-bezier(.25,.8,.25,1);
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  .card-header {
+    height: 100%;
+    background-color: transparent;
+    border: none;
+  }
+
+  .card-body {
+    .tutorial-pill {
+      background-color: #FF5F38;
+      font-size: 0.9rem;
+      width: auto;
+      border-radius: 20px;
+      color: white;
+    }
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+}
+
+.chapters-navigation a p {
+  margin: 0;
+}
+
+.chapter-navigation-link {
+  top: -3 * $chapter-navigation-link-height;
+
+  p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.chapter-heading {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: auto;
+  font-size: 1.25rem !important;
+  font-weight: bold !important;
+
+  p {
+    margin: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.chapter-heading-wrapper {
+  //max-width: 60% !important;
+}
+
+.nav-caret {
+  transition: transform 0.3s cubic-bezier(.25,.8,.25,1);
+
+  &.nav-expanded {
+    transform: rotateZ(180deg);
+  }
+}
+
+.chapter-markdown {
+  line-break: anywhere;
+}
