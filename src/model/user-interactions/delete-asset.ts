@@ -45,7 +45,6 @@ async function attempt(
   actions: PytchAppModelActions
 ): Promise<VoidOutcome> {
   const deleteDescriptor = {
-    operationContext: runState.operationContext,
     name: runState.name,
     displayName: runState.displayName,
   };
