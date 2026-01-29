@@ -2,11 +2,7 @@ import { Action } from "easy-peasy";
 import { simpleReadArrayBuffer } from "../../utils";
 import { addAssetToProject } from "../../database/indexed-db";
 import { IPytchAppModel, PytchAppModelActions } from "..";
-import {
-  AssetOperationContext,
-  AssetOperationContextKey,
-  assetOperationContextFromKey,
-} from "../asset";
+import { AssetOperationContext } from "../asset";
 import {
   AsyncUserFlowSlice,
   asyncUserFlowSlice,
@@ -25,7 +21,7 @@ export function addAssetErrorMessageFromError(
   if (error.name === "PytchDuplicateAssetNameError") {
     return (
       `Cannot add "${fileBasename}" to ${operationContext.scope}` +
-      ` because it already contains ${operationContext.assetIndefinite}` +
+      ` because it already contains A THING` + // I18N-TODO
       " of that name."
     );
   } else {
@@ -35,7 +31,7 @@ export function addAssetErrorMessageFromError(
 
 type AddAssetsRunArgs = {
   projectId: ProjectId;
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   assetNamePrefix: string;
 };
 
@@ -71,12 +67,9 @@ type AddAssetsActions = {
 export type AddAssetsFlow = AddAssetsBase & AddAssetsActions;
 
 async function prepare(args: AddAssetsRunArgs): Promise<AddAssetsRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
   return {
     projectId: args.projectId,
-    operationContext,
+    operationContext: args.operationContext,
     assetNamePrefix: args.assetNamePrefix,
     chosenFiles: null,
   };

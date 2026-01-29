@@ -3,11 +3,7 @@ import { IPytchAppModel, PytchAppModelActions } from "..";
 import { ClipArtGalleryEntryId } from "../clipart-gallery-core";
 import { ProjectId } from "../project-core";
 import { addRemoteAssetToProject } from "../../database/indexed-db";
-import {
-  AssetOperationContext,
-  assetOperationContextFromKey,
-  AssetOperationContextKey,
-} from "../asset";
+import { AssetOperationContext } from "../asset";
 import {
   addAssetErrorMessageFromError,
   AddAssetSuccess,
@@ -26,7 +22,7 @@ import { assertNever } from "../../utils";
 
 type AddClipArtRunArgs = {
   projectId: ProjectId;
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   assetNamePrefix: string;
   filterTag: string | null;
 };
@@ -61,10 +57,6 @@ type AddClipArtActions = {
 export type AddClipArtFlow = AddClipArtBase & AddClipArtActions;
 
 async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
-
   // TODO: Preserve this from one run to the next?
   const filterState: AddClipArtFilterState = initialFilterStateFromFilterTag(
     args.filterTag
@@ -72,7 +64,7 @@ async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
 
   return {
     projectId: args.projectId,
-    operationContext,
+    operationContext: args.operationContext,
     assetNamePrefix: args.assetNamePrefix,
     filterState,
     selectedIds: [],

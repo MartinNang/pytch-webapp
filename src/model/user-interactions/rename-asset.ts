@@ -1,11 +1,7 @@
 import { Action } from "easy-peasy";
 import { IPytchAppModel, PytchAppModelActions } from "..";
 
-import {
-  AssetOperationContext,
-  assetOperationContextFromKey,
-  AssetOperationContextKey,
-} from "../asset";
+import { AssetOperationContext } from "../asset";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
@@ -15,7 +11,7 @@ import {
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 
 type RenameAssetRunArgs = {
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   fixedPrefix: string;
   oldNameSuffix: string;
 };
@@ -67,12 +63,9 @@ const filenameParts = (name: string): FilenameParts => {
 };
 
 async function prepare(args: RenameAssetRunArgs): Promise<RenameAssetRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
   const { stem, extension } = filenameParts(args.oldNameSuffix);
   return {
-    operationContext,
+    operationContext: args.operationContext,
     fixedPrefix: args.fixedPrefix,
     oldStem: stem,
     newStem: stem,
