@@ -34,7 +34,11 @@ const NotableChangeToast: React.FC<NotableChangeToastProps> = ({
         <FontAwesomeIcon className="fa-xl me-2" icon="check-square" />
         <strong className="me-auto">{description.header}</strong>
       </Toast.Header>
-      <Toast.Body>{description.body}</Toast.Body>
+      <Toast.Body>
+        {description.body.map((fragment, idx) => (
+          <p key={idx}>{fragment}</p>
+        ))}
+      </Toast.Body>
     </Toast>
   );
 };
