@@ -12,6 +12,7 @@ import { useRunFlow } from "../../model";
 import { AssetsContent } from "./AssetsContent";
 import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
 import { FocusGroupContainer } from "../FocusGroupContainer";
+import { AssetOperationContext } from "../../model/asset";
 
 export const SoundsList = () => {
   const projectId = useStoreState((state) => state.activeProject.project.id);
@@ -36,9 +37,12 @@ export const SoundsList = () => {
   }
 
   const assetNamePrefix = `${activeActorId}/`;
-  const operationContextKey = `${activeActorKind}/audio` as const;
+  const operationContext: AssetOperationContext = {
+    scope: activeActorKind,
+    assetKind: "audio",
+  };
   const addSound = () =>
-    runAddAssets({ projectId, operationContextKey, assetNamePrefix });
+    runAddAssets({ projectId, operationContext, assetNamePrefix });
 
   // Also use this for "key", to make sure the colour switches instantly
   // rather than transitioning when moving from Stage to a Sprite.

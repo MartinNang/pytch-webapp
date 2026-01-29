@@ -237,8 +237,7 @@ export const AddClipArtModal = () => {
   useActionAsEffect((actions) => actions.clipArtGallery.startFetchIfRequired);
 
   return asyncFlowModal(fsmState, (activeState) => {
-    const operationContext = activeState.runState.operationContext;
-    const assetPlural = operationContext.assetPlural;
+    const assetPlural = "THINGS"; // I18N-TODO
 
     switch (activeState.kind) {
       case "awaiting-ack-of-notification": {

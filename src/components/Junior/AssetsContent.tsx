@@ -4,8 +4,9 @@ import {
   AssetMimeType,
 } from "../../model/junior/structured-program";
 import {
+  AssetOperationContext,
+  AssetOperationContextOps,
   AssetPresentation,
-  assetOperationContextFromKey,
 } from "../../model/asset";
 import { NoContentHelp } from "./NoContentHelp";
 import { AssetCard } from "./AssetCard";
@@ -24,9 +25,10 @@ export const AssetsContent: React.FC<AssetsContentProps> = ({
   assets,
   buttonsPlural,
 }) => {
-  const operationContext = assetOperationContextFromKey(
-    `${actorKind}/${assetKind}`
-  );
+  const operationContext: AssetOperationContext = {
+    scope: actorKind,
+    assetKind,
+  };
 
   if (assets.length === 0) {
     // Add the same padding as in the CodeEditor, to avoid layout jitter
@@ -35,15 +37,15 @@ export const AssetsContent: React.FC<AssetsContentProps> = ({
       <div className="pt-2 pb-5">
         <NoContentHelp
           actorKind={actorKind}
-          contentKind={operationContext.assetPlural}
+          contentKind={"THINGS"} // I18N-TODO
           buttonsPlural={buttonsPlural}
         />
       </div>
     );
   }
 
-  const canBeDeleted =
-    operationContext.assetListCanBeEmpty || assets.length > 1;
+  const canBeEmpty = AssetOperationContextOps.listCanBeEmpty(operationContext);
+  const canBeDeleted = canBeEmpty || assets.length > 1;
 
   const classes = classNames(
     "Junior-AssetsList",

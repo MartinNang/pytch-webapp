@@ -6,7 +6,7 @@ export const DeleteAssetModal = () => {
   const { fsmState } = useFlowState((f) => f.deleteAssetFlow);
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { displayName, operationContext } = activeFsmState.runState;
-    const kindDisplayName = operationContext.assetDefinite;
+    const kindDisplayName = "THING"; // I18N-TODO
     const scopeDisplayName = operationContext.scope;
 
     return (

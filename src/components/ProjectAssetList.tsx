@@ -1,6 +1,6 @@
 import React from "react";
 import { useStoreState } from "../store";
-import { AssetPresentation } from "../model/asset";
+import { AssetOperationContext, AssetPresentation } from "../model/asset";
 import { useRunFlow } from "../model";
 import { NoContentHelp } from "./Junior/NoContentHelp";
 import { SingleTab } from "./SingleTab";
@@ -48,9 +48,12 @@ export const ProjectAssetList = () => {
   const filterTag = useMediaLibFilterTag();
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
-  const operationContextKey = "flat/any" as const;
+  const operationContext: AssetOperationContext = {
+    scope: "flat",
+    assetKind: "any",
+  };
   const launchUploadModal = () =>
-    runAddAssets({ projectId, operationContextKey, assetNamePrefix: "" });
+    runAddAssets({ projectId, operationContext, assetNamePrefix: "" });
 
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
 
@@ -62,7 +65,7 @@ export const ProjectAssetList = () => {
 
     runAddClipArt({
       projectId,
-      operationContextKey,
+      operationContext,
       assetNamePrefix: "",
       filterTag,
     });

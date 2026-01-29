@@ -20,6 +20,7 @@ import {
   groupedFocusKeyFromFilterState,
   initialFilterStateFromFilterTag,
 } from "../../model/user-interactions/clipart-gallery-select";
+import { AssetOperationContext } from "../../model/asset";
 
 export const AppearancesList = () => {
   const focusContext = useFocusContext("per-method");
@@ -47,9 +48,12 @@ export const AppearancesList = () => {
   }
 
   const assetNamePrefix = `${activeActorId}/`;
-  const operationContextKey = `${activeActorKind}/image` as const;
+  const operationContext: AssetOperationContext = {
+    scope: activeActorKind,
+    assetKind: "image",
+  };
   const addFromDevice = () =>
-    runAddAssets({ projectId, operationContextKey, assetNamePrefix });
+    runAddAssets({ projectId, operationContext, assetNamePrefix });
 
   const addFromMediaLibrary = () => {
     const initialFilterState = initialFilterStateFromFilterTag(filterTag);
@@ -59,7 +63,7 @@ export const AppearancesList = () => {
 
     runAddClipArt({
       projectId,
-      operationContextKey,
+      operationContext,
       assetNamePrefix,
       filterTag,
     });

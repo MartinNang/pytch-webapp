@@ -6,6 +6,7 @@ import { FileProcessingFailures } from "../FileProcessingFailures";
 import { settleFunctions } from "../../model/user-interactions/async-user-flow";
 import { assertNever } from "../../utils";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
+import { AssetOperationContextOps } from "../../model/asset/core";
 
 export const AddAssetsModal = () => {
   const { fsmState, isSubmittable } = useFlowState((f) => f.addAssetsFlow);
@@ -13,7 +14,7 @@ export const AddAssetsModal = () => {
 
   return asyncFlowModal(fsmState, (activeState) => {
     const { operationContext, chosenFiles } = activeState.runState;
-    const assetPlural = operationContext.assetPlural;
+    const assetPlural = "THINGS"; // I18N-TODO
 
     switch (activeState.kind) {
       case "awaiting-ack-of-notification": {
@@ -40,7 +41,7 @@ export const AddAssetsModal = () => {
           <ChooseFiles
             titleText={`Add ${assetPlural}`}
             introText={`Choose ${assetPlural} to add to your project.`}
-            fileAccept={operationContext.fileAccept}
+            fileAccept={AssetOperationContextOps.fileAccept(operationContext)}
             actionButtonText="Add to project"
             status={activeState.kind}
             chosenFiles={chosenFiles}

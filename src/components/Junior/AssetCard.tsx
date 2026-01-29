@@ -19,7 +19,7 @@ import { ProjectId } from "../../model/project-core";
 import { useRunFlow } from "../../model";
 import { AssetMimeType } from "../../model/junior/structured-program/asset";
 import {
-  AssetOperationContextKey,
+  AssetOperationContext,
   AssetOperationScope,
 } from "../../model/asset/core";
 import { assertNever, copyTextToClipboard } from "../../utils";
@@ -56,11 +56,11 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
   const focusContext = useFocusContext(pageKind);
   const runRenameAsset = useRunFlow((f) => f.renameAssetFlow);
 
-  const operationContextKey = `${operationScope}/${assetKind}` as const;
+  const operationContext = { scope: operationScope, assetKind };
   const nameAffixes = PytchProgramOps.assetPathAffixes(fullPathname);
   const launchRename = () =>
     runRenameAsset({
-      operationContextKey,
+      operationContext,
       fixedPrefix: nameAffixes.prefix,
       oldNameSuffix: nameAffixes.suffix,
       onDispose: focusContext.onDisposeManipulateAsset,
@@ -83,7 +83,10 @@ function useOnDeleteFun(
   const focusContext = useFocusContext(pageKind);
   const runDeleteAsset = useRunFlow((f) => f.deleteAssetFlow);
 
-  const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
+  const operationContext: AssetOperationContext = {
+    scope: operationScope,
+    assetKind,
+  };
   const displayName = PytchProgramOps.assetPathAffixes(fullPathname).suffix;
 
   return () => {
@@ -93,7 +96,7 @@ function useOnDeleteFun(
     }
 
     runDeleteAsset({
-      operationContextKey,
+      operationContext,
       name: fullPathname,
       displayName,
       onDispose: focusContext.onDisposeManipulateAsset,
@@ -159,12 +162,15 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
 
   const fullSource = presentation.presentation.fullSourceImage;
 
-  const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
+  const operationContext: AssetOperationContext = {
+    scope: operationScope,
+    assetKind,
+  };
   const onClick = () => {
     runCropScaleImage({
       projectId,
       assetName: presentation.name,
-      operationContextKey,
+      operationContext,
       existingCrop: transform,
       originalSize: { width: fullSource.width, height: fullSource.height },
       sourceURL: new URL(fullSource.src),
