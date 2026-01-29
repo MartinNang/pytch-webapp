@@ -132,15 +132,11 @@ export type AssetOperationContextKey =
   | `${AssetOperationScope}/${AssetMimeType}`
   | "flat/any";
 
-export type AssetOperationContext = {
-  scope: string;
-  assetDefinite: string;
-  assetIndefinite: string;
-  assetSingularTitle: string;
-  assetPlural: string;
-  assetListCanBeEmpty: boolean;
-  fileAccept?: string;
-};
+// The second disjunct is for when we're adding assets (of either kind,
+// or even mixed) to a "flat" project.
+export type AssetOperationContext =
+  | { scope: AssetOperationScope; assetKind: AssetMimeType }
+  | { scope: "flat"; assetKind: "any" };
 
 const contextLUT = new Map<AssetOperationContextKey, AssetOperationContext>([
   [
