@@ -128,10 +128,6 @@ export type AssetPresentationData =
 
 export type AssetOperationScope = "flat" | ActorKind;
 
-export type AssetOperationContextKey =
-  | `${AssetOperationScope}/${AssetMimeType}`
-  | "flat/any";
-
 // The second disjunct is for when we're adding assets (of either kind,
 // or even mixed) to a "flat" project.
 export type AssetOperationContext =
