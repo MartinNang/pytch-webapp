@@ -133,3 +133,19 @@ export type AssetOperationScope = "flat" | ActorKind;
 export type AssetOperationContext =
   | { scope: AssetOperationScope; assetKind: AssetMimeType }
   | { scope: "flat"; assetKind: "any" };
+
+export class AssetOperationContextOps {
+  static fileAccept(ctx: AssetOperationContext): string | undefined {
+    switch (ctx.assetKind) {
+      case "image":
+      case "audio":
+        return `${ctx.assetKind}/*`;
+      case "any":
+        return undefined;
+    }
+  }
+
+  static listCanBeEmpty(ctx: AssetOperationContext): boolean {
+    return !(ctx.scope === "stage" && ctx.assetKind === "image");
+  }
+}

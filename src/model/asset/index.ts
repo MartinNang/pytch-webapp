@@ -21,6 +21,7 @@ export {
   type AssetOperationContext,
   unknownAssetOperationContext,
   assetOperationContextFromKey,
+  AssetOperationContextOps,
 } from "./core";
 
 export type AssetPresentationCreateOpts = Partial<{
