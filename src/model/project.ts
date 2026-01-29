@@ -1099,7 +1099,7 @@ export const activeProject: IActiveProject = {
           `Cannot rename "${descriptor.oldNameSuffix}"` +
             ` to "${descriptor.newNameSuffix}" because` +
             ` ${opContext.scope} already contains` +
-            ` ${opContext.assetIndefinite} called` +
+            ` A THING called` + // I18N-TODO
             ` "${descriptor.newNameSuffix}".`
         );
       } else {
