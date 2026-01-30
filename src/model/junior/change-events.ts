@@ -225,9 +225,6 @@ export type ProjectRenamed = {
 
 export function projectRenamedDescription(
   _change: ProjectRenamed
-): NotableChangeDescription {
-  return {
-    header: "Project renamed",
-    body: "Project renamed",
-  };
+): NotableChangeSummarySpec {
+  return { header: kEmptySpec, bodyParts: [kEmptySpec] };
 }
