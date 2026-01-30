@@ -14,7 +14,7 @@ import {
   HandlerUpsertionActionKind,
   SpriteUpsertionActionKind,
 } from "./structured-program/program";
-import { I18nStringSpec } from "../i18n/core-types";
+import { I18nStringSpec, kEmptySpec } from "../i18n/core-types";
 
 export type NotableChangeSummarySpec = {
   header: I18nStringSpec;
@@ -195,13 +195,8 @@ export type ProjectDownloadActionCompleted = {
 
 export function projectDownloadActionCompletedDescription(
   _change: ProjectDownloadActionCompleted
-): NotableChangeDescription {
-  // This has to be very uninformative, sorry; see comment attached
-  // to type definition for `ProjectDownloadActionCompleted`.
-  return {
-    header: "Download action completed",
-    body: "Project download action completed",
-  };
+): NotableChangeSummarySpec {
+  return { header: kEmptySpec, bodyParts: [kEmptySpec] };
 }
 
 ////////////////////////////////////////////////////////////////////////

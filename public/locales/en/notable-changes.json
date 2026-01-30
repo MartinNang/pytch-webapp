@@ -90,5 +90,8 @@
   "zipfiles-uploaded.failure.body_one": "A zipfile could not be uploaded.",
   "zipfiles-uploaded.failure.body_other": "{{count}} zipfiles could not be uploaded.",
 
+  "project-download-action-completed.header": "Download action completed",
+  "project-download-action-completed.body": "Project download action completed",
+
   "$RUBBISH$": ""
 }
