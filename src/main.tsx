@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import { App } from "./App";
 import { StoreProvider } from "easy-peasy";
 import store from "./store";
 import { envVarMap } from "./env-utils";

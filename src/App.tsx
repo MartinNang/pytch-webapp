@@ -68,7 +68,7 @@ const NavQueueWrapper: React.FC<EmptyProps> = () => {
   return <Outlet />;
 };
 
-function App() {
+export function App() {
   const basepath = envVarOrFail("BASE_URL");
   console.log(`basepath: "${basepath}"`);
 
@@ -146,5 +146,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
