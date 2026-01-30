@@ -5,6 +5,7 @@ import {
   assetChangedDescription,
   AssetsAdded,
   assetsAddedDescription,
+  NotableChangeSummarySpec,
   PerMethodScriptChanged,
   perMethodScriptChangedDescription,
   PerMethodSpriteChanged,
@@ -58,6 +59,23 @@ function humanStringFromParts(
   const params = resolveIndirectParams(i18n, spec);
 
   return i18n.t(keyStem, { ns: "notable-changes", replace: params });
+}
+
+function changeSummaryFromSpec(
+  i18n: i18n,
+  keyPrefix: string,
+  spec: NotableChangeSummarySpec
+): NotableChangeSummary {
+  const header = humanStringFromParts(i18n, keyPrefix, spec.header, "header");
+
+  const bodyParts = spec.bodyParts.map((spec) =>
+    humanStringFromParts(i18n, keyPrefix, spec, "body")
+  );
+
+  return {
+    header,
+    body: bodyParts,
+  };
 }
 
 export function notableChangeDescription(
