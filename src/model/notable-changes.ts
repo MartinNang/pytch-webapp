@@ -79,8 +79,10 @@ function changeSummaryFromSpec(
 }
 
 export function notableChangeDescription(
+  i18n: i18n,
   change: NotableChange
-): NotableChangeDescription {
+): NotableChangeSummary {
+  const spec = (() => {
   switch (change.kind) {
     case "script-changed":
       return perMethodScriptChangedDescription(change);
@@ -101,6 +103,9 @@ export function notableChangeDescription(
     default:
       return assertNever(change);
   }
+  })();
+
+  return changeSummaryFromSpec(i18n, change.kind, spec);
 }
 
 // Currently the `change` within a KeyedNotableChange is immutable, so
