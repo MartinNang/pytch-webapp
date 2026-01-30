@@ -1,3 +1,16 @@
 {
+  "add.image.failures.title_one": "Problem adding image",
+  "add.image.failures.title_other": "Problem adding images",
+  "add.image.failures.intro_one": "There was a problem adding an image to your project:",
+  "add.image.failures.intro_other": "There were problems adding some images to your project:",
+  "add.audio.failures.title_one": "Problem adding sound",
+  "add.audio.failures.title_other": "Problem adding sounds",
+  "add.audio.failures.intro_one": "There was a problem adding a sound to your project:",
+  "add.audio.failures.intro_other": "There were problems adding some sounds to your project:",
+  "add.any.failures.title_one": "Problem adding file",
+  "add.any.failures.title_other": "Problem adding files",
+  "add.any.failures.intro_one": "There was a problem adding a file to your project:",
+  "add.any.failures.intro_other": "There were problems adding some files to your project:",
+
   "$RUBBISH$": ""
 }
