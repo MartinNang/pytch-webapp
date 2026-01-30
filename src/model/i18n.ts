@@ -21,6 +21,19 @@ export type I18nContextState = {
   setI18nStateKind: SAction<I18nStateKind>;
 };
 
+async function withStateUpdates(
+  actions: Actions<I18nContextState>,
+  body: () => Promise<void>
+) {
+  actions.setI18nStateKind("pending");
+  try {
+    await body();
+    actions.setI18nStateKind("ready");
+  } catch {
+    actions.setI18nStateKind("failed");
+  }
+}
+
 export let i18nContextState: I18nContextState = {
   i18nStateKind: "not-yet-booted",
   setI18nStateKind: propSetterAction("i18nStateKind"),
