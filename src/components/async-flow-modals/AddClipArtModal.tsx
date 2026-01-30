@@ -31,6 +31,7 @@ import {
   groupedFocusKeyFromFilterState,
 } from "../../model/user-interactions/clipart-gallery-select";
 import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { AddAssetFailuresList } from "./AddAssetFailuresList";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -241,17 +242,11 @@ export const AddClipArtModal = () => {
 
     switch (activeState.kind) {
       case "awaiting-ack-of-notification": {
-        const fileFailures: Array<FileProcessingFailure> =
-          activeState.outcomeNub.failures.map((failure) => ({
-            filename: failure.displayName,
-            reason: failure.reason,
-          }));
-        const titleText = `Problem adding ${assetPlural}`;
+        // Currently the media library only contains images.
         return (
-          <FileProcessingFailures
-            titleText={titleText}
-            introText="Sorry, there was a problem adding files to your project:"
-            failures={fileFailures}
+          <AddAssetFailuresList
+            assetKind="image"
+            failures={activeState.outcomeNub.failures}
             dismiss={activeState.userAck}
           />
         );
