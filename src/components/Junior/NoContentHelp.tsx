@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
+import { useTranslation } from "react-i18next";
 import { ResourceKind } from "../../model/resource";
 import { AssetOperationScope } from "../../model/asset/core";
 
@@ -11,13 +12,12 @@ export const NoContentHelp: React.FC<NoContentHelpProps> = ({
   scope,
   resourceKind,
 }) => {
-  const buttonOrButtons = buttonsPlural ? "buttons" : "button";
+  const { t } = useTranslation("ide");
+  const content = t(`no-content-help.${scope}.${resourceKind}`);
+
   return (
     <Card className="NoContentHelp" body>
-      <p>
-        Your {actorKind} has no {contentKind} yet. Use the {buttonOrButtons}{" "}
-        below to add one!
-      </p>
+      <p>{content}</p>
     </Card>
   );
 };
