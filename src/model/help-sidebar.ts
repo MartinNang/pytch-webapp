@@ -1,5 +1,5 @@
 import { makeScratchSVG } from "./scratchblocks-render";
-import { marked } from "marked";
+import { markedParse } from "../components/hooks/sync-marked";
 import { assertNever, failIfNull } from "../utils";
 import { PytchProgramKind, PytchProgramAllKinds } from "./pytch-program";
 import {
@@ -266,8 +266,7 @@ const makeHelpContentLut = (
  * styling of comments.
  */
 const makeHelpTextElements = (helpMarkdown: string): ElementArray => {
-  marked.use({ mangle: false, headerIds: false });
-  const helpHtml = marked.parse(helpMarkdown);
+  const helpHtml = markedParse(helpMarkdown);
 
   let helpDoc = new DOMParser().parseFromString(helpHtml, "text/html");
   helpDoc.querySelectorAll("pre > code").forEach(simpleSyntaxHighlight);
