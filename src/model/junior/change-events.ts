@@ -161,30 +161,26 @@ export type ZipfilesUploaded = {
 
 export function zipfilesUploadedDescription(
   change: ZipfilesUploaded
-): NotableChangeDescription {
+): NotableChangeSummarySpec {
   const nCreated = change.nCreated;
   const nFailed = change.nFailed;
 
-  const failuresSummarySuffix =
-    nFailed > 1
-      ? ` (but problems with ${nFailed} other zipfiles)`
-      : nFailed === 1
-      ? ` (but problem with one other zipfile)`
-      : "";
+  const header: I18nStringSpec =
+    nCreated === 0
+      ? { keyPart: "only-failure", params: { count: nFailed } }
+      : { keyPart: "some-success", params: { count: nCreated } };
 
-  if (nCreated === 1) {
-    return {
-      header: `Project uploaded`,
-      body: `Project created from zipfile${failuresSummarySuffix}`,
-    };
-  } else {
-    return {
-      header: `${nCreated} projects uploaded`,
-      body:
-        `${nCreated} projects created` +
-        ` from zipfiles${failuresSummarySuffix}`,
-    };
+  let bodyParts: I18nStringSpec[] = [];
+
+  if (nCreated > 0) {
+    bodyParts.push({ keyPart: "success", params: { count: nCreated } });
   }
+
+  if (nFailed > 0) {
+    bodyParts.push({ keyPart: "failure", params: { count: nFailed } });
+  }
+
+  return { header, bodyParts };
 }
 
 ////////////////////////////////////////////////////////////////////////

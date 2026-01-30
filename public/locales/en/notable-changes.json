@@ -79,5 +79,16 @@
   "assets-added.audio.this-device.failure.body_one": "A sound could not be added from this device.",
   "assets-added.audio.this-device.failure.body_other": "{{count}} sounds could not be added from this device.",
 
+  "zipfiles-uploaded.some-success.header_one": "Project uploaded",
+  "zipfiles-uploaded.some-success.header_other": "Projects uploaded",
+  "zipfiles-uploaded.only-failure.header_one": "Problem uploading project",
+  "zipfiles-uploaded.only-failure.header_other": "Problem uploading projects",
+
+  "zipfiles-uploaded.success.body_one": "Project created from zipfile.",
+  "zipfiles-uploaded.success.body_other": "{{count}} projects created from zipfiles.",
+
+  "zipfiles-uploaded.failure.body_one": "A zipfile could not be uploaded.",
+  "zipfiles-uploaded.failure.body_other": "{{count}} zipfiles could not be uploaded.",
+
   "$RUBBISH$": ""
 }
