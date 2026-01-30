@@ -83,26 +83,26 @@ export function notableChangeDescription(
   change: NotableChange
 ): NotableChangeSummary {
   const spec = (() => {
-  switch (change.kind) {
-    case "script-changed":
-      return perMethodScriptChangedDescription(change);
-    case "sprite-changed":
-      return perMethodSpriteChangedDescription(change);
-    case "asset-changed":
-      return assetChangedDescription(change);
-    case "assets-added":
-      return assetsAddedDescription(change);
-    case "zipfiles-uploaded":
-      return zipfilesUploadedDescription(change);
-    case "project-download-action-completed":
-      return projectDownloadActionCompletedDescription(change);
-    case "projects-deleted":
-      return projectsDeletedDescription(change);
-    case "project-renamed":
-      return projectRenamedDescription(change);
-    default:
-      return assertNever(change);
-  }
+    switch (change.kind) {
+      case "script-changed":
+        return perMethodScriptChangedDescription(change);
+      case "sprite-changed":
+        return perMethodSpriteChangedDescription(change);
+      case "asset-changed":
+        return assetChangedDescription(change);
+      case "assets-added":
+        return assetsAddedDescription(change);
+      case "zipfiles-uploaded":
+        return zipfilesUploadedDescription(change);
+      case "project-download-action-completed":
+        return projectDownloadActionCompletedDescription(change);
+      case "projects-deleted":
+        return projectsDeletedDescription(change);
+      case "project-renamed":
+        return projectRenamedDescription(change);
+      default:
+        return assertNever(change);
+    }
   })();
 
   return changeSummaryFromSpec(i18n, change.kind, spec);
