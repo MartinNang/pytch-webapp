@@ -25,6 +25,7 @@ export type I18nContextState = {
   setI18nStateKind: SAction<I18nStateKind>;
 
   boot: SAThunk<Record<string, unknown>>;
+  setLanguage: SAThunk<string>;
 };
 
 async function withStateUpdates(
@@ -64,6 +65,12 @@ export let i18nContextState: I18nContextState = {
           },
         },
       });
+    });
+  }),
+
+  setLanguage: thunk(async (actions, lng) => {
+    await withStateUpdates(actions, async () => {
+      await i18next.changeLanguage(lng);
     });
   }),
 };
