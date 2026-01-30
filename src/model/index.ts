@@ -43,6 +43,8 @@ import {
   StandalonePlayDemoState,
   standalonePlayDemoState,
 } from "./standalone-play-demo";
+import { I18nContextState, i18nContextState } from "./i18n";
+
 import { useStoreActions, useStoreState } from "../store";
 
 export interface IPytchAppModel {
@@ -63,6 +65,7 @@ export interface IPytchAppModel {
   clipArtGallery: IClipArtGallery;
   googleDriveImportExport: GoogleDriveIntegration;
   standalonePlayDemoState: StandalonePlayDemoState;
+  i18nContextState: I18nContextState;
 }
 
 export type PytchAppModelActions = Actions<IPytchAppModel>;
@@ -85,6 +88,7 @@ export const pytchAppModel: IPytchAppModel = {
   clipArtGallery,
   googleDriveImportExport: googleDriveIntegration,
   standalonePlayDemoState,
+  i18nContextState,
 };
 
 export function useFlowState<ResultT>(

@@ -25,13 +25,14 @@ import { NavBanner } from "./components/NavBanner";
 import { DemoFromZipfileURL } from "./components/DemoFromZipfileURL";
 import { useStoreState, useStoreActions } from "./store";
 import { useEffect } from "react";
-import { EmptyProps } from "./utils";
+import { assertNever, EmptyProps } from "./utils";
 import { envVarOrFail, pathWithinApp } from "./env-utils";
 import { ProjectFromSpecimenFlow } from "./components/ProjectFromSpecimenFlow";
 import { DeliberateFailureWithBoundary } from "./components/DeliberateFailure";
 import { fireAndForgetEvent } from "./model/anonymous-instrumentation";
 import { StandalonePlayDemo } from "./components/StandalonePlayDemo";
 import { StartTutorialAtCheckpoint } from "./components/StartTutorialAtCheckpoint";
+import { useActionAsEffect } from "./components/hooks/use-action-as-effect";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -68,7 +69,7 @@ const NavQueueWrapper: React.FC<EmptyProps> = () => {
   return <Outlet />;
 };
 
-function App() {
+function AppWithI18nReady() {
   const basepath = envVarOrFail("BASE_URL");
   console.log(`basepath: "${basepath}"`);
 
@@ -147,4 +148,30 @@ function App() {
   );
 }
 
-export default App;
+const kTransDefaultComponents = {
+  i: <i />,
+  b: <strong />,
+};
+
+export const App: React.FC<EmptyProps> = () => {
+  const i18nStateKind = useStoreState((s) => s.i18nContextState.i18nStateKind);
+  useActionAsEffect(
+    (actions) => () => actions.i18nContextState.boot(kTransDefaultComponents)
+  );
+
+  console.log("AppI18nWrapper", i18nStateKind);
+
+  switch (i18nStateKind) {
+    case "not-yet-booted":
+    case "pending":
+      // TODO: Proper handling
+      return <p>Loading i18n stuff...</p>;
+    case "ready":
+      return <AppWithI18nReady />;
+    case "failed":
+      // TODO: Proper handling
+      return <p>OH NO!</p>;
+    default:
+      return assertNever(i18nStateKind);
+  }
+};
