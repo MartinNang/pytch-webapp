@@ -1,4 +1,5 @@
 import { Action, Actions, thunk, Thunk } from "easy-peasy";
+import { propSetterAction } from "../utils";
 
 // "Slice action" / "slice async thunk" types, forward-referencing the
 // model slice type I18nContextState.
@@ -13,8 +14,14 @@ type SAThunk<PayloadT, ReturnT = void> = Thunk<
   Promise<ReturnT>
 >;
 
+type I18nStateKind = "not-yet-booted" | "pending" | "ready" | "failed";
+
 export type I18nContextState = {
+  i18nStateKind: I18nStateKind;
+  setI18nStateKind: SAction<I18nStateKind>;
 };
 
 export let i18nContextState: I18nContextState = {
+  i18nStateKind: "not-yet-booted",
+  setI18nStateKind: propSetterAction("i18nStateKind"),
 };
