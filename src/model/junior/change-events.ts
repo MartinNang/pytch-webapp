@@ -117,38 +117,38 @@ export type AssetsAdded = {
 
 export function assetsAddedDescription(
   change: AssetsAdded
-): NotableChangeDescription {
-  const assetSingular = change.operationContext.assetSingularTitle;
-  const assetPlural = change.operationContext.assetPlural;
+): NotableChangeSummarySpec {
+  const assetKind = change.operationContext.assetKind;
+
   const nSuccesses = change.successes.length;
   const nFailures = change.failures.length;
 
-  const failuresSummarySuffix =
-    nFailures > 1
-      ? ` (but problems with ${nFailures} other ${assetPlural})`
-      : nFailures === 1
-      ? ` (but problem with one other ${assetSingular.toLowerCase()})`
-      : "";
+  const header: I18nStringSpec =
+    nSuccesses === 0
+      ? { keyPart: `${assetKind}.only-failure`, params: { count: nFailures } }
+      : { keyPart: `${assetKind}.some-success`, params: { count: nSuccesses } };
 
-  const sourceDisplayName = AssetMetaDataOps.assetSourceDisplayName(
-    change.sourceKind
-  );
+  const bodyKeyPrefix = `${assetKind}.${change.sourceKind}`;
+  let bodyParts: I18nStringSpec[] = [];
 
-  if (nSuccesses === 1) {
-    return {
-      header: `${assetSingular} added`,
-      body:
-        `${assetSingular} "${change.successes[0].displayName}"` +
-        ` added from ${sourceDisplayName}${failuresSummarySuffix}`,
-    };
-  } else {
-    return {
-      header: `${nSuccesses} ${assetPlural} added`,
-      body:
-        `${nSuccesses} ${assetPlural} added` +
-        ` from ${sourceDisplayName}${failuresSummarySuffix}`,
-    };
+  if (nSuccesses > 0) {
+    bodyParts.push({
+      keyPart: `${bodyKeyPrefix}.success`,
+      params: {
+        count: nSuccesses,
+        firstSuccessDisplayName: change.successes[0].displayName,
+      },
+    });
   }
+
+  if (nFailures > 0) {
+    bodyParts.push({
+      keyPart: `${bodyKeyPrefix}.failure`,
+      params: { count: nFailures },
+    });
+  }
+
+  return { header, bodyParts };
 }
 
 ////////////////////////////////////////////////////////////////////////
