@@ -90,38 +90,20 @@ export type AssetChanged = {
 
 export function assetChangedDescription(
   change: AssetChanged
-): NotableChangeDescription {
-  const assetSingular = change.operationContext.assetSingularTitle;
+): NotableChangeSummarySpec {
+  const assetKind = change.operationContext.assetKind;
+  const scope = change.operationContext.scope;
 
-  switch (change.assetChangedKind) {
-    case "update-transform": {
-      return {
-        header: `${assetSingular} crop/scale updated`,
-        body:
-          `Crop/scale for ${assetSingular.toLowerCase()}` +
-          ` "${change.assetDisplayName}" updated` +
-          ` in ${change.operationContext.scope}`,
-      };
-    }
-    case "update": {
-      return {
-        header: `${assetSingular} renamed`,
-        body:
-          `${assetSingular} renamed to "${change.assetDisplayName}"` +
-          ` in ${change.operationContext.scope}`,
-      };
-    }
-    case "delete": {
-      return {
-        header: `${assetSingular} deleted`,
-        body:
-          `${assetSingular} "${change.assetDisplayName}"` +
-          ` deleted from ${change.operationContext.scope}`,
-      };
-    }
-    default:
-      return assertNever(change.assetChangedKind);
-  }
+  const header: I18nStringSpec = {
+    keyPart: `${assetKind}.${change.assetChangedKind}`,
+  };
+
+  const body: I18nStringSpec = {
+    keyPart: `${scope}.${assetKind}.${change.assetChangedKind}`,
+    params: { assetDisplayName: change.assetDisplayName },
+  };
+
+  return { header, bodyParts: [body] };
 }
 
 ////////////////////////////////////////////////////////////////////////

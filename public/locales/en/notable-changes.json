@@ -21,5 +21,28 @@
   "sprite-changed.delete.header": "Sprite deleted",
   "sprite-changed.delete.body": "Sprite “{{spriteName}}” deleted from project.",
 
+  "asset-changed.image.update-transform.header": "Image crop/scale updated",
+  "asset-changed.image.update.header": "Image renamed",
+  "asset-changed.image.delete.header": "Image deleted",
+  "asset-changed.audio.update.header": "Sound renamed",
+  "asset-changed.audio.delete.header": "Sound deleted",
+
+  "asset-changed.flat.image.update-transform.body": "Crop/scale for image “{{assetDisplayName}}” updated in your project.",
+  "asset-changed.flat.image.update.body": "Image renamed to “{{assetDisplayName}}” in your project.",
+  "asset-changed.flat.image.delete.body": "Image “{{assetDisplayName}}” deleted from your project.",
+  "asset-changed.sprite.image.update.body": "Costume renamed to “{{assetDisplayName}}” in this sprite.",
+  "asset-changed.sprite.image.update-transform.body": "Crop/scale for costume “{{assetDisplayName}}” updated in this sprite.",
+  "asset-changed.sprite.image.delete.body": "Costume “{{assetDisplayName}}” deleted from this sprite.",
+  "asset-changed.stage.image.update.body": "Backdrop renamed to “{{assetDisplayName}}” in the stage.",
+  "asset-changed.stage.image.update-transform.body": "Crop/scale for backdrop “{{assetDisplayName}}” updated in the stage.",
+  "asset-changed.stage.image.delete.body": "Backdrop “{{assetDisplayName}}” deleted from the stage.",
+
+  "asset-changed.flat.audio.update.body": "Sound renamed to “{{assetDisplayName}}” in your project.",
+  "asset-changed.flat.audio.delete.body": "Sound “{{assetDisplayName}}” deleted from your project.",
+  "asset-changed.sprite.audio.update.body": "Sound renamed to “{{assetDisplayName}}” in this sprite.",
+  "asset-changed.sprite.audio.delete.body": "Sound “{{assetDisplayName}}” deleted from this sprite.",
+  "asset-changed.stage.audio.update.body": "Sound renamed to “{{assetDisplayName}}” in the stage.",
+  "asset-changed.stage.audio.delete.body": "Sound “{{assetDisplayName}}” deleted from the stage.",
+
   "$RUBBISH$": ""
 }
