@@ -208,15 +208,12 @@ export type ProjectsDeleted = {
 
 export function projectsDeletedDescription(
   change: ProjectsDeleted
-): NotableChangeDescription {
-  const nDeleted = change.nDeleted;
-  const noun = nDeleted === 1 ? "Project" : "Projects";
-  const nounPhrase = nDeleted === 1 ? "Project" : `${nDeleted} projects`;
-
-  return {
-    header: `${noun} deleted`,
-    body: `${nounPhrase} deleted from My Projects`,
+): NotableChangeSummarySpec {
+  const spec: I18nStringSpec = {
+    keyPart: null,
+    params: { count: change.nDeleted },
   };
+  return { header: spec, bodyParts: [spec] };
 }
 
 ////////////////////////////////////////////////////////////////////////

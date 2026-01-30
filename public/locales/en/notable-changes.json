@@ -93,5 +93,10 @@
   "project-download-action-completed.header": "Download action completed",
   "project-download-action-completed.body": "Project download action completed",
 
+  "projects-deleted.header_one": "Project deleted",
+  "projects-deleted.header_other": "Projects deleted",
+  "projects-deleted.body_one": "Project deleted from My Projects",
+  "projects-deleted.body_other": "{{count}} projects deleted from My Projects",
+
   "$RUBBISH$": ""
 }
