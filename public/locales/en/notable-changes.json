@@ -14,5 +14,12 @@
   "script-changed.stage.duplicate.body": "“{{eventKind}}” script duplicated in the stage.",
   "script-changed.stage.delete.body": "“{{eventKind}}” script deleted from the stage.",
 
+  "sprite-changed.insert.header": "Sprite added",
+  "sprite-changed.insert.body": "Sprite “{{spriteName}}” added to project.",
+  "sprite-changed.update.header": "Sprite renamed",
+  "sprite-changed.update.body": "Sprite renamed to “{{spriteName}}”.",
+  "sprite-changed.delete.header": "Sprite deleted",
+  "sprite-changed.delete.body": "Sprite “{{spriteName}}” deleted from project.",
+
   "$RUBBISH$": ""
 }
