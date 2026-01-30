@@ -35,9 +35,10 @@ export type NotableChangeOfKind<KindT extends NotableChangeKind> =
 
 ////////////////////////////////////////////////////////////////////////
 
-export type NotableChangeDescription = {
+// These are fully interpolated human-facing strings.
+export type NotableChangeSummary = {
   header: string;
-  body: string;
+  body: Array<string>;
 };
 
 export function notableChangeDescription(
