@@ -1,3 +1,18 @@
 {
+  "script-changed.insert.header": "Script added",
+  "script-changed.update.header": "Script hat block changed",
+  "script-changed.duplicate.header": "Script duplicated",
+  "script-changed.delete.header": "Script deleted",
+
+  "script-changed.sprite.insert.body": "New “{{eventKind}}” script added to the sprite “{{actorName}}”.",
+  "script-changed.sprite.update.body": "Script in the sprite “{{actorName}}” changed to “{{eventKind}}”.",
+  "script-changed.sprite.duplicate.body": "“{{eventKind}}” script duplicated in the sprite “{{actorName}}”.",
+  "script-changed.sprite.delete.body": "“{{eventKind}}” script deleted from the sprite “{{actorName}}”.",
+
+  "script-changed.stage.insert.body": "New “{{eventKind}}” script added to the stage.",
+  "script-changed.stage.update.body": "Script in the stage changed to “{{eventKind}}”.",
+  "script-changed.stage.duplicate.body": "“{{eventKind}}” script duplicated in the stage.",
+  "script-changed.stage.delete.body": "“{{eventKind}}” script deleted from the stage.",
+
   "$RUBBISH$": ""
 }

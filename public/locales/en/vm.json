@@ -1,3 +1,13 @@
 {
+  "event-kind.sprite.green-flag": "green flag clicked",
+  "event-kind.sprite.clicked": "this sprite clicked",
+  "event-kind.sprite.start-as-clone": "start as clone",
+  "event-kind.sprite.key-pressed": "key pressed",
+  "event-kind.sprite.message-received": "message received",
+  "event-kind.stage.green-flag": "green flag clicked",
+  "event-kind.stage.clicked": "stage clicked",
+  "event-kind.stage.key-pressed": "key pressed",
+  "event-kind.stage.message-received": "message received",
+
   "$RUBBISH$": ""
 }

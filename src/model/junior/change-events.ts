@@ -14,6 +14,7 @@ import {
   HandlerUpsertionActionKind,
   SpriteUpsertionActionKind,
 } from "./structured-program/program";
+import { I18nStringSpec } from "../i18n/core-types";
 
 export type NotableChangeSummarySpec = {
   header: I18nStringSpec;
@@ -38,48 +39,23 @@ export type PerMethodScriptChanged = {
 
 export function perMethodScriptChangedDescription(
   change: PerMethodScriptChanged
-): NotableChangeDescription {
-  const eventKindDescription = EventDescriptorKindOps.displayDescription(
-    change.handlerEventKind
-  );
-  const displayName = ActorOps.displayDescription({
-    kind: change.actorKind,
-    name: change.actorName,
-  });
+): NotableChangeSummarySpec {
+  const eventKind = {
+    ns: "vm",
+    key: `event-kind.${change.actorKind}.${change.handlerEventKind}`,
+  };
 
-  switch (change.scriptChangedKind) {
-    case "insert": {
-      return {
-        header: "Script added",
-        body:
-          `New "${eventKindDescription}" script` +
-          ` added to the ${displayName}.`,
-      };
-    }
-    case "update": {
-      return {
-        header: "Script hat block changed",
-        body:
-          `Script in the ${displayName}` +
-          ` changed to "${eventKindDescription}".`,
-      };
-    }
-    case "duplicate": {
-      return {
-        header: "Script duplicated",
-        body:
-          `"${eventKindDescription}" script` +
-          ` duplicated in the ${displayName}.`,
-      };
-    }
-    case "delete":
-      return {
-        header: "Script deleted",
-        body: `"${eventKindDescription}" script deleted from the ${displayName}.`,
-      };
-    default:
-      return assertNever(change.scriptChangedKind);
-  }
+  const header: I18nStringSpec = {
+    keyPart: change.scriptChangedKind,
+  };
+
+  const body: I18nStringSpec = {
+    keyPart: `${change.actorKind}.${change.scriptChangedKind}`,
+    params: { actorName: change.actorName },
+    indirectParams: { eventKind },
+  };
+
+  return { header, bodyParts: [body] };
 }
 
 ////////////////////////////////////////////////////////////////////////
