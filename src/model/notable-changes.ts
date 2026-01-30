@@ -1,3 +1,4 @@
+import { i18n } from "i18next";
 import { arraysEqFun, assertNever } from "../utils";
 import {
   AssetChanged,
@@ -17,6 +18,8 @@ import {
   ProjectsDeleted,
   projectsDeletedDescription,
 } from "./junior/change-events";
+import { I18nStringSpec } from "./i18n/core-types";
+import { resolveIndirectParams } from "./i18n/utils";
 
 export type NotableChange =
   | PerMethodScriptChanged
@@ -40,6 +43,22 @@ export type NotableChangeSummary = {
   header: string;
   body: Array<string>;
 };
+
+////////////////////////////////////////////////////////////////////////
+
+function humanStringFromParts(
+  i18n: i18n,
+  keyPrefix: string,
+  spec: I18nStringSpec,
+  keySuffix: "header" | "body"
+): string {
+  const innerPart = spec.keyPart == null ? "" : `.${spec.keyPart}`;
+  const baseKey = `${keyPrefix}${innerPart}`;
+  const keyStem = `${baseKey}.${keySuffix}`;
+  const params = resolveIndirectParams(i18n, spec);
+
+  return i18n.t(keyStem, { ns: "notable-changes", replace: params });
+}
 
 export function notableChangeDescription(
   change: NotableChange
