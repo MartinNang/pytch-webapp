@@ -84,11 +84,7 @@ export const ProjectAssetList = () => {
   }
 
   const maybeNoContentHelp = assets.length === 0 && (
-    <NoContentHelp
-      actorKind="project"
-      contentKind="images or sounds"
-      buttonsPlural={true}
-    />
+    <NoContentHelp scope="flat" resourceKind="flat-asset" />
   );
 
   // TODO: Should we split this into two tabs: Images, Sounds?

@@ -35,11 +35,7 @@ export const AssetsContent: React.FC<AssetsContentProps> = ({
     // when switching between actor-property tabs.
     return (
       <div className="pt-2 pb-5">
-        <NoContentHelp
-          actorKind={actorKind}
-          contentKind={"THINGS"} // I18N-TODO
-          buttonsPlural={buttonsPlural}
-        />
+        <NoContentHelp scope={actorKind} resourceKind={assetKind} />
       </div>
     );
   }

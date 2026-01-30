@@ -101,11 +101,7 @@ const ScriptsEditor = () => {
   const nHandlers = handlerIds.length;
 
   const maybeNoContentHelp = nHandlers === 0 && (
-    <NoContentHelp
-      actorKind={kind}
-      contentKind="scripts"
-      buttonsPlural={false}
-    />
+    <NoContentHelp scope={kind} resourceKind="script" />
   );
 
   // TODO: Get a list of which handlers have raised errors.  Give them a
