@@ -15,6 +15,11 @@ import {
   SpriteUpsertionActionKind,
 } from "./structured-program/program";
 
+export type NotableChangeSummarySpec = {
+  header: I18nStringSpec;
+  bodyParts: I18nStringSpec[];
+};
+
 ////////////////////////////////////////////////////////////////////////
 
 type PerMethodScriptChangedKind =
