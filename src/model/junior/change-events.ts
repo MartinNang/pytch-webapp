@@ -82,6 +82,8 @@ export function perMethodSpriteChangedDescription(
 ////////////////////////////////////////////////////////////////////////
 
 export type AssetChanged = {
+  // TODO: Would be useful to have actorName here (where applicable,
+  // i.e., when not "flat").
   kind: "asset-changed";
   assetChangedKind: "update-transform" | "update" | "delete";
   operationContext: AssetOperationContext;
