@@ -69,7 +69,7 @@ const NavQueueWrapper: React.FC<EmptyProps> = () => {
   return <Outlet />;
 };
 
-export function App() {
+function AppWithI18nReady() {
   const basepath = envVarOrFail("BASE_URL");
   console.log(`basepath: "${basepath}"`);
 
@@ -153,7 +153,7 @@ const kTransDefaultComponents = {
   b: <strong />,
 };
 
-const AppI18nWrapper: React.FC<EmptyProps> = () => {
+export const App: React.FC<EmptyProps> = () => {
   const i18nStateKind = useStoreState((s) => s.i18nContextState.i18nStateKind);
   useActionAsEffect(
     (actions) => () => actions.i18nContextState.boot(kTransDefaultComponents)
@@ -167,7 +167,7 @@ const AppI18nWrapper: React.FC<EmptyProps> = () => {
       // TODO: Proper handling
       return <p>Loading i18n stuff...</p>;
     case "ready":
-      return <App />;
+      return <AppWithI18nReady />;
     case "failed":
       // TODO: Proper handling
       return <p>OH NO!</p>;
