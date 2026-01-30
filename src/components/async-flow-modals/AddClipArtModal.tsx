@@ -238,8 +238,6 @@ export const AddClipArtModal = () => {
   useActionAsEffect((actions) => actions.clipArtGallery.startFetchIfRequired);
 
   return asyncFlowModal(fsmState, (activeState) => {
-    const assetPlural = "THINGS"; // I18N-TODO
-
     switch (activeState.kind) {
       case "awaiting-ack-of-notification": {
         // Currently the media library only contains images.
