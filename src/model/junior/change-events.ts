@@ -1,15 +1,6 @@
-import { assertNever } from "../../utils";
 import { AssetOperationContext } from "../asset";
-import { NotableChangeDescription } from "../notable-changes";
 import { AddAssetsOutcomeNub } from "../user-interactions/add-assets";
-import {
-  ActorKind,
-  ActorOps,
-  AssetMetaDataOps,
-  EventDescriptorKind,
-  EventDescriptorKindOps,
-  Uuid,
-} from "./structured-program";
+import { ActorKind, EventDescriptorKind, Uuid } from "./structured-program";
 import {
   HandlerUpsertionActionKind,
   SpriteUpsertionActionKind,
