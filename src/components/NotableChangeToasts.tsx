@@ -9,6 +9,7 @@ import {
   notableChangeDescription,
 } from "../model/notable-changes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 type NotableChangeToastProps = {
   keyedChange: KeyedNotableChange;
@@ -16,10 +17,11 @@ type NotableChangeToastProps = {
 const NotableChangeToast: React.FC<NotableChangeToastProps> = ({
   keyedChange,
 }) => {
+  const { i18n } = useTranslation();
   const deactivateAction = useDeactivateChangeAction();
 
   const change = keyedChange.change;
-  const description = notableChangeDescription(change);
+  const description = notableChangeDescription(i18n, change);
 
   const deactivate = () => deactivateAction(keyedChange.changeId);
   const dismissIfEscape: KeyboardEventHandler = (evt) => {
