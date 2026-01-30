@@ -1,15 +1,15 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
+import { ResourceKind } from "../../model/resource";
+import { AssetOperationScope } from "../../model/asset/core";
 
 type NoContentHelpProps = {
-  actorKind: string;
-  contentKind: string;
-  buttonsPlural: boolean;
+  scope: AssetOperationScope;
+  resourceKind: ResourceKind;
 };
 export const NoContentHelp: React.FC<NoContentHelpProps> = ({
-  actorKind,
-  contentKind,
-  buttonsPlural,
+  scope,
+  resourceKind,
 }) => {
   const buttonOrButtons = buttonsPlural ? "buttons" : "button";
   return (
