@@ -134,6 +134,8 @@ export type AssetOperationContext =
   | { scope: AssetOperationScope; assetKind: AssetMimeType }
   | { scope: "flat"; assetKind: "any" };
 
+export type GeneralisedAssetKind = AssetOperationContext["assetKind"];
+
 export class AssetOperationContextOps {
   static fileAccept(ctx: AssetOperationContext): string | undefined {
     switch (ctx.assetKind) {
