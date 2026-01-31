@@ -31,6 +31,7 @@ import {
   groupedFocusKeyFromFilterState,
 } from "../../model/user-interactions/clipart-gallery-select";
 import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { useTranslation } from "react-i18next";
 import { AddAssetFailuresList } from "./AddAssetFailuresList";
 
 const kMaxImageWidthOrHeight = 100;
@@ -228,6 +229,8 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 };
 
 export const AddClipArtModal = () => {
+  const { t } = useTranslation("assets");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.addClipArtFlow);
   const { selectItemById, deselectItemById } = useFlowActions(
     (f) => f.addClipArtFlow
@@ -252,20 +255,21 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds, filterState } = activeState.runState;
+        const { selectedIds, filterState, operationContext } =
+          activeState.runState;
+        const { scope, assetKind } = operationContext;
+        const keyStem = `add.${assetKind}`;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
         const nSelected = nSelectedItemsInGallery(galleryState, selectedIds);
-        const noneSelected = nSelected === 0;
 
+        const buttonKey = `add.media-library.${scope}.interacting.button`;
         const buttonContent =
           activeState.kind === "attempting" ? (
             <Spinner size="sm" />
-          ) : noneSelected ? (
-            <span>Add to project</span>
           ) : (
-            <span>Add {nSelected} to project</span>
+            t(buttonKey, { count: nSelected })
           );
 
         const selectionProps: SelectionProps = {
@@ -281,7 +285,7 @@ export const AddClipArtModal = () => {
               className="clipart-header"
               closeButton={isInteractable(activeState)}
             >
-              <Modal.Title>Choose some images</Modal.Title>
+              <Modal.Title>{t(`${keyStem}.interacting.title`)}</Modal.Title>
               <MaybeTagFilterSwitch filterState={filterState} />
             </Modal.Header>
             <Modal.Body className="clipart-body">
@@ -289,11 +293,11 @@ export const AddClipArtModal = () => {
             </Modal.Body>
             <Modal.Footer className="clipart-footer">
               <div className="licence-info">
-                <p>For copyright and licensing information, see help pages.</p>
+                <p>{t("add.media-library.copyright-info")}</p>
               </div>
               <div className="buttons">
                 <Button variant="secondary" onClick={settle.cancel}>
-                  Cancel
+                  {tCommon("button.cancel")}
                 </Button>
                 <Button
                   className="maybe-submit"
