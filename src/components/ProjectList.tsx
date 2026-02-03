@@ -3,6 +3,7 @@ import React, {
   MouseEventHandler,
   useEffect,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { IDisplayedProjectSummary, LoadingStatus } from "../model/projects";
 import { useStoreState, useStoreActions } from "../store";
 import Button from "react-bootstrap/Button";
@@ -37,6 +38,8 @@ type ProjectCardProps = {
 };
 
 const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("my-projects-list");
   const navigate = useNavigate();
 
@@ -133,17 +136,17 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
             >
               <CaptiveContextMenu.DropdownMenu>
                 <CaptiveContextMenu.DropdownItem onInvoke={onActivate}>
-                  Open
+                  {t("action.open")}
                 </CaptiveContextMenu.DropdownItem>
                 <CaptiveContextMenu.DropdownItem onInvoke={onRename}>
-                  Rename...
+                  {tCommon("action.rename")}
                 </CaptiveContextMenu.DropdownItem>
                 <Dropdown.Divider />
                 <CaptiveContextMenu.DropdownItem
                   className="danger"
                   onInvoke={onDelete}
                 >
-                  DELETE
+                  {tCommon("action.delete")}
                 </CaptiveContextMenu.DropdownItem>
               </CaptiveContextMenu.DropdownMenu>
             </div>
@@ -185,6 +188,7 @@ const ProjectsLoadingFailed: React.FC = () => {
 };
 
 const ImportFromGoogleButton: React.FC<{ key: React.Key }> = () => {
+  const { t } = useTranslation("projects");
   const googleApiLoadStatus = useStoreState(
     (state) => state.googleDriveImportExport.apiBootStatus.kind
   );
@@ -195,8 +199,8 @@ const ImportFromGoogleButton: React.FC<{ key: React.Key }> = () => {
   const importButtonIsDisabled = googleApiLoadStatus !== "succeeded";
   const importButtonText =
     googleApiLoadStatus === "failed"
-      ? "Google Drive unavailable"
-      : "Import from Google Drive";
+      ? t("google-drive-unavailable")
+      : t("import-from-google-drive");
   const showImportModal = () => launchImportProjectOperation();
 
   return (
@@ -207,6 +211,8 @@ const ImportFromGoogleButton: React.FC<{ key: React.Key }> = () => {
 };
 
 const ProjectListButtons: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("my-projects-list");
 
   const selectedIds = useStoreState(
@@ -245,7 +251,7 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
           <span>{nSelected}</span>
         </div>
         <Button key="delete-selected" variant="danger" onClick={onDelete}>
-          DELETE
+          {tCommon("action.delete")}
         </Button>
       </div>
     );
@@ -259,10 +265,10 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
           className={kFocusGroupFallbackClassName}
           onClick={showCreateModal}
         >
-          Create new
+          {t("action.create-new")}
         </Button>
         <Button key="upload" onClick={showUploadModal}>
-          Upload
+          {t("action.upload")}
         </Button>
         <ImportFromGoogleButton key="import-from-google" />
       </div>
@@ -312,6 +318,8 @@ const componentFromState = (stateKind: LoadingStatus["kind"]): React.FC => {
 };
 
 const MaybeProjectList: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("projects");
+
   // Don't care about the value; just want to know when it changes.
   useStoreState((state) => state.projectCollection.loadSeqnumNeeded);
 
@@ -326,7 +334,7 @@ const MaybeProjectList: React.FC<EmptyProps> = () => {
   );
 
   useEffect(() => {
-    document.title = "Pytch: My projects";
+    document.title = t("page-title");
     doLoadingWork();
   });
 
@@ -344,7 +352,7 @@ const MaybeProjectList: React.FC<EmptyProps> = () => {
       <NavBanner />
       <NotableChangeToasts />
       <div className="ProjectList" tabIndex={-1} ref={paneRef}>
-        <h1>My projects</h1>
+        <h1>{t("page-heading")}</h1>
         <InnerComponent />
       </div>
     </>

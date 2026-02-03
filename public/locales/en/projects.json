@@ -1,3 +1,12 @@
 {
+  "page-title": "Pytch: My projects",
+  "page-heading": "My projects",
+  "action.create-new": "Create new",
+  "action.open": "Open",
+  "action.upload": "Upload",
+
+  "google-drive-unavailable": "Google Drive unavailable",
+  "import-from-google-drive": "Import from Google Drive",
+
   "$RUBBISH$": ""
 }
