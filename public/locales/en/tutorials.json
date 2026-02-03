@@ -1,4 +1,11 @@
 {
+  "list.button.demo.label": "Demo",
+  "list.button.demo.title": "Try this project",
+  "list.button.tutorial.label": "Tutorial",
+  "list.button.tutorial.title": "Learn how to make this project",
+  "list.button.share.label": "Share",
+  "list.button.share.title": "Share this project",
+
   "flat.code-diff.help-title": "What changes should I make to my code?",
   "flat.code-diff.unchanged-help": "Lines like this <b>help you find the part of your code which needs changing</b>. The number (to the left of the vertical divider) shows you which line it is, in the code as it is now.",
   "flat.code-diff.deleted-help": "Lines like this show you <b>code you need to delete</b>.",
