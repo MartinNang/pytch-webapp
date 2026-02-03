@@ -41,6 +41,8 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
 
 export const ProjectAssetList = () => {
   const { t } = useTranslation("ide");
+  const { t: tAssets } = useTranslation("assets");
+
   const focusContext = useFocusContext("flat");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const loadState = useStoreState(
@@ -105,13 +107,13 @@ export const ProjectAssetList = () => {
                 key="flat-lib"
                 className={kFocusGroupFallbackClassName}
                 what="flat-asset"
-                label={t("button.flat.add-asset.media-lib")}
+                label={tAssets("add-button.media-library")}
                 onClick={launchClipArtModal}
               />
               <AddSomethingButton
                 key="flat-dev"
                 what="flat-asset"
-                label={t("button.flat.add-asset.this-device")}
+                label={tAssets("add-button.this-device")}
                 onClick={launchUploadModal}
               />
             </AddSomethingButtonStrip>
