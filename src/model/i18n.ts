@@ -61,6 +61,7 @@ export let i18nContextState: I18nContextState = {
           "errors",
           "ide",
           "notable-changes",
+          "projects",
           "tutorials",
           "vm",
         ],
