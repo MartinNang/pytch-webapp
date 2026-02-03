@@ -28,6 +28,7 @@ import {
 import { CaptiveContextMenu } from "./CaptiveContextMenu";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { NotableChangeToasts } from "./NotableChangeToasts";
+import { Spinner } from "react-bootstrap";
 
 type ProjectCardProps = {
   project: IDisplayedProjectSummary;
@@ -172,8 +173,8 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
 
 const ProjectsLoadingPending: React.FC = () => {
   return (
-    <div className="loading-placeholder">
-      <p>Loading...</p>
+    <div className="w-100 d-flex justify-content-center">
+      <Spinner animation="border" />
     </div>
   );
 };
