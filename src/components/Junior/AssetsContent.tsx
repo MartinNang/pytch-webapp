@@ -16,14 +16,12 @@ type AssetsContentProps = {
   actorKind: ActorKind;
   assetKind: AssetMimeType;
   assets: Array<AssetPresentation>;
-  buttonsPlural: boolean;
 };
 
 export const AssetsContent: React.FC<AssetsContentProps> = ({
   actorKind,
   assetKind,
   assets,
-  buttonsPlural,
 }) => {
   const operationContext: AssetOperationContext = {
     scope: actorKind,

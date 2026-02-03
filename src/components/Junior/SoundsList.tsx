@@ -58,7 +58,6 @@ export const SoundsList = () => {
         actorKind={activeActorKind}
         assetKind="audio"
         assets={actorSounds}
-        buttonsPlural={false}
       />
       <AddSomethingSingleButton
         key={addWhat}

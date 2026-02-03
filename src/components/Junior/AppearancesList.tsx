@@ -87,7 +87,6 @@ export const AppearancesList = () => {
         actorKind={activeActorKind}
         assetKind="image"
         assets={actorAppearances}
-        buttonsPlural={true}
       />
       <AddSomethingButtonStrip>
         <AddSomethingButton
