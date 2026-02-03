@@ -18,6 +18,7 @@ import {
   initialFilterStateFromFilterTag,
 } from "../model/user-interactions/clipart-gallery-select";
 import { useFocusContext } from "./hooks/focus-steering";
+import { useTranslation } from "react-i18next";
 
 type AssetCardProps = {
   asset: AssetPresentation;
@@ -39,6 +40,7 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
 };
 
 export const ProjectAssetList = () => {
+  const { t } = useTranslation("ide");
   const focusContext = useFocusContext("flat");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const loadState = useStoreState(
@@ -86,7 +88,7 @@ export const ProjectAssetList = () => {
   // TODO: Should we split this into two tabs: Images, Sounds?
   return (
     <div className="AssetCardPane-container compact-tablist-container">
-      <SingleTab title="Images and sounds">
+      <SingleTab title={t("pane-title.flat.assets")}>
         <div className="abs-0000">
           <FocusGroupContainer
             className="AssetCardPane gfs__flatassets__container"
@@ -103,13 +105,13 @@ export const ProjectAssetList = () => {
                 key="flat-lib"
                 className={kFocusGroupFallbackClassName}
                 what="flat-asset"
-                label="Add from media library"
+                label={t("button.flat.add-asset.media-lib")}
                 onClick={launchClipArtModal}
               />
               <AddSomethingButton
                 key="flat-dev"
                 what="flat-asset"
-                label="Add from this device"
+                label={t("button.flat.add-asset.this-device")}
                 onClick={launchUploadModal}
               />
             </AddSomethingButtonStrip>
