@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import {
   assertNever,
   copyTextToClipboard,
+  EmptyProps,
   failIfNull,
   isDivOfClass,
 } from "../utils";
@@ -293,6 +294,10 @@ const nAddHunks = (tables: Array<HTMLTableElement>): number => {
   return tables
     .map((table) => table.querySelectorAll("tbody.diff-add").length)
     .reduce((a, x) => a + x, 0);
+};
+
+export const InertCopyCodeButton: React.FC<EmptyProps> = () => {
+  return <span className="add-code-icon">+</span>;
 };
 
 const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
