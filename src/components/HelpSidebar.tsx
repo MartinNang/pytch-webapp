@@ -25,6 +25,7 @@ import { kFocusGroupItemClassName } from "../model/junior/grouped-focus";
 import { useFocusContext } from "./hooks/focus-steering";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { useActionAsEffect } from "./hooks/use-action-as-effect";
+import { ErrorFetchingSomething } from "./ErrorFetchingSomething";
 
 interface IScratchAndPython {
   eventDescriptor?: EventDescriptor;
@@ -450,12 +451,7 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
     }
     case "error":
     default:
-      return (
-        <>
-          <h1>Problem</h1>
-          <p>Sorry, there was a problem fetching the help information.</p>
-        </>
-      );
+      return <ErrorFetchingSomething resourceKeySuffix="help-sidebar" />;
   }
 };
 
