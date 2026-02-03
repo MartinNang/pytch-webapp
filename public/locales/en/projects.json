@@ -7,6 +7,7 @@
 
   "google-drive-unavailable": "Google Drive unavailable",
   "import-from-google-drive": "Import from Google Drive",
+  "export-to-google-drive": "Export to Google Drive",
 
   "$RUBBISH$": ""
 }

@@ -17,5 +17,17 @@
   "per-method.tab-title.actor-properties.appearances.stage": "Backdrops",
   "per-method.tab-title.actor-properties.sounds": "Sounds",
 
+  "project-action.save": "Save",
+  "project-action.screenshot": "Screenshot",
+  "project-action.make-copy": "Make a copy",
+  "project-action.download-zip": "Download as zipfile",
+  "project-action.show-coords": "Show coordinates",
+  "project-action.show-tooltips": "Show tooltips",
+
+  "stage-controls.aria-label": "Stage controls",
+  "home-button.aria-label": "Home",
+
+  "tooltip.green-flag": "Click the green flag to run the project",
+
   "$RUBBISH$": ""
 }
