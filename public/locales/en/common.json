@@ -1,5 +1,8 @@
 {
   "button.cancel": "Cancel",
 
+  "action.rename": "Rename",
+  "action.delete": "DELETE",
+
   "$RUBBISH$": ""
 }

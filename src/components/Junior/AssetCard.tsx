@@ -1,4 +1,5 @@
 import React, { KeyboardEventHandler } from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { AssetPresentation } from "../../model/asset";
 import { PytchProgramKind, PytchProgramOps } from "../../model/pytch-program";
@@ -52,6 +53,7 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
   assetKind,
   fullPathname,
 }) => {
+  const { t } = useTranslation("common");
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
   const runRenameAsset = useRunFlow((f) => f.renameAssetFlow);
@@ -68,7 +70,7 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
 
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={launchRename}>
-      Rename
+      {t("action.rename")}
     </CaptiveContextMenu.DropdownItem>
   );
 };
@@ -116,6 +118,7 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
   fullPathname,
   isAllowed,
 }) => {
+  const { t } = useTranslation("common");
   const onDelete = useOnDeleteFun(
     isAllowed,
     operationScope,
@@ -129,7 +132,7 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
       onInvoke={onDelete}
       disabled={!isAllowed}
     >
-      DELETE
+      {t("action.delete")}
     </CaptiveContextMenu.DropdownItem>
   );
 };
@@ -146,6 +149,7 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
   projectId,
   presentation,
 }) => {
+  const { t } = useTranslation("assets");
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
   const runCropScaleImage = useRunFlow((f) => f.cropScaleImageFlow);
@@ -181,7 +185,7 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={onClick}>
       <span className="with-icon">
-        <span>Crop/scale</span>
+        <span>{t("action.crop-scale")}</span>
         <FontAwesomeIcon icon="crop" />
       </span>
     </CaptiveContextMenu.DropdownItem>
@@ -196,6 +200,7 @@ const CopyAssetNameDropdownItem: React.FC<CopyAssetNameDropdownItemProps> = ({
   operationScope,
   assetName,
 }) => {
+  const { t } = useTranslation("assets");
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
 
@@ -207,7 +212,7 @@ const CopyAssetNameDropdownItem: React.FC<CopyAssetNameDropdownItemProps> = ({
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={onCopyName}>
       <span className="with-icon">
-        <span>Copy name</span>
+        <span>{t("action.copy-name")}</span>
         <FontAwesomeIcon icon="copy" />
       </span>
     </CaptiveContextMenu.DropdownItem>
@@ -226,6 +231,7 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
   deleteIsAllowed,
   swapFuns,
 }) => {
+  const { t } = useTranslation("assets");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const fullPathname = presentation.assetInProject.name;
   const displayName = PytchProgramOps.assetPathAffixes(fullPathname).suffix;
@@ -241,13 +247,13 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
           onInvoke={swapFuns.swapWithPrev != null ? swapFuns.swapWithPrev : nop}
           disabled={swapFuns.swapWithPrev == null}
         >
-          Move one place earlier
+          {t("action.move-earlier")}
         </CaptiveContextMenu.DropdownItem>
         <CaptiveContextMenu.DropdownItem
           onInvoke={swapFuns.swapWithNext != null ? swapFuns.swapWithNext : nop}
           disabled={swapFuns.swapWithNext == null}
         >
-          Move one place later
+          {t("action.move-later")}
         </CaptiveContextMenu.DropdownItem>
       </>
     );

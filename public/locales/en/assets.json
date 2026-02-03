@@ -35,5 +35,10 @@
 
   "add.media-library.copyright-info": "For copyright and licensing information, see help pages.",
 
+  "action.crop-scale": "Crop/scale",
+  "action.copy-name": "Copy name",
+  "action.move-earlier": "Move one place earlier",
+  "action.move-later": "Move one place later",
+
   "$RUBBISH$": ""
 }
