@@ -8,9 +8,6 @@ import { kBothActorKinds } from "../../model/junior/structured-program/actor";
 // width.  Otherwise we get an annoying jitter as you switch between the
 // stage and a sprite.
 
-// TODO: Is there a way to compute this?
-const allDisplayTitleValues = ["Costumes", "Backdrops"];
-// And then use a tighter type for "value" here?
 type AppearancesTabTitleProps = {
   actorKind: ActorKind;
 };
@@ -27,5 +24,6 @@ export const AppearancesTabTitle: React.FC<AppearancesTabTitleProps> = ({
       {t(`per-method.tab-title.actor-properties.appearances.${ak}`)}
     </span>
   ));
+
   return <div className="AppearancesTabTitle">{content}</div>;
 };

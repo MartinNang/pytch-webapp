@@ -11,10 +11,7 @@ import { SoundsList } from "./SoundsList";
 import { Spinner } from "react-bootstrap";
 import classNames from "classnames";
 
-import {
-  ActorKindOps,
-  StructuredProgramOps,
-} from "../../model/junior/structured-program";
+import { StructuredProgramOps } from "../../model/junior/structured-program";
 import { useJrEditActions, useJrEditState, useMappedProgram } from "./hooks";
 import { AppearancesTabTitle } from "./AppearancesTabTitle";
 
@@ -22,7 +19,6 @@ export const ActorProperties = () => {
   const { t } = useTranslation("ide");
   const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
   const setActiveTab = useJrEditActions((a) => a.setActorPropertiesActiveTab);
-
   const activeActorId = useJrEditState((s) => s.activeActor);
   const actionInProgress = useJrEditState((s) => s.assetReorderInProgress);
 
@@ -31,10 +27,6 @@ export const ActorProperties = () => {
     (program) =>
       StructuredProgramOps.uniqueActorById(program, activeActorId).kind
   );
-
-  const kindNames = ActorKindOps.names(actorKind);
-  const appearancesDisplay = kindNames.appearancesDisplay;
-  const appearancesTitleText = kindNames.appearancesDisplayTitle;
 
   const appearancesTitle = (
     <AppearancesTabTitle actorKind={actorKind}></AppearancesTabTitle>
