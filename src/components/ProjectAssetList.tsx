@@ -71,17 +71,13 @@ export const ProjectAssetList = () => {
     });
   };
 
-  switch (loadState) {
-    case "pending":
-      return <div>Assets loading....</div>;
-    case "failed":
-      // TODO: Handle more usefully
-      return <div>Assets failed to load, oh no</div>;
-    case "succeeded":
-      break; // Handle normal case below.
-    default:
-      throw new Error(`unknown loadState "${loadState}"`);
-  }
+  // Control flow in <IDE> component should only be rendering
+  // <IDELayout> and hence us if load has succeeded.
+  if (loadState !== "succeeded")
+    throw new Error(
+      'ProjectAssetList: expecting load-state "succeeded"' +
+        ` but got "${loadState}"`
+    );
 
   const maybeNoContentHelp = assets.length === 0 && (
     <NoContentHelp scope="flat" resourceKind="flat-asset" />
