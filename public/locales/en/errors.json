@@ -3,6 +3,7 @@
   "fetch-failure.intro": "Sorry, there was a problem fetching the following information.  Please contact the Pytch team if the problem persists.",
 
   "fetch-failure.description.help-sidebar": "Information for the help sidebar",
+  "fetch-failure.description.project-list": "Stored list of projects",
 
   "$RUBBISH$": ""
 }

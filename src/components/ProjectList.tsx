@@ -29,6 +29,7 @@ import { CaptiveContextMenu } from "./CaptiveContextMenu";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { NotableChangeToasts } from "./NotableChangeToasts";
 import { Spinner } from "react-bootstrap";
+import { ErrorFetchingSomething } from "./ErrorFetchingSomething";
 
 type ProjectCardProps = {
   project: IDisplayedProjectSummary;
@@ -180,7 +181,7 @@ const ProjectsLoadingPending: React.FC = () => {
 };
 
 const ProjectsLoadingFailed: React.FC = () => {
-  return <div>Project loading FAILED oh no.</div>;
+  return <ErrorFetchingSomething resourceKeySuffix="project-list" />;
 };
 
 const ImportFromGoogleButton: React.FC<{ key: React.Key }> = () => {
