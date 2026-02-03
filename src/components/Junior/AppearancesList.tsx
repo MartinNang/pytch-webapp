@@ -21,8 +21,10 @@ import {
   initialFilterStateFromFilterTag,
 } from "../../model/user-interactions/clipart-gallery-select";
 import { AssetOperationContext } from "../../model/asset";
+import { useTranslation } from "react-i18next";
 
 export const AppearancesList = () => {
+  const { t } = useTranslation("assets");
   const focusContext = useFocusContext("per-method");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
@@ -32,6 +34,8 @@ export const AppearancesList = () => {
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
+
+  const tButtonLabel = (src: string) => t(`add-button.${src}`);
 
   const actorAppearances = AssetMetaDataOps.filterByActorMimeType(
     assets,
@@ -90,13 +94,13 @@ export const AppearancesList = () => {
           key={`${addWhat}-lib`}
           className={kFocusGroupFallbackClassName}
           what={addWhat}
-          label="Add from media library"
+          label={tButtonLabel("media-library")}
           onClick={addFromMediaLibrary}
         />
         <AddSomethingButton
           key={`${addWhat}-dev`}
           what={addWhat}
-          label="Add from this device"
+          label={tButtonLabel("this-device")}
           onClick={addFromDevice}
         />
       </AddSomethingButtonStrip>
