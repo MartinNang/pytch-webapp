@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { ActorPropertiesTabKey as TabKey } from "../../model/junior/edit-state";
 import { Tabs, TabWithTypedKey } from "../TabWithTypedKey";
@@ -18,6 +19,7 @@ import { useJrEditActions, useJrEditState, useMappedProgram } from "./hooks";
 import { AppearancesTabTitle } from "./AppearancesTabTitle";
 
 export const ActorProperties = () => {
+  const { t } = useTranslation("ide");
   const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
   const setActiveTab = useJrEditActions((a) => a.setActorPropertiesActiveTab);
 
@@ -35,10 +37,10 @@ export const ActorProperties = () => {
   const appearancesTitleText = kindNames.appearancesDisplayTitle;
 
   const appearancesTitle = (
-    <AppearancesTabTitle value={appearancesTitleText}></AppearancesTabTitle>
+    <AppearancesTabTitle actorKind={actorKind}></AppearancesTabTitle>
   );
 
-  const ariaLabel = `Code, ${appearancesDisplay}, sounds`;
+  const ariaLabel = t(`per-method.pane-label.actor-properties.${actorKind}`);
 
   const Tab = TabWithTypedKey<TabKey>;
   return (
@@ -51,13 +53,19 @@ export const ActorProperties = () => {
         activeKey={activeTab}
         onSelect={(k) => k && setActiveTab(k as TabKey)}
       >
-        <Tab eventKey="code" title="Code">
+        <Tab
+          eventKey="code"
+          title={t("per-method.tab-title.actor-properties.code")}
+        >
           <CodeEditor />
         </Tab>
         <Tab eventKey="appearances" title={appearancesTitle}>
           <AppearancesList />
         </Tab>
-        <Tab eventKey="sounds" title="Sounds">
+        <Tab
+          eventKey="sounds"
+          title={t("per-method.tab-title.actor-properties.sounds")}
+        >
           <SoundsList />
         </Tab>
       </Tabs>

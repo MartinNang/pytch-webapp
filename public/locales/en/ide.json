@@ -12,8 +12,12 @@
   "no-content-help.stage.audio": "Your stage has no sounds yet.  Use the button below to add one!",
   "no-content-help.stage.script": "Your stage has no scripts yet.  Use the button below to add one!",
 
+  "per-method.pane-label.actor-properties.sprite": "Code, costumes, sounds",
+  "per-method.pane-label.actor-properties.stage": "Code, backdrops, sounds",
+  "per-method.tab-title.actor-properties.code": "Code",
   "per-method.tab-title.actor-properties.appearances.sprite": "Costumes",
   "per-method.tab-title.actor-properties.appearances.stage": "Backdrops",
+  "per-method.tab-title.actor-properties.sounds": "Sounds",
 
   "$RUBBISH$": ""
 }
