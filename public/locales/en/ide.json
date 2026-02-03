@@ -29,5 +29,14 @@
 
   "tooltip.green-flag": "Click the green flag to run the project",
 
+  "info.aria-label": "Output and errors",
+  "info.stdout.tab-title": "Output",
+  "info.stdout.placeholder": "Anything your program prints will appear here.",
+  "info.errors.tab-title": "Errors",
+  "info.errors.placeholder": "Any errors your project encounters will appear here.",
+  "info.expand-button.aria-label": "Show output and errors",
+  "info.expand-button.label": "Output and errors",
+  "info.collapse-button.aria-label": "Hide output and errors",
+
   "$RUBBISH$": ""
 }
