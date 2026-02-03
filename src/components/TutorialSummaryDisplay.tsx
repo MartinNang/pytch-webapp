@@ -10,6 +10,7 @@ import LoadingOverlay from "./LoadingOverlay";
 import { PytchProgramKind } from "../model/pytch-program";
 import { EditorKindThumbnail } from "./EditorKindThumbnail";
 import { useRunFlow } from "../model";
+import { Spinner } from "react-bootstrap";
 
 interface TutorialSummaryDisplayProps {
   tutorial: ITutorialSummary;
@@ -82,7 +83,7 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
   return (
     <li>
       <LoadingOverlay show={loadingThisTutorial}>
-        <p>Creating project for tutorial...</p>
+        <Spinner animation="border" />
       </LoadingOverlay>
       <Card data-slug={tutorial.slug} className="TutorialCard">
         <Card.Header>
