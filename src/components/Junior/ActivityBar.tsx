@@ -7,7 +7,7 @@ import { useJrEditActions, useJrEditState } from "./hooks";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-common-types";
-import { useHasLinkedLesson, useHasLinkedSpecimen } from "./lesson/hooks";
+import { useHasLinkedDemo, useHasLinkedLesson, useHasLinkedSpecimen } from "./lesson/hooks";
 import { EmptyProps } from "../../utils";
 import { useStoreState } from "../../store";
 import { Nav } from "react-bootstrap";
@@ -87,6 +87,7 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
   const hasLinkedTutorial = useStoreState(
     (state) => state.activeProject.project?.trackedTutorial != null
   );
+  const hasLinkedDemo = useHasLinkedDemo();
 
   const tabs: Array<ActivityBarTabKey> = hasLinkedLesson
     ? ["helpsidebar", "lesson", "keynavhelp"]
@@ -94,7 +95,9 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
     ? ["helpsidebar", "specimen", "keynavhelp"]
     : hasLinkedTutorial
     ? ["helpsidebar", "tutorial", "keynavhelp"]
-    : ["helpsidebar", "keynavhelp", "demo"];
+    : hasLinkedDemo
+    ? ["helpsidebar", "demo", "keynavhelp"]
+    : ["helpsidebar", "keynavhelp"];
 
   const focusGroupExtraClass =
     activityContentState.kind === "collapsed" ? "gfs__help__container" : "";

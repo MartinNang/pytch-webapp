@@ -2,13 +2,13 @@ import React, {useEffect, useRef, useState} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, Col, Collapse, Container, Row} from "react-bootstrap";
 import Card from "react-bootstrap/Card";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Markdown from 'react-markdown';
 import demos from '../data/demos.json';
 
 export const DemoSidebar = () => {
     // get slug parameter from url or component parameter
-    const slug = "smooth-movement";
+  const slug = useParams().demoIdString;
 
   const [md, setMd] = useState<string>("");
   fetch(`../src/assets/demos/${slug}/${slug}.md`)
@@ -39,7 +39,6 @@ export const DemoSidebar = () => {
       let j = 0;
       let res = [];
       let lines = label.split("\n");
-      console.log('limeee', lines);
       // for every line in md
         for (let i = 0; i < lines.length; i++) {
           let line = lines[i];
@@ -153,9 +152,9 @@ export const DemoSidebar = () => {
                   {headings?.length && headings.length > 1 ? (
                     <>
                       <Row className={"chapters-navigation"}>
-                        <Collapse in={open}>
+                        <Collapse in={open} >
                           <Col className={"ps-4"}>
-                            <ul className={"chapters m-0 p-0"}>
+                            <ul className={"chapters m-0 p-0"} tabIndex={0}>
                               {headings?.map(
                                 (heading: string, index: number) => {
                                   return (
@@ -203,7 +202,7 @@ export const DemoSidebar = () => {
                 </Container>
               </Col>
             </Row>
-            <Row className={"h-100"} style={{ backgroundColor: "#99E1DF" }}>
+            <Row className={"h-100"} style={{ backgroundColor: "#99E1DF", minHeight: 0 }}>
               <Container
                 className={"chapter-content h-100 px-4 py-3 d-flex flex-column"}
                 style={{borderTopLeftRadius: open ? "20px" : "0px", borderTopRightRadius: open ? "20px" : "0px", boxShadow: open ? "rgba(0, 0, 0, 0.12) 0px 3px 8px" : "none"}}
@@ -257,8 +256,8 @@ export const DemoSidebar = () => {
                     </Button>
                   </div>
                 </Row>
-                <Row className={"flex-grow-1"}>
-                  <Col className={"chapter-markdown"}>
+                <Row className={"flex-grow-1"} style={{minHeight: 0}}>
+                  <Col className={"chapter-markdown h-100"} style={{  }}>
                     <Markdown>
                       {chapterContents ? chapterContents[activeChapter] : ""}
                     </Markdown>
@@ -311,7 +310,7 @@ export const DemoSidebar = () => {
             </Row>
             <Row className={"demo-footer py-2 px-3 d-flex flex-row"}>
               <div className={"d-flex align-items-center flex-grow-1 w-auto"}>
-                <p className={"mb-0"}>Published on {foundDemo?.lastUpdated}</p>
+                <p className={"mb-0"}>Published on {new Date(foundDemo?.lastUpdated || "").toLocaleDateString()}</p>
               </div>
               <div className={"w-auto"}>
                 <Button className={"share-button"}>

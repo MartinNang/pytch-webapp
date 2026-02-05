@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useStoreState, useStoreActions } from "../store";
@@ -53,6 +53,7 @@ function strictParseProjectId(s: string): ProjectId | null {
 
 const IDE: React.FC<EmptyProps> = () => {
   const projectIdString = useParams().projectIdString;
+  const demoIdString = useParams().demoIdString;
   const programKind = useStoreState(
     (state) => state.activeProject.project.program.kind
   );
@@ -65,14 +66,30 @@ const IDE: React.FC<EmptyProps> = () => {
     (actions) => actions.activeProject.ensureSyncFromStorage
   );
 
-  if (projectIdString == null) {
-    throw Error("missing projectId for IDE");
+  const syncDemoProject = useStoreActions(
+    (actions) => actions.activeProject.syncDemoProject
+  );
+
+  if (projectIdString == null && demoIdString == null) {
+    throw Error("missing projectId and demoId for IDE");
   }
 
-  const projectId = strictParseProjectId(projectIdString);
+  const projectId = projectIdString !== undefined ? strictParseProjectId(projectIdString) : null;
+  const demoId = demoIdString !== undefined ? demoIdString : null;
+
+  console.log('loading IDE');
+  const [demoLoaded, setDemoLoaded] = useState(false);
 
   useEffect(() => {
-    if (projectId == null) {
+    console.log('useEffect', projectId, demoId);
+    if (projectId === null) {
+      if (demoId && !demoLoaded) {
+        console.log('syncing demo project');
+        syncDemoProject(demoId).then(() => {
+            console.log('done :)');
+            setDemoLoaded(true);
+        });
+      }
       return;
     }
 
@@ -88,7 +105,7 @@ const IDE: React.FC<EmptyProps> = () => {
     };
   });
 
-  if (projectId == null) {
+  if (projectId == null && demoId == null) {
     return <ProjectLoadFailureScreen />;
   }
 
@@ -102,6 +119,7 @@ const IDE: React.FC<EmptyProps> = () => {
       </DivSettingWindowTitle>
     );
   }
+  console.log('sync load state', syncLoadState);
 
   switch (syncLoadState) {
     // Case "pending" already handled by previous "if".

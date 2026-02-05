@@ -5,14 +5,14 @@ import {
   LinkedContentRef,
   kLinkedContentRefNone,
   LinkedContentRefUpdate,
-  LinkedContentRefOfKind,
+  LinkedContentRefOfKind, LinkedDemoRef,
 } from "./linked-content-core";
 import {
   LinkedContent,
   LinkedContentKind,
   LinkedContentOfKind,
   dereferenceLinkedSpecimen,
-  dereferenceLinkedNoContent,
+  dereferenceLinkedNoContent, dereferenceLinkedDemo, findDemo,
 } from "./linked-content";
 import {
   Action,
@@ -114,7 +114,8 @@ type SyncRequestOutcome = "succeeded" | "failed";
 type SyncRequestState = "pending" | SyncRequestOutcome;
 
 interface ILoadSaveRequest {
-  projectId: ProjectId;
+  projectId?: ProjectId;
+  demoId?: string;
   seqnum: number;
   state: SyncRequestState;
 }
@@ -329,6 +330,7 @@ export interface IActiveProject {
 
   syncDummyProject: SAction;
   ensureSyncFromStorage: ASThunk<ProjectId>;
+  syncDemoProject: ASThunk<string>;
   doLinkedContentLoadTask: ASThunk<LinkedContentLoadTaskDescriptor>;
   syncAssetsFromStorage: ASThunk<void>;
   deactivate: SThunk<void>;
@@ -833,6 +835,107 @@ export const activeProject: IActiveProject = {
     state.project = dummyProject;
   }),
 
+  syncDemoProject: thunk(async (actions, demoId, helpers) => {
+    console.log("syncDemoProject(): starting for demo", demoId);
+
+    const previousLoadRequest = helpers.getState().latestLoadRequest;
+
+    const ourSeqnum = previousLoadRequest.seqnum + 1;
+    actions.noteLoadRequest({ demoId, seqnum: ourSeqnum, state: "pending" });
+
+    const storeActions = helpers.getStoreActions();
+
+    storeActions.standardOutputPane.clear();
+    storeActions.errorReportList.clear();
+    actions.noteCodeSaved();
+
+    console.log("cleared ouput pane, reports, code changes");
+
+    try {
+    const demo = await findDemo(demoId);
+
+    const descriptor = {
+      id: -2,
+      name: demo?.displayName,
+      linkedContentRef: kLinkedContentRefNone,
+      assets: []
+    };
+
+    console.log('loading linked content');
+    const linkedDemoRef: LinkedDemoRef = { kind: "demo", slug: demoId }
+
+    if (demo !== undefined && (demo.programType === "flat" || demo.programType === "per-method")) {
+      // since we do not load data from the database, we expect faster loading times use await
+      await actions.doLinkedContentLoadTask({
+        // FIXME: this is not a good solution but for now demos do not receive a valid projectId but are also not dummys
+        projectId: -2,
+        projectProgramKind: demo.programType,
+        linkedContentRef: linkedDemoRef,
+      });
+    }
+
+      const assetPresentations = await Promise.all(
+          descriptor.assets.map((a) => AssetPresentation.create(a))
+      );
+
+    const relativePath = `../src/assets/demos/${demoId}`;
+    const codeJson = await fetch(`${relativePath}/${demoId}.json`);
+    const codeString = await codeJson.text();
+
+    const program = PytchProgramOps.fromJson(codeString);
+      const content: StoredProjectContent = {
+        id: descriptor.id,
+        name: demo?.displayName || "",
+        assets: assetPresentations,
+        program: program,
+        linkedContentRef: descriptor.linkedContentRef,
+      };
+
+      // since we do not load data from the database, we expect faster loading times and
+      // therefore do not check if the request is loaded
+
+      console.log('initialise content');
+      actions.initialiseContent(content);
+      if (content.trackedTutorial != null) {
+        actions.setActiveTutorialChapter(
+            content.trackedTutorial.activeChapterIndex
+        );
+      }
+
+      console.log('program kind', content.program.kind);
+      const programKind = content.program.kind;
+      switch (programKind) {
+        case "per-method": {
+          const bootData = {
+            program: content.program.program,
+            linkedContentKind: content.linkedContentRef.kind,
+          };
+          storeActions.jrEditState.bootForProgram(bootData);
+          break;
+        }
+        case "flat": {
+          const flatBootData = {
+            linkedContentKind: content.linkedContentRef.kind,
+            isTrackingTutorial: content.trackedTutorial != null,
+          };
+          storeActions.jrEditState.bootForFlatProgram(flatBootData);
+          break;
+        }
+        default:
+          assertNever(programKind);
+      }
+
+      console.log('set note load request outcome');
+      actions.noteLoadRequestOutcome("succeeded");
+      fireAndForgetEvent("project-loaded", `demo-${demoId}`);
+    } catch (err) {
+      console.log(`error loading demo ${demoId}:`, err);
+      actions.noteLoadRequestOutcome("failed");
+    } finally {
+      actions.setLoadPhase("booted");
+    }
+  }),
+
   // Because the DB operations are all asynchronous, we must cope with the
   // situation where the user:
   //
@@ -883,6 +986,7 @@ export const activeProject: IActiveProject = {
 
       // Just set this off; do not await it.  If the network is slow or
       // broken we don't want to hold up the rest of the student's work.
+      console.log('loading linked content');
       actions.doLinkedContentLoadTask({
         projectId,
         projectProgramKind: descriptor.program.kind,
@@ -998,6 +1102,11 @@ export const activeProject: IActiveProject = {
             return dereferenceLinkedSpecimen(
               projectProgramKind,
               linkedContentRef
+            );
+          case "demo":
+            return dereferenceLinkedDemo(
+                projectProgramKind,
+                linkedContentRef
             );
           default:
             return assertNever(linkedContentRef);

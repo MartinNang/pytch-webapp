@@ -3,7 +3,8 @@ import {Button, Card, Col, Row} from "react-bootstrap";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {pathWithinApp} from "../env-utils";
 
 type DemoCardProps = {
     demo: Demo;
@@ -31,9 +32,10 @@ export class Demo {
     programType: ProgramType;
     projectType: ProjectType;
     projectUrl: string;
+    slug: string;
 
     constructor(displayName: string, summaryMarkdown: string | undefined, lastUpdated: Date, isGroup: boolean, featuredImage: string | undefined,
-                programType: ProgramType, projectType: ProjectType, projectUrl: string) {
+                programType: ProgramType, projectType: ProjectType, projectUrl: string, slug: string) {
         this.displayName = displayName;
         this.summaryMarkdown = summaryMarkdown;
         this.lastUpdated = lastUpdated;
@@ -42,6 +44,7 @@ export class Demo {
         this.programType = programType;
         this.projectType = projectType;
         this.projectUrl = projectUrl;
+        this.slug = slug;
     }
 }
 
@@ -50,6 +53,15 @@ export const DemoCard: React.FC<DemoCardProps> = ({
     setProjectType,
     setProgramType,
                                                   }) => {
+
+    const navigate = useNavigate();
+
+    // function handleOpenDemo() {
+    //     console.log('demoooo', demo);
+    //     // dismissButtonTour();
+    //     // ensureNotFullScreen();
+    //     navigate(pathWithinApp("/" + demo.slug));
+    // }
 
     return (
         <Card className={"flex-row flex-wrap card"}>
@@ -93,7 +105,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({
                 />
             </Card.Header>
             <Card.Body className={"p-4 py-3"}>
-                <Link to={demo.projectUrl}><h3>{demo.displayName}</h3></Link>
+                <Link to={pathWithinApp("/demos/" + demo.slug)}><h3>{demo.displayName}</h3></Link>
                 <p className={"demo-summaryMarkdown"}>{demo.summaryMarkdown}</p>
                 <Row className={"share-row"}>
                     <Col xs={6} className={"align-items-end d-flex"}>

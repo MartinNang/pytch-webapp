@@ -1,4 +1,4 @@
-import { assertNever, fetchArrayBuffer } from "../utils";
+import {assertNever, fetchArrayBuffer} from "../utils";
 import {
   projectDescriptor as projectDescriptorFromData,
   StandaloneProjectDescriptor,
@@ -13,13 +13,21 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  SpecimenContentHash,
+  // LinkedDemoRef,
+  SpecimenContentHash, DemoContentHash, LinkedDemoRef, kLinkedContentRefNone,
 } from "./linked-content-core";
-import { PytchProgramKind } from "./pytch-program";
+import {PytchProgramKind, PytchProgramOps} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
+import demos from "../data/demos.json";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
+  project: StandaloneProjectDescriptor;
+};
+
+export type DemoDescriptor = {
+  demoContentHash: DemoContentHash;
+  chapters?: string;
   project: StandaloneProjectDescriptor;
 };
 
@@ -29,7 +37,9 @@ const kLinkedNoContent: LinkedNoContent = { kind: "none" };
 
 export type LinkedSpecimen = { kind: "specimen"; lesson: LessonDescriptor };
 
-export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen;
+export type LinkedDemo = { kind: "demo"; demo:  DemoDescriptor};
+
+export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen | LinkedDemo;
 
 export type LinkedContentKind = LinkedContent["kind"];
 
@@ -52,6 +62,8 @@ export function linkedContentIsReferent(
         content.kind === "specimen" &&
         content.lesson.specimenContentHash === ref.specimenContentHash
       );
+    case "demo":
+      return false;
     default:
       return assertNever(ref);
   }
@@ -69,6 +81,11 @@ const specimenUrl = (relativeUrl: string) => {
   return [baseUrl, relativeUrl].join("/");
 };
 
+// const demoUrl = (relativeUrl: string) => {
+//   // const baseUrl = envVarOrFail("VITE_DEMO_BASE");
+//   // return [baseUrl, relativeUrl].join("/");
+// };
+
 export async function lessonDescriptorFromRelativePath(
   relativePath: string
 ): Promise<LessonDescriptor> {
@@ -84,6 +101,66 @@ export async function lessonDescriptorFromRelativePath(
   );
 
   return { specimenContentHash, project };
+}
+
+
+async function fetchDemoChaptersFromMd(url: string): Promise<string | undefined> {
+  fetch(url)
+      .then(r => r.text())
+      .then(text => {
+        console.log('text decoded:', text);
+        return text;
+      });
+  return undefined;
+}
+
+export async function findDemo(slug: string) {
+  return demos.find((d) => d.slug === slug);
+}
+
+async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
+  console.log('relative path', relativePath);
+  // const url = demoUrl(`${relativePath}.md`);
+  const mdUrl = `../assets/demos/${slug}/${slug}.md`;
+
+  const chapters = await fetchDemoChaptersFromMd(mdUrl);
+  const demo = await findDemo(slug);
+
+  const codeJson = await fetch(`${relativePath}/${slug}.json`);
+  const codeString = await codeJson.text();
+
+  const program = PytchProgramOps.fromJson(codeString);
+  console.log('program', program);
+
+  // const assetsZip = failIfNull(
+  //     zip.folder("assets"),
+  //     `could not enter folder "assets" of zipfile`
+  // );
+  //
+  // let assetPromises: Array<Promise<RawAssetDescriptor>> = [];
+  // assetsZip.forEach((path, zipObj) =>
+  //     assetPromises.push(_zipAsset(path, zipObj))
+  // );
+
+  // const rawAssets = await Promise.all(assetPromises);
+
+  // TODO import all assets from assets folder
+
+  // const assets: Array<TransformedAssetDescriptor> = rawAssets.map((a) => ({
+  //   ...a,
+  //   transform: AssetTransformOps.newNoop(a.mimeType),
+  // }));
+
+  let project =
+    {
+      name: demo?.displayName || "",
+      summary: demo?.summaryMarkdown || "",
+      program: program,
+      assets: [],
+      linkedContentRef: kLinkedContentRefNone,
+    };
+
+  return { demoContentHash: slug, chapters: chapters, project: project };
 }
 
 export async function dereferenceLinkedSpecimen(
@@ -164,3 +241,25 @@ function eqLCLSS(
 export function useLinkedContentLoadingStateSummary() {
   return useStoreState(mapLCLSS, eqLCLSS);
 }
+
+export async function dereferenceLinkedDemo(
+    programKind: PytchProgramKind,
+    ref: LinkedDemoRef
+): Promise<LinkedDemo> {
+  // const contentHash = ref.specimenContentHash;
+  // const relativePath = `_by_content_hash_/${contentHash}`;
+  // const lesson = await lessonDescriptorFromRelativePath(relativePath);
+  const contentHash = ref.slug;
+  const relativePath = `../src/assets/demos/${contentHash}`;
+
+  const demo = await demoDescriptorFromRelativePath(relativePath, ref.slug);
+  // const specimenKind = lesson.project.program.kind;
+  // if (specimenKind !== programKind) {
+  //   throw new Error(
+  //       `project is "${programKind}" but specimen is "${specimenKind}"`
+  //   );
+  // }
+
+  return { kind: "demo", demo };
+}
+

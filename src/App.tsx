@@ -105,6 +105,10 @@ function App() {
           element: <DemoList />,
         },
         {
+          path: "demos/:demoIdString",
+          element: <IDE />
+        },
+        {
           path: "ide/:projectIdString",
           element: <IDE />,
         },

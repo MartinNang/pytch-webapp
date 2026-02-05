@@ -1,13 +1,13 @@
-# Smooth Movement - Part 1
+# Firing a Projectile - Part 1
 
 Example descriptionsbdvsnlnkdkslnnklsvklnsdvknlsdvklnsdvnksdvnlksdvklnsdvklnsdvndvsklndsvknsdvklnsdvkn
-# Smooth Movement - Part 2
+# Firing a Projectile - Part 2
 Textnlsdndkldsvknsdvnklsdvnlkdvnlsdvklnsdvklnsklsdlvsdklvlksvd dsvnklnsvdkv sdvndsbsd vdsv snvdkslvklndsvkldkv
 ## Example Subheading
 Example description 2mvsdnlksdvnklsdvnklsdvldsvlksdvnnk vsdvnvdslnvsd dsvnsdbvks sdvdvsvibvsdbvdsklvdnsd svkdnvls
-# Smooth Movement - Part 3
+# Firing a Projectile - Part 3
 hi.vsklnkvvskldsvklnsdvklnsdvknsdvklsdkldkvnjrnlteobjtioebnk nanöldvölmvpa vodabhpvnal vmdajp nblojehpbw
-# Smooth Movement - Part 4
+# Firing a Projectile - Part 4
 hiya.nlkv dvsnbv vsldvndsvbsd vs,nwbo envk wbebw ewlbnw e
 ---
 __Advertisement :)__
@@ -21,7 +21,6 @@ You will like those projects!
 
 ---
 
-# h1 Heading 8-)
 ## h2 Heading
 ### h3 Heading
 #### h4 Heading

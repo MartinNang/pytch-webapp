@@ -3,7 +3,8 @@
 $chapter-navigation-link-height: 3rem;
 
 .DemoSidebar {
-  overflow-x: clip;
+  overflow-x: clip !important;
+  overscroll-behavior-y: none;
 }
 
 ul.chapters {
@@ -148,7 +149,8 @@ ul.chapters {
 
   .btn.btn-primary {
     border-radius: 10px;
-    background-color: #306998;
+    background-color: $pytch-colour-main-blue;
+    border-color: $pytch-colour-main-blue;
 
     &:hover {
       background-color: $pytch-colour-main-blue-darkened;
@@ -266,8 +268,20 @@ ul.chapters {
   &.nav-expanded {
     transform: rotateZ(180deg);
   }
+
+  &:hover {
+    color: $pytch-colour-main-yellow;
+  }
 }
 
 .chapter-markdown {
   line-break: anywhere;
+  overflow-x: clip !important;
+  max-height: 375px;
+  overflow-y: scroll;
+  transition: max-height 0.1s cubic-bezier(.25,.8,.25,1);
+
+  img {
+    max-width: 100%;
+  }
 }

@@ -108,65 +108,68 @@ export const DemoList: React.FC<EmptyProps> = () => {
             </Row>
             <Carousel activeIndex={recommendedIndex} onSelect={handleSelect} fade className={"mb-5"}>
               {
-               recommendedDemos.map(demo => (
-                    <Carousel.Item>
-                      <Card className={"recommended-card flex-sm-row card"}>
-                        <Col xs={12} sm={5} md={4}>
-                          <Card.Header className={"p-0 me-1 w-100 h-100"}>
-                            <Card.Img
-                                variant={"top"}
-                                className={"h-100 object-fit-cover p-1"}
-                                src={demo.featuredImage}
-                            />
-                          </Card.Header>
-                        </Col>
-                        <Col xs={12} sm={7} md={8}>
-                          <Card.Body className={"p-3 px-4 d-flex flex-column"}>
-                            <Row className={"pill-row p-0 m-0 mb-3"}>
-                              {
-                                demo.programType === ProgramType.flat ?
-                                    (
-                                        <div className={"pill-icon flat-icon"}>
-                                          <img src={flatIcon} alt={"flat project"} />
-                                        </div>
-                                    )
-                                    :
-                                    (
-                                        <div className={"pill-icon per-method-icon"}>
-                                          <img src={permethodIcon} alt={"per-method project"}/>
-                                        </div>
-                                    )
-                              }
+               recommendedDemos.map(demo => {
+                 return (
+                   <Carousel.Item>
+                     <Card className={"recommended-card flex-sm-row card"}>
+                       <Col xs={12} sm={5} md={4}>
+                         <Card.Header className={"p-0 me-1 w-100 h-100"}>
+                           <Card.Img
+                             variant={"top"}
+                             className={"h-100 object-fit-cover p-1"}
+                             src={demo.featuredImage}
+                           />
+                         </Card.Header>
+                       </Col>
+                       <Col xs={12} sm={7} md={8}>
+                         <Card.Body className={"p-3 px-4 d-flex flex-column"}>
+                           <Row className={"pill-row p-0 m-0 mb-3"}>
+                             {
+                               demo.programType === ProgramType.flat ?
+                                 (
+                                   <div className={"pill-icon flat-icon"}>
+                                     <img src={flatIcon} alt={"flat project"} />
+                                   </div>
+                                 )
+                                 :
+                                 (
+                                   <div className={"pill-icon per-method-icon"}>
+                                     <img src={permethodIcon} alt={"per-method project"} />
+                                   </div>
+                                 )
+                             }
 
-                              <div className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}>
-                                <p>{demo.projectType[0].toUpperCase() + demo.projectType.slice(1)}</p>
-                              </div>
-                              {
-                                  demo.isGroup && (
-                                      <div className={"pill-project-type group-pill ms-auto p-1"}>
-                                        <FontAwesomeIcon icon={"layer-group"} />
-                                      </div>
-                                  )
-                              }
-                            </Row>
-                            <Link to={demo.projectUrl}><h3 style={{fontWeight: "bold"}}>{demo.displayName}</h3></Link>
-                            <p className={"demo-description"}>{demo.summaryMarkdown}</p>
-                            <Row className={"footer-row"}>
-                              <Col xs={12} sm={6} className={"align-items-end d-flex"}>
-                                <p className={"m-0"}>{new Date(demo.lastUpdated).toLocaleDateString()}</p>
-                              </Col>
-                              <Col xs={12} sm={6} className={"d-flex justify-content-end"}>
-                                <Button className={"px-3"}>
-                                  <FontAwesomeIcon icon="share" className={"me-1"} />
-                                  Share
-                                </Button>
-                              </Col>
-                            </Row>
-                          </Card.Body>
-                        </Col>
-                      </Card>
-                    </Carousel.Item>
-                ))
+                             <div
+                               className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}>
+                               <p>{demo.projectType[0].toUpperCase() + demo.projectType.slice(1)}</p>
+                             </div>
+                             {
+                               demo.isGroup && (
+                                 <div className={"pill-project-type group-pill ms-auto p-1"}>
+                                   <FontAwesomeIcon icon={"layer-group"} />
+                                 </div>
+                               )
+                             }
+                           </Row>
+                           <Link to={demo.projectUrl}><h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3></Link>
+                           <p className={"demo-description"}>{demo.summaryMarkdown}</p>
+                           <Row className={"footer-row"}>
+                             <Col xs={12} sm={6} className={"align-items-end d-flex"}>
+                               <p className={"m-0"}>{new Date(demo.lastUpdated).toLocaleDateString()}</p>
+                             </Col>
+                             <Col xs={12} sm={6} className={"d-flex justify-content-end"}>
+                               <Button className={"px-3"}>
+                                 <FontAwesomeIcon icon="share" className={"me-1"} />
+                                 Share
+                               </Button>
+                             </Col>
+                           </Row>
+                         </Card.Body>
+                       </Col>
+                     </Card>
+                   </Carousel.Item>
+                 );
+               })
               }
             </Carousel>
           </div>
@@ -289,7 +292,8 @@ export const DemoList: React.FC<EmptyProps> = () => {
                           demo.featuredImage,
                           ProgramType[demo.programType],
                           ProjectType[demo.projectType],
-                          demo.projectUrl
+                          demo.projectUrl,
+                          demo.slug
                       )}
                       setProjectType={setProjectType}
                       setProgramType={setProgramType}

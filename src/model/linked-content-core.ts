@@ -4,6 +4,7 @@ import { ProjectId } from "./project-core";
 import * as z from "zod/mini";
 
 export type SpecimenContentHash = string;
+export type DemoContentHash = string;
 
 const zLinkedNoContentRef = z.object({
   kind: z.literal("none"),
@@ -16,10 +17,17 @@ const zLinkedSpecimenRef = z.object({
 });
 export type LinkedSpecimenRef = z.infer<typeof zLinkedSpecimenRef>;
 
+const zLinkedDemoRef = z.object({
+  kind: z.literal("demo"),
+  slug: z.string(),
+});
+export type LinkedDemoRef = z.infer<typeof zLinkedDemoRef>;
+
 export const zLinkedContentRef = z.union([
   zLinkedNoContentRef,
   zLinkedJrTutorialRef,
   zLinkedSpecimenRef,
+  zLinkedDemoRef,
 ]);
 
 export type LinkedContentRef = z.infer<typeof zLinkedContentRef>;
@@ -54,6 +62,8 @@ export function eqLinkedContentRefs(
         ref2.kind === "specimen" &&
         ref1.specimenContentHash === ref2.specimenContentHash
       );
+    case "demo":
+      return ref2.kind === "demo";
     default:
       return assertNever(ref1);
   }
