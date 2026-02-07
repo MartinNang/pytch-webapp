@@ -22,15 +22,13 @@ import { useFlowActions, useFlowState } from "../../model";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
-import { FileProcessingFailure } from "../../model/user-interactions/process-files";
-import { FileProcessingFailures } from "../FileProcessingFailures";
 import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import {
   AddClipArtFlow,
   AddClipArtRunState,
   groupedFocusKeyFromFilterState,
 } from "../../model/user-interactions/clipart-gallery-select";
-import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { TwoStateSwitch } from "../TwoStateSwitch";
 import { useTranslation } from "react-i18next";
 import { AddAssetFailuresList } from "./AddAssetFailuresList";
 

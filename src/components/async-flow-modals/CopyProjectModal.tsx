@@ -12,7 +12,7 @@ import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
-import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { TwoStateSwitch } from "../TwoStateSwitch";
 import { I18nStringSpec } from "../../model/i18n/core-types";
 
 function specForKeepLink(ref: LinkedContentRef): I18nStringSpec {
