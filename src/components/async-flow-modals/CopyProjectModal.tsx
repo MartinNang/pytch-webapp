@@ -48,7 +48,8 @@ const MaybeKeepContentLinkSwitch: React.FC<{
   return (
     <TwoStateSwitch
       className="keep-content-link-switch"
-      texts={textsForKeepLink(runState.sourceLinkedContentRef)}
+      i18nNs="projects"
+      i18nSpec={specForKeepLink(runState.sourceLinkedContentRef)}
       boolState={runState.copyKeepsContentLink}
       setBoolState={setKeepLink}
     />

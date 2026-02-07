@@ -12,6 +12,15 @@
   "copy.title": "Copy project",
   "copy.name-placeholder": "Name for copy of project",
   "copy.button.make-copy": "Make a copy",
+  "copy.switch.none.question": "(This project is not connected to anything.)",
+  "copy.switch.none.true-status": "(This project is not connected to anything)",
+  "copy.switch.none.false-status": "(This project is not connected to anything)",
+  "copy.switch.jr-tutorial.question": "Make copy follow tutorial <i>{{tutorialName}}</i>?",
+  "copy.switch.jr-tutorial.true-status": "Copy will follow tutorial",
+  "copy.switch.jr-tutorial.false-status": "Copy will <b>not</b> follow tutorial",
+  "copy.switch.specimen.question": "Make copy be linked to lesson?",
+  "copy.switch.specimen.true-status": "Copy will be linked to lesson.",
+  "copy.switch.specimen.false-status": "Copy will <b>not</b> be linked to lesson",
 
   "$RUBBISH$": ""
 }
