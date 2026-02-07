@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -78,6 +79,8 @@ const MaybeKeepContentLinkSwitch: React.FC<{
 };
 
 export const CopyProjectModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.saveProjectAsFlow);
   const { setNameOfCopy } = useFlowActions((f) => f.saveProjectAsFlow);
   const focusRequired = useRef<boolean>(true);
@@ -111,7 +114,7 @@ export const CopyProjectModal = () => {
         centered
       >
         <Modal.Header>
-          <Modal.Title>Copy project</Modal.Title>
+          <Modal.Title>{t("copy.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <MaybeKeepContentLinkSwitch runState={activeFsmState.runState} />
@@ -123,7 +126,7 @@ export const CopyProjectModal = () => {
                 value={nameOfCopy}
                 onChange={handleChange}
                 onKeyDown={handleKeyPress}
-                placeholder="Name for copy of project"
+                placeholder={t("copy.name-placeholder")}
                 ref={maybeFocusTextInput}
               />
             </Form.Group>
@@ -135,14 +138,14 @@ export const CopyProjectModal = () => {
             onClick={settle.cancel}
             disabled={!isInteractable}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isSubmittable}
             variant="primary"
             onClick={settle.submit}
           >
-            Make a copy
+            {t("copy.button.make-copy")}
           </Button>
         </Modal.Footer>
       </Modal>

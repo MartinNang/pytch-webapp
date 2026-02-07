@@ -9,5 +9,9 @@
   "import-from-google-drive": "Import from Google Drive",
   "export-to-google-drive": "Export to Google Drive",
 
+  "copy.title": "Copy project",
+  "copy.name-placeholder": "Name for copy of project",
+  "copy.button.make-copy": "Make a copy",
+
   "$RUBBISH$": ""
 }
