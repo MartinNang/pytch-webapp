@@ -7,11 +7,34 @@ import React, {
 import { Form } from "react-bootstrap";
 import classNames from "classnames";
 import "./TwoStateSwitch.scss";
+import { Trans, useTranslation } from "react-i18next";
+import { I18nStringSpec } from "../model/i18n/core-types";
+import { resolveIndirectParams } from "../model/i18n/utils";
 
 export type TwoStateSwitchTexts = {
   question: React.JSX.Element;
   trueStatus: React.JSX.Element;
   falseStatus: React.JSX.Element;
+};
+
+const useRenderedSpec = (
+  ns: string,
+  spec: I18nStringSpec
+): TwoStateSwitchTexts => {
+  const { i18n } = useTranslation(ns);
+
+  const keyBase = spec.keyPart;
+  const params = resolveIndirectParams(i18n, spec);
+
+  return {
+    question: <Trans i18nKey={`${keyBase}.question`} ns={ns} values={params} />,
+    trueStatus: (
+      <Trans i18nKey={`${keyBase}.true-status`} ns={ns} values={params} />
+    ),
+    falseStatus: (
+      <Trans i18nKey={`${keyBase}.false-status`} ns={ns} values={params} />
+    ),
+  };
 };
 
 type TwoStateSwitchProps = {
