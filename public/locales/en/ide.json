@@ -38,5 +38,10 @@
   "info.expand-button.label": "Output and errors",
   "info.collapse-button.aria-label": "Hide output and errors",
 
+  "script.action.change-hat-block": "Change hat block",
+  "script.action.move-earlier": "Move script up",
+  "script.action.move-later": "Move script down",
+  "script.action.duplicate": "Duplicate script",
+
   "$RUBBISH$": ""
 }

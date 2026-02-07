@@ -22,6 +22,7 @@ import {
 } from "./hooks";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { useFocusContext } from "../hooks/focus-steering";
+import { useTranslation } from "react-i18next";
 
 /** See docstring for `HatBlockContent`. */
 type DisplayVariant = "kind-chosen" | "fully-specified" | "in-editor";
@@ -121,6 +122,8 @@ export const HatBlock: React.FC<HatBlockProps> = ({
   nextHandlerId,
   event,
 }) => {
+  const { t } = useTranslation("ide");
+  const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("per-method");
   const activeActorKind = useActiveActorKind();
 
@@ -181,29 +184,29 @@ export const HatBlock: React.FC<HatBlockProps> = ({
         />
         <CaptiveContextMenu.DropdownMenu>
           <CaptiveContextMenu.DropdownItem onInvoke={onChangeHatBlock}>
-            Change hat block
+            {t("script.action.change-hat-block")}
           </CaptiveContextMenu.DropdownItem>
           <CaptiveContextMenu.DropdownItem
             disabled={prevHandlerId == null}
             onInvoke={swapWithPrev}
           >
-            Move script up
+            {t("script.action.move-earlier")}
           </CaptiveContextMenu.DropdownItem>
           <CaptiveContextMenu.DropdownItem
             disabled={nextHandlerId == null}
             onInvoke={swapWithNext}
           >
-            Move script down
+            {t("script.action.move-later")}
           </CaptiveContextMenu.DropdownItem>
           <CaptiveContextMenu.DropdownItem onInvoke={onDuplicate}>
-            Duplicate script
+            {t("script.action.duplicate")}
           </CaptiveContextMenu.DropdownItem>
           <Dropdown.Divider />
           <CaptiveContextMenu.DropdownItem
             className="danger"
             onInvoke={onDelete}
           >
-            DELETE
+            {tCommon("action.delete")}
           </CaptiveContextMenu.DropdownItem>
         </CaptiveContextMenu.DropdownMenu>
       </div>
