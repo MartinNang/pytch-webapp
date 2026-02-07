@@ -11,7 +11,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { I18nStringSpec } from "../model/i18n/core-types";
 import { resolveIndirectParams } from "../model/i18n/utils";
 
-export type TwoStateSwitchTexts = {
+type TwoStateSwitchTexts = {
   question: React.JSX.Element;
   trueStatus: React.JSX.Element;
   falseStatus: React.JSX.Element;
