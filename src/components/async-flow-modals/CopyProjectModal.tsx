@@ -13,48 +13,25 @@ import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
 import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { I18nStringSpec } from "../../model/i18n/core-types";
 
-function textsForKeepLink(ref: LinkedContentRef): TwoStateSwitchTexts {
-  switch (ref.kind) {
-    case "none": {
-      // Should not see this, but just in case:
-      const textSpan = (
-        <span>(This project is not connected to anything.)</span>
-      );
-      return {
-        question: textSpan,
-        trueStatus: textSpan,
-        falseStatus: textSpan,
-      };
+function specForKeepLink(ref: LinkedContentRef): I18nStringSpec {
+  const params = (() => {
+    switch (ref.kind) {
+      case "none":
+        // Should not see this.
+        return undefined;
+      case "jr-tutorial":
+        return { tutorialName: ref.name };
+      case "specimen":
+        // Would be nice to know which one, but we don't have that info.
+        return undefined;
+      default:
+        return assertNever(ref);
     }
-    case "jr-tutorial":
-      return {
-        question: (
-          <span>
-            Make copy follow tutorial <i>{ref.name}</i>?
-          </span>
-        ),
-        trueStatus: <span>Copy will follow tutorial.</span>,
-        falseStatus: (
-          <span>
-            Copy will <b>not</b> follow tutorial.
-          </span>
-        ),
-      };
-    case "specimen":
-      // Would be nice to know which one, but we don't have that info.
-      return {
-        question: <span>Make copy be linked to lesson?</span>,
-        trueStatus: <span>Copy will be linked to lesson.</span>,
-        falseStatus: (
-          <span>
-            Copy will <b>not</b> be linked to lesson.
-          </span>
-        ),
-      };
-    default:
-      return assertNever(ref);
-  }
+  })();
+
+  return { keyPart: `copy.switch.${ref.kind}`, params };
 }
 
 const MaybeKeepContentLinkSwitch: React.FC<{
