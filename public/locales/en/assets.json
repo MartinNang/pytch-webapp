@@ -23,6 +23,10 @@
   "add.this-device.sprite.interacting.button": "Add to sprite",
   "add.this-device.stage.interacting.button": "Add to stage",
 
+  "add.media-library.switch.question": "Show all images?",
+  "add.media-library.switch.true-status": "Showing all images",
+  "add.media-library.switch.false-status": "Showing just images recommended for this tutorial",
+
   "add.media-library.flat.interacting.button_zero": "Add to project",
   "add.media-library.flat.interacting.button_one": "Add 1 to project",
   "add.media-library.flat.interacting.button_other": "Add {{count}} to project",

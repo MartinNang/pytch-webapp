@@ -116,16 +116,11 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
     setFilterActive(!showAll);
   };
 
-  const texts: TwoStateSwitchTexts = {
-    question: <span>Show all images?</span>,
-    trueStatus: <span>Showing all images</span>,
-    falseStatus: <span>Showing just images recommended for this tutorial</span>,
-  };
-
   return (
     <TwoStateSwitch
       className="all-vs-tutorial-switch"
-      texts={texts}
+      i18nNs="assets"
+      i18nSpec={{ keyPart: "add.media-library.switch" }}
       boolState={!filterState.active}
       setBoolState={setFilterActiveNegated}
     />
