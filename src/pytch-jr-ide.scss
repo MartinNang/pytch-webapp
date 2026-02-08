@@ -700,27 +700,24 @@
     }
   }
 
-  .message-placeholder,
   .message-content {
     display: inline-block;
     min-width: 5rem;
     background-color: white;
     color: black;
     font-family: $monospace-fonts;
-    padding: 0px 0.5rem;
+    font-size: 14px;
+    padding: 0px 0.25rem;
     border-radius: 4px;
     margin: 0px 0.125rem;
-  }
-
-  .message-placeholder {
-    color: white;
   }
 
   .key-content {
     display: inline-block;
     min-width: 2rem;
+    font-weight: bold;
     text-align: center;
-    background-color: darken($secondary, 10);
+    background-color: $secondary;
     color: white;
     padding: 0px 0.5rem;
     border-radius: 4px;

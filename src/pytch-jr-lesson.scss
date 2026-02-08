@@ -12,9 +12,6 @@ $chapter-final-content-height: 4rem;
   cursor: default;
   margin-top: -0.5rem; /* Allow for transform of bump */
   margin-bottom: 1rem;
-  &.in-editor {
-    margin-bottom: 0px;
-  }
 }
 
 .InlineAddSomethingButton {
@@ -41,6 +38,11 @@ $chapter-final-content-height: 4rem;
 
 .ScriptDiff {
   margin-bottom: 1rem;
+
+  .HatBlock.display-only {
+    margin-bottom: 0px;
+  }
+
   .code-representations {
     display: grid;
     background-color: #eee;
