@@ -2,5 +2,8 @@
   "delete-handler.title": "Delete script?",
   "delete-handler.body": "Are you sure you want to delete this script?",
 
+  "delete-sprite.title": "Delete <i>{{spriteName}}</i>?",
+  "delete-sprite.body": "Are you sure you want to delete the sprite “{{spriteName}}” from your project?",
+
   "$RUBBISH$": ""
 }
