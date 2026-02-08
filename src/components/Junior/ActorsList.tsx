@@ -5,7 +5,6 @@ import {
   AssetMetaDataOps,
   ActorKind,
   Uuid,
-  ActorKindOps,
   ActorOps,
 } from "../../model/junior/structured-program";
 import { useStoreState } from "../../store";
@@ -119,7 +118,6 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
     });
   };
 
-  const appearancesName = ActorKindOps.names(kind).appearancesDisplay;
   const onInvokeProps = (tab: ActorPropertiesTabKey) => ({
     onInvoke() {
       const seizeFocusKey = `ActorProperties/${id}/${tab}`;
@@ -207,8 +205,6 @@ export const ActorsList = () => {
       onDispose: focusContext.onDisposeAddSprite(),
     });
   };
-
-  const ariaLabel = "Stage, sprites";
 
   return (
     <section
