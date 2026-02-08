@@ -39,7 +39,7 @@ export const ChangeHatBlock: React.FC<LearnerTaskCommitChangeHatBlock> = ({
       <DisplayHatBlock
         actorKind={actorKind}
         event={newEvent}
-        variant="in-editor"
+        variant="fully-specified"
       />
     </div>
   );
