@@ -242,7 +242,7 @@ export const ScriptDiff: React.FC<ScriptDiffProps> = (props) => {
       <DisplayHatBlock
         actorKind={props.actorKind}
         event={props.event}
-        variant="in-editor"
+        variant="fully-specified"
       />
       <ScriptCodeDiff richDiff={diff} />
     </div>
