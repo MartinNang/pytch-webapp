@@ -272,7 +272,7 @@ export const DisplayScript: React.FC<DisplayScriptProps> = ({
       <DisplayHatBlock
         actorKind={actorKind}
         event={event}
-        variant="in-editor"
+        variant="fully-specified"
       />
       <div className="code-representations">
         <ScriptDiffView {...viewProps} />
