@@ -165,7 +165,7 @@ export const HatBlock: React.FC<HatBlockProps> = ({
         <HatBlockContent
           actorKind={actorKind}
           event={event}
-          variant="in-editor"
+          variant="fully-specified"
         />
         <CaptiveContextMenu.DropdownMenu>
           <CaptiveContextMenu.DropdownItem onInvoke={onChangeHatBlock}>
