@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import {
   AssetMetaDataOps,
@@ -21,6 +22,7 @@ import { FocusGroupContainer } from "../FocusGroupContainer";
 
 type ActorThumbnailProps = { id: Uuid };
 const ActorThumbnail: React.FC<ActorThumbnailProps> = ({ id }) => {
+  const { t } = useTranslation("ide");
   const maybeFirstImage = useStoreState((state) =>
     AssetMetaDataOps.firstMatching(
       state.activeProject.project.assets,
@@ -34,7 +36,7 @@ const ActorThumbnail: React.FC<ActorThumbnailProps> = ({ id }) => {
   );
 
   if (maybeFirstImage == null) {
-    return wrap(<div className="asset-preview">[No costumes]</div>);
+    return wrap(<div className="asset-preview">{t("actor.no-costumes")}</div>);
   }
 
   if (maybeFirstImage.presentation.kind !== "image") {
@@ -62,6 +64,7 @@ const RenameSpriteDropdownItem: React.FC<RenameSpriteDropdownItemProps> = ({
   actorId,
   previousName,
 }) => {
+  const { t } = useTranslation("common");
   const focusContext = useFocusContext("per-method");
   const runUpsertFlow = useJrEditActions((a) => a.upsertSpriteFlow.run);
   const actorNubs = useActorNubs();
@@ -75,7 +78,7 @@ const RenameSpriteDropdownItem: React.FC<RenameSpriteDropdownItemProps> = ({
 
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={doRename} disabled={!isAllowed}>
-      Rename
+      {t("action.rename")}
     </CaptiveContextMenu.DropdownItem>
   );
 };
@@ -90,6 +93,8 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   name,
   id,
 }) => {
+  const { t } = useTranslation("ide");
+  const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("per-method");
   const runDeleteActor = useJrEditActions((a) => a.deleteSpriteFlow.run);
   const activateTab = useJrEditActions((a) => a.setActorPropertiesActiveTab);
@@ -133,13 +138,13 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   return (
     <CaptiveContextMenu.DropdownMenu>
       <CaptiveContextMenu.DropdownItem {...onInvokeProps("code")}>
-        Go to code
+        {t("actor-action.go-to-code")}
       </CaptiveContextMenu.DropdownItem>
       <CaptiveContextMenu.DropdownItem {...onInvokeProps("appearances")}>
-        Go to {appearancesName}
+        {t(`actor-action.go-to-appearances.${kind}`)}
       </CaptiveContextMenu.DropdownItem>
       <CaptiveContextMenu.DropdownItem {...onInvokeProps("sounds")}>
-        Go to sounds
+        {t("actor-action.go-to-sounds")}
       </CaptiveContextMenu.DropdownItem>
       <Dropdown.Divider />
       <RenameSpriteDropdownItem
@@ -152,7 +157,7 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
         onInvoke={doDelete}
         disabled={!canRenameOrDelete}
       >
-        DELETE
+        {tCommon("action.delete")}
       </CaptiveContextMenu.DropdownItem>
     </CaptiveContextMenu.DropdownMenu>
   );
@@ -188,6 +193,7 @@ const ActorCard: React.FC<ActorCardProps> = ({ isActive, kind, id, name }) => {
 };
 
 export const ActorsList = () => {
+  const { t } = useTranslation("ide");
   const focusContext = useFocusContext("per-method");
   const actorNubs = useActorNubs();
   const activeActor = useJrEditState((s) => s.activeActor);
@@ -207,9 +213,9 @@ export const ActorsList = () => {
   return (
     <section
       className="Junior-ActorsList-container compact-tablist-container"
-      aria-label={ariaLabel}
+      aria-label={t("per-method.pane-label.actors")}
     >
-      <SingleTab title="Stage and sprites">
+      <SingleTab title={t("per-method.tab-title.actors")}>
         <div className="abs-0000">
           <FocusGroupContainer
             className="gfs__actors__container"
@@ -229,7 +235,7 @@ export const ActorsList = () => {
             </ol>
             <AddSomethingSingleButton
               what="sprite"
-              label="Add sprite"
+              label={t("actor-action.add")}
               onClick={launchAddSpriteModal}
             />
           </FocusGroupContainer>

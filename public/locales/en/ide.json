@@ -50,5 +50,15 @@
   "script.action.move-later": "Move script down",
   "script.action.duplicate": "Duplicate script",
 
+  "per-method.pane-label.actors": "Stage, sprites",
+  "per-method.tab-title.actors": "Stage and sprites",
+
+  "actor.no-costumes": "[No costumes]",
+  "actor-action.go-to-code": "Go to code",
+  "actor-action.go-to-appearances.sprite": "Go to costumes",
+  "actor-action.go-to-appearances.stage": "Go to backdrops",
+  "actor-action.go-to-sounds": "Go to sounds",
+  "actor-action.add": "Add sprite",
+
   "$RUBBISH$": ""
 }
