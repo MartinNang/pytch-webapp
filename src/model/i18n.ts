@@ -59,6 +59,7 @@ export let i18nContextState: I18nContextState = {
           "common",
           "assets",
           "errors",
+          "flows",
           "ide",
           "notable-changes",
           "projects",
