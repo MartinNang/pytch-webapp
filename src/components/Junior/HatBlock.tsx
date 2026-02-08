@@ -22,7 +22,7 @@ import {
 } from "./hooks";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { useFocusContext } from "../hooks/focus-steering";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 /** See docstring for `HatBlockContent`. */
 type DisplayVariant = "kind-chosen" | "fully-specified" | "in-editor";
@@ -31,6 +31,50 @@ type HatBlockContentProps = {
   actorKind: ActorKind;
   event: EventDescriptor;
   variant: DisplayVariant;
+};
+
+const HatContentNub: React.FC<HatBlockContentProps> = ({
+  actorKind,
+  event,
+  variant,
+}) => {
+  switch (event.kind) {
+    case "green-flag":
+      return <Trans i18nKey="display-hat-block.green-flag" ns="ide" />;
+    case "clicked":
+      return (
+        <Trans i18nKey={`display-hat-block.clicked.${actorKind}`} ns="ide" />
+      );
+    case "start-as-clone":
+      return <Trans i18nKey="display-hat-block.start-as-clone" ns="ide" />;
+    case "key-pressed": {
+      const browserKey = variant === "kind-chosen" ? " " : event.keyName;
+      const keyName = descriptorFromBrowserKeyName(browserKey).displayName;
+      return (
+        <Trans
+          i18nKey="display-hat-block.key-pressed"
+          ns="ide"
+          components={{
+            key: <span className="key-content">{keyName}</span>,
+          }}
+        />
+      );
+    }
+    case "message-received": {
+      const message = variant === "kind-chosen" ? "\u00a0" : event.message;
+      return (
+        <Trans
+          i18nKey="display-hat-block.message-received"
+          ns="ide"
+          components={{
+            msg: <span className="message-content">{message}</span>,
+          }}
+        />
+      );
+    }
+    default:
+      return assertNever(event);
+  }
 };
 
 /** Render the text contents of a hat-block for the given `event` within
