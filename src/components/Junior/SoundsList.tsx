@@ -13,8 +13,10 @@ import { AssetsContent } from "./AssetsContent";
 import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { AssetOperationContext } from "../../model/asset";
+import { useTranslation } from "react-i18next";
 
 export const SoundsList = () => {
+  const { t } = useTranslation("assets");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
   const activeActorId = useJrEditState((s) => s.activeActor);
@@ -63,7 +65,7 @@ export const SoundsList = () => {
         key={addWhat}
         buttonClassName={kFocusGroupFallbackClassName}
         what={addWhat}
-        label="Add from this device"
+        label={t("add-button.this-device")}
         onClick={addSound}
       />
     </FocusGroupContainer>
