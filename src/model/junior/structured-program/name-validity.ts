@@ -8,11 +8,11 @@ declare let Sk: any;
 
 export type NameValidity =
   | { status: "valid" }
-  | { status: "invalid"; reason: string };
+  | { status: "invalid"; reasonKey: string };
 
-const invalidBecause = (reason: string): NameValidity => ({
+const invalidBecause = (reasonKey: string): NameValidity => ({
   status: "invalid",
-  reason,
+  reasonKey,
 });
 
 /** Assess the validity (or otherwise) of the given `candidateName` for
