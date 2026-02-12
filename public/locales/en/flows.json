@@ -13,5 +13,13 @@
   "upsert-sprite.invalid-name.already-exists": "That name cannot be used, because there is already a Sprite called {{name}}.",
   "upsert-sprite.invalid-name.is-reserved": "That name cannot be used, because it is a reserved name.",
 
+  "from-specimen.already-started": "You have already started work on <i>{{projectName}}</i>",
+  "from-specimen.open-fresh-copy": "Open a fresh copy of the lesson’s code:",
+  "from-specimen.open-existing": "Open an existing project for this lesson:",
+  "from-specimen.create-new": "Create a new project",
+  "from-specimen.start-again-description": "Start again with this lesson’s code",
+  "from-specimen.start-again": "Start again",
+  "from-specimen.failed": "Sorry, something went wrong.",
+
   "$RUBBISH$": ""
 }

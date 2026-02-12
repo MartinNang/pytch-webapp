@@ -1,6 +1,7 @@
 {
   "button.cancel": "Cancel",
   "button.ok": "OK",
+  "button.open": "Open",
 
   "action.rename": "Rename",
   "action.delete": "DELETE",

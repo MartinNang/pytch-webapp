@@ -8,6 +8,7 @@ import { Button, Card, Spinner } from "react-bootstrap";
 import { MtimeDisplay } from "./MtimeDisplay";
 import { StartAfreshOption } from "../model/project-from-specimen";
 import classNames from "classnames";
+import { Trans, useTranslation } from "react-i18next";
 
 // Styling for these is in the project-list.scss file.
 
@@ -18,6 +19,7 @@ type CreateNewOptionCardProps = { option: StartAfreshOption };
 const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
   option,
 }) => {
+  const { t } = useTranslation("flows");
   const enactChoice = useStoreActions(
     (actions) => actions.projectFromSpecimenFlow.enactStartAfreshChoice
   );
@@ -32,18 +34,18 @@ const CreateNewOptionCard: React.FC<CreateNewOptionCardProps> = ({
     >
       <Card className="ProjectCard" onClick={startAfresh}>
         <Card.Header>
-          <Card.Title>Create a new project</Card.Title>
+          <Card.Title>{t("from-specimen.create-new")}</Card.Title>
         </Card.Header>
         <Card.Body>
           <div className="project-card-content">
             <div className="project-description">
               <p className="project-name">
-                <em>Start again with this lesson’s code</em>
+                <em>{t("from-specimen.start-again-description")}</em>
               </p>
             </div>
             <div className="dropdown-wrapper">
               {/* Click on button passes up to <Card>'s handler. */}
-              <Button>Start again</Button>
+              <Button>{t("from-specimen.start-again")}</Button>
             </div>
           </div>
         </Card.Body>
@@ -58,6 +60,7 @@ type OpenExistingOptionCardProps = {
 const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
   projectSummary,
 }) => {
+  const { t } = useTranslation("common");
   const enactChoice = useStoreActions(
     (actions) => actions.projectFromSpecimenFlow.enactExistingProjectChoice
   );
@@ -86,7 +89,7 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
               }
             </div>
             <div className="dropdown-wrapper">
-              <Button>Open</Button>
+              <Button>{t("button.open")}</Button>
             </div>
           </div>
         </Card.Body>
@@ -96,6 +99,7 @@ const OpenExistingOptionCard: React.FC<OpenExistingOptionCardProps> = ({
 };
 
 export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("flows");
   const params = useParams();
 
   const flowState = useStoreState(
@@ -137,13 +141,17 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
         return (
           <>
             <h2>
-              You have already started work on <em>{flowState.projectName}</em>
+              <Trans
+                ns="flows"
+                i18nKey="from-specimen.already-started"
+                values={{ projectName: flowState.projectName }}
+              />
             </h2>
-            <h3>Open a fresh copy of the lesson’s code:</h3>
+            <h3>{t("from-specimen.open-fresh-copy")}</h3>
             <ol className="project-from-specimen-choices">
               <CreateNewOptionCard option={flowState.startAfreshOption} />
             </ol>
-            <h3>Open an existing project for this lesson:</h3>
+            <h3>{t("from-specimen.open-existing")}</h3>
             <ol className="project-from-specimen-choices">
               {flowState.existingProjectOptions.map((projectSummary) => (
                 <OpenExistingOptionCard
@@ -159,7 +167,7 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
       case "failed":
         return (
           <div className="load-project-not-success failed">
-            <p>Sorry, something went wrong.</p>
+            <p>{t("from-specimen.failed")}</p>
           </div>
         );
 
