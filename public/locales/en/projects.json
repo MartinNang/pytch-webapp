@@ -22,5 +22,13 @@
   "copy.switch.specimen.true-status": "Copy will be linked to lesson.",
   "copy.switch.specimen.false-status": "Copy will <b>not</b> be linked to lesson",
 
+  "create.title": "Create a new project",
+  "create.name-placeholder": "Name for your new project",
+  "create.kind.per-method": "Edit as sprites and scripts",
+  "create.kind.flat": "Edit as one big program",
+  "create.example-code.no": "Without example code",
+  "create.example-code.yes": "With example code",
+  "create.button.create-project": "Create project",
+
   "$RUBBISH$": ""
 }
