@@ -213,7 +213,11 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
       );
     case "fetch-not-started":
     case "fetch-pending":
-      return <p>loading...</p>;
+      return (
+        <div className="text-center my-5">
+          <Spinner animation="border" />
+        </div>
+      );
     case "ready":
       return <ClipArtGalleryPanelReady {...{ gallery, ...selectionProps }} />;
     default:
