@@ -3,7 +3,7 @@ import { useStoreActions, useStoreState } from "../store";
 import { envVarOrFail } from "../env-utils";
 import LoadingOverlay from "./LoadingOverlay";
 import classNames from "classnames";
-import { Card } from "react-bootstrap";
+import { Card, Spinner } from "react-bootstrap";
 
 // TODO: Replace this temporary solution with something more integrated
 // with the pytch-tutorials repo.
@@ -58,7 +58,7 @@ const TutorialMiniCard: React.FC<TutorialMiniCardProps> = ({
       </p>
       <div className="description">{children}</div>
       <LoadingOverlay show={loadingThisDemo}>
-        <p>Loading...</p>
+        <Spinner animation="border" />
       </LoadingOverlay>
     </Card>
   );
