@@ -53,7 +53,7 @@ const TutorialMiniCard: React.FC<TutorialMiniCardProps> = ({
         <img
           className="screenshot"
           src={`${tutorialsDataRoot}/${slug}/tutorial-assets/${screenshotBasename}`}
-          alt={`screenshot of ${title}`}
+          alt={title}
         />
       </p>
       <div className="description">{children}</div>
