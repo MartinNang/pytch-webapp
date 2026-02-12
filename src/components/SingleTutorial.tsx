@@ -10,6 +10,7 @@ import { NavBanner } from "./NavBanner";
 import { TutorialSummaryDisplay } from "./TutorialSummaryDisplay";
 import { useParams } from "react-router-dom";
 import { Link } from "./LinkWithinApp";
+import { Spinner } from "react-bootstrap";
 
 const SingleTutorialError = () => (
   <div className="loading-error">
@@ -34,7 +35,9 @@ const SingleTutorialContent: React.FC<SingleTutorialContentProps> = (props) => {
     case SyncState.SyncingFromBackEnd:
       return (
         <div className="loading-placeholder">
-          <p>Loading...</p>
+          <div className="text-center py-5">
+            <Spinner animation="border" />
+          </div>
         </div>
       );
 
