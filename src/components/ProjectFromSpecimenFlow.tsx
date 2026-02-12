@@ -4,7 +4,7 @@ import { EmptyProps, assertNever } from "../utils";
 import { useParams } from "react-router-dom";
 import { IProjectSummary } from "../model/projects";
 import { NavBanner } from "./NavBanner";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Spinner } from "react-bootstrap";
 import { MtimeDisplay } from "./MtimeDisplay";
 import { StartAfreshOption } from "../model/project-from-specimen";
 import classNames from "classnames";
@@ -125,9 +125,11 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
     switch (flowState.state) {
       case "not-yet-booted":
       case "fetching":
+      case "creating-new":
+      case "redirecting":
         return (
           <div className="load-project-not-success pending">
-            <p>Loading...</p>
+            <Spinner animation="border" />
           </div>
         );
 
@@ -153,20 +155,6 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
           </>
         );
       }
-
-      case "creating-new":
-        return (
-          <div className="load-project-not-success pending">
-            <p>Creating project...</p>
-          </div>
-        );
-
-      case "redirecting":
-        return (
-          <div className="load-project-not-success pending">
-            <p>Opening project....</p>
-          </div>
-        );
 
       case "failed":
         return (
