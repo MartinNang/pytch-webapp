@@ -200,9 +200,8 @@ export const HatBlock: React.FC<HatBlockProps> = ({
 };
 
 export const DisplayHatBlock: React.FC<HatBlockContentProps> = (props) => {
-  const classes = classNames("HatBlock", "display-only", props.variant);
   return (
-    <div className={classes}>
+    <div className="HatBlock display-only">
       <div className="bump"></div>
       <div className="body">
         <HatBlockContent {...props} />
