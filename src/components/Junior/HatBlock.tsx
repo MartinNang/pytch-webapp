@@ -1,5 +1,4 @@
 import React from "react";
-import classNames from "classnames";
 
 import Dropdown from "react-bootstrap/Dropdown";
 
@@ -7,7 +6,6 @@ import { useStoreActions } from "../../store";
 
 import {
   ActorKind,
-  ActorKindOps,
   EventDescriptor,
   HandlerUpsertionOperation,
   Uuid,
