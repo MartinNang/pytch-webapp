@@ -60,6 +60,8 @@
   "actor-action.go-to-sounds": "Go to sounds",
   "actor-action.add": "Add sprite",
 
+  "activity-pane.aria-label": "Help and other information",
+
   "help-sidebar.show-more": "show more...",
   "help-sidebar.show-less": "show less...",
   "help-sidebar.stage-no-motion": "The Stage has no motion methods.",
