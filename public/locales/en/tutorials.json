@@ -16,5 +16,12 @@
   "flat.code-diff.added-help": "Lines like this show you <b>code you need to add</b>. You can click on the <flatcopycode/> button to copy the lines of code ready for pasting.",
   "flat.code-diff.spaces-help": "Faint \"<c>···</c>\" at the start of a line show spaces — type these as normal space characters.",
 
+  "share.title": "Share project “<b>{{displayName}}</b>”",
+  "share.tutorial-only": "Copy the link to share the project with only the <b>tutorial</b> button:",
+  "share.button.copy-tutorial-only.title": "Copy link for tutorial only",
+  "share.tutorial-and-demo": "Copy the link to share the project with the <b>tutorial</b> and <b>demo</b> buttons:",
+  "share.button.copy-tutorial-demo.title": "Copy link for tutorial and demo",
+  "share.button.copy": "Copy",
+
   "$RUBBISH$": ""
 }
