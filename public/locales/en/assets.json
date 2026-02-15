@@ -37,6 +37,11 @@
   "add.media-library.stage.interacting.button_one": "Add 1 to stage",
   "add.media-library.stage.interacting.button_other": "Add {{count}} to stage",
 
+  "rename.title": "Rename “{{oldBasename}}”",
+  "rename.failure-title": "Rename of “{{oldBasename}}” failed",
+  "rename.placeholder": "new filename",
+  "rename.button.rename": "Rename",
+
   "add.media-library.copyright-info": "For copyright and licensing information, see help pages.",
 
   "action.crop-scale": "Crop/scale",
