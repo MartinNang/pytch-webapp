@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   ActiveAsyncUserFlowFsmState,
   isInteractable,
@@ -17,13 +18,14 @@ type GenericConfirmActionModalProps<RunStateT> = {
 export function GenericConfirmActionModal<RunStateT>(
   props: GenericConfirmActionModalProps<RunStateT>
 ): React.JSX.Element {
+  const { t: tCommon } = useTranslation("common");
   const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     cancelButtonRef.current?.focus();
   });
 
   const activeFsmState = props.activeFsmState;
-  const confirmButtonText = props.confirmButtonText ?? "DELETE";
+  const confirmButtonText = props.confirmButtonText ?? tCommon("action.delete");
 
   // Confirmations are always submittable:
   const settle = settleFunctions(true, activeFsmState);
@@ -47,7 +49,7 @@ export function GenericConfirmActionModal<RunStateT>(
           onClick={settle.cancel}
           disabled={!isInteractable(activeFsmState)}
         >
-          Cancel
+          {tCommon("button.cancel")}
         </Button>
         {isInteractable(activeFsmState) ? (
           <Button variant="danger" onClick={settle.submit}>
