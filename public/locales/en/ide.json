@@ -60,6 +60,10 @@
   "actor-action.go-to-sounds": "Go to sounds",
   "actor-action.add": "Add sprite",
 
+  "help-sidebar.show-more": "show more...",
+  "help-sidebar.show-less": "show less...",
+  "help-sidebar.stage-no-motion": "The Stage has no motion methods.",
+
   "activity-bar.tooltip.helpsidebar": "Scratch/Python help",
   "activity-bar.tooltip.keynavhelp": "Keyboard navigation help",
   "activity-bar.tooltip.lesson": "Lesson content",

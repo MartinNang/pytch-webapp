@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useStoreState } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -78,12 +79,15 @@ const AccordionAngleSignifier: React.FC<AccordionAngleSignifierProps> = (
   );
 };
 
-const AccordionTextSignifier: React.FC<EmptyProps> = () => (
-  <div className="help-item-text-signifier">
-    <span className="for-collapsed">show more...</span>
-    <span className="for-expanded">show less...</span>
-  </div>
-);
+const AccordionTextSignifier: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("ide");
+  return (
+    <div className="help-item-text-signifier">
+      <span className="for-collapsed">{t("help-sidebar.show-more")}</span>
+      <span className="for-expanded">{t("help-sidebar.show-less")}</span>
+    </div>
+  );
+};
 
 const ScratchBlockMaybeDraggable: React.FC<
   IScratchAndPython & { workContext: DevWorkContext }
@@ -386,9 +390,10 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
     />
   ));
 
+  const { t } = useTranslation("ide");
   const noEntries = sectionHasNoEntries(sectionSlug, entries, workContext);
   const content = noEntries ? (
-    <p className="no-help-entries-help">The Stage has no motion methods.</p>
+    <p className="no-help-entries-help">{t("help-sidebar.stage-no-motion")}</p>
   ) : (
     renderedEntries
   );
