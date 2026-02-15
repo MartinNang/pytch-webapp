@@ -23,5 +23,9 @@
   "share.button.copy-tutorial-demo.title": "Copy link for tutorial and demo",
   "share.button.copy": "Copy",
 
+  "code-diff.title": "Compare your code against original",
+  "code-diff.header.original": "Original code",
+  "code-diff.header.yours": "Your code",
+
   "$RUBBISH$": ""
 }
