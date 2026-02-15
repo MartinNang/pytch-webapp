@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { CompoundTextInput } from "../CompoundTextInput";
@@ -12,6 +13,8 @@ import { asyncFlowModal } from "./utils";
 import { useFlowActions, useFlowState } from "../../model";
 
 export const DownloadZipfileModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState(
     (f) => f.downloadZipfileFlow
   );
@@ -33,7 +36,7 @@ export const DownloadZipfileModal = () => {
         centered
       >
         <Modal.Header>
-          <Modal.Title>Download zipfile</Modal.Title>
+          <Modal.Title>{t("download-zipfile.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="icon-container">
@@ -53,14 +56,14 @@ export const DownloadZipfileModal = () => {
             variant="secondary"
             onClick={settle.cancel}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isSubmittable}
             variant="primary"
             onClick={settle.submit}
           >
-            Download
+            {t("download-zipfile.button.download")}
           </Button>
         </Modal.Footer>
       </Modal>
