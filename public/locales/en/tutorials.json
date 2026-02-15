@@ -27,5 +27,13 @@
   "code-diff.header.original": "Original code",
   "code-diff.header.yours": "Your code",
 
+  "demo.button.title": "Try this project",
+  "demo.button.label": "Demo",
+  "demo.problem.title": "Problem",
+  "demo.problem.message": "Sorry, there was a problem fetching the project.",
+  "demo.created-see": "Your project has been created. Please see",
+  "demo.my-projects-link": "My projects",
+  "demo.title": "This demo was suggested for you:",
+
   "$RUBBISH$": ""
 }
