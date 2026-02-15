@@ -6,5 +6,7 @@
   "action.rename": "Rename",
   "action.delete": "DELETE",
 
+  "working.title": "Working...",
+
   "$RUBBISH$": ""
 }

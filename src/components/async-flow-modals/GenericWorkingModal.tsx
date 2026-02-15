@@ -1,8 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 
 export const GenericWorkingModal = () => {
+  const { t } = useTranslation("common");
   return (
     <Modal
       className="GenericWorkingModal"
@@ -11,7 +13,7 @@ export const GenericWorkingModal = () => {
       centered
     >
       <Modal.Header>
-        <Modal.Title>Working...</Modal.Title>
+        <Modal.Title>{t("working.title")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="spinner-container">
