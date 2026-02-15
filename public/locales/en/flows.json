@@ -1,4 +1,8 @@
 {
+  "screenshot.title": "Screenshot",
+  "screenshot.instruction": "Right-click on the image to copy or save:",
+  "screenshot.alt": "snapshot of stage",
+
   "delete-handler.title": "Delete script?",
   "delete-handler.body": "Are you sure you want to delete this script?",
 
