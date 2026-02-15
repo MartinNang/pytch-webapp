@@ -31,6 +31,7 @@ import {
 import { TwoStateSwitch } from "../TwoStateSwitch";
 import { useTranslation } from "react-i18next";
 import { AddAssetFailuresList } from "./AddAssetFailuresList";
+import { ErrorMessageDisplay } from "../ErrorMessageDisplay";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -205,12 +206,7 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 
   switch (gallery.status) {
     case "fetch-failed":
-      return (
-        <>
-          <p>Sorry, something went wrong fetching the media library.</p>
-          <p>{gallery.message}</p>
-        </>
-      );
+      return <ErrorMessageDisplay errorMessage={gallery.message} />;
     case "fetch-not-started":
     case "fetch-pending":
       return (
