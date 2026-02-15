@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -12,6 +13,8 @@ import {
 import { useFlowActions, useFlowState } from "../../model";
 
 export const RenameProjectModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameProjectFlow);
   const { setNewName } = useFlowActions((f) => f.renameProjectFlow);
 
@@ -39,7 +42,9 @@ export const RenameProjectModal = () => {
         centered
       >
         <Modal.Header closeButton={isInteractable(activeFsmState)}>
-          <Modal.Title>Rename project “{oldName}”</Modal.Title>
+          <Modal.Title>
+            {t("rename.title", { replace: { oldName } })}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -58,14 +63,14 @@ export const RenameProjectModal = () => {
             variant="secondary"
             onClick={settle.cancel}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isSubmittable}
             variant="primary"
             onClick={settle.submit}
           >
-            Rename
+            {t("rename.button.rename")}
           </Button>
         </Modal.Footer>
       </Modal>
