@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import ReactCrop from "react-image-crop";
 import Form from "react-bootstrap/Form";
@@ -63,6 +64,7 @@ const StageMockup: React.FC<StageMockupProps> = ({
   originalSize,
   scale,
 }) => {
+  const { t } = useTranslation("assets");
   // Adjust for preview stage being 0.75 the size of the real Stage:
   scale *= 0.75;
   const scaleXfm = `scale(${scale})`;
@@ -88,7 +90,7 @@ const StageMockup: React.FC<StageMockupProps> = ({
           }}
         >
           <img
-            alt="preview of effect of cropping and scaling"
+            alt={t("crop-scale.alt.preview")}
             src={sourceURL.toString()}
             style={{
               transformOrigin: "left top",
@@ -142,6 +144,8 @@ const UnitRangeFormControl: React.FC<{
 };
 
 export const CropScaleImageModal = () => {
+  const { t } = useTranslation("assets");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.cropScaleImageFlow);
   const { setNewScale, setDisplayedNewCrop, setEffectiveNewCrop } =
     useFlowActions((f) => f.cropScaleImageFlow);
@@ -171,12 +175,12 @@ export const CropScaleImageModal = () => {
         centered
       >
         <Modal.Header>
-          <Modal.Title>Adjust image</Modal.Title>
+          <Modal.Title>{t("crop-scale.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="outer-content">
             <div className="left-content">
-              <h2>Crop and scale:</h2>
+              <h2>{t("crop-scale.subtitle.crop-scale")}</h2>
               <div className="crop-container">
                 <ReactCrop
                   crop={pctCrop}
@@ -187,7 +191,10 @@ export const CropScaleImageModal = () => {
                     setEffectiveNewCrop(proportionCropFromPercentCrop(pctCrop))
                   }
                 >
-                  <img alt="Full source" src={sourceURL.toString()} />
+                  <img
+                    alt={t("crop-scale.alt.full-source")}
+                    src={sourceURL.toString()}
+                  />
                 </ReactCrop>
               </div>
               <UnitRangeFormControl
@@ -196,7 +203,7 @@ export const CropScaleImageModal = () => {
               />
             </div>
             <div className="right-content">
-              <h2>Preview on Stage:</h2>
+              <h2>{t("crop-scale.subtitle.preview")}</h2>
               <StageMockup
                 sourceURL={sourceURL}
                 sourceCrop={effectiveNewCrop}
@@ -212,7 +219,7 @@ export const CropScaleImageModal = () => {
                     setNewScale(1.0);
                   }}
                 >
-                  Reset
+                  {t("crop-scale.button.reset")}
                 </Button>
                 <div className="main">
                   <Button
@@ -220,14 +227,14 @@ export const CropScaleImageModal = () => {
                     variant="secondary"
                     onClick={settle.cancel}
                   >
-                    Cancel
+                    {tCommon("button.cancel")}
                   </Button>
                   <Button
                     disabled={!isSubmittable}
                     variant="primary"
                     onClick={settle.submit}
                   >
-                    OK
+                    {tCommon("button.ok")}
                   </Button>
                 </div>
               </div>

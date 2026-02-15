@@ -57,6 +57,13 @@
 
   "add.media-library.copyright-info": "For copyright and licensing information, see help pages.",
 
+  "crop-scale.title": "Adjust image",
+  "crop-scale.subtitle.crop-scale": "Crop and scale:",
+  "crop-scale.alt.full-source": "Full source",
+  "crop-scale.alt.preview": "preview of effect of cropping and scaling",
+  "crop-scale.subtitle.preview": "Preview on Stage:",
+  "crop-scale.button.reset": "Reset",
+
   "action.crop-scale": "Crop/scale",
   "action.copy-name": "Copy name",
   "action.move-earlier": "Move one place earlier",
