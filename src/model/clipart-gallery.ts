@@ -98,7 +98,10 @@ export const clipArtGallery: IClipArtGallery = {
       console.error("failed to fetch media library", e);
       actions.setState({
         status: "fetch-failed",
-        message: "There was an error fetching the media library.",
+        message:
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (e as any).message ??
+          "There was an error fetching the media library.",
       });
     }
   }),
