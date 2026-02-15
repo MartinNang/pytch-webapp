@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
 import Button from "react-bootstrap/Button";
 import { envVarOrDefault } from "../env-utils";
@@ -9,6 +10,7 @@ import { ErrorMessageDisplay } from "./ErrorMessageDisplay";
 type ExceptionDisplayProps = { error: { message: string } };
 
 export const ExceptionDisplay: React.FC<ExceptionDisplayProps> = (props) => {
+  const { t } = useTranslation("errors");
   const { error } = props;
 
   // Use <a> in the below, rather than <LinkWithinApp>, to ensure true
@@ -16,13 +18,13 @@ export const ExceptionDisplay: React.FC<ExceptionDisplayProps> = (props) => {
   return (
     <DivSettingWindowTitle
       className="ExceptionDisplay"
-      windowTitle="Pytch: Unexpected error"
+      windowTitle={t("unexpected.window-title")}
     >
       <div className="content">
         <ErrorMessageDisplay errorMessage={error.message} />
         <div className="button-container">
           <a href={envVarOrDefault("BASE_URL", "https://pytch.org/")}>
-            <Button>Return to Pytch app homepage</Button>
+            <Button>{t("unexpected.button.return-home")}</Button>
           </a>
         </div>
       </div>

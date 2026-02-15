@@ -1,5 +1,7 @@
 {
   "unexpected.title": "Unexpected error",
+  "unexpected.window-title": "Pytch: Unexpected error",
+  "unexpected.button.return-home": "Return to Pytch app homepage",
 
   "fetch-failure.title": "Problem fetching information",
   "fetch-failure.intro": "Sorry, there was a problem fetching the following information.  Please contact the Pytch team if the problem persists.",
