@@ -60,5 +60,11 @@
   "actor-action.go-to-sounds": "Go to sounds",
   "actor-action.add": "Add sprite",
 
+  "activity-bar.tooltip.helpsidebar": "Scratch/Python help",
+  "activity-bar.tooltip.keynavhelp": "Keyboard navigation help",
+  "activity-bar.tooltip.lesson": "Lesson content",
+  "activity-bar.tooltip.tutorial": "Tutorial content",
+  "activity-bar.tooltip.specimen": "Lesson information",
+
   "$RUBBISH$": ""
 }

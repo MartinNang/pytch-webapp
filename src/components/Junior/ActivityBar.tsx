@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityContentState,
   ActivityBarTabKey,
@@ -15,23 +16,13 @@ import { kFocusGroupItemClassName } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 
-type TabKeyUiDetails = { icon: IconName; tooltip: string };
-
-const uiDetailsFromTabKeyLut = new Map<ActivityBarTabKey, TabKeyUiDetails>([
-  ["helpsidebar", { icon: "question-circle", tooltip: "Scratch/Python help" }],
-  ["keynavhelp", { icon: "keyboard", tooltip: "Keyboard navigation help" }],
-  ["lesson", { icon: "book", tooltip: "Lesson content" }],
-  ["tutorial", { icon: "book", tooltip: "Tutorial content" }],
-  ["specimen", { icon: "book", tooltip: "Lesson information" }],
-]);
-
-function uiDetailsFromTabKey(tab: ActivityBarTabKey): TabKeyUiDetails {
-  const mDetails = uiDetailsFromTabKeyLut.get(tab);
-  if (mDetails == null) {
-    throw new Error(`unrecognised tab-key name "${tab}"`);
-  }
-  return mDetails;
-}
+const iconFromTabKey: Record<ActivityBarTabKey, IconName> = {
+  helpsidebar: "question-circle",
+  keynavhelp: "keyboard",
+  lesson: "book",
+  tutorial: "book",
+  specimen: "book",
+};
 
 const tabIsActive = (
   tab: ActivityBarTabKey,
@@ -40,13 +31,14 @@ const tabIsActive = (
 
 type ActivityBarTabProps = { tab: ActivityBarTabKey; isActive: boolean };
 const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
+  const { t } = useTranslation("ide");
   const focusContext = useFocusContext();
 
   const collapseAction = useJrEditActions((a) => a.collapseActivityContent);
   const expandAction = useJrEditActions((a) => a.expandActivityContent);
 
   const onClick = isActive ? () => collapseAction() : () => expandAction(tab);
-  const uiDetails = uiDetailsFromTabKey(tab);
+  const icon = iconFromTabKey[tab];
   const classes = classNames("ActivityBarTab", { isActive }, `tab-key-${tab}`);
   const buttonClasses = classNames("tabkey-icon", kFocusGroupItemClassName);
 
@@ -62,9 +54,9 @@ const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
         aria-selected={isActive}
         data-activity-bar-tab={tab}
       >
-        <FontAwesomeIcon icon={uiDetails.icon} />
+        <FontAwesomeIcon icon={icon} />
       </button>
-      <div className="tabkey-tooltip">{uiDetails.tooltip}</div>
+      <div className="tabkey-tooltip">{t(`activity-bar.tooltip.${tab}`)}</div>
     </li>
   );
 };
