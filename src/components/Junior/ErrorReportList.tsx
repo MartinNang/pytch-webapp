@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { assertNever, EmptyProps } from "../../utils";
 import { useJrEditActions } from "./hooks";
@@ -20,8 +21,8 @@ import { Button } from "react-bootstrap";
 const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
   lineNo,
   colNo,
-  isFirst,
 }) => {
+  const { t } = useTranslation("vm");
   const setActiveActor = useJrEditActions((a) => a.setActiveActor);
   const setActorPropertiesActiveTab = useJrEditActions(
     (a) => a.setActorPropertiesActiveTab
@@ -57,12 +58,14 @@ const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
     }
   };
 
-  const lineText = isFirst ? "Line" : "line";
-  const colText = localColNo != null ? `(position ${localColNo})` : "";
+  const key =
+    localColNo != null
+      ? "error.location.user-script.with-col"
+      : "error.location.user-script.no-col";
 
   return (
     <Button className="go-to-line" onClick={gotoLine}>
-      {lineText} {localLineNo} {colText} of your script
+      {t(key, { lineNo: localLineNo, colNo: localColNo })}
     </Button>
   );
 };
@@ -70,22 +73,17 @@ const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
 const SchedulerStepErrorIntro: SchedulerStepErrorIntroComponent = ({
   errorContext,
 }) => {
-  // TODO: What if it was a clone of a Sprite?  Might need to add to
-  // errorContext on the VM side?
-  const actor =
-    errorContext.target_class_kind === "Stage" ? (
-      <>The Stage</>
-    ) : (
-      <>
-        The {errorContext.target_class_kind}{" "}
-        <code>{errorContext.target_class_name}</code>
-      </>
-    );
-
   return (
     <p>
-      {actor} was running a script in response to the event{" "}
-      <code>{errorContext.event_label}</code>, and encountered this error:
+      <Trans
+        ns="vm"
+        i18nKey={`error.intro.one-frame.jr.${errorContext.target_class_kind}`}
+        values={{
+          className: errorContext.target_class_name,
+          eventLabel: errorContext.event_label,
+        }}
+
+      />
     </p>
   );
 };
