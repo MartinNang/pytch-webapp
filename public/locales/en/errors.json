@@ -9,5 +9,7 @@
   "fetch-failure.description.help-sidebar": "Information for the help sidebar",
   "fetch-failure.description.project-list": "Stored list of projects",
 
+  "file-processing-failures.check-and-retry": "Please check the files and try again.",
+
   "$RUBBISH$": ""
 }
