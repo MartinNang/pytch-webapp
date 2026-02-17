@@ -49,6 +49,7 @@
   "script.action.move-earlier": "Move script up",
   "script.action.move-later": "Move script down",
   "script.action.duplicate": "Duplicate script",
+  "scripts.action.add": "Add script",
 
   "per-method.pane-label.actors": "Stage, sprites",
   "per-method.tab-title.actors": "Stage and sprites",
