@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useStoreState, useStoreActions } from "../store";
@@ -20,24 +21,26 @@ import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/ext-searchbox";
 import "./ace-theme-pytch";
 import { createFocusContext, FocusContext } from "./hooks/focus-steering";
+import { Spinner } from "react-bootstrap";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
 
-const ProjectLoadFailureScreen: React.FC<EmptyProps> = () => (
-  <DivSettingWindowTitle
-    className="load-project-not-success failed"
-    windowTitle="Pytch: Problem loading project"
-  >
-    <p>
-      Sorry, there was a problem loading this project. Please contact the Pytch
-      team if you need help.
-    </p>
-    <Link to="/my-projects/">
-      <Button>Return to My Projects</Button>
-    </Link>
-  </DivSettingWindowTitle>
-);
+const ProjectLoadFailureScreen: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("errors");
+
+  return (
+    <DivSettingWindowTitle
+      className="load-project-not-success failed"
+      windowTitle={t("load-project-failure.window-title")}
+    >
+      <p>{t("load-project-failure.intro")}</p>
+      <Link to="/my-projects/">
+        <Button>{t("load-project-failure.button.return")}</Button>
+      </Link>
+    </DivSettingWindowTitle>
+  );
+};
 
 const validProjectIdString = new RegExp("^[1-9][0-9]*$");
 function strictParseProjectId(s: string): ProjectId | null {
@@ -96,9 +99,9 @@ const IDE: React.FC<EmptyProps> = () => {
     return (
       <DivSettingWindowTitle
         className="load-project-not-success pending"
-        windowTitle="Pytch: ...loading project..."
+        windowTitle="Pytch: ⏳"
       >
-        <p>Loading project....</p>
+        <Spinner animation="border" />
       </DivSettingWindowTitle>
     );
   }

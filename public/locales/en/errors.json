@@ -9,6 +9,10 @@
   "fetch-failure.description.help-sidebar": "Information for the help sidebar",
   "fetch-failure.description.project-list": "Stored list of projects",
 
+  "load-project-failure.window-title": "Pytch: Problem loading project",
+  "load-project-failure.intro": "Sorry, there was a problem loading this project. Please contact the Pytch team if you need help.",
+  "load-project-failure.button.return": "Return to My Projects",
+
   "file-processing-failures.check-and-retry": "Please check the files and try again.",
 
   "$RUBBISH$": ""
