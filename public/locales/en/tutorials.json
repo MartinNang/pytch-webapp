@@ -35,5 +35,13 @@
   "demo.my-projects-link": "My projects",
   "demo.title": "This demo was suggested for you:",
 
+  "commit.add-script.select-and-add.stage": "In the Stage and Sprites pane, select the stage. In the coding pane, select the Code tab, and use the <addButton /> button to start the process of adding a script.",
+  "commit.add-script.select-and-add.sprite": "In the Stage and Sprites pane, select the “{{spriteName}}” sprite. In the coding pane, select the Code tab, and use the <addButton /> button to start the process of adding a script.",
+  "commit.add-script.choose-hat-block": "Choose this hat-block:",
+  "commit.add-script.fill-in-argument.key-pressed": "Fill in the right key:",
+  "commit.add-script.fill-in-argument.message-received": "Fill in the right message:",
+  "commit.add-script.click-ok": "Click the OK button to add an empty script with this hat-block.",
+  "commit.add-script.type-code": "Find your new empty script in the Code panel, and type in this code:",
+
   "$RUBBISH$": ""
 }
