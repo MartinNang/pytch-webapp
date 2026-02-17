@@ -39,6 +39,10 @@
   "commit.add-sprite.type-name": "In the <i>Create new sprite</i> dialog box which appears, type the name for your new sprite, <c>{{name}}</c>.",
   "commit.add-sprite.click-ok": "Click the OK button.",
 
+  "commit.edit-script.select-and-find.stage": "In the Stage and Sprites pane, select the stage. In the coding pane, select the Code tab, and find this script:",
+  "commit.edit-script.select-and-find.sprite": "In the Stage and Sprites pane, select the “{{spriteName}}” sprite. In the coding pane, select the Code tab, and find this script:",
+  "commit.edit-script.use-tabs": "Use the three tabs under the code to see what change you need to make to your code.",
+
   "commit.add-script.select-and-add.stage": "In the Stage and Sprites pane, select the stage. In the coding pane, select the Code tab, and use the <addButton /> button to start the process of adding a script.",
   "commit.add-script.select-and-add.sprite": "In the Stage and Sprites pane, select the “{{spriteName}}” sprite. In the coding pane, select the Code tab, and use the <addButton /> button to start the process of adding a script.",
   "commit.add-script.choose-hat-block": "Choose this hat-block:",

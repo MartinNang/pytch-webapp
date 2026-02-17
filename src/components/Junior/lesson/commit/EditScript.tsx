@@ -1,8 +1,6 @@
 import React from "react";
-import {
-  ActorIdentifierOps,
-  LearnerTaskCommitEditScript,
-} from "../../../../model/junior/jr-tutorial";
+import { useTranslation } from "react-i18next";
+import { LearnerTaskCommitEditScript } from "../../../../model/junior/jr-tutorial";
 import { ScriptDiff } from "./ScriptDiff";
 
 export const EditScript: React.FC<LearnerTaskCommitEditScript> = ({
@@ -11,20 +9,21 @@ export const EditScript: React.FC<LearnerTaskCommitEditScript> = ({
   newCodeText,
   oldCodeText,
 }) => {
-  const actorNounPhrase = ActorIdentifierOps.nounPhrase(path.actor);
-  const actorKind = path.actor.kind;
+  const { t } = useTranslation("tutorials");
+
+  const actor = path.actor;
+  const actorKind = actor.kind;
+  const spriteName = actorKind === "sprite" ? actor.name : undefined;
 
   return (
     <div className="JrCommit Commit-AddScriptBody">
       <p>
-        In the Stage and Sprites pane, select {actorNounPhrase}. In the coding
-        pane, select the Code tab, and find this script:
+        {t(`commit.edit-script.select-and-find.${actorKind}`, {
+          replace: { spriteName },
+        })}
       </p>
       <ScriptDiff {...{ actorKind, event, oldCodeText, newCodeText }} />
-      <p>
-        Use the three tabs under the code to see what change you need to make to
-        your code.
-      </p>
+      <p>{t("commit.edit-script.use-tabs")}</p>
     </div>
   );
 };
