@@ -13,12 +13,12 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  // LinkedDemoRef,
-  SpecimenContentHash, DemoContentHash, LinkedDemoRef, kLinkedContentRefNone,
+  SpecimenContentHash, DemoContentHash, LinkedDemoRef,
 } from "./linked-content-core";
-import {PytchProgramKind, PytchProgramOps} from "./pytch-program";
+import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
-import demos from "../data/demos.json";
+// import demos from "../../public/data/demos/demos.json";
+import { demoUrl } from "./project-from-demo";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -28,6 +28,9 @@ export type LessonDescriptor = {
 export type DemoDescriptor = {
   demoContentHash: DemoContentHash;
   chapters?: string;
+  displayName: string;
+  summaryMarkdown: string;
+  lastUpdated: string;
   project: StandaloneProjectDescriptor;
 };
 
@@ -105,62 +108,30 @@ export async function lessonDescriptorFromRelativePath(
 
 
 async function fetchDemoChaptersFromMd(url: string): Promise<string | undefined> {
-  fetch(url)
-      .then(r => r.text())
-      .then(text => {
-        console.log('text decoded:', text);
-        return text;
-      });
-  return undefined;
+  let res = await fetch(url);
+  console.log('res', res);
+    return res.text();
 }
 
-export async function findDemo(slug: string) {
-  return demos.find((d) => d.slug === slug);
+export async function fetchDemo(slug: string) {
+  let response = await fetch("/data/demos/demos.json");
+  if (!response.ok) {
+    throw new Error(`Could not find demos.json`);
+  }
+  let demos = await response.json();
+  console.log('demos', demos);
+  return demos.find((d: { slug: string }) => d.slug === slug);
 }
 
 async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
   console.log('relative path', relativePath);
-  // const url = demoUrl(`${relativePath}.md`);
-  const mdUrl = `../assets/demos/${slug}/${slug}.md`;
+  const mdUrl = demoUrl(`${slug}/description.md`);
 
   const chapters = await fetchDemoChaptersFromMd(mdUrl);
-  const demo = await findDemo(slug);
-
-  const codeJson = await fetch(`${relativePath}/${slug}.json`);
-  const codeString = await codeJson.text();
-
-  const program = PytchProgramOps.fromJson(codeString);
-  console.log('program', program);
-
-  // const assetsZip = failIfNull(
-  //     zip.folder("assets"),
-  //     `could not enter folder "assets" of zipfile`
-  // );
-  //
-  // let assetPromises: Array<Promise<RawAssetDescriptor>> = [];
-  // assetsZip.forEach((path, zipObj) =>
-  //     assetPromises.push(_zipAsset(path, zipObj))
-  // );
-
-  // const rawAssets = await Promise.all(assetPromises);
-
-  // TODO import all assets from assets folder
-
-  // const assets: Array<TransformedAssetDescriptor> = rawAssets.map((a) => ({
-  //   ...a,
-  //   transform: AssetTransformOps.newNoop(a.mimeType),
-  // }));
-
-  let project =
-    {
-      name: demo?.displayName || "",
-      summary: demo?.summaryMarkdown || "",
-      program: program,
-      assets: [],
-      linkedContentRef: kLinkedContentRefNone,
-    };
-
-  return { demoContentHash: slug, chapters: chapters, project: project };
+  console.log('chapters', chapters);
+  const demo = await fetchDemo(slug);
+  console.log('found demo', demo);
+  return { displayName: demo.displayName, lastUpdated: demo.lastUpdated, project: demo.project, summaryMarkdown: "", demoContentHash: slug, chapters: chapters };
 }
 
 export async function dereferenceLinkedSpecimen(
@@ -246,19 +217,10 @@ export async function dereferenceLinkedDemo(
     programKind: PytchProgramKind,
     ref: LinkedDemoRef
 ): Promise<LinkedDemo> {
-  // const contentHash = ref.specimenContentHash;
-  // const relativePath = `_by_content_hash_/${contentHash}`;
-  // const lesson = await lessonDescriptorFromRelativePath(relativePath);
   const contentHash = ref.slug;
-  const relativePath = `../src/assets/demos/${contentHash}`;
+  const relativePath = `demos/${contentHash}`;
 
   const demo = await demoDescriptorFromRelativePath(relativePath, ref.slug);
-  // const specimenKind = lesson.project.program.kind;
-  // if (specimenKind !== programKind) {
-  //   throw new Error(
-  //       `project is "${programKind}" but specimen is "${specimenKind}"`
-  //   );
-  // }
 
   return { kind: "demo", demo };
 }

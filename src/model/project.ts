@@ -5,14 +5,14 @@ import {
   LinkedContentRef,
   kLinkedContentRefNone,
   LinkedContentRefUpdate,
-  LinkedContentRefOfKind, LinkedDemoRef,
+  LinkedContentRefOfKind,
 } from "./linked-content-core";
 import {
   LinkedContent,
   LinkedContentKind,
   LinkedContentOfKind,
   dereferenceLinkedSpecimen,
-  dereferenceLinkedNoContent, dereferenceLinkedDemo, findDemo,
+  dereferenceLinkedNoContent, dereferenceLinkedDemo,
 } from "./linked-content";
 import {
   Action,
@@ -48,12 +48,12 @@ import {
 import { IPytchAppModel } from ".";
 import { assetServer } from "../skulpt-connection/asset-server";
 import {
-  assertNever,
-  delaySeconds,
-  failIfNull,
-  parsedHtmlBody,
-  propSetterAction,
-  valueCell,
+    assertNever,
+    delaySeconds,
+    failIfNull,
+    parsedHtmlBody,
+    propSetterAction,
+    valueCell,
 } from "../utils";
 import { codeJustBeforeWipChapter, tutorialContentFromHTML } from "./tutorial";
 
@@ -330,7 +330,6 @@ export interface IActiveProject {
 
   syncDummyProject: SAction;
   ensureSyncFromStorage: ASThunk<ProjectId>;
-  syncDemoProject: ASThunk<string>;
   doLinkedContentLoadTask: ASThunk<LinkedContentLoadTaskDescriptor>;
   syncAssetsFromStorage: ASThunk<void>;
   deactivate: SThunk<void>;
@@ -566,14 +565,12 @@ export const activeProject: IActiveProject = {
   }),
 
   ////////////////////////////////////////////////////////////////////////
-
   // The clunky dance for upsertSprite() and deleteSprite() is because
   // modifications to app state have to be made within an Action, but we
   // need information learnt from the process of changing state, to
   // return to the caller of a thunk.  We manage this by having the
   // Action accept a callback arg, which can be used within the
   // corresponding Thunk wrapping the Action.  There might a better way.
-
   _upsertSprite: action((state, augArgs) => {
     let program = ensureStructured(state.project, "_upsertSprite");
     const affectedSpriteId = StructuredProgramOps.upsertSprite(
@@ -807,7 +804,6 @@ export const activeProject: IActiveProject = {
   }),
 
   ////////////////////////////////////////////////////////////////////////
-
   _setCodeText: action((state, text) => {
     let project = state.project;
     failIfDummy(project, "setCodeText");
@@ -833,107 +829,6 @@ export const activeProject: IActiveProject = {
     };
 
     state.project = dummyProject;
-  }),
-
-  syncDemoProject: thunk(async (actions, demoId, helpers) => {
-    console.log("syncDemoProject(): starting for demo", demoId);
-
-    const previousLoadRequest = helpers.getState().latestLoadRequest;
-
-    const ourSeqnum = previousLoadRequest.seqnum + 1;
-    actions.noteLoadRequest({ demoId, seqnum: ourSeqnum, state: "pending" });
-
-    const storeActions = helpers.getStoreActions();
-
-    storeActions.standardOutputPane.clear();
-    storeActions.errorReportList.clear();
-    actions.noteCodeSaved();
-
-    console.log("cleared ouput pane, reports, code changes");
-
-    try {
-    const demo = await findDemo(demoId);
-
-    const descriptor = {
-      id: -2,
-      name: demo?.displayName,
-      linkedContentRef: kLinkedContentRefNone,
-      assets: []
-    };
-
-    console.log('loading linked content');
-    const linkedDemoRef: LinkedDemoRef = { kind: "demo", slug: demoId }
-
-    if (demo !== undefined && (demo.programType === "flat" || demo.programType === "per-method")) {
-      // since we do not load data from the database, we expect faster loading times use await
-      await actions.doLinkedContentLoadTask({
-        // FIXME: this is not a good solution but for now demos do not receive a valid projectId but are also not dummys
-        projectId: -2,
-        projectProgramKind: demo.programType,
-        linkedContentRef: linkedDemoRef,
-      });
-    }
-
-      const assetPresentations = await Promise.all(
-          descriptor.assets.map((a) => AssetPresentation.create(a))
-      );
-
-    const relativePath = `../src/assets/demos/${demoId}`;
-    const codeJson = await fetch(`${relativePath}/${demoId}.json`);
-    const codeString = await codeJson.text();
-
-    const program = PytchProgramOps.fromJson(codeString);
-      const content: StoredProjectContent = {
-        id: descriptor.id,
-        name: demo?.displayName || "",
-        assets: assetPresentations,
-        program: program,
-        linkedContentRef: descriptor.linkedContentRef,
-      };
-
-      // since we do not load data from the database, we expect faster loading times and
-      // therefore do not check if the request is loaded
-
-      console.log('initialise content');
-      actions.initialiseContent(content);
-      if (content.trackedTutorial != null) {
-        actions.setActiveTutorialChapter(
-            content.trackedTutorial.activeChapterIndex
-        );
-      }
-
-      console.log('program kind', content.program.kind);
-      const programKind = content.program.kind;
-      switch (programKind) {
-        case "per-method": {
-          const bootData = {
-            program: content.program.program,
-            linkedContentKind: content.linkedContentRef.kind,
-          };
-          storeActions.jrEditState.bootForProgram(bootData);
-          break;
-        }
-        case "flat": {
-          const flatBootData = {
-            linkedContentKind: content.linkedContentRef.kind,
-            isTrackingTutorial: content.trackedTutorial != null,
-          };
-          storeActions.jrEditState.bootForFlatProgram(flatBootData);
-          break;
-        }
-        default:
-          assertNever(programKind);
-      }
-
-      console.log('set note load request outcome');
-      actions.noteLoadRequestOutcome("succeeded");
-      fireAndForgetEvent("project-loaded", `demo-${demoId}`);
-    } catch (err) {
-      console.log(`error loading demo ${demoId}:`, err);
-      actions.noteLoadRequestOutcome("failed");
-    } finally {
-      actions.setLoadPhase("booted");
-    }
   }),
 
   // Because the DB operations are all asynchronous, we must cope with the
@@ -986,7 +881,6 @@ export const activeProject: IActiveProject = {
 
       // Just set this off; do not await it.  If the network is slow or
       // broken we don't want to hold up the rest of the student's work.
-      console.log('loading linked content');
       actions.doLinkedContentLoadTask({
         projectId,
         projectProgramKind: descriptor.program.kind,
@@ -996,7 +890,6 @@ export const activeProject: IActiveProject = {
       // TODO: Should the asset-server be local to the project?  Might
       // save all the to/fro with prepare/clear and knowing when to revoke
       // the image-urls?
-
       const assetPresentations = await Promise.all(
         descriptor.assets.map((a) => AssetPresentation.create(a))
       );
@@ -1137,7 +1030,6 @@ export const activeProject: IActiveProject = {
   syncAssetsFromStorage: thunk(async (actions, _voidPayload, helpers) => {
     // TODO: Does this have a race if the active project changes while
     // we're in the middle of working?
-
     // The assetServer is told about all assets afresh, one by one,
     // via the calls to AssetPresentation.create() below.  So clear
     // the asset-server before we start.
@@ -1219,7 +1111,6 @@ export const activeProject: IActiveProject = {
 
     // If we get here, the operation was successful.  Errors are caught
     // but rethrown.
-
     await actions.syncAssetsFromStorage();
 
     helpers.getStoreActions().projectCollection.noteDatabaseChange();
@@ -1463,7 +1354,6 @@ export const activeProject: IActiveProject = {
 
   ////////////////////////////////////////////////////////////////////////
   // Background sync
-
   nPendingSyncActions: 0,
   pendingSyncActionsExist: computed((state) => state.nPendingSyncActions > 0),
   increaseNPendingSyncActions: action((state, nActionsIncrease) => {

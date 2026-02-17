@@ -1,10 +1,10 @@
 import React from "react";
-import {Button, Card, Col, Row} from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Link, useNavigate} from "react-router-dom";
-import {pathWithinApp} from "../env-utils";
+import { useStoreActions } from "../store";
+import {Link} from "react-router-dom";
 
 type DemoCardProps = {
     demo: Demo;
@@ -31,11 +31,11 @@ export class Demo {
     featuredImage: string | undefined;
     programType: ProgramType;
     projectType: ProjectType;
-    projectUrl: string;
     slug: string;
+    recommended?: string;
 
     constructor(displayName: string, summaryMarkdown: string | undefined, lastUpdated: Date, isGroup: boolean, featuredImage: string | undefined,
-                programType: ProgramType, projectType: ProjectType, projectUrl: string, slug: string) {
+                programType: ProgramType, projectType: ProjectType, slug: string) {
         this.displayName = displayName;
         this.summaryMarkdown = summaryMarkdown;
         this.lastUpdated = lastUpdated;
@@ -43,7 +43,6 @@ export class Demo {
         this.featuredImage = featuredImage;
         this.programType = programType;
         this.projectType = projectType;
-        this.projectUrl = projectUrl;
         this.slug = slug;
     }
 }
@@ -54,41 +53,40 @@ export const DemoCard: React.FC<DemoCardProps> = ({
     setProgramType,
                                                   }) => {
 
-    const navigate = useNavigate();
+  const createProject = useStoreActions(
+    (actions) => actions.projectFromDemoFlow.createProject
+  );
 
-    // function handleOpenDemo() {
-    //     console.log('demoooo', demo);
-    //     // dismissButtonTour();
-    //     // ensureNotFullScreen();
-    //     navigate(pathWithinApp("/" + demo.slug));
-    // }
+  function capitalise(word: string) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }
 
-    return (
+  return (
         <Card className={"flex-row flex-wrap card"}>
             <Card.Header className={"p-0 w-100"}>
                 <Row className={"pill-row w-100 p-3 m-0"}>
                     {
-                        demo.programType === ProgramType.flat ?
+                        capitalise(demo.programType) === ProgramType.flat ?
                             (
-                                <div className={"pill-icon flat-icon"} onClick={() => setProgramType(demo.programType.toString())}>
+                                <Button className={"pill-icon flat-icon"} onClick={() => setProgramType(capitalise(demo.programType.toString()))}>
                                     <img src={flatIcon} alt={"flat project"} />
-                                </div>
+                                </Button>
                             )
                             :
                             ( demo.programType === ProgramType.perMethod ?
-                                <div className={"pill-icon per-method-icon"} onClick={() => {
-                                    setProgramType(demo.programType?.toString());
+                                <Button className={"pill-icon per-method-icon"} onClick={() => {
+                                    setProgramType(capitalise(demo.programType?.toString()));
                                     console.log('setting program type to', demo.programType.toString());
                                 }}>
                                     <img src={permethodIcon} alt={"per-method project"} />
-                                </div> : undefined
+                                </Button> : undefined
                             )
                     }
 
-                    <div className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}
-                         onClick={() => setProjectType(demo.projectType)}>
-                        <p>{demo.projectType}</p>
-                    </div>
+                    <Button className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}
+                         onClick={() => setProjectType(capitalise(demo.projectType))}>
+                        <p>{capitalise(demo.projectType)}</p>
+                    </Button>
                     {
                         demo.isGroup && (
                             <div className={"pill-project-type group-pill ms-auto p-1"}>
@@ -105,17 +103,13 @@ export const DemoCard: React.FC<DemoCardProps> = ({
                 />
             </Card.Header>
             <Card.Body className={"p-4 py-3"}>
-                <Link to={pathWithinApp("/demos/" + demo.slug)}><h3>{demo.displayName}</h3></Link>
+
+                <Link to={""} onClick={() => createProject(demo.slug)}><h3>{demo.displayName}</h3></Link>
                 <p className={"demo-summaryMarkdown"}>{demo.summaryMarkdown}</p>
+
                 <Row className={"share-row"}>
                     <Col xs={6} className={"align-items-end d-flex"}>
-                        <p className={"m-0"}>{demo.lastUpdated.toLocaleDateString()}</p>
-                    </Col>
-                    <Col xs={6} className={"d-flex justify-content-end"}>
-                        <Button className={"px-3"}>
-                            <FontAwesomeIcon icon="share" className={"me-1"} />
-                            Share
-                        </Button>
+                        <p className={"m-0"}>{new Date(demo.lastUpdated).toLocaleDateString()}</p>
                     </Col>
                 </Row>
             </Card.Body>

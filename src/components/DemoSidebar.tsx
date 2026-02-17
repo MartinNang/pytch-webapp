@@ -1,70 +1,63 @@
 import React, {useEffect, useRef, useState} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {Button, Col, Collapse, Container, Row} from "react-bootstrap";
-import Card from "react-bootstrap/Card";
-import {Link, useParams} from "react-router-dom";
+import {Button, Col, Collapse, Container, Placeholder, Row} from "react-bootstrap";
+import {Link} from "react-router-dom";
 import Markdown from 'react-markdown';
-import demos from '../data/demos.json';
+import {useLinkedDemo} from "./Junior/lesson/hooks";
 
 export const DemoSidebar = () => {
-    // get slug parameter from url or component parameter
-  const slug = useParams().demoIdString;
-
+  const maybeDemo = useLinkedDemo();
   const [md, setMd] = useState<string>("");
-  fetch(`../src/assets/demos/${slug}/${slug}.md`)
-    .then(r => r.text())
-    .then(text => {
-      console.log('text decoded:', text);
-      setMd(text);
-    });
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setMd(maybeDemo?.demo.chapters || "");
+    if (maybeDemo?.demo) setLoading(false);
+  }, [maybeDemo]);
 
   const [activeChapter, setActiveChapter] = useState<number>(0);
   const [headings, setHeadings] = useState<string[] | null>(null);
   const [chapterContents, setChapterContents] = useState<string[] | null>(null);
     const [open, setOpen] = useState(true);
 
-        // find and set demo
-        const foundDemo = demos.find((d) => d.slug === slug);
-        console.log("found demo", foundDemo);
+  /**
+   * Parse markdown file by mapping every line of text to the previous
+   * top level heading. Ignores lines of text written before the first heading.
+   * @param markdown markdown text
+   */
+  function parseMarkdown(markdown: string) {
+    let headingsMatch: RegExpMatchArray | null = markdown.match(/(?<=(^#)\s).*/gm);
 
-  function getTopLevelHeadings(label: string) {
-    let headings: RegExpMatchArray | null = label.match(/(?<=(^#)\s).*/gm);
-    console.log('top level headings: ', headings);
-    // TODO: should empty headings be ignored/filtered?
-    let headingsStrings;
-    if (headings !== null) headingsStrings = headings?.filter((heading) => heading.length > 0);
-    else headingsStrings = headings;
+    if (headingsMatch) {
+      // TODO: should empty headings be ignored/filtered?
+      let headings: string[] = headingsMatch?.filter((heading) => heading.length > 0);
 
-    if (headingsStrings !== null) {
-      let j = 0;
-      let res = [];
-      let lines = label.split("\n");
-      // for every line in md
-        for (let i = 0; i < lines.length; i++) {
-          let line = lines[i];
-          // if line contains heading
-          if (line.startsWith("# " + headingsStrings[j])) {
-            // copy every line until next heading is found or EOF
-            j++;
-          } else if (j > 0) {
-            if (res[j - 1]) {
-              res[j - 1] += line + "\n";
-            } else {
-              res[j - 1] = line;
+      if (headings !== null) {
+          let headingsIndex = 0;
+          let content = [];
+          let lines = markdown.split("\n");
+          for (let linesIndex = 0; linesIndex < lines.length; linesIndex++) {
+            let line = lines[linesIndex];
+            if (line.startsWith("# " + headings[headingsIndex])) {
+              headingsIndex++;
+            } else if (headingsIndex > 0) {
+              if (content[headingsIndex - 1]) {
+                content[headingsIndex - 1] += line + "\n";
+              } else {
+                content[headingsIndex - 1] = line;
+              }
             }
           }
-        }
-      console.log('probably not', {headingsStrings, res})
-      return {headingsStrings, res};
-
+          return {headings, res: content};
+      }
     }
     return null;
 
   }
 
   useEffect(() => {
-    let data = getTopLevelHeadings(md);
-    setHeadings(data?.headingsStrings || null);
+    let data = parseMarkdown(md || "");
+    setHeadings(data?.headings || null);
     setChapterContents(data?.res || null);
   }, [md]);
 
@@ -92,7 +85,7 @@ export const DemoSidebar = () => {
               className="demo-header d-flex justify-content-between align-items-center p-3"
               style={{ backgroundColor: "#306998" }}
             >
-              <div className={"w-auto p-0 m-0"}>
+              <div className={"w-auto p-0 m-0 ps-2"}>
                 <h1
                   style={{
                     fontSize: "1.1rem",
@@ -101,10 +94,10 @@ export const DemoSidebar = () => {
                     color: "#FFF792",
                   }}
                 >
-                  {foundDemo?.displayName}
+                  {maybeDemo?.demo.displayName}
                 </h1>
               </div>
-              <div className={"w-auto"}>
+              <div className={"w-auto d-flex"}>
                 <div
                   className={
                     "chapter-pill bg-white rounded-pill d-flex justify-content-center align-items-center"
@@ -116,35 +109,38 @@ export const DemoSidebar = () => {
                     {activeChapter+1}/{headings?.length}
                   </span>
                 </div>
+                <Button
+                    className={"w-auto bg-transparent p-0 border-0 ms-2"}
+                    onClick={() => {
+                      setOpen(!open);
+                      console.log("switching to", !open);
+                    }}
+                    onFocus={() => chaptersRef.current[activeChapter]?.scrollIntoView({behavior: "smooth"})}
+                >
+                  <FontAwesomeIcon
+                      icon={"caret-down"}
+                      className={"nav-caret " + (open ? "nav-expanded" : "")}
+                  />
+                </Button>
               </div>
             </Row>
             <Row
               className={
-                "demo-sub-header p-3 d-flex flex-row justify-content-between"
+                "demo-sub-header d-flex flex-row justify-content-between " + (maybeDemo?.demo.summaryMarkdown ? "p-3" : "p-2")
               }
             >
               <Col xs={11}
                 className={"p-0 m-0"}
                 style={{ color: "white", fontSize: "0.9rem" }}
               >
-                  {foundDemo?.summaryMarkdown}
+                  {
+                    loading
+                      ?
+                        <Placeholder animation={"glow"}/>
+                      :
+                        maybeDemo?.demo.summaryMarkdown
+                  }
               </Col>
-                <Col xs={1} className={"ms-auto d-flex align-items-center justify-content-end"}>
-                    <Button
-                        className={"w-auto bg-transparent p-0 border-0"}
-                        onClick={() => {
-                            setOpen(!open);
-                            console.log("switching to", !open);
-                        }}
-                        onFocus={() => chaptersRef.current[activeChapter]?.scrollIntoView({behavior: "smooth"})}
-                    >
-                        <FontAwesomeIcon
-                            icon={"caret-down"}
-                            className={"nav-caret " + (open ? "nav-expanded" : "")}
-                        />
-                    </Button>
-                </Col>
-
             </Row>
             <Row className={"chapters-overview flex-row"} style={{}}>
               <Col className={"pe-0"}>
@@ -214,7 +210,12 @@ export const DemoSidebar = () => {
                         <div className={"d-flex flex-row"}>
                           <span className={"me-1"}>{activeChapter + 1}.</span>
                           <div className={"w-100"}>
-                            <Markdown>{headings[activeChapter]}</Markdown>
+                            {
+                              loading ?
+                                  <Placeholder animation={"glow"}/>
+                                  :
+                                  <Markdown>{headings[activeChapter]}</Markdown>
+                            }
                           </div>
                         </div>
                       ) : (
@@ -263,60 +264,16 @@ export const DemoSidebar = () => {
                     </Markdown>
                   </Col>
                 </Row>
-                <Row className={"linked-projects"}>
-                  <Col>
-                    <hr />
-                    <h2>Linked projects</h2>
-                    <Card className={"d-flex flex-row"}>
-                      <Col xs={5}>
-                        <Card.Header
-                          className={
-                            "d-flex align-items-center justify-content-center"
-                          }
-                        >
-                          <Card.Img
-                            className={"h-100 object-fit-contain"}
-                            src={
-                              "https://www.pytch.org/tutorials/9cfcca8136e43ebf04be/script-by-script-hello/tutorial-assets/screenshot.png"
-                            }
-                          ></Card.Img>
-                        </Card.Header>
-                      </Col>
-                      <Col>
-                        <Card.Body>
-                          <Link to={"#"}>
-                            <h3>Hello world!</h3>
-                          </Link>
-                          <Row className={"pill-row ms-0"}>
-                            <div className={"tutorial-pill w-auto"}>
-                              <span>Tutorial</span>
-                            </div>
-                            <div className={"program-type-icon w-auto"}>
-                              <img></img>
-                            </div>
-                          </Row>
-                          <Row>
-                            <p>
-                              This tutorial will introduce you to the main ideas
-                              of writing programs using Pytch.
-                            </p>
-                          </Row>
-                        </Card.Body>
-                      </Col>
-                    </Card>
-                  </Col>
-                </Row>
               </Container>
             </Row>
             <Row className={"demo-footer py-2 px-3 d-flex flex-row"}>
               <div className={"d-flex align-items-center flex-grow-1 w-auto"}>
-                <p className={"mb-0"}>Published on {new Date(foundDemo?.lastUpdated || "").toLocaleDateString()}</p>
-              </div>
-              <div className={"w-auto"}>
-                <Button className={"share-button"}>
-                  <FontAwesomeIcon icon={"share"} />
-                  Share
-                </Button>
+                {
+                  loading ?
+                      <Placeholder animation={"glow"}/>
+                      :
+                      <p className={"mb-0"}>Published on {new Date(maybeDemo?.demo.lastUpdated || "").toLocaleDateString()}</p>
+                }
               </div>
             </Row>
           </Container>

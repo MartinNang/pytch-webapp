@@ -7,33 +7,171 @@ import {
   Carousel,
   Col,
   Container,
-  Form,
+  Form, Placeholder,
   Row,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
-import demos from "../data/demos.json";
 import { Link } from "react-router-dom";
 import { Demo, DemoCard, ProgramType, ProjectType } from "./DemoCard";
 import {PaginationProvider} from "./PaginationProvider";
+import { useStoreActions } from "../store";
 
 export enum SortingOptions {
     lastUpdated = "Last Updated",
     alphabetAsc ="A to Z"
 }
 
+function RecommendedDemoCardSkeleton() {
+  return (
+    <Card className={"recommended-card flex-sm-row card"}>
+      <Col xs={12} sm={5} md={4}>
+        <Card.Header className={"p-0 me-1 w-100 h-100"}>
+          <Placeholder as={Card.Img} className={"h-100"} />
+        </Card.Header>
+      </Col>
+      <Col xs={12} sm={7} md={8}>
+        <Card.Body className={"p-3 px-4 d-flex flex-column"}>
+          <Placeholder as={Card.Title} className={"mb-3 placeholder rounded-1"} animation={"wave"} size={"lg"}/>
+          <Placeholder as={Card.Subtitle} className={"demo-description placeholder rounded-1"} animation={"wave"}/>
+          <Row className={"footer-row"}>
+            <Col
+              xs={12}
+              sm={6}
+              className={"align-items-end d-flex"}
+            >
+              <Placeholder xs={12} className={"mt-3 rounded-1"}/>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Col>
+    </Card>
+  );
+}
+
+function RecommendedDemoCard({ recommendedDemo } : {recommendedDemo: Demo}) {
+  const createProject = useStoreActions(
+    (actions) => actions.projectFromDemoFlow.createProject
+  );
+
+  return (
+    <Card className={"recommended-card flex-sm-row card"}>
+      <Col xs={12} sm={5} md={4}>
+        <Card.Header className={"p-0 me-1 w-100 h-100"}>
+          <Card.Img
+            variant={"top"}
+            className={"h-100 object-fit-cover p-1"}
+            src={recommendedDemo.featuredImage}
+          />
+        </Card.Header>
+      </Col>
+      <Col xs={12} sm={7} md={8}>
+        <Card.Body className={"p-3 px-4 d-flex flex-column"}>
+          <Row className={"pill-row p-0 m-0 mb-3"}>
+            {recommendedDemo.programType ===
+            ProgramType.flat ? (
+              <div className={"pill-icon flat-icon"}>
+                <img src={flatIcon} alt={"flat project"} />
+              </div>
+            ) : (
+              <div className={"pill-icon per-method-icon"}>
+                <img
+                  src={permethodIcon}
+                  alt={"per-method project"}
+                />
+              </div>
+            )}
+
+            <div
+              className={
+                "pill-project-type " +
+                (recommendedDemo.projectType ===
+                ProjectType.game
+                  ? "game-pill"
+                  : "snippet-pill")
+              }
+            >
+              <p>
+                {recommendedDemo.projectType[0].toUpperCase() +
+                  recommendedDemo.projectType.slice(1)}
+              </p>
+            </div>
+            {recommendedDemo.isGroup && (
+              <div
+                className={
+                  "pill-project-type group-pill ms-auto p-1"
+                }
+              >
+                <FontAwesomeIcon icon={"layer-group"} />
+              </div>
+            )}
+          </Row>
+          <Link to={""} onClick={() => createProject(recommendedDemo.slug)}>
+            <h3 style={{ fontWeight: "bold" }}>
+              {recommendedDemo.displayName}
+            </h3>
+          </Link>
+          <p className={"demo-description"}>
+            {recommendedDemo.summaryMarkdown}
+          </p>
+          <Row className={"footer-row"}>
+            <Col
+              xs={12}
+              sm={6}
+              className={"align-items-end d-flex"}
+            >
+              <p className={"m-0"}>
+                {new Date(
+                  recommendedDemo.lastUpdated
+                ).toLocaleDateString()}
+              </p>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Col>
+    </Card>
+  );
+}
+
 export const DemoList: React.FC<EmptyProps> = () => {
+  const [demos, setDemos] = useState<Demo[]>([]);
+  const [sortedDemos, setSortedDemos] = useState<Demo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     document.title = "Pytch: Demos";
   });
 
-  const paneRef = React.useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    async function getDemos() {
+      await fetch("/data/demos/demos.json").then((res) =>
+        res.json().then((data: Demo[]) => {
+          console.log("data", data);
+          setDemos(data);
+          const sorted = data.sort((a, b) => {
+            return (
+              new Date(b.lastUpdated).getTime() -
+              new Date(a.lastUpdated).getTime()
+            );
+          });
+          console.log("sorted", sorted);
+          setSortedDemos(sorted);
+          setFilteredDemos(data);
+          setLoading(false);
+        })
+      );
+    }
+    getDemos();
+  }, []);
 
-  const sortedDemos = demos.sort((a, b) => {
-      return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
-  });
+  useEffect(() => {
+    const r = demos.filter((demo: Demo) => demo.recommended === "true");
+    setRecommendedDemos(r);
+    console.log("set recommended demos to", r);
+  }, [demos]);
+
+  const paneRef = React.useRef<HTMLDivElement>(null);
 
   const [filteredDemos, setFilteredDemos] = useState(sortedDemos);
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,8 +180,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
   const [sortBy, setSortBy] = useState<string>("Last Updated");
   const [recommendedIndex, setRecommendedIndex] = useState(0);
   const [activePage, setActivePage] = useState(1);
-
-  const recommendedDemos = demos.filter((demo) => demo.recommended === "true");
+  const [recommendedDemos, setRecommendedDemos] = useState<Demo[]>([]);
 
   const handleSelect = (selectedIndex: number) => {
     setRecommendedIndex(selectedIndex);
@@ -53,41 +190,49 @@ export const DemoList: React.FC<EmptyProps> = () => {
     let searchResults = [...sortedDemos];
 
     if (searchTerm.length > 0) {
-      searchResults = searchResults.filter(demo => demo.displayName.toLowerCase().includes(searchTerm.toLowerCase()));
-    }
-
-    if (projectType.toLowerCase() !== ProjectType.all.toLowerCase()) {
-      console.log('searching for project type', projectType.toString());
-      searchResults = searchResults.filter(demo =>
-        {
-          console.log('found project type', demo.projectType);
-          return projectType?.toLowerCase().includes(demo.projectType.toLowerCase());
-        }
+      searchResults = searchResults.filter((demo) =>
+        demo.displayName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    if (programType?.length > 0 && programType !== "Program type") {
-      searchResults = searchResults.filter(demo => {
-        return demo.programType.toLowerCase() === programType.toLowerCase() || (demo.programType === "perMethod" && programType === "Per-method")
+    if (projectType.toLowerCase() !== ProjectType.all.toLowerCase()) {
+      console.log("searching for project type", projectType.toString());
+      searchResults = searchResults.filter((demo) => {
+        console.log("found project type", demo.projectType);
+        return projectType
+          ?.toLowerCase()
+          .includes(demo.projectType.toLowerCase());
+      });
+    }
 
+    if (programType?.length > 0 && programType !== "Program type") {
+      searchResults = searchResults.filter((demo) => {
+        return (
+          demo.programType.toLowerCase() === programType.toLowerCase() ||
+          (demo.programType.toString() === "perMethod" &&
+            programType === "Per-method")
+        );
       });
     }
 
     if (sortBy.toLowerCase() === SortingOptions.alphabetAsc.toLowerCase()) {
-        console.log('sorting by alphabet');
-        searchResults = searchResults.sort((a,b) =>
-            a.displayName.localeCompare(b.displayName));
+      console.log("sorting by alphabet");
+      searchResults = searchResults.sort((a, b) =>
+        a.displayName.localeCompare(b.displayName)
+      );
     } else {
-        console.log('sorting by date');
-        searchResults = searchResults.sort((a,b) =>
-            new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+      console.log("sorting by date");
+      searchResults = searchResults.sort(
+        (a, b) =>
+          new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
+      );
     }
-      setFilteredDemos(searchResults);
+    setFilteredDemos(searchResults);
   }
 
-    useEffect(() => {
-      handleSearch();
-    }, [searchTerm, programType, projectType, sortBy]);
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm, programType, projectType, sortBy]);
 
   const itemsPerPage = 10;
 
@@ -104,73 +249,28 @@ export const DemoList: React.FC<EmptyProps> = () => {
           <div className={"row demos-recommended"}>
             <Row className={"pt-5 justify-content-between mb-3"}>
               <h2 className={"w-auto m-0"}>Recommended</h2>
-              <p className={"w-auto m-0 mt-auto"}>{recommendedIndex+1}/{recommendedDemos.length}</p>
+              <p className={"w-auto m-0 mt-auto"}>
+                {recommendedIndex + 1}/{recommendedDemos.length}
+              </p>
             </Row>
-            <Carousel activeIndex={recommendedIndex} onSelect={handleSelect} fade className={"mb-5"}>
-              {
-               recommendedDemos.map(demo => {
-                 return (
-                   <Carousel.Item>
-                     <Card className={"recommended-card flex-sm-row card"}>
-                       <Col xs={12} sm={5} md={4}>
-                         <Card.Header className={"p-0 me-1 w-100 h-100"}>
-                           <Card.Img
-                             variant={"top"}
-                             className={"h-100 object-fit-cover p-1"}
-                             src={demo.featuredImage}
-                           />
-                         </Card.Header>
-                       </Col>
-                       <Col xs={12} sm={7} md={8}>
-                         <Card.Body className={"p-3 px-4 d-flex flex-column"}>
-                           <Row className={"pill-row p-0 m-0 mb-3"}>
-                             {
-                               demo.programType === ProgramType.flat ?
-                                 (
-                                   <div className={"pill-icon flat-icon"}>
-                                     <img src={flatIcon} alt={"flat project"} />
-                                   </div>
-                                 )
-                                 :
-                                 (
-                                   <div className={"pill-icon per-method-icon"}>
-                                     <img src={permethodIcon} alt={"per-method project"} />
-                                   </div>
-                                 )
-                             }
-
-                             <div
-                               className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}>
-                               <p>{demo.projectType[0].toUpperCase() + demo.projectType.slice(1)}</p>
-                             </div>
-                             {
-                               demo.isGroup && (
-                                 <div className={"pill-project-type group-pill ms-auto p-1"}>
-                                   <FontAwesomeIcon icon={"layer-group"} />
-                                 </div>
-                               )
-                             }
-                           </Row>
-                           <Link to={demo.projectUrl}><h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3></Link>
-                           <p className={"demo-description"}>{demo.summaryMarkdown}</p>
-                           <Row className={"footer-row"}>
-                             <Col xs={12} sm={6} className={"align-items-end d-flex"}>
-                               <p className={"m-0"}>{new Date(demo.lastUpdated).toLocaleDateString()}</p>
-                             </Col>
-                             <Col xs={12} sm={6} className={"d-flex justify-content-end"}>
-                               <Button className={"px-3"}>
-                                 <FontAwesomeIcon icon="share" className={"me-1"} />
-                                 Share
-                               </Button>
-                             </Col>
-                           </Row>
-                         </Card.Body>
-                       </Col>
-                     </Card>
-                   </Carousel.Item>
-                 );
-               })
-              }
+            <Carousel
+              activeIndex={recommendedIndex}
+              onSelect={handleSelect}
+              fade
+              className={"mb-5"}
+              variant={"dark"}
+            >
+              {loading ? (
+                <Carousel.Item>
+                  <RecommendedDemoCardSkeleton/>
+                </Carousel.Item>
+              ) : (
+                recommendedDemos.map((recommendedDemo) => (
+                  <Carousel.Item>
+                    <RecommendedDemoCard recommendedDemo={recommendedDemo} />
+                  </Carousel.Item>
+                ))
+              )}
             </Carousel>
           </div>
         </div>
@@ -188,8 +288,8 @@ export const DemoList: React.FC<EmptyProps> = () => {
                             <div className="d-flex p-0">
                               <div>
                                 <Form.Select
-                                    key={"ProjectType"}
-                                    value={projectType}
+                                  key={"ProjectType"}
+                                  value={projectType}
                                   style={{
                                     borderRadius: "10px",
                                     borderTopRightRadius: "0",
@@ -199,20 +299,21 @@ export const DemoList: React.FC<EmptyProps> = () => {
                                     borderColor: "#8B8B8B",
                                   }}
                                   onChange={(e) => {
-                                    console.log('e', e.target.value);
-                                    setProjectType(e.target.value)
-                                  }
-                                  }
+                                    console.log("e", e.target.value);
+                                    setProjectType(e.target.value);
+                                  }}
                                 >
-                                  {Object.values(ProjectType).map((projectType) => (
+                                  {Object.values(ProjectType).map(
+                                    (projectType) => (
                                       <option>{projectType}</option>
-                                  ))}
+                                    )
+                                  )}
                                 </Form.Select>
                               </div>
                               <div className="flex-grow-1">
                                 <Form.Control
-                                    key={"searchField"}
-                                    autoFocus={true}
+                                  key={"searchField"}
+                                  autoFocus={true}
                                   className={"w-100"}
                                   placeholder=""
                                   value={searchTerm}
@@ -221,7 +322,9 @@ export const DemoList: React.FC<EmptyProps> = () => {
                                     borderRight: "none",
                                     borderColor: "#8B8B8B",
                                   }}
-                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                  onChange={(e) =>
+                                    setSearchTerm(e.target.value)
+                                  }
                                 />
                               </div>
                               <div className="">
@@ -254,11 +357,15 @@ export const DemoList: React.FC<EmptyProps> = () => {
                           <Form.Label visuallyHidden={true}>
                             Program type
                           </Form.Label>
-                          <Form.Select key={"programType"} className={"border-0"} value={programType} onChange={(e) => {
-                                    console.log('programType', e.target.value);
-                                    setProgramType(e.target.value)
-                                }
-                            }>
+                          <Form.Select
+                            key={"programType"}
+                            className={"border-0"}
+                            value={programType}
+                            onChange={(e) => {
+                              console.log("programType", e.target.value);
+                              setProgramType(e.target.value);
+                            }}
+                          >
                             <option hidden={false}>Program type</option>
                             {Object.values(ProgramType).map((programType) => (
                               <option>{programType}</option>
@@ -267,12 +374,15 @@ export const DemoList: React.FC<EmptyProps> = () => {
                         </Form.Group>
                         <Form.Group className={"w-auto"}>
                           <Form.Label visuallyHidden={true}>Sort by</Form.Label>
-                          <Form.Select className={"border-0"} value={sortBy} onChange={(e) => {
-                              setSortBy(e.target.value)
-                          }
-                          }>
-                              <option>Last Updated</option>
-                              <option>A to Z</option>
+                          <Form.Select
+                            className={"border-0"}
+                            value={sortBy}
+                            onChange={(e) => {
+                              setSortBy(e.target.value);
+                            }}
+                          >
+                            <option>Last Updated</option>
+                            <option>A to Z</option>
                           </Form.Select>
                         </Form.Group>
                       </Row>
@@ -282,33 +392,33 @@ export const DemoList: React.FC<EmptyProps> = () => {
               </Form>
             </Row>
             <Row className={"p-3"}>
-                {filteredDemos.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage).map((demo) => (
-                    <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-                      <DemoCard demo={new Demo(
-                          demo.displayName,
-                          demo.summaryMarkdown,
-                          new Date(demo.lastUpdated),
-                          Boolean(demo.isGroup).valueOf(),
-                          demo.featuredImage,
-                          ProgramType[demo.programType],
-                          ProjectType[demo.projectType],
-                          demo.projectUrl,
-                          demo.slug
-                      )}
+              {filteredDemos
+                .slice(
+                  (activePage - 1) * itemsPerPage,
+                  activePage * itemsPerPage
+                )
+                .map((demo) => (
+                  <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+                    <DemoCard
+                      demo={demo}
                       setProjectType={setProjectType}
                       setProgramType={setProgramType}
-                      />
-                    </Col>
-                ))}
-              {filteredDemos.length === 0 ?
-                  <Col className={"d-flex justify-content-center align-items-center no-results"}>
-                    <p>No demos found.</p>
+                    />
                   </Col>
-                  : undefined}
+                ))}
+              {filteredDemos.length === 0 ? (
+                <Col
+                  className={
+                    "d-flex justify-content-center align-items-center no-results"
+                  }
+                >
+                  <p>No demos found.</p>
+                </Col>
+              ) : undefined}
             </Row>
           </Container>
 
-          < PaginationProvider
+          <PaginationProvider
             activePage={activePage}
             setActivePage={setActivePage}
             list={filteredDemos}

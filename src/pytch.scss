@@ -590,7 +590,7 @@ button.awaiting-action {
   position: absolute;
   width: 100%;
 
-  & div {
+  & button {
     z-index: 1;
   }
 }
@@ -598,7 +598,7 @@ button.awaiting-action {
 
 
 .pill-row .pill-icon {
-  background-color: white;
+  background-color: white !important;
   border-radius: 10px;
   display: flex;
   align-self: center;
@@ -619,8 +619,8 @@ button.awaiting-action {
 .pill-row .pill-project-type {
   width: auto;
   margin-left: 8px;
-  border-radius: 20px;
-  background-color: #9097FF;
+  border-radius: 20px !important;
+  background-color: #9097FF !important;
   display: flex;
   height: 31px;
 }
@@ -639,7 +639,7 @@ button.awaiting-action {
 }
 
 .pill-project-type.group-pill {
-  background-color: #EBF5F9;
+  background-color: #EBF5F9 !important;
 }
 
 .page-item a {
@@ -652,7 +652,7 @@ button.awaiting-action {
 }
 
 .pill-project-type.snippet-pill {
-  background-color: #00B5B0;
+  background-color: #00B5B0 !important;
 }
 
 .card {

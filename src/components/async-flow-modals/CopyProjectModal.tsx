@@ -51,6 +51,16 @@ function textsForKeepLink(ref: LinkedContentRef): TwoStateSwitchTexts {
           </span>
         ),
       };
+    case "demo":
+      return {
+        question: <span>Make copy be linked to demo?</span>,
+        trueStatus: <span>Copy will be linked to demo.</span>,
+        falseStatus: (
+          <span>
+            Copy will <b>not</b> be linked to demo.
+          </span>
+        ),
+      }
     default:
       return assertNever(ref);
   }
