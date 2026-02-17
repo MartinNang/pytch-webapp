@@ -81,7 +81,7 @@ context("Runtime errors", () => {
     cy.pytchShouldHaveErrorStackTraceOfLength(4);
 
     // Verify that button warps cursor to correct location.
-    cy.get(".go-to-line").eq(2).contains("line 14").click();
+    cy.get(".go-to-line").eq(2).contains("Line 14").click();
     cy.pytchSendKeysToApp("ZZZ");
     cy.pytchCodeTextShouldContain("ZZZself.actually");
   });
