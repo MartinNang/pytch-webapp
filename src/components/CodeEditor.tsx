@@ -11,26 +11,26 @@ import { failIfNull } from "../utils";
 import { useFlatCodeText } from "./hooks/code-text";
 import { eqDisplaySize } from "../model/ui";
 import { SingleTab } from "./SingleTab";
+import { Spinner } from "react-bootstrap";
 
 const ReadOnlyOverlay = () => {
-  const maybeMessage = useStoreState((state) => {
+  const showSpinner = useStoreState((state) => {
     const syncState = state.activeProject.syncState;
     // TODO: Handle "failed" state.
-    return syncState.loadState === "pending"
-      ? "Loading..."
-      : syncState.saveState === "pending"
-      ? "Saving..."
-      : null;
+    return (
+      syncState.loadState === "pending" || syncState.saveState === "pending"
+    );
   });
 
-  if (maybeMessage != null) {
-    return (
-      <div className="ReadOnlyOverlay">
-        <p>{maybeMessage}</p>
+  return (
+    showSpinner && (
+      <div className="ReadOnlyOverlay abs-0000 text-center">
+        <div className="text-center">
+          <Spinner animation="border" />
+        </div>
       </div>
-    );
-  }
-  return null;
+    )
+  );
 };
 
 const CodeAceEditor = () => {

@@ -309,11 +309,6 @@ $speech-bubble-max-height: 180px;
 
   .ReadOnlyOverlay {
     z-index: 10;
-    position: absolute;
-    left: -4px;
-    right: -4px;
-    top: -4px;
-    bottom: -4px;
     background-color: black;
     color: white;
     opacity: 0.4;
