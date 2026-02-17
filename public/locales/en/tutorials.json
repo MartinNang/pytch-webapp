@@ -43,6 +43,14 @@
   "commit.edit-script.select-and-find.sprite": "In the Stage and Sprites pane, select the “{{spriteName}}” sprite. In the coding pane, select the Code tab, and find this script:",
   "commit.edit-script.use-tabs": "Use the three tabs under the code to see what change you need to make to your code.",
 
+  "commit.delete-appearance.select-actor.stage": "In the <i>Stage and Sprites</i> pane, select the stage.",
+  "commit.delete-appearance.select-actor.sprite": "In the <i>Stage and Sprites</i> pane, select the “{{spriteName}}” sprite.",
+  "commit.delete-appearance.select-tab": "In the coding pane, select the {{appearancesTabTitle}} tab.",
+  "commit.delete-appearance.find-and-click.sprite": "Find the costume called <c>{{appearanceFilename}}</c> and click the <dropdownButton /> button at its top right.",
+  "commit.delete-appearance.find-and-click.stage": "Find the backdrop called <c>{{appearanceFilename}}</c> and click the <dropdownButton /> button at its top right.",
+  "commit.delete-appearance.confirm.sprite": "Choose the <c>DELETE</c> menu item. In the dialog box which appears, click the <c>DELETE</c> button to confirm that you want to delete this costume.",
+  "commit.delete-appearance.confirm.stage": "Choose the <c>DELETE</c> menu item. In the dialog box which appears, click the <c>DELETE</c> button to confirm that you want to delete this backdrop.",
+
   "commit.add-script.select-and-add.stage": "In the Stage and Sprites pane, select the stage. In the coding pane, select the Code tab, and use the <addButton /> button to start the process of adding a script.",
   "commit.add-script.select-and-add.sprite": "In the Stage and Sprites pane, select the “{{spriteName}}” sprite. In the coding pane, select the Code tab, and use the <addButton /> button to start the process of adding a script.",
   "commit.add-script.choose-hat-block": "Choose this hat-block:",

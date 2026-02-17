@@ -1,36 +1,49 @@
 import React from "react";
-import {
-  ActorIdentifierOps,
-  LearnerTaskCommitDeleteAppearance,
-} from "../../../../model/junior/jr-tutorial";
-import { ActorKindOps } from "../../../../model/junior/structured-program";
+import { Trans, useTranslation } from "react-i18next";
+import { LearnerTaskCommitDeleteAppearance } from "../../../../model/junior/jr-tutorial";
 import { DisplayDropdownButton } from "../../DisplayDropdownButton";
 
 export const DeleteAppearance: React.FC<LearnerTaskCommitDeleteAppearance> = ({
   actor,
   appearanceFilename,
 }) => {
-  const actorKindNames = ActorKindOps.names(actor.kind);
-  const actorNounPhrase = ActorIdentifierOps.nounPhrase(actor);
+  const { t } = useTranslation("tutorials");
+  const { t: tIde } = useTranslation("ide");
+
+  const actorKind = actor.kind;
+  const appearancesTabTitle = tIde(
+    `per-method.tab-title.actor-properties.appearances.${actorKind}`
+  );
+
+  const spriteName = actorKind === "sprite" ? actor.name : undefined;
 
   return (
     <div className="JrCommit Commit-DeleteAppearance">
       <p>
-        In the <i>Stage and Sprites</i> pane, select {actorNounPhrase}.
+        <Trans
+          ns="tutorials"
+          i18nKey={`commit.delete-appearance.select-actor.${actorKind}`}
+          values={{ spriteName }}
+        />
       </p>
       <p>
-        In the coding pane, select the {actorKindNames.appearancesDisplayTitle}{" "}
-        tab.
+        {t("commit.delete-appearance.select-tab", {
+          replace: { appearancesTabTitle },
+        })}
       </p>
       <p>
-        Find the {actorKindNames.appearanceDisplay} called{" "}
-        <code>{appearanceFilename}</code> and click the{" "}
-        <DisplayDropdownButton /> button at its top right.
+        <Trans
+          ns="tutorials"
+          i18nKey={`commit.delete-appearance.find-and-click.${actorKind}`}
+          values={{ appearanceFilename }}
+          components={{ dropdownButton: <DisplayDropdownButton /> }}
+        />
       </p>
       <p>
-        Choose the <code>DELETE</code> menu item. In the dialog box which
-        appears, click the <code>DELETE</code> button to confirm that you want
-        to delete this {actorKindNames.appearanceDisplay}.
+        <Trans
+          ns="tutorials"
+          i18nKey={`commit.delete-appearance.confirm.${actorKind}`}
+        />
       </p>
     </div>
   );
