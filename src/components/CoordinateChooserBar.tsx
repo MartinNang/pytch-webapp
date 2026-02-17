@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useStoreActions, useStoreState } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "react-bootstrap/Button";
@@ -36,6 +37,8 @@ const coordsOrPlaceholderSpan = (position: PointerStagePosition) => {
 };
 
 const CoordsChooserBarMessage: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("ide");
+
   // These are the four cases, in terms of position-kind and
   // chooser-state-kind, and the message we want to display in each:
 
@@ -82,7 +85,7 @@ const CoordsChooserBarMessage: React.FC<EmptyProps> = () => {
     <div>
       {coordsSpan}
       <span className={infoClass(!isShowingCopied && isOverStage)}>
-        Click on stage to copy
+        {t("coords-chooser.click-to-copy")}
       </span>
     </div>
   );
@@ -92,7 +95,7 @@ const CoordsChooserBarMessage: React.FC<EmptyProps> = () => {
       <span
         className={infoClass(!isShowingCopied && !isOverStage, "bare-message")}
       >
-        Move pointer over stage to see (x, y)
+        {t("coords-chooser.move-to-see")}
       </span>
     </div>
   );
@@ -101,7 +104,7 @@ const CoordsChooserBarMessage: React.FC<EmptyProps> = () => {
     <div>
       {coordsSpan}
       <span className={infoClass(isShowingCopied && isOverStage, "copied")}>
-        Copied!
+        {t("coords-chooser.copied")}
       </span>
     </div>
   );
@@ -110,7 +113,7 @@ const CoordsChooserBarMessage: React.FC<EmptyProps> = () => {
     <div>
       {coordsSpan}
       <span className={infoClass(isShowingCopied && !isOverStage, "copied")}>
-        Copied!
+        {t("coords-chooser.copied")}
       </span>
     </div>
   );

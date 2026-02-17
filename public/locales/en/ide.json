@@ -60,6 +60,10 @@
   "actor-action.go-to-sounds": "Go to sounds",
   "actor-action.add": "Add sprite",
 
+  "coords-chooser.click-to-copy": "Click on stage to copy",
+  "coords-chooser.move-to-see": "Move pointer over stage to see (x, y)",
+  "coords-chooser.copied": "Copied!",
+
   "activity-pane.aria-label": "Help and other information",
 
   "help-sidebar.show-more": "show more...",
