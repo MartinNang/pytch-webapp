@@ -6,7 +6,7 @@ import { WidthMonitor } from "./WidthMonitor";
 import { HelpSidebar } from "../HelpSidebar";
 import Tutorial from "../Tutorial";
 import { KeyNavHelpSidebar } from "./KeyNavHelpSidebar";
-import { DemoSidebar } from "../DemoSidebar";
+import { DemoSidebar } from "../demo-sidebar/DemoSidebar";
 
 export const ActivityContent: React.FC<EmptyProps> = () => {
   const s = useJrEditState((s) => s.activityContentState);

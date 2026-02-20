@@ -1,10 +1,11 @@
 import React from "react";
-import {Button, Card, Col, Row} from "react-bootstrap";
-import flatIcon from "../images/flat-simple.png";
-import permethodIcon from "../images/per-method-simple.png";
+import { Button, Card, Col, Row } from "react-bootstrap";
+import flatIcon from "../../images/flat-simple.png";
+import permethodIcon from "../../images/per-method-simple.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { useStoreActions } from "../store";
+import { useStoreActions } from "../../store";
 import {Link} from "react-router-dom";
+import { PytchProgramKind } from "../../model/pytch-program";
 
 type DemoCardProps = {
     demo: Demo;
@@ -27,21 +28,19 @@ export class Demo {
     displayName: string;
     summaryMarkdown: string | undefined;
     lastUpdated: Date;
-    isGroup: boolean;
     featuredImage: string | undefined;
-    programType: ProgramType;
+    programKind: PytchProgramKind;
     projectType: ProjectType;
     slug: string;
     recommended?: string;
 
     constructor(displayName: string, summaryMarkdown: string | undefined, lastUpdated: Date, isGroup: boolean, featuredImage: string | undefined,
-                programType: ProgramType, projectType: ProjectType, slug: string) {
+                programType: PytchProgramKind, projectType: ProjectType, slug: string) {
         this.displayName = displayName;
         this.summaryMarkdown = summaryMarkdown;
         this.lastUpdated = lastUpdated;
-        this.isGroup = isGroup;
         this.featuredImage = featuredImage;
-        this.programType = programType;
+        this.programKind = programType;
         this.projectType = projectType;
         this.slug = slug;
     }
@@ -66,34 +65,27 @@ export const DemoCard: React.FC<DemoCardProps> = ({
             <Card.Header className={"p-0 w-100"}>
                 <Row className={"pill-row w-100 p-3 m-0"}>
                     {
-                        capitalise(demo.programType) === ProgramType.flat ?
+                        capitalise(demo.programKind) === ProgramType.flat ?
                             (
-                                <Button className={"pill-icon flat-icon"} onClick={() => setProgramType(capitalise(demo.programType.toString()))}>
+                                <Button className={"pill-icon flat-icon"} onClick={() => setProgramType(capitalise(demo.programKind.toString()))}>
                                     <img src={flatIcon} alt={"flat project"} />
                                 </Button>
                             )
                             :
-                            ( demo.programType === ProgramType.perMethod ?
+                            ( demo.programKind === ProgramType.perMethod.toLowerCase() ?
                                 <Button className={"pill-icon per-method-icon"} onClick={() => {
-                                    setProgramType(capitalise(demo.programType?.toString()));
-                                    console.log('setting program type to', demo.programType.toString());
+                                    setProgramType(capitalise(demo.programKind?.toString()));
+                                    console.log('setting program type to', demo.programKind.toString());
                                 }}>
                                     <img src={permethodIcon} alt={"per-method project"} />
                                 </Button> : undefined
                             )
                     }
 
-                    <Button className={"pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}
+                    <Button className={"ms-auto pill-project-type " + (demo.projectType === ProjectType.game ? "game-pill" : "snippet-pill")}
                          onClick={() => setProjectType(capitalise(demo.projectType))}>
                         <p>{capitalise(demo.projectType)}</p>
                     </Button>
-                    {
-                        demo.isGroup && (
-                            <div className={"pill-project-type group-pill ms-auto p-1"}>
-                                <FontAwesomeIcon icon={"layer-group"} />
-                            </div>
-                        )
-                    }
 
                 </Row>
                 <Card.Img

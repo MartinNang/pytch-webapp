@@ -6,7 +6,7 @@ import { Content } from "./Content";
 import { ContentLoadingSpinner } from "./ContentLoadingSpinner";
 import { SpecimenInformation } from "./SpecimenInformation";
 import { ErrorMessageDisplay } from "../../ErrorMessageDisplay";
-import { DemoSidebar } from "../../DemoSidebar";
+import { DemoSidebar } from "../../demo-sidebar/DemoSidebar";
 
 export const MaybeContent: React.FC<EmptyProps> = () => {
   const linkedContentState = useLinkedContentLoadingStateSummary();

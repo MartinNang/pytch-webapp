@@ -109,7 +109,6 @@ export async function lessonDescriptorFromRelativePath(
 
 async function fetchDemoChaptersFromMd(url: string): Promise<string | undefined> {
   let res = await fetch(url);
-  console.log('res', res);
     return res.text();
 }
 
@@ -119,7 +118,6 @@ export async function fetchDemo(slug: string) {
     throw new Error(`Could not find demos.json`);
   }
   let demos = await response.json();
-  console.log('demos', demos);
   return demos.find((d: { slug: string }) => d.slug === slug);
 }
 
@@ -128,10 +126,15 @@ async function demoDescriptorFromRelativePath(relativePath: string, slug: string
   const mdUrl = demoUrl(`${slug}/description.md`);
 
   const chapters = await fetchDemoChaptersFromMd(mdUrl);
-  console.log('chapters', chapters);
   const demo = await fetchDemo(slug);
-  console.log('found demo', demo);
-  return { displayName: demo.displayName, lastUpdated: demo.lastUpdated, project: demo.project, summaryMarkdown: "", demoContentHash: slug, chapters: chapters };
+  return {
+    displayName: demo.displayName,
+    lastUpdated: demo.lastUpdated,
+    project: demo.project,
+    summaryMarkdown: demo.summaryMarkdown,
+    demoContentHash: slug,
+    chapters: chapters
+  };
 }
 
 export async function dereferenceLinkedSpecimen(

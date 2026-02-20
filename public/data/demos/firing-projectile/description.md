@@ -1,255 +1,58 @@
-# Firing a Projectile - Part 1
+# Basic Firing
+## Player
+The script for the player isn't very important for this example.
+Just glide left and right across the bottom of the screen.
 
-Example descriptionsbdvsnlnkdkslnnklsvklnsdvknlsdvklnsdvnksdvnlksdvklnsdvklnsdvndvsklndsvknsdvklnsdvkn
-# Firing a Projectile - Part 2
-Textnlsdndkldsvknsdvnklsdvnlkdvnlsdvklnsdvklnsklsdlvsdklvlksvd dsvnklnsvdkv sdvndsbsd vdsv snvdkslvklndsvkldkv
-## Example Subheading
-Example description 2mvsdnlksdvnklsdvnklsdvldsvlksdvnnk vsdvnvdslnvsd dsvnsdbvks sdvdvsvibvsdbvdsklvdnsd svkdnvls
-# Firing a Projectile - Part 3
-hi.vsklnkvvskldsvklnsdvklnsdvknsdvklsdkldkvnjrnlteobjtioebnk nanöldvölmvpa vodabhpvnal vmdajp nblojehpbw
-# Firing a Projectile - Part 4
-hiya.nlkv dvsnbv vsldvndsvbsd vs,nwbo envk wbebw ewlbnw e
----
-__Advertisement :)__
+## Bullet 
+### When green start button is pressed
+The bullet can be in one of two states.  Either we're waiting to be fired, or we're in the middle of being fired up the screen.  Keep
+track of which state we're in, by remembering whether we're in the middle of being fired.  At the start, we're NOT in the middle of
+being fired.
 
-- __[pica](https://nodeca.github.io/pica/demo/)__ - high quality and fast image
-  resize in browser.
-- __[babelfish](https://github.com/nodeca/babelfish/)__ - developer friendly
-  i18n with plurals support and easy syntax.
+While we're waiting to be fired, we don't want to be visible.
 
-You will like those projects!
+### When "space" key is pressed
+Once we've started being fired up the screen, we want pressing space
+to have no effect.  So quit this script before doing any real work
+if we are already in the middle of being fired.
 
----
+Once we get here, we ARE in the middle of being fired.  Remember
+that fact.
 
-## h2 Heading
-### h3 Heading
-#### h4 Heading
-##### h5 Heading
-###### h6 Heading
+Find the player sprite and move ourselves to its location, except a bit higher ("+20" for the Y coordinate) so the bullet appears at the top of the ship.
 
+Become visible.
 
-## Horizontal Rules
+Move quite quickly up the screen, until we're well off the top.
 
-___
+We are no longer in the middle of being fired, so remember that.
 
----
+# Advanced Firing
+## Player
+The script for the player isn't very important for this example.
+Just glide left and right across the bottom of the screen.
 
-***
+## Bullet
+### When green start button is pressed
+This variable doesn't change, but it's helpful to have a named value
+for the maximum number of Bullet clones we want to be allowed to
+exist at one time.
 
+### When "space" key is pressed
+Make sure that only the original (hidden) Bullet responds to the
+keypress.  Without this, every clone makes a new clone and we soon
+have thousands of clones.
 
-## Typographic replacements
+If there are already the maximum number of Bullet clones being fired, stop here.
 
-Enable typographer option to see result.
+Make the new Bullet clone; the "when I start as a clone" script below does the rest of the work.
 
-(c) (C) (r) (R) (tm) (TM) (p) (P) +-
+### When bullet starts as a clone
+Find the player sprite and move ourselves to its location, except a bit higher ("+20" for the Y coordinate) so the bullet appears at the top of the ship.
 
-test.. test... test..... test?..... test!....
+Become visible.
 
-!!!!!! ???? ,,  -- ---
+Move quite quickly up the screen, until we're well off the top.
 
-"Smartypants, double quotes" and 'single quotes'
-
-
-## Emphasis
-
-**This is bold text**
-
-__This is bold text__
-
-*This is italic text*
-
-_This is italic text_
-
-~~Strikethrough~~
-
-
-## Blockquotes
-
-
-> Blockquotes can also be nested...
->> ...by using additional greater-than signs right next to each other...
-> > > ...or with spaces between arrows.
-
-
-## Lists
-
-Unordered
-
-+ Create a list by starting a line with `+`, `-`, or `*`
-+ Sub-lists are made by indenting 2 spaces:
-    - Marker character change forces new list start:
-        * Ac tristique libero volutpat at
-        + Facilisis in pretium nisl aliquet
-        - Nulla volutpat aliquam velit
-+ Very easy!
-
-Ordered
-
-1. Lorem ipsum dolor sit amet
-2. Consectetur adipiscing elit
-3. Integer molestie lorem at massa
-
-
-1. You can use sequential numbers...
-1. ...or keep all the numbers as `1.`
-
-Start numbering with offset:
-
-57. foo
-1. bar
-
-
-## Code
-
-Inline `code`
-
-Indented code
-
-    // Some comments
-    line 1 of code
-    line 2 of code
-    line 3 of code
-
-
-Block code "fences"
-
-```
-Sample text here...
-```
-
-Syntax highlighting
-
-``` js
-var foo = function (bar) {
-  return bar++;
-};
-
-console.log(foo(5));
-```
-
-## Tables
-
-| Option | Description |
-| ------ | ----------- |
-| data   | path to data files to supply the data that will be passed into templates. |
-| engine | engine to be used for processing templates. Handlebars is the default. |
-| ext    | extension to be used for dest files. |
-
-Right aligned columns
-
-| Option | Description |
-| ------:| -----------:|
-| data   | path to data files to supply the data that will be passed into templates. |
-| engine | engine to be used for processing templates. Handlebars is the default. |
-| ext    | extension to be used for dest files. |
-
-
-## Links
-
-[link text](http://dev.nodeca.com)
-
-[link with title](http://nodeca.github.io/pica/demo/ "title text!")
-
-Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
-
-
-## Images
-
-![Minion](https://octodex.github.com/images/minion.png)
-![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
-
-Like links, Images also have a footnote style syntax
-
-![Alt text][id]
-
-With a reference later in the document defining the URL location:
-
-[id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
-
-
-## Plugins
-
-The killer feature of `markdown-it` is very effective support of
-[syntax plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin).
-
-
-### [Emojies](https://github.com/markdown-it/markdown-it-emoji)
-
-> Classic markup: :wink: :cry: :laughing: :yum:
->
-> Shortcuts (emoticons): :-) :-( 8-) ;)
-
-see [how to change output](https://github.com/markdown-it/markdown-it-emoji#change-output) with twemoji.
-
-
-### [Subscript](https://github.com/markdown-it/markdown-it-sub) / [Superscript](https://github.com/markdown-it/markdown-it-sup)
-
-- 19^th^
-- H~2~O
-
-
-### [\<ins>](https://github.com/markdown-it/markdown-it-ins)
-
-++Inserted text++
-
-
-### [\<mark>](https://github.com/markdown-it/markdown-it-mark)
-
-==Marked text==
-
-
-### [Footnotes](https://github.com/markdown-it/markdown-it-footnote)
-
-Footnote 1 link[^first].
-
-Footnote 2 link[^second].
-
-Inline footnote^[Text of inline footnote] definition.
-
-Duplicated footnote reference[^second].
-
-[^first]: Footnote **can have markup**
-
-    and multiple paragraphs.
-
-[^second]: Footnote text.
-
-
-### [Definition lists](https://github.com/markdown-it/markdown-it-deflist)
-
-Term 1
-
-:   Definition 1
-with lazy continuation.
-
-Term 2 with *inline markup*
-
-:   Definition 2
-
-        { some code, part of Definition 2 }
-
-    Third paragraph of definition 2.
-
-_Compact style:_
-
-Term 1
-~ Definition 1
-
-Term 2
-~ Definition 2a
-~ Definition 2b
-
-
-### [Abbreviations](https://github.com/markdown-it/markdown-it-abbr)
-
-This is HTML abbreviation example.
-
-It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
-
-*[HTML]: Hyper Text Markup Language
-
-### [Custom containers](https://github.com/markdown-it/markdown-it-container)
-
-::: warning
-*here be dragons*
-:::
+This clone has finished its job, so delete it to avoid cluttering up
+the game with lots of clones.
