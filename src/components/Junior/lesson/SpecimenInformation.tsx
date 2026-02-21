@@ -18,10 +18,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ specimen }) => {
       const originalCodeText = specimen.lesson.project.program.text;
       const currentCodeText = codeTextEnsuringFlat("<ActionButtons>", program);
       const launch = () => {
-        runFlow({
-          textA: originalCodeText,
-          textB: currentCodeText,
-        });
+        runFlow({ textA: originalCodeText, textB: currentCodeText });
       };
       return <Button onClick={launch}>Compare to original</Button>;
     }
