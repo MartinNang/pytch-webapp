@@ -1,9 +1,4 @@
-import {
-  assertNever,
-  ensureDivOfClass,
-  isDivOfClass,
-  parsedHtmlBody,
-} from "../../utils";
+import { ensureDivOfClass, isDivOfClass, parsedHtmlBody } from "../../utils";
 import { PytchProgramKind } from "../pytch-program";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import { EventDescriptor } from "./structured-program";
