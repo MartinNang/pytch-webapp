@@ -41,6 +41,9 @@
   "demo.my-projects-link": "My projects",
   "demo.title": "This demo was suggested for you:",
 
+  "chapter.toc-title": "Summary of this project’s steps:",
+  "chapter.hint-do-task": "(You’ll see the next step once you’ve marked this task as done.)",
+
   "chapter-navigation.prev": "Back: {{displayTitle}}",
   "chapter-navigation.next": "Next: {{displayTitle}}",
 
