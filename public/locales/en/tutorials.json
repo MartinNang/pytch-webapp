@@ -61,6 +61,9 @@
   "script-diff.view-kind.new-diff": "What should my code look like afterwards?",
   "script-diff.empty-placeholder": "[This script has no code yet.]",
 
+  "commit.change-hat-block.find-script.stage": "Find and select the stage, and then find this script:",
+  "commit.change-hat-block.find-script.sprite": "Find and select the “{{spriteName}}” sprite, and then find this script:",
+  "commit.change-hat-block.change-to": "Double-click on the hat block and change it to:",
   "commit.add-sprite.click-add-button": "In the <i>Stage and Sprites</i> pane, click the <addButton /> button to start the process of adding a new sprite.",
   "commit.add-sprite.type-name": "In the <i>Create new sprite</i> dialog box which appears, type the name for your new sprite, <c>{{name}}</c>.",
   "commit.add-sprite.click-ok": "Click the OK button.",
