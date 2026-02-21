@@ -35,6 +35,21 @@
   "demo.my-projects-link": "My projects",
   "demo.title": "This demo was suggested for you:",
 
+  "learner-task.fragment-error": "Tutorial error. Please contact the Pytch team if you see this! (Unless you are the author of a tutorial and you understand the message below.)",
+
+  "learner-task.checkbox-help.current": "Click when you’ve done this.",
+  "learner-task.checkbox-help.previous": "Done! (Click to rewind to this task.)",
+  "learner-task.checkbox-help.old": "Done!",
+  "learner-task.checkbox-help.future": "(This is a task preview)",
+
+  "learner-task.help-stage-button.label.hide": "Hide help",
+  "learner-task.help-stage-button.label.show-me": "Show me",
+  "learner-task.help-stage-button.label.hint": "Hint",
+  "learner-task.help-stage-button.description.hide": "Hide the solution and any hints for this task",
+  "learner-task.help-stage-button.description.show-solution": "Show the solution to this task",
+  "learner-task.help-stage-button.description.show-first-hint": "Show a hint for this task",
+  "learner-task.help-stage-button.description.show-another-hint": "Show another hint for this task",
+
   "commit.add-sprite.click-add-button": "In the <i>Stage and Sprites</i> pane, click the <addButton /> button to start the process of adding a new sprite.",
   "commit.add-sprite.type-name": "In the <i>Create new sprite</i> dialog box which appears, type the name for your new sprite, <c>{{name}}</c>.",
   "commit.add-sprite.click-ok": "Click the OK button.",
