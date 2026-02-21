@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { useLinkedJrTutorial } from "./hooks";
 import {
@@ -156,6 +157,7 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
   setChapterIndex,
   cloneChapterTitleElt,
 }) => {
+  const { t } = useTranslation("tutorials");
   const focusContext = useFocusContext();
 
   const maxJumpableChapterIndex =
@@ -210,7 +212,9 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
         data-chapter-index={`${d.index}`}
         className={classes}
         onClick={onClick}
-        aria-label={`Chapter ${d.index}`}
+        aria-label={t("progress-trail.chapter-aria-label", {
+          replace: { index: d.index },
+        })}
       >
         {tooltip}
       </div>
