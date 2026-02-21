@@ -38,19 +38,19 @@ const HatContentNub: React.FC<HatBlockContentProps> = ({
 }) => {
   switch (event.kind) {
     case "green-flag":
-      return <Trans i18nKey="display-hat-block.green-flag" ns="ide" />;
+      return <Trans i18nKey="hat-block-content.green-flag" ns="ide" />;
     case "clicked":
       return (
-        <Trans i18nKey={`display-hat-block.clicked.${actorKind}`} ns="ide" />
+        <Trans i18nKey={`hat-block-content.clicked.${actorKind}`} ns="ide" />
       );
     case "start-as-clone":
-      return <Trans i18nKey="display-hat-block.start-as-clone" ns="ide" />;
+      return <Trans i18nKey="hat-block-content.start-as-clone" ns="ide" />;
     case "key-pressed": {
       const browserKey = variant === "kind-chosen" ? " " : event.keyName;
       const keyName = descriptorFromBrowserKeyName(browserKey).displayName;
       return (
         <Trans
-          i18nKey="display-hat-block.key-pressed"
+          i18nKey="hat-block-content.key-pressed"
           ns="ide"
           components={{
             key: <span className="key-content">{keyName}</span>,
@@ -62,7 +62,7 @@ const HatContentNub: React.FC<HatBlockContentProps> = ({
       const message = variant === "kind-chosen" ? "\u00a0" : event.message;
       return (
         <Trans
-          i18nKey="display-hat-block.message-received"
+          i18nKey="hat-block-content.message-received"
           ns="ide"
           components={{
             msg: <span className="message-content">{message}</span>,

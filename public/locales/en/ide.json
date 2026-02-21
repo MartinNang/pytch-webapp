@@ -38,12 +38,12 @@
   "info.expand-button.label": "Output and errors",
   "info.collapse-button.aria-label": "Hide output and errors",
 
-  "display-hat-block.green-flag": "when green flag clicked",
-  "display-hat-block.clicked.sprite": "when this sprite clicked",
-  "display-hat-block.clicked.stage": "when stage clicked",
-  "display-hat-block.start-as-clone": "when I start as a clone",
-  "display-hat-block.key-pressed": "when <key /> key pressed",
-  "display-hat-block.message-received": "when I receive “<msg />”",
+  "hat-block-content.green-flag": "when green flag clicked",
+  "hat-block-content.clicked.sprite": "when this sprite clicked",
+  "hat-block-content.clicked.stage": "when stage clicked",
+  "hat-block-content.start-as-clone": "when I start as a clone",
+  "hat-block-content.key-pressed": "when <key /> key pressed",
+  "hat-block-content.message-received": "when I receive “<msg />”",
 
   "script.action.change-hat-block": "Change hat block",
   "script.action.move-earlier": "Move script up",
