@@ -45,6 +45,10 @@
   "hat-block-content.key-pressed": "when <key /> key pressed",
   "hat-block-content.message-received": "when I receive “<msg />”",
 
+  "upsert-handler-modal.title": "Choose hat block",
+  "upsert-handler-modal.message-placeholder": "message",
+  "upsert-handler-modal.empty-message-hint": "Please provide a message.",
+
   "script.action.change-hat-block": "Change hat block",
   "script.action.move-earlier": "Move script up",
   "script.action.move-later": "Move script down",
