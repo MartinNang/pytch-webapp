@@ -64,6 +64,15 @@
   "commit.change-hat-block.find-script.stage": "Find and select the stage, and then find this script:",
   "commit.change-hat-block.find-script.sprite": "Find and select the “{{spriteName}}” sprite, and then find this script:",
   "commit.change-hat-block.change-to": "Double-click on the hat block and change it to:",
+
+  "commit.add-medialib-appearances-entry.select-actor.stage": "In the <i>Stage and Sprites</i> pane, select the stage.",
+  "commit.add-medialib-appearances-entry.select-actor.sprite": "In the <i>Stage and Sprites</i> pane, select the “{{spriteName}}” sprite.",
+  "commit.add-medialib-appearances-entry.select-tab.sprite": "In the coding pane, select the Costumes tab.",
+  "commit.add-medialib-appearances-entry.select-tab.stage": "In the coding pane, select the Backdrops tab.",
+  "commit.add-medialib-appearances-entry.click-add-button": "Click the <addButton /> button.",
+  "commit.add-medialib-appearances-entry.find-and-click_one": "Find the “{{displayIdentifier}}” image, and click the “Add 1 to project” button.",
+  "commit.add-medialib-appearances-entry.find-and-click_other": "Find the “{{displayIdentifier}}” images, and click the “Add {{nItems}} to project” button.",
+
   "commit.add-sprite.click-add-button": "In the <i>Stage and Sprites</i> pane, click the <addButton /> button to start the process of adding a new sprite.",
   "commit.add-sprite.type-name": "In the <i>Create new sprite</i> dialog box which appears, type the name for your new sprite, <c>{{name}}</c>.",
   "commit.add-sprite.click-ok": "Click the OK button.",
