@@ -41,6 +41,9 @@
   "demo.my-projects-link": "My projects",
   "demo.title": "This demo was suggested for you:",
 
+  "chapter-navigation.prev": "Back: {{displayTitle}}",
+  "chapter-navigation.next": "Next: {{displayTitle}}",
+
   "specimen.based-on": "This project is based on the code for <i>{{specimenName}}</i>.",
   "specimen.compare-to-original": "Compare to original",
 
