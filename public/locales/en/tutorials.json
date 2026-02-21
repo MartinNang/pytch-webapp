@@ -41,6 +41,9 @@
   "demo.my-projects-link": "My projects",
   "demo.title": "This demo was suggested for you:",
 
+  "specimen.based-on": "This project is based on the code for <i>{{specimenName}}</i>.",
+  "specimen.compare-to-original": "Compare to original",
+
   "learner-task.fragment-error": "Tutorial error. Please contact the Pytch team if you see this! (Unless you are the author of a tutorial and you understand the message below.)",
 
   "learner-task.checkbox-help.current": "Click when you’ve done this.",
