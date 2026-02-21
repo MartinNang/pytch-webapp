@@ -1,4 +1,5 @@
 import React, { MouseEventHandler, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import classNames from "classnames";
@@ -61,6 +62,8 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
   onCancel,
   onAccept,
 }) => {
+  const { t } = useTranslation("ide");
+  const { t: tCommon } = useTranslation("common");
   const [selectedKey, selectKey] = useState(startingKey);
 
   // Suppress bootstrap's restore-focus behaviour; we handle that
@@ -75,7 +78,7 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
       show={true}
     >
       <Modal.Header>
-        <Modal.Title>Choose a key</Modal.Title>
+        <Modal.Title>{t("key-choice-modal.title")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FocusGroupContainer groupedFocusKey="WhenKeyPressedOptionsList">
@@ -100,10 +103,10 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onCancel}>
-          Cancel
+          {tCommon("button.cancel")}
         </Button>
         <Button variant="primary" onClick={() => onAccept(selectedKey)}>
-          OK
+          {tCommon("button.ok")}
         </Button>
       </Modal.Footer>
     </Modal>
