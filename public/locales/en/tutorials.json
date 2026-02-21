@@ -50,6 +50,11 @@
   "learner-task.help-stage-button.description.show-first-hint": "Show a hint for this task",
   "learner-task.help-stage-button.description.show-another-hint": "Show another hint for this task",
 
+  "script-diff.view-kind.bare-old": "What should my code look like now?",
+  "script-diff.view-kind.old-diff": "Where should I change my code?",
+  "script-diff.view-kind.new-diff": "What should my code look like afterwards?",
+  "script-diff.empty-placeholder": "[This script has no code yet.]",
+
   "commit.add-sprite.click-add-button": "In the <i>Stage and Sprites</i> pane, click the <addButton /> button to start the process of adding a new sprite.",
   "commit.add-sprite.type-name": "In the <i>Create new sprite</i> dialog box which appears, type the name for your new sprite, <c>{{name}}</c>.",
   "commit.add-sprite.click-ok": "Click the OK button.",
