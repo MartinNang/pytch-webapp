@@ -84,6 +84,10 @@ export type JrTutorialChapterChunk =
   | { kind: "element"; element: HTMLElement }
   | { kind: "learner-task"; task: LearnerTask };
 
+export type JrTutorialChapterTitle =
+  | { kind: "html"; elt: HTMLElement }
+  | { kind: "i18nKey"; key: string };
+
 export type JrTutorialChapter = {
   index: number;
   titleElt: HTMLElement;
@@ -261,6 +265,11 @@ function learnerTaskFromDiv(taskIdx: number, div: HTMLElement): LearnerTask {
 
   return { index: taskIdx, intro, helpStages };
 }
+
+const kChapterZeroTitle: JrTutorialChapterTitle = {
+  kind: "i18nKey",
+  key: "progress-trail.summary.title",
+};
 
 export function jrTutorialContentFromHTML(
   slug: string,
