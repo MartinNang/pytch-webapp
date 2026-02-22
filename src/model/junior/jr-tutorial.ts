@@ -335,7 +335,7 @@ export function jrTutorialContentFromHTML(
   };
 }
 
-export async function jrTutorialContentFromName(
+async function jrTutorialContentFromName(
   name: string
 ): Promise<JrTutorialContent> {
   const relativeUrl = `${name}/tutorial.html`;
