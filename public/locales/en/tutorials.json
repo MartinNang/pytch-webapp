@@ -5,6 +5,9 @@
   "standalone-play-demo.error.runtime-error": "Sorry, this Pytch program encountered an error.",
   "standalone-play-demo.error.runtime-error-hint": "You can try re-running the program by clicking the green button above the stage.",
 
+  "list.window-title": "Pytch: Tutorials",
+  "list.title": "Tutorials",
+
   "progress-trail.chapter-aria-label": "Chapter {{index}}",
 
   "list.button.demo.label": "Demo",

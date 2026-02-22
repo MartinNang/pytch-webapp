@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { NavBanner } from "./NavBanner";
 import { useStoreActions, useStoreState } from "../store";
 import { SyncState } from "../model/project";
 import { TutorialSummaryDisplay } from "./TutorialSummaryDisplay";
 import { EmptyProps } from "../utils";
+import { Spinner } from "react-bootstrap";
 
 const LoadingTutorialsPlaceholder = () => {
   const syncState = useStoreState(
@@ -13,13 +15,14 @@ const LoadingTutorialsPlaceholder = () => {
   if (syncState === SyncState.Syncd) return null;
 
   return (
-    <div className="loading-placeholder">
-      <p>Loading...</p>
+    <div className="text-center my-5">
+      <Spinner animation="border" />
     </div>
   );
 };
 
 const TutorialList: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("tutorials");
   const loadSummaries = useStoreActions(
     (actions) => actions.tutorialCollection.loadSummaries
   );
@@ -30,12 +33,13 @@ const TutorialList: React.FC<EmptyProps> = () => {
     (state) => state.tutorialCollection.available
   );
 
+  const docTitle = t("list.window-title");
   useEffect(() => {
-    document.title = "Pytch: Tutorials";
+    document.title = docTitle;
     if (syncState === SyncState.SyncNotStarted) {
       loadSummaries();
     }
-  });
+  }, [syncState, docTitle]);
 
   const paneRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -46,7 +50,7 @@ const TutorialList: React.FC<EmptyProps> = () => {
     <>
       <NavBanner />
       <div className="TutorialList" tabIndex={-1} ref={paneRef}>
-        <h1>Tutorials</h1>
+        <h1>{t("list.title")}</h1>
         <LoadingTutorialsPlaceholder />
         <ul className="tutorial-list">
           {available.map((t) => (
