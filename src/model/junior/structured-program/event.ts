@@ -60,7 +60,7 @@ export class EventDescriptorOps {
       case "clicked":
         // We get away with just using "when_this_SPRITE_clicked"
         // because the two Python-side when-clicked decorator functions
-        // do the same thing, without regards for whether the class is a
+        // do the same thing, without regard for whether the class is a
         // Sprite or Stage subclass.
         return "@pytch.when_this_sprite_clicked";
       case "start-as-clone":
