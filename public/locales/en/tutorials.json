@@ -8,6 +8,7 @@
   "list.window-title": "Pytch: Tutorials",
   "list.title": "Tutorials",
 
+  "progress-trail.summary.title": "Summary and contents",
   "progress-trail.chapter-aria-label": "Chapter {{index}}",
 
   "flat-tutorial.patch.heading": "Change the code like this:",
