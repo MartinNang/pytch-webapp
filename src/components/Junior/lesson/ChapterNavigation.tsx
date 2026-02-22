@@ -1,8 +1,9 @@
 import React from "react";
-import { EmptyProps } from "../../../utils";
+import { assertNever, EmptyProps } from "../../../utils";
 import { useMappedLinkedJrTutorial } from "./hooks";
 import { useStoreActions, useStoreState } from "../../../store";
 import {
+  JrTutorialChapterTitle,
   LinkedJrTutorial,
   allTasksDoneInCurrentChapter,
 } from "../../../model/junior/jr-tutorial";
@@ -10,11 +11,12 @@ import {
   ChapterNavigationButtons,
   ChapterNavigationButtonsProps,
 } from "./ChapterNavigationButtons";
+import { useTranslation } from "react-i18next";
 
 type ChapterNavigationState = {
   allChapterTasksDone: boolean;
   chapterIdx: number;
-  mNextChapterTitle: string | null;
+  mNextChapterTitle: JrTutorialChapterTitle | null;
   nChapters: number;
 };
 
@@ -25,7 +27,7 @@ function mapTutorial(tutorial: LinkedJrTutorial): ChapterNavigationState {
   const mNextChapterTitle =
     chapterIdx === nChapters - 1
       ? null
-      : tutorial.content.chapters[chapterIdx + 1].titleElt.innerText;
+      : tutorial.content.chapters[chapterIdx + 1].title;
   return { allChapterTasksDone, chapterIdx, mNextChapterTitle, nChapters };
 }
 
@@ -42,6 +44,7 @@ function eqState(
 }
 
 export const ChapterNavigation: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("tutorials");
   const state = useMappedLinkedJrTutorial(mapTutorial, eqState);
   const allowRandomChapterAccess = useStoreState(
     (state) => state.tutorialCollection.allowRandomChapterAccess
@@ -54,8 +57,20 @@ export const ChapterNavigation: React.FC<EmptyProps> = () => {
 
   let props: ChapterNavigationButtonsProps = {};
   if (state.mNextChapterTitle != null) {
+    const title = state.mNextChapterTitle;
+    const displayTitle = (() => {
+      switch (title.kind) {
+        case "html":
+          return title.elt.innerText;
+        case "i18nKey":
+          return t(title.key);
+        default:
+          return assertNever(title);
+      }
+    })();
+
     props.next = {
-      displayTitle: state.mNextChapterTitle,
+      displayTitle,
       navigate: () => setChapterIndex(state.chapterIdx + 1),
     };
   }
