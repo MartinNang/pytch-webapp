@@ -117,7 +117,7 @@ export const ProjectFromSpecimenFlow: React.FC<EmptyProps> = () => {
     if (flowState.state === "not-yet-booted") {
       const relativePath = params["*"];
       if (relativePath == null) {
-        fail("no specimen relativePath in path");
+        fail();
         return;
       }
 
