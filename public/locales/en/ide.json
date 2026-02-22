@@ -51,6 +51,8 @@
   "upsert-handler-modal.message-placeholder": "message",
   "upsert-handler-modal.empty-message-hint": "Please provide a message.",
 
+  "stage-with-controls.aria-label": "Project stage",
+
   "script.action.change-hat-block": "Change hat block",
   "script.action.move-earlier": "Move script up",
   "script.action.move-later": "Move script down",
