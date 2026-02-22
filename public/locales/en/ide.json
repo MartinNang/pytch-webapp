@@ -53,6 +53,13 @@
 
   "stage-with-controls.aria-label": "Project stage",
 
+  "key-nav-help.title": "Using Pytch with the keyboard",
+  "key-nav-help.intro": "You might prefer to use Pytch mostly with the keyboard (rather than a mouse or trackpad or other pointing device). Here is a summary of some useful keyboard shortcuts.",
+  "key-nav-help.error.title": "Problem",
+  "key-nav-help.error.message": "Sorry, there was a problem fetching the help information.",
+  "key-nav-help.key-conj.or": "or",
+  "key-nav-help.key-conj.then": "then",
+
   "script.action.change-hat-block": "Change hat block",
   "script.action.move-earlier": "Move script up",
   "script.action.move-later": "Move script down",

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { markedParse } from "../hooks/sync-marked";
 import { assertNever, EmptyProps } from "../../utils";
 import { Row, Col, Container, Spinner } from "react-bootstrap";
@@ -36,6 +37,8 @@ function joinedList(
 }
 
 const Key: React.FC<{ keyDescr: KeyDescriptor }> = ({ keyDescr }) => {
+  const { t } = useTranslation("ide");
+
   if (typeof keyDescr === "string") {
     return <span className="help-key">{keyDescr}</span>;
   }
@@ -46,7 +49,7 @@ const Key: React.FC<{ keyDescr: KeyDescriptor }> = ({ keyDescr }) => {
       return <span className="help-key-chord">{pieces}</span>;
     }
     case "alternatives": {
-      const pieces = joinedList(keyDescr.keys, "or");
+      const pieces = joinedList(keyDescr.keys, t("key-nav-help.key-conj.or"));
       return <span className="help-key-alternatives">{pieces}</span>;
     }
     case "respective": {
@@ -57,7 +60,7 @@ const Key: React.FC<{ keyDescr: KeyDescriptor }> = ({ keyDescr }) => {
       if (keyDescr.keys.length !== 2) {
         throw new Error("only 2-elt sequences are supported");
       }
-      const pieces = joinedList(keyDescr.keys, "then");
+      const pieces = joinedList(keyDescr.keys, t("key-nav-help.key-conj.then"));
       return <span className="help-key-sequence">{pieces}</span>;
     }
     default:
@@ -125,6 +128,7 @@ const SectionContent: React.FC<{ section: Section }> = ({ section }) => {
 const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
   content,
 }) => {
+  const { t } = useTranslation("ide");
   const workContext = useDevWorkContext();
 
   const sectionIsRelevant = (section: Section) =>
@@ -135,12 +139,8 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
 
   return (
     <Container>
-      <h1>Using Pytch with the keyboard</h1>
-      <p>
-        You might prefer to use Pytch mostly with the keyboard (rather than a
-        mouse or trackpad or other pointing device). Here is a summary of some
-        useful keyboard shortcuts.
-      </p>
+      <h1>{t("key-nav-help.title")}</h1>
+      <p>{t("key-nav-help.intro")}</p>
       {relevantSections.map((section, idx) => (
         <SectionContent key={idx} section={section} />
       ))}
@@ -149,6 +149,7 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
 };
 
 const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("ide");
   const contentState = useStoreState(
     (s) => s.ideLayout.keyboardShortcutsHelpContent
   );
@@ -169,8 +170,8 @@ const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
     case "error":
       return (
         <>
-          <h1>Problem</h1>
-          <p>Sorry, there was a problem fetching the help information.</p>
+          <h1>{t("key-nav-help.error.title")}</h1>
+          <p>{t("key-nav-help.error.message")}</p>
         </>
       );
     default:
