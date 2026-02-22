@@ -1,4 +1,5 @@
 import React, { ClipboardEventHandler, useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
 import Button from "react-bootstrap/Button";
@@ -212,7 +213,30 @@ export const InertCopyCodeButton: React.FC<EmptyProps> = () => {
   return <span className="add-code-icon">+</span>;
 };
 
+type CopyHintProps = { nAdds: number };
+const CopyHint: React.FC<CopyHintProps> = ({ nAdds }) => {
+  if (nAdds === 0) {
+    return false;
+  } else {
+    const keySuffix = nAdds === 1 ? "single" : "multi";
+    const i18nKey = `flat-tutorial.patch.copy-hint.${keySuffix}`;
+
+    return (
+      <div className="copy-hint">
+        <p>
+          <Trans
+            ns="tutorials"
+            i18nKey={i18nKey}
+            components={{ addCodeIcon: <InertCopyCodeButton /> }}
+          />
+        </p>
+      </div>
+    );
+  }
+};
+
 const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
+  const { t } = useTranslation("tutorials");
   const runCodeDiffHelp = useRunFlow((f) => f.codeDiffHelpFlow);
 
   let divCopy = div.cloneNode(true) as HTMLDivElement;
@@ -265,35 +289,17 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
   };
 
   const nAdds = nAddHunks(tableElts);
-  const mHintDiv =
-    nAdds === 0 ? (
-      false
-    ) : nAdds === 1 ? (
-      <div className="copy-hint">
-        <p>
-          Hint: Click on the <span className="add-code-icon">+</span> button to
-          copy the new code.
-        </p>
-      </div>
-    ) : (
-      <div className="copy-hint">
-        <p>
-          Hint: Click on a <span className="add-code-icon">+</span> button to
-          copy that chunk of new code.
-        </p>
-      </div>
-    );
 
   return (
     <div className="patch-container" onCopy={convertDotsToSpaces}>
       <div className="header">
-        <h1 className="decoration">Change the code like this:</h1>
+        <h1 className="decoration">{t("flat-tutorial.patch.heading")}</h1>
         <Button onClick={() => runCodeDiffHelp({ samples })}>
           <FontAwesomeIcon icon="question-circle" />
         </Button>
       </div>
       <div className="patch-contents">{contentDivs}</div>
-      {mHintDiv}
+      <CopyHint nAdds={nAdds} />
     </div>
   );
 };

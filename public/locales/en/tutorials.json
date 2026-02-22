@@ -10,6 +10,10 @@
 
   "progress-trail.chapter-aria-label": "Chapter {{index}}",
 
+  "flat-tutorial.patch.heading": "Change the code like this:",
+  "flat-tutorial.patch.copy-hint.single": "Hint: Click on the <addCodeIcon /> button to copy the new code.",
+  "flat-tutorial.patch.copy-hint.multi": "Hint: Click on a <addCodeIcon /> button to copy that chunk of new code.",
+
   "list.button.demo.label": "Demo",
   "list.button.demo.title": "Try this project",
   "list.button.tutorial.label": "Tutorial",
