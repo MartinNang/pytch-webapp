@@ -199,15 +199,4 @@ export class AssetMetaDataOps {
         asset.assetInProject.mimeType.startsWith(mimeTypePrefix)
     );
   }
-
-  static assetSourceDisplayName(sourceKind: AssetSourceKind): string {
-    switch (sourceKind) {
-      case "this-device":
-        return "this device";
-      case "media-library":
-        return "the media library";
-      default:
-        return assertNever(sourceKind);
-    }
-  }
 }

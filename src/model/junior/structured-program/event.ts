@@ -48,42 +48,6 @@ export class EventDescriptorKindOps {
         return assertNever(kind);
     }
   }
-
-  /** Return the human-readable name of the argument which the given
-   * `kind` of event-descriptor needs, if any.  If the given `kind`
-   * needs no arguments (for example, `"clicked"`), return `undefined`.
-   * */
-  static maybeArgumentName(kind: EventDescriptorKind): string | undefined {
-    switch (kind) {
-      case "green-flag":
-      case "clicked":
-      case "start-as-clone":
-        return undefined;
-      case "key-pressed":
-        return "key";
-      case "message-received":
-        return "message";
-      default:
-        return assertNever(kind);
-    }
-  }
-
-  static displayDescription(kind: EventDescriptorKind): string {
-    switch (kind) {
-      case "green-flag":
-        return "green flag clicked";
-      case "clicked":
-        return "clicked";
-      case "start-as-clone":
-        return "start as clone";
-      case "key-pressed":
-        return "key pressed";
-      case "message-received":
-        return "message received";
-      default:
-        return assertNever(kind);
-    }
-  }
 }
 
 export class EventDescriptorOps {
