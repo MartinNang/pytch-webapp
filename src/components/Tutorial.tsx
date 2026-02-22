@@ -3,7 +3,6 @@ import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
 import Button from "react-bootstrap/Button";
 import {
-  assertNever,
   copyTextToClipboard,
   EmptyProps,
   failIfNull,
@@ -366,7 +365,7 @@ const TutorialChapter = () => {
   );
 };
 
-const ActiveTutorial = () => {
+export const Tutorial: React.FC<EmptyProps> = () => {
   //
   // TODO: Review the nested structure and simplify if possible.  Also
   // change class names to reflect fact that they no longer apply to
@@ -405,22 +404,3 @@ const ActiveTutorial = () => {
     </div>
   );
 };
-
-const Tutorial = () => {
-  const loadState = useStoreState(
-    (state) => state.activeProject.syncState.loadState
-  );
-
-  switch (loadState) {
-    case "failed":
-      return <div>Error loading tutorial.</div>;
-    case "pending":
-      return <div>Loading...</div>;
-    case "succeeded":
-      return <ActiveTutorial />;
-    default:
-      return assertNever(loadState);
-  }
-};
-
-export default Tutorial;
