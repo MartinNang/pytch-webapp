@@ -76,6 +76,7 @@ export const DemoHeader = (
                 ) : undefined}
                 {headings && headings?.length > 1 ? (
                     <Button
+                        aria-label={"Expand or collapse chapters navigation menu"}
                         className={"w-auto caret p-0 ms-2"}
                         key={"nav-caret"}
                         id={"nav-caret"}

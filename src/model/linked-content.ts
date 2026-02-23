@@ -84,11 +84,6 @@ const specimenUrl = (relativeUrl: string) => {
   return [baseUrl, relativeUrl].join("/");
 };
 
-// const demoUrl = (relativeUrl: string) => {
-//   // const baseUrl = envVarOrFail("VITE_DEMO_BASE");
-//   // return [baseUrl, relativeUrl].join("/");
-// };
-
 export async function lessonDescriptorFromRelativePath(
   relativePath: string
 ): Promise<LessonDescriptor> {

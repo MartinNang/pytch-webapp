@@ -138,6 +138,7 @@ export const DemoChapter = ({
         <Button
           key={"prev-chapter"}
           ref={navPrevChapterRef}
+          aria-label={"Previous chapter"}
           variant={"primary"}
           onClick={handlePrevChapterClicked}
           onKeyDown={(e) => {
@@ -163,6 +164,7 @@ export const DemoChapter = ({
         </Button>
         <Button
           key={"next-chapter"}
+          aria-label={"Next chapter"}
           tabIndex={-1}
           ref={navNextChapterRef}
           variant={"primary"}
