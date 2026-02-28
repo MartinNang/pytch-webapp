@@ -6,65 +6,85 @@ import {
   Card,
   Col,
   Container,
-  Form, Placeholder,
+  Form,
+  Placeholder,
   Row,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Demo, DemoCard, ProgramType, ProjectType } from "./DemoCard";
-import {PaginationProvider} from "../PaginationProvider";
-import {RecommendedDemos} from "./RecommendedDemos";
+import { PaginationProvider } from "../PaginationProvider";
+import { RecommendedDemos } from "./RecommendedDemos";
 
 export enum SortingOptions {
-    lastUpdated = "Last Updated",
-    alphabetAsc ="A to Z"
+  lastUpdated = "Last Updated",
+  alphabetAsc = "A to Z",
 }
 
 function DemosContentSkeleton() {
-
   function DemoCardSkeleton() {
     return (
-        <>
-          <Card className={"flex-row flex-wrap card"}>
-            <Card.Header className={"p-0 w-100"}>
-              <Placeholder as={Card.Img} className={"h-100"}/>
-            </Card.Header>
-            <Card.Body className={"p-4 py-3"}>
-              <Placeholder xs={12} as={Card.Title} className={"placeholder rounded-1"} animation={"wave"} size={"lg"}/>
-              <Placeholder xs={12} as={Card.Subtitle} className={"placeholder rounded-1"} animation={"wave"}/>
-              <Placeholder xs={3} as={Card.Subtitle} className={"placeholder rounded-1"} animation={"wave"}/>
+      <>
+        <Card className={"flex-row flex-wrap card"}>
+          <Card.Header className={"p-0 w-100"}>
+            <Placeholder as={Card.Img} className={"h-100"} />
+          </Card.Header>
+          <Card.Body className={"p-4 py-3"}>
+            <Placeholder
+              xs={12}
+              as={Card.Title}
+              className={"placeholder rounded-1"}
+              animation={"wave"}
+              size={"lg"}
+            />
+            <Placeholder
+              xs={12}
+              as={Card.Subtitle}
+              className={"placeholder rounded-1"}
+              animation={"wave"}
+            />
+            <Placeholder
+              xs={3}
+              as={Card.Subtitle}
+              className={"placeholder rounded-1"}
+              animation={"wave"}
+            />
 
-              <Row className={"share-row mt-3"}>
-                <Col xs={6} className={"align-items-end d-flex"}>
-                  <Placeholder as={Card.Footer} className={"w-100 placeholder rounded-1"} animation={"wave"}/>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </>
+            <Row className={"share-row mt-3"}>
+              <Col xs={6} className={"align-items-end d-flex"}>
+                <Placeholder
+                  as={Card.Footer}
+                  className={"w-100 placeholder rounded-1"}
+                  animation={"wave"}
+                />
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      </>
     );
   }
 
   return (
-      <>
-        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-          <DemoCardSkeleton/>
-        </Col>
-        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-          <DemoCardSkeleton/>
-        </Col>
-        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-          <DemoCardSkeleton/>
-        </Col>
-        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-          <DemoCardSkeleton/>
-        </Col>
-        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-          <DemoCardSkeleton/>
-        </Col>
-        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-          <DemoCardSkeleton/>
-        </Col>
-      </>
+    <>
+      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+        <DemoCardSkeleton />
+      </Col>
+      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+        <DemoCardSkeleton />
+      </Col>
+      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+        <DemoCardSkeleton />
+      </Col>
+      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+        <DemoCardSkeleton />
+      </Col>
+      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+        <DemoCardSkeleton />
+      </Col>
+      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+        <DemoCardSkeleton />
+      </Col>
+    </>
   );
 }
 
@@ -114,8 +134,6 @@ export const DemoList: React.FC<EmptyProps> = () => {
   const [sortBy, setSortBy] = useState<string>("Last Updated");
   const [activePage, setActivePage] = useState(1);
   const [recommendedDemos, setRecommendedDemos] = useState<Demo[]>([]);
-
-
 
   function handleSearch(): void {
     let searchResults = [...sortedDemos];
@@ -171,15 +189,11 @@ export const DemoList: React.FC<EmptyProps> = () => {
     <>
       <NavBanner />
       <div className="DemoList" tabIndex={-1} ref={paneRef}>
-        <div
-          className={
-            "demos-header pt-1 mb-2 border-bottom"
-          }
-        >
+        <div className={"demos-header pt-1 mb-2 border-bottom"}>
           <h1 className={"row pt-5"}>Demos</h1>
           <RecommendedDemos
-              loading={loading}
-              recommendedDemos={recommendedDemos}
+            loading={loading}
+            recommendedDemos={recommendedDemos}
           />
         </div>
         <div className={"demos-content"}>
@@ -226,7 +240,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
                               </div>
                               <div>
                                 <Button
-                                    id={"search-button"}
+                                  id={"search-button"}
                                   className={"flex-shrink-1"}
                                 >
                                   <FontAwesomeIcon
@@ -281,37 +295,31 @@ export const DemoList: React.FC<EmptyProps> = () => {
               </Form>
             </Row>
             <Row className={"p-3"}>
-              {
-                loading
-                  ?
-                  <DemosContentSkeleton/>
-                  :
-                  <>
-                    {filteredDemos
-                      .slice(
-                        (activePage - 1) * itemsPerPage,
-                        activePage * itemsPerPage
-                      )
-                      .map((demo) => (
-                        <Col xs={12} sm={6} lg={4} className={"mb-5"}>
-                          <DemoCard
-                            demo={demo}
-                            setProjectType={setProjectType}
-                            setProgramType={setProgramType}
-                          />
-                        </Col>
-                      ))}
-                    {filteredDemos.length === 0 ? (
-                      <Col
-                        className={
-                          "no-results"
-                        }
-                      >
-                        <p>No demos found.</p>
+              {loading ? (
+                <DemosContentSkeleton />
+              ) : (
+                <>
+                  {filteredDemos
+                    .slice(
+                      (activePage - 1) * itemsPerPage,
+                      activePage * itemsPerPage
+                    )
+                    .map((demo) => (
+                      <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+                        <DemoCard
+                          demo={demo}
+                          setProjectType={setProjectType}
+                          setProgramType={setProgramType}
+                        />
                       </Col>
-                    ) : undefined}
-                  </>
-              }
+                    ))}
+                  {filteredDemos.length === 0 ? (
+                    <Col className={"no-results"}>
+                      <p>No demos found.</p>
+                    </Col>
+                  ) : undefined}
+                </>
+              )}
             </Row>
           </Container>
 
@@ -326,5 +334,3 @@ export const DemoList: React.FC<EmptyProps> = () => {
     </>
   );
 };
-
-
