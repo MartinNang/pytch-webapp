@@ -26,7 +26,7 @@ type RenameAssetRunState = {
 
 export type RenameAssetOutcomeNub =
   | { kind: "success" }
-  | { kind: "error"; message: string };
+  | { kind: "error"; messageSpec: RawOrI18nStringSpec };
 
 type RenameAssetBase = AsyncUserFlowSlice<
   IPytchAppModel,

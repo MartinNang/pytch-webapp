@@ -12,6 +12,7 @@ import {
 import { ProjectId } from "../project-core";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 import { AssetSourceKind } from "../junior/structured-program/asset";
+import { RawOrI18nStringSpec } from "../i18n/core-types";
 
 export function addAssetErrorMessageFromError(
   operationContext: AssetOperationContext,
@@ -43,7 +44,11 @@ type AddAssetsRunState = {
 };
 
 export type AddAssetSuccess = { displayName: string };
-export type AddAssetFailure = { displayName: string; reason: string };
+
+export type AddAssetFailure = {
+  displayName: string;
+  reason: RawOrI18nStringSpec;
+};
 
 export type AddAssetsOutcomeNub = {
   sourceKind: AssetSourceKind;
