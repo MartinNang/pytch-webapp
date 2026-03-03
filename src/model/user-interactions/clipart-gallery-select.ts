@@ -5,7 +5,7 @@ import { ProjectId } from "../project-core";
 import { addRemoteAssetToProject } from "../../database/indexed-db";
 import { AssetOperationContext } from "../asset";
 import {
-  addAssetErrorMessageFromError,
+  addAssetErrorSpecFromError,
   AddAssetSuccess,
   AddAssetFailure,
   AddAssetsOutcomeNub,
@@ -101,7 +101,7 @@ async function attempt(
           throw error;
         }
 
-        const reason = addAssetErrorMessageFromError(
+        const reason = addAssetErrorSpecFromError(
           runState.operationContext,
           item.name,
           error as Error

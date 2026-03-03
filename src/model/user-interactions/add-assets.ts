@@ -12,21 +12,22 @@ import {
 import { ProjectId } from "../project-core";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 import { AssetSourceKind } from "../junior/structured-program/asset";
-import { RawOrI18nStringSpec } from "../i18n/core-types";
+import { mkRawSpec, RawOrI18nStringSpec } from "../i18n/core-types";
 
-export function addAssetErrorMessageFromError(
+export function addAssetErrorSpecFromError(
   operationContext: AssetOperationContext,
   fileBasename: string,
   error: Error
-) {
+): RawOrI18nStringSpec {
   if (error.name === "PytchDuplicateAssetNameError") {
-    return (
-      `Cannot add "${fileBasename}" to ${operationContext.scope}` +
-      ` because it already contains A THING` + // I18N-TODO
-      " of that name."
-    );
+    const { scope, assetKind } = operationContext;
+    const keyPart = `add.${scope}.${assetKind}.dup-error`;
+    return {
+      kind: "i18n",
+      spec: { ns: "assets", keyPart, params: { fileBasename } },
+    };
   } else {
-    return error.message;
+    return mkRawSpec(error.message);
   }
 }
 
@@ -108,7 +109,7 @@ async function attempt(
         throw error;
       }
 
-      const reason = addAssetErrorMessageFromError(
+      const reason = addAssetErrorSpecFromError(
         operationContext,
         file.name,
         error as Error
