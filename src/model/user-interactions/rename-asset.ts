@@ -9,6 +9,7 @@ import {
   setRunStateProp,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { mkRawSpec, RawOrI18nStringSpec } from "../i18n/core-types";
 
 type RenameAssetRunArgs = {
   operationContext: AssetOperationContext;
@@ -23,6 +24,24 @@ type RenameAssetRunState = {
   newStem: string;
   fixedSuffix: string;
 };
+
+function renameAssetErrorSpecFromError(
+  runState: RenameAssetRunState,
+  error: Error
+): RawOrI18nStringSpec {
+  if (error.name === "PytchDuplicateAssetNameError") {
+    const { scope, assetKind } = runState.operationContext;
+    const keyPart = `rename.${scope}.${assetKind}.dup-error`;
+    const oldBasename = `${runState.oldStem}${runState.fixedSuffix}`;
+    const newBasename = `${runState.newStem}${runState.fixedSuffix}`;
+    return {
+      kind: "i18n",
+      spec: { ns: "assets", keyPart, params: { oldBasename, newBasename } },
+    };
+  } else {
+    return mkRawSpec(error.message);
+  }
+}
 
 export type RenameAssetOutcomeNub =
   | { kind: "success" }
@@ -110,9 +129,10 @@ async function attempt(
       throw error;
     }
 
+    const messageSpec = renameAssetErrorSpecFromError(runState, error as Error);
     return {
       needsModalNotification: true,
-      nub: { kind: "error", message: (error as Error).toString() },
+      nub: { kind: "error", messageSpec },
     };
   }
 }
