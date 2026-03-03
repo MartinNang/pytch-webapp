@@ -12,6 +12,7 @@ import {
 } from "./async-user-flow";
 import { Action } from "easy-peasy";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { mkRawSpec } from "../i18n/core-types";
 
 type UploadZipfilesRunArgs = void;
 
@@ -91,7 +92,10 @@ async function attempt(
       }
 
       console.error("upload-zipfiles::attempt():", error);
-      failures.push({ filename: file.name, reason: (error as Error).message });
+      failures.push({
+        filename: file.name,
+        reason: mkRawSpec((error as Error).message),
+      });
     }
   }
 
