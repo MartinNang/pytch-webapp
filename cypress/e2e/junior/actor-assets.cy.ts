@@ -66,18 +66,18 @@ context("Working with assets of an actor", () => {
       attemptAddFromMediaLib(["apple.png"]);
 
       cy.get(".modal.add-asset-failures .modal-body").as("err-msg");
-      cy.get("@err-msg").contains('Cannot add "apple.png"');
+      cy.get("@err-msg").contains("Cannot add “apple.png”");
       cy.get("@err-msg").contains(containsMatch);
     };
 
     selectSprite("Snake");
     selectActorAspect("Costumes");
-    assertErrorCorrect("already contains a Costume");
+    assertErrorCorrect("already has a costume");
     settleModalDialog("OK");
 
     selectStage();
     selectActorAspect("Backdrops");
-    assertErrorCorrect("already contains a Backdrop");
+    assertErrorCorrect("already has a backdrop");
     settleModalDialog("OK");
   });
 
@@ -100,7 +100,7 @@ context("Working with assets of an actor", () => {
     settleModalDialog("DELETE");
     assertCostumeNames([]);
 
-    cy.get(".NoContentHelp").contains("Your sprite has no Costumes");
+    cy.get(".NoContentHelp").contains("Your sprite has no costumes");
   });
 
   it("can delete all but last Backdrop", () => {
@@ -110,11 +110,11 @@ context("Working with assets of an actor", () => {
     // Weird backdrops, but they'll do the job:
     addFromMediaLib(["apple.png", "bowl.png"]);
 
-    launchDeleteAssetByIndex(0, "Backdrop");
+    launchDeleteAssetByIndex(0, "backdrop");
     settleModalDialog("DELETE");
     assertBackdropNames(["apple.png", "bowl.png"]);
 
-    launchDeleteAssetByIndex(1, "Backdrop");
+    launchDeleteAssetByIndex(1, "backdrop");
     settleModalDialog("DELETE");
     assertBackdropNames(["apple.png"]);
 
@@ -128,11 +128,11 @@ context("Working with assets of an actor", () => {
     selectSprite("Snake");
     selectActorAspect("Sounds");
     assertSoundNames("sprite", []);
-    cy.get(".NoContentHelp").contains("Your sprite has no Sounds");
+    cy.get(".NoContentHelp").contains("Your sprite has no sounds");
 
     selectStage();
     assertSoundNames("stage", []);
-    cy.get(".NoContentHelp").contains("Your stage has no Sounds");
+    cy.get(".NoContentHelp").contains("Your stage has no sounds");
   });
 
   it("can upload image and sound assets", () => {
@@ -176,15 +176,15 @@ context("Working with assets of an actor", () => {
 
     selectStage();
     selectActorAspect("Backdrops");
-    assertContentCorrect("Add Backdrops", "Choose Backdrops");
+    assertContentCorrect("Add image/s", "Choose an image or some images");
     selectActorAspect("Sounds");
-    assertContentCorrect("Add Sounds", "Choose Sounds");
+    assertContentCorrect("Add sound/s", "Choose a sound or some sounds");
 
     selectSprite("Snake");
     selectActorAspect("Costumes");
-    assertContentCorrect("Add Costumes", "Choose Costumes");
+    assertContentCorrect("Add image/s", "Choose an image or some images");
     selectActorAspect("Sounds");
-    assertContentCorrect("Add Sounds", "Choose Sounds");
+    assertContentCorrect("Add sound/s", "Choose a sound or some sounds");
   });
 
   it("forbids adding duplicate assets", () => {
@@ -198,7 +198,7 @@ context("Working with assets of an actor", () => {
       tryAddFromFixture(actorKind, "silence-500ms.mp3");
 
       cy.get(".add-asset-failures .modal-body").as("err-msg");
-      cy.get("@err-msg").contains('Cannot add "silence-500ms.mp3"');
+      cy.get("@err-msg").contains("Cannot add “silence-500ms.mp3”");
       cy.get("@err-msg").contains(targetMatch);
 
       settleModalDialog(clickHeaderCloseButton);
@@ -250,9 +250,10 @@ context("Working with assets of an actor", () => {
       clickUniqueButton("Rename");
 
       cy.get(".modal.RenameAssetModal-failure .modal-body p").as("err-msg");
-      cy.get("@err-msg").contains('Cannot rename "silence-500ms.mp3"');
+      cy.get("@err-msg").contains("Cannot rename sound “silence-500ms.mp3”");
+      cy.get("@err-msg").contains("to “sine-1kHz-2s.mp3”");
       cy.get("@err-msg").contains(containsMatch);
-      cy.get("@err-msg").contains('a Sound called "sine-1kHz-2s.mp3"');
+      cy.get("@err-msg").contains("a sound with that name");
 
       settleModalDialog("OK");
 
@@ -260,9 +261,9 @@ context("Working with assets of an actor", () => {
     };
 
     selectSprite("Snake");
-    assertErrorCorrect("sprite", "this sprite already contains");
+    assertErrorCorrect("sprite", "this sprite already has");
 
     selectStage();
-    assertErrorCorrect("stage", "the stage already contains");
+    assertErrorCorrect("stage", "the stage already has");
   });
 });

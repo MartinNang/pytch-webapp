@@ -33,7 +33,7 @@ context("Flat code editing", () => {
     realPress("Tab");
     assertFocus("add-flat-asset-button");
     realPress("Enter");
-    assertModalWithTitle("Choose some images");
+    assertModalWithTitle("Add file/s");
 
     // This is brittle and depends on the exact contents and ordering of
     // the media library.  We're selecting the "blocks(2)" and "Boing
@@ -98,9 +98,7 @@ context("Flat code editing", () => {
     });
 
     const assertDeleteModal = () => {
-      assertModalWithTitle(
-        "Delete the image “python-logo.png” from your project?"
-      );
+      assertModalWithTitle("Delete image “python-logo.png”?");
     };
     it("cxl delete", () => {
       chooseCcMenuItem(3);

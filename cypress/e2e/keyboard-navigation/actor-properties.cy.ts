@@ -15,7 +15,7 @@ context("Navigating actor properties", () => {
     selectActorAspect("Code");
     assertFocus("actor-property-tab", "code");
     realPress("ArrowRight", 2);
-    cy.get(".NoContentHelp").contains("Your sprite has no Sounds");
+    cy.get(".NoContentHelp").contains("Your sprite has no sounds");
     realPress("ArrowLeft");
     realPress("Tab");
     assertFocus("appearance-card", 0);

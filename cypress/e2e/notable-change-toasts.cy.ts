@@ -140,7 +140,7 @@ context("Toasts are generated (s/b/s)", () => {
       selectSprite("Snake");
       selectActorAspect("Costumes");
       launchAdd.assetFromThisDevice([goodPngs[0]]);
-      settleModalDialog("Add to project");
+      settleModalDialog("Add to sprite");
       launchRenameAssetByIndex(0);
       cy.get(".CompoundTextInput input").type(
         "{selectAll}{del}green-circle-64"
@@ -150,7 +150,7 @@ context("Toasts are generated (s/b/s)", () => {
     toastBodyMatch: null,
     failurePredicate: {
       selector: ".RenameAssetModal-failure",
-      reportMatch: /this sprite already contains/,
+      reportMatch: /this sprite already has/,
     },
     dismissFun: kDismissEffluxionOfTime,
   });
@@ -205,7 +205,7 @@ context("Toasts are generated (s/b/s)", () => {
         selectActorAspect("Costumes");
         launchAdd.assetFromThisDevice(filePaths);
       },
-      submit: () => submitFun("Add to project"),
+      submit: () => submitFun("Add to sprite"),
       failurePredicate,
       toastBodyMatch,
       dismissFun,

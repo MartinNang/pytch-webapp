@@ -79,9 +79,9 @@ context("Add clipart from library, handling errors", () => {
   it("rejects adding same clipart twice", () => {
     attemptChooseClipArt(["apple.png"], 1);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There was a problem adding an image");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     cy.get("button").contains("OK").click();
     cy.pytchShouldShowAssets(startTestAssets);
@@ -90,9 +90,9 @@ context("Add clipart from library, handling errors", () => {
   it("handles one failure and one success", () => {
     attemptChooseClipArt(["apple.png", "orange.png"], 2);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There was a problem adding an image");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     // TODO: Test for toast.
 
@@ -104,10 +104,10 @@ context("Add clipart from library, handling errors", () => {
     chooseClipArt(["orange.png"], 1);
     attemptChooseClipArt(["orange.png", "apple.png", "bird.png"], 3);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains('Cannot add "orange.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There were problems adding some images");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("Cannot add “orange.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     // TODO: Test for toast.
 
@@ -118,9 +118,9 @@ context("Add clipart from library, handling errors", () => {
   it("handles one failure and two successes", () => {
     attemptChooseClipArt(["apple.png", "orange.png", "bird.png"], 3);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There was a problem adding an image");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     // TODO: Test for toast.
 

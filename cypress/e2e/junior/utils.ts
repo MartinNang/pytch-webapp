@@ -529,7 +529,7 @@ export class ScriptOps {
    * `newly-created-per-method` zipfile. */
   static readonly allExtendedHandlerLabels = [
     "when green flag clicked",
-    'when I receive "award-point"',
+    "when I receive “award-point”",
     "when I start as a clone",
     "when this sprite clicked",
   ];
@@ -559,7 +559,7 @@ function assetFromThisDevice(fixtureBasenames: Array<string> = []) {
   );
 
   clickAddSomething("Add from this device");
-  cy.contains("Add to project").should("be.disabled");
+  cy.contains(/Add to (project|sprite|stage)/).should("be.disabled");
   cy.get('.form-control[type="file"]').attachFile(
     filenames.map((filePath) => ({ filePath, encoding: "binary" }))
   );
@@ -627,13 +627,13 @@ export const launchActorAssetDropdown = (idx: number) => {
  * the appearance at the given `idx`. */
 export const launchDeleteAssetByIndex = (
   idx: number,
-  appearanceName = "Costume"
+  appearanceName = "costume"
 ) => {
   launchActorAssetDropdown(idx);
   cy.get(".dropdown-item").contains("DELETE").click();
   cy.get(".modal-header")
     .should("have.length", 1)
-    .contains(`Delete the ${appearanceName}`);
+    .contains(`Delete ${appearanceName}`);
 };
 
 /** Assuming that we are in the per-method IDE, with the Appearances
