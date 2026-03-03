@@ -55,6 +55,7 @@
   "rename.placeholder": "new filename",
   "rename.button.rename": "Rename",
 
+  "add.media-library.fetch-error": "Error fetching the media library",
   "add.media-library.copyright-info": "For copyright and licensing information, see help pages.",
 
   "crop-scale.title": "Adjust image",
