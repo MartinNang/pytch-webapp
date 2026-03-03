@@ -106,6 +106,7 @@ const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
 
 type ScriptDiffViewLineProps = { line: ScriptDiffLine };
 const ScriptDiffViewLine: React.FC<ScriptDiffViewLineProps> = ({ line }) => {
+  const { t } = useTranslation("tutorials");
   switch (line.kind) {
     case "context":
     case "change":
@@ -123,17 +124,20 @@ const ScriptDiffViewLine: React.FC<ScriptDiffViewLineProps> = ({ line }) => {
       );
     case "add-padding":
     case "change-padding":
-    case "del-padding":
+    case "del-padding": {
+      const key = `script-diff.code-help.${line.helpTextKeyNub}`;
+      const helpContent = line.helpTextKeyNub === "" ? "" : t(key);
       return (
         <div className={line.kind}>
           <pre className="lineno" />
           <div>
             <pre>
-              <code>{line.helpText}</code>
+              <code>{helpContent}</code>
             </pre>
           </div>
         </div>
       );
+    }
     default:
       return assertNever(line);
   }

@@ -79,6 +79,8 @@
   "script-diff.view-kind.old-diff": "Where should I change my code?",
   "script-diff.view-kind.new-diff": "What should my code look like afterwards?",
   "script-diff.empty-placeholder": "[This script has no code yet.]",
+  "script-diff.code-help.add": "[Add some code here]",
+  "script-diff.code-help.delete": "[Code was deleted here]",
 
   "commit.change-hat-block.find-script.stage": "Find and select the stage, and then find this script:",
   "commit.change-hat-block.find-script.sprite": "Find and select the “{{spriteName}}” sprite, and then find this script:",
