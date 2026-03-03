@@ -20,7 +20,7 @@ import {
   projectsDeletedDescription,
 } from "./junior/change-events";
 import { I18nStringSpec } from "./i18n/core-types";
-import { resolveIndirectParams } from "./i18n/utils";
+import { i18nTranslationOptions } from "./i18n/utils";
 
 export type NotableChange =
   | PerMethodScriptChanged
@@ -56,9 +56,8 @@ function humanStringFromParts(
   const innerPart = spec.keyPart == null ? "" : `.${spec.keyPart}`;
   const baseKey = `${keyPrefix}${innerPart}`;
   const keyStem = `${baseKey}.${keySuffix}`;
-  const params = resolveIndirectParams(i18n, spec);
-
-  return i18n.t(keyStem, { ns: spec.ns, replace: params });
+  const tOptions = i18nTranslationOptions(i18n, spec);
+  return i18n.t(keyStem, tOptions);
 }
 
 function changeSummaryFromSpec(

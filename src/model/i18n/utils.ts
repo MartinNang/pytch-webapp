@@ -1,11 +1,11 @@
-import { i18n } from "i18next";
-import { I18nParams, I18nStringSpec, RawOrI18nStringSpec } from "./core-types";
+import { i18n, TOptions } from "i18next";
+import { I18nStringSpec, RawOrI18nStringSpec } from "./core-types";
 import { assertNever } from "../../utils";
 
-export function resolveIndirectParams(
+export function i18nTranslationOptions(
   i18n: i18n,
   spec: I18nStringSpec
-): I18nParams {
+): TOptions {
   let resolvedParams = { ...spec.params };
 
   if (spec.indirectParams) {
@@ -19,7 +19,16 @@ export function resolveIndirectParams(
     }
   }
 
-  return resolvedParams;
+  let tOptions: TOptions = { ns: spec.ns, replace: resolvedParams };
+
+  // If "count" is a parameter, it needs to exist as its own option for
+  // key selection, as well as be part of the "replace" option to be
+  // substituted in the translated string.
+  if (Object.hasOwn(resolvedParams, "count")) {
+    tOptions.count = resolvedParams.count;
+  }
+
+  return tOptions;
 }
 
 /** Resolve the given `spec` into a human-readable string.  If the
@@ -34,9 +43,7 @@ export function resolveRawOrI18n(
     case "raw":
       return spec.text;
     case "i18n": {
-      const params = resolveIndirectParams(i18n, spec.spec);
-      const tOptions = { ns: spec.spec.ns, replace: params };
-      return i18n.t(spec.spec.keyPart, tOptions);
+      return i18n.t(spec.spec.keyPart, i18nTranslationOptions(i18n, spec.spec));
     }
     default:
       return assertNever(spec);

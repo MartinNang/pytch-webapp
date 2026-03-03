@@ -9,7 +9,7 @@ import classNames from "classnames";
 import "./TwoStateSwitch.scss";
 import { Trans, useTranslation } from "react-i18next";
 import { I18nStringSpec } from "../model/i18n/core-types";
-import { resolveIndirectParams } from "../model/i18n/utils";
+import { i18nTranslationOptions } from "../model/i18n/utils";
 
 type TwoStateSwitchTexts = {
   question: React.JSX.Element;
@@ -21,10 +21,12 @@ const useRenderedSpec = (spec: I18nStringSpec): TwoStateSwitchTexts => {
   const { i18n } = useTranslation(spec.ns);
 
   const keyBase = spec.keyPart;
-  const params = resolveIndirectParams(i18n, spec);
+  const params = i18nTranslationOptions(i18n, spec);
 
   return {
-    question: <Trans i18nKey={`${keyBase}.question`} ns={spec.ns} values={params} />,
+    question: (
+      <Trans i18nKey={`${keyBase}.question`} ns={spec.ns} values={params} />
+    ),
     trueStatus: (
       <Trans i18nKey={`${keyBase}.true-status`} ns={spec.ns} values={params} />
     ),
