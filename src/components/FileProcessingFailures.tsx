@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { FileProcessingFailure } from "../model/user-interactions/process-files";
 import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { resolveRawOrI18n } from "../model/i18n/utils";
 
 export const FileProcessingFailures: React.FC<{
   titleText: string;
@@ -11,12 +12,13 @@ export const FileProcessingFailures: React.FC<{
   failures: Array<FileProcessingFailure>;
   dismiss: () => void;
 }> = (props) => {
+  const { i18n } = useTranslation();
   const { t: tCommon } = useTranslation("common");
   const { t: tErrors } = useTranslation("errors");
 
   const failureEntries = props.failures.map((failure) => (
     <li key={failure.filename}>
-      <code>{failure.filename}</code> — {failure.reason}
+      <code>{failure.filename}</code> — {resolveRawOrI18n(i18n, failure.reason)}
     </li>
   ));
 
