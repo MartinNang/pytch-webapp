@@ -10,6 +10,7 @@
   "export-to-google-drive": "Export to Google Drive",
 
   "copy.title": "Copy project",
+  "copy.initial-name": "Copy of {{sourceName}}",
   "copy.name-placeholder": "Name for copy of project",
   "copy.button.make-copy": "Make a copy",
   "copy.switch.none.question": "(This project is not connected to anything.)",

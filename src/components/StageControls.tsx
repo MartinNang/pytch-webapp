@@ -134,6 +134,7 @@ const GoToMyProjectsDropdownItem: React.FC<EmptyProps> = () => {
 
 export const StageControls: React.FC<EmptyProps> = () => {
   const { t } = useTranslation("ide");
+  const { t: tProjects } = useTranslation("projects");
   const navigate = useNavigate();
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
@@ -166,9 +167,12 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onShowTooltips = () => initiateButtonTour();
 
   const runSaveProjectAs = useRunFlow((f) => f.saveProjectAsFlow);
+  const initialNameOfCopy = tProjects("copy.initial-name", {
+    replace: { sourceName: project.name },
+  });
   const copyArgs = {
     sourceProjectId: project.id,
-    sourceName: project.name,
+    initialNameOfCopy,
     sourceLinkedContentRef: project.linkedContentRef,
   };
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
