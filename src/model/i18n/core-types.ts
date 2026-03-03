@@ -13,3 +13,13 @@ export type I18nStringSpec = {
   ns: string;
 };
 
+export type I18nStringSpecWithKeyPart = I18nStringSpec & { keyPart: string };
+
+export type RawOrI18nStringSpec =
+  | { kind: "raw"; text: string }
+  | { kind: "i18n"; spec: I18nStringSpecWithKeyPart };
+
+export const mkRawSpec = (text: string): RawOrI18nStringSpec => ({
+  kind: "raw",
+  text,
+});
