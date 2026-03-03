@@ -17,41 +17,36 @@ type TwoStateSwitchTexts = {
   falseStatus: React.JSX.Element;
 };
 
-const useRenderedSpec = (
-  ns: string,
-  spec: I18nStringSpec
-): TwoStateSwitchTexts => {
-  const { i18n } = useTranslation(ns);
+const useRenderedSpec = (spec: I18nStringSpec): TwoStateSwitchTexts => {
+  const { i18n } = useTranslation(spec.ns);
 
   const keyBase = spec.keyPart;
   const params = resolveIndirectParams(i18n, spec);
 
   return {
-    question: <Trans i18nKey={`${keyBase}.question`} ns={ns} values={params} />,
+    question: <Trans i18nKey={`${keyBase}.question`} ns={spec.ns} values={params} />,
     trueStatus: (
-      <Trans i18nKey={`${keyBase}.true-status`} ns={ns} values={params} />
+      <Trans i18nKey={`${keyBase}.true-status`} ns={spec.ns} values={params} />
     ),
     falseStatus: (
-      <Trans i18nKey={`${keyBase}.false-status`} ns={ns} values={params} />
+      <Trans i18nKey={`${keyBase}.false-status`} ns={spec.ns} values={params} />
     ),
   };
 };
 
 type TwoStateSwitchProps = {
-  i18nNs: string;
   i18nSpec: I18nStringSpec;
   boolState: boolean;
   setBoolState: (newState: boolean) => void;
   className?: string;
 };
 export const TwoStateSwitch: React.FC<TwoStateSwitchProps> = ({
-  i18nNs,
   i18nSpec,
   boolState,
   setBoolState,
   className,
 }) => {
-  const renderedSpec = useRenderedSpec(i18nNs, i18nSpec);
+  const renderedSpec = useRenderedSpec(i18nSpec);
   const formLabelId = `tss__${useId()}`;
 
   // Bit of trial and error to get this set of functions working.  The

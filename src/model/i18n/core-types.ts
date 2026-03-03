@@ -10,6 +10,6 @@ export type I18nStringSpec = {
   keyPart: string | null;
   params?: I18nParams;
   indirectParams?: Record<string, I18nFullyQualifiedKey>;
+  ns: string;
 };
 
-export const kEmptySpec: I18nStringSpec = { keyPart: null };

@@ -118,8 +118,7 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
   return (
     <TwoStateSwitch
       className="all-vs-tutorial-switch"
-      i18nNs="assets"
-      i18nSpec={{ keyPart: "add.media-library.switch" }}
+      i18nSpec={{ keyPart: "add.media-library.switch", ns: "assets" }}
       boolState={!filterState.active}
       setBoolState={setFilterActiveNegated}
     />

@@ -5,12 +5,32 @@ import {
   HandlerUpsertionActionKind,
   SpriteUpsertionActionKind,
 } from "./structured-program/program";
-import { I18nStringSpec, kEmptySpec } from "../i18n/core-types";
+import { I18nStringSpec } from "../i18n/core-types";
 
 export type NotableChangeSummarySpec = {
   header: I18nStringSpec;
   bodyParts: I18nStringSpec[];
 };
+
+////////////////////////////////////////////////////////////////////////
+
+const kEmptySpec: I18nStringSpec = {
+  keyPart: null,
+  ns: "notable-changes",
+};
+
+function mkI18nSpec(
+  keyPart: I18nStringSpec["keyPart"],
+  params?: I18nStringSpec["params"],
+  indirectParams?: I18nStringSpec["indirectParams"]
+): I18nStringSpec {
+  return {
+    keyPart,
+    params,
+    indirectParams,
+    ns: "notable-changes",
+  };
+}
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -36,15 +56,13 @@ export function perMethodScriptChangedDescription(
     key: `event-kind.${change.actorKind}.${change.handlerEventKind}`,
   };
 
-  const header: I18nStringSpec = {
-    keyPart: change.scriptChangedKind,
-  };
+  const header = mkI18nSpec(change.scriptChangedKind);
 
-  const body: I18nStringSpec = {
-    keyPart: `${change.actorKind}.${change.scriptChangedKind}`,
-    params: { actorName: change.actorName },
-    indirectParams: { eventKind },
-  };
+  const body = mkI18nSpec(
+    `${change.actorKind}.${change.scriptChangedKind}`,
+    { actorName: change.actorName },
+    { eventKind }
+  );
 
   return { header, bodyParts: [body] };
 }
@@ -63,10 +81,8 @@ export type PerMethodSpriteChanged = {
 export function perMethodSpriteChangedDescription(
   change: PerMethodSpriteChanged
 ): NotableChangeSummarySpec {
-  const spec: I18nStringSpec = {
-    keyPart: change.spriteChangedKind,
-    params: { spriteName: change.spriteName },
-  };
+  const params = { spriteName: change.spriteName };
+  const spec = mkI18nSpec(change.spriteChangedKind, params);
   return { header: spec, bodyParts: [spec] };
 }
 
@@ -87,14 +103,13 @@ export function assetChangedDescription(
   const assetKind = change.operationContext.assetKind;
   const scope = change.operationContext.scope;
 
-  const header: I18nStringSpec = {
-    keyPart: `${assetKind}.${change.assetChangedKind}`,
-  };
+  const header = mkI18nSpec(`${assetKind}.${change.assetChangedKind}`);
 
-  const body: I18nStringSpec = {
-    keyPart: `${scope}.${assetKind}.${change.assetChangedKind}`,
-    params: { assetDisplayName: change.assetDisplayName },
-  };
+  const bodyParams = { assetDisplayName: change.assetDisplayName };
+  const body = mkI18nSpec(
+    `${scope}.${assetKind}.${change.assetChangedKind}`,
+    bodyParams
+  );
 
   return { header, bodyParts: [body] };
 }
@@ -116,27 +131,25 @@ export function assetsAddedDescription(
 
   const header: I18nStringSpec =
     nSuccesses === 0
-      ? { keyPart: `${assetKind}.only-failure`, params: { count: nFailures } }
-      : { keyPart: `${assetKind}.some-success`, params: { count: nSuccesses } };
+      ? mkI18nSpec(`${assetKind}.only-failure`, { count: nFailures })
+      : mkI18nSpec(`${assetKind}.some-success`, { count: nSuccesses });
 
   const bodyKeyPrefix = `${assetKind}.${change.sourceKind}`;
   let bodyParts: I18nStringSpec[] = [];
 
   if (nSuccesses > 0) {
-    bodyParts.push({
-      keyPart: `${bodyKeyPrefix}.success`,
-      params: {
+    bodyParts.push(
+      mkI18nSpec(`${bodyKeyPrefix}.success`, {
         count: nSuccesses,
         firstSuccessDisplayName: change.successes[0].displayName,
-      },
-    });
+      })
+    );
   }
 
   if (nFailures > 0) {
-    bodyParts.push({
-      keyPart: `${bodyKeyPrefix}.failure`,
-      params: { count: nFailures },
-    });
+    bodyParts.push(
+      mkI18nSpec(`${bodyKeyPrefix}.failure`, { count: nFailures })
+    );
   }
 
   return { header, bodyParts };
@@ -158,17 +171,17 @@ export function zipfilesUploadedDescription(
 
   const header: I18nStringSpec =
     nCreated === 0
-      ? { keyPart: "only-failure", params: { count: nFailed } }
-      : { keyPart: "some-success", params: { count: nCreated } };
+      ? mkI18nSpec("only-failure", { count: nFailed })
+      : mkI18nSpec("some-success", { count: nCreated });
 
   let bodyParts: I18nStringSpec[] = [];
 
   if (nCreated > 0) {
-    bodyParts.push({ keyPart: "success", params: { count: nCreated } });
+    bodyParts.push(mkI18nSpec("success", { count: nCreated }));
   }
 
   if (nFailed > 0) {
-    bodyParts.push({ keyPart: "failure", params: { count: nFailed } });
+    bodyParts.push(mkI18nSpec("failure", { count: nFailed }));
   }
 
   return { header, bodyParts };
@@ -200,10 +213,7 @@ export type ProjectsDeleted = {
 export function projectsDeletedDescription(
   change: ProjectsDeleted
 ): NotableChangeSummarySpec {
-  const spec: I18nStringSpec = {
-    keyPart: null,
-    params: { count: change.nDeleted },
-  };
+  const spec = mkI18nSpec(null, { count: change.nDeleted });
   return { header: spec, bodyParts: [spec] };
 }
 

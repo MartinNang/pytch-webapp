@@ -31,7 +31,7 @@ function specForKeepLink(ref: LinkedContentRef): I18nStringSpec {
     }
   })();
 
-  return { keyPart: `copy.switch.${ref.kind}`, params };
+  return { keyPart: `copy.switch.${ref.kind}`, params, ns: "projects" };
 }
 
 const MaybeKeepContentLinkSwitch: React.FC<{
@@ -48,7 +48,6 @@ const MaybeKeepContentLinkSwitch: React.FC<{
   return (
     <TwoStateSwitch
       className="keep-content-link-switch"
-      i18nNs="projects"
       i18nSpec={specForKeepLink(runState.sourceLinkedContentRef)}
       boolState={runState.copyKeepsContentLink}
       setBoolState={setKeepLink}

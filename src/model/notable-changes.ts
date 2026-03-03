@@ -58,7 +58,7 @@ function humanStringFromParts(
   const keyStem = `${baseKey}.${keySuffix}`;
   const params = resolveIndirectParams(i18n, spec);
 
-  return i18n.t(keyStem, { ns: "notable-changes", replace: params });
+  return i18n.t(keyStem, { ns: spec.ns, replace: params });
 }
 
 function changeSummaryFromSpec(
