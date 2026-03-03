@@ -47,11 +47,6 @@ type AddAssetsRunState = {
 
 export type AddAssetSuccess = { displayName: string };
 
-export type AddAssetFailure = {
-  displayName: string;
-  reason: RawOrI18nStringSpec;
-};
-
 export type AddAssetsOutcomeNub = {
   sourceKind: AssetSourceKind;
   successes: Array<AddAssetSuccess>;

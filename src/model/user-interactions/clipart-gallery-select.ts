@@ -7,7 +7,6 @@ import { AssetOperationContext } from "../asset";
 import {
   addAssetErrorSpecFromError,
   AddAssetSuccess,
-  AddAssetFailure,
   AddAssetsOutcomeNub,
   onAddAssetsCompleted,
 } from "./add-assets";
