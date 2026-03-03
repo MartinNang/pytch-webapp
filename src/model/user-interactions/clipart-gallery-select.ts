@@ -11,6 +11,7 @@ import {
   AddAssetsOutcomeNub,
   onAddAssetsCompleted,
 } from "./add-assets";
+import { FileProcessingFailure } from "./process-files";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
@@ -81,7 +82,7 @@ async function attempt(
   navGuard: NavigationAbandonmentGuard
 ): Promise<AttemptOutcome<AddAssetsOutcomeNub>> {
   let successes: Array<AddAssetSuccess> = [];
-  let failures: Array<AddAssetFailure> = [];
+  let failures: Array<FileProcessingFailure> = [];
 
   const entries = actions.clipArtGallery.selectedEntries(runState.selectedIds);
 
@@ -107,7 +108,7 @@ async function attempt(
           error as Error
         );
 
-        failures.push({ displayName: item.name, reason });
+        failures.push({ filename: item.name, reason });
       }
     }
   }

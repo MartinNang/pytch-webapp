@@ -13,6 +13,7 @@ import { ProjectId } from "../project-core";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 import { AssetSourceKind } from "../junior/structured-program/asset";
 import { mkRawSpec, RawOrI18nStringSpec } from "../i18n/core-types";
+import { FileProcessingFailure } from "./process-files";
 
 export function addAssetErrorSpecFromError(
   operationContext: AssetOperationContext,
@@ -54,7 +55,7 @@ export type AddAssetFailure = {
 export type AddAssetsOutcomeNub = {
   sourceKind: AssetSourceKind;
   successes: Array<AddAssetSuccess>;
-  failures: Array<AddAssetFailure>;
+  failures: Array<FileProcessingFailure>;
 };
 
 type AddAssetsBase = AsyncUserFlowSlice<
@@ -92,7 +93,7 @@ async function attempt(
 ): Promise<AttemptOutcome<AddAssetsOutcomeNub>> {
   const { projectId, assetNamePrefix, operationContext } = runState;
   let successes: Array<AddAssetSuccess> = [];
-  let failures: Array<AddAssetFailure> = [];
+  let failures: Array<FileProcessingFailure> = [];
 
   for (const file of runState.chosenFiles ?? []) {
     try {
@@ -114,7 +115,7 @@ async function attempt(
         file.name,
         error as Error
       );
-      failures.push({ displayName: file.name, reason });
+      failures.push({ filename: file.name, reason });
     }
   }
 
