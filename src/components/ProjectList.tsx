@@ -256,7 +256,8 @@ const ProjectListButtons: React.FC<EmptyProps> = () => {
       </div>
     );
   } else {
-    const showCreateModal = () => runCreateProject();
+    const createArgs = { initialName: t("create.initial-name") };
+    const showCreateModal = () => runCreateProject(createArgs);
     const showUploadModal = () => runUploadZipfiles();
     return (
       <div className="buttons">

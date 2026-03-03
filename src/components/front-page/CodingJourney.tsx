@@ -7,6 +7,7 @@ import { useRunFlow } from "../../model";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./CodingJourney.scss";
+import { useTranslation } from "react-i18next";
 
 type CodingJourneysModalProps = {
   isShown: boolean;
@@ -16,9 +17,11 @@ const CodingJourneysModal: React.FC<CodingJourneysModalProps> = ({
   isShown,
   dismiss,
 }) => {
+  const { t } = useTranslation("projects");
   const navigate = useNavigate();
   const runCreateProjectFlow = useRunFlow((f) => f.createProjectFlow);
-  const runCreateProject = () => runCreateProjectFlow();
+  const createArgs = { initialName: t("create.initial-name") };
+  const runCreateProject = () => runCreateProjectFlow(createArgs);
 
   return (
     <Modal
