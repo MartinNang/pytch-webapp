@@ -1087,25 +1087,7 @@ export const activeProject: IActiveProject = {
     const oldName = `${descriptor.fixedPrefix}${descriptor.oldNameSuffix}`;
     const newName = `${descriptor.fixedPrefix}${descriptor.newNameSuffix}`;
 
-    try {
-      await renameAssetInProject(project.id, oldName, newName);
-    } catch (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      err: any
-    ) {
-      if (err.name === "PytchDuplicateAssetNameError") {
-        const opContext = descriptor.operationContext;
-        throw new Error(
-          `Cannot rename "${descriptor.oldNameSuffix}"` +
-            ` to "${descriptor.newNameSuffix}" because` +
-            ` ${opContext.scope} already contains` +
-            ` A THING called` + // I18N-TODO
-            ` "${descriptor.newNameSuffix}".`
-        );
-      } else {
-        throw err;
-      }
-    }
+    await renameAssetInProject(project.id, oldName, newName);
 
     // If we get here, the operation was successful.  Errors are caught
     // but rethrown.
