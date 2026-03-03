@@ -13,7 +13,7 @@ import { LinkedContentRef } from "../linked-content-core";
 
 type SaveProjectAsRunArgs = {
   sourceProjectId: ProjectId;
-  sourceName: string;
+  initialNameOfCopy: string;
   sourceLinkedContentRef: LinkedContentRef;
 };
 
@@ -48,7 +48,7 @@ async function prepare(
     sourceProjectId: args.sourceProjectId,
     sourceLinkedContentRef: args.sourceLinkedContentRef,
     copyKeepsContentLink: true,
-    nameOfCopy: `Copy of ${args.sourceName}`,
+    nameOfCopy: args.initialNameOfCopy,
   };
 }
 
