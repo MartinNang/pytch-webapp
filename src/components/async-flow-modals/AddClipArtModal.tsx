@@ -205,7 +205,7 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 
   switch (gallery.status) {
     case "fetch-failed":
-      return <ErrorMessageDisplay errorMessage={gallery.message} />;
+      return <ErrorMessageDisplay errorSpec={gallery.messageSpec} />;
     case "fetch-not-started":
     case "fetch-pending":
       return (
