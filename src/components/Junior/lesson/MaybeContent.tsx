@@ -6,6 +6,7 @@ import { Content } from "./Content";
 import { ContentLoadingSpinner } from "./ContentLoadingSpinner";
 import { SpecimenInformation } from "./SpecimenInformation";
 import { ErrorMessageDisplay } from "../../ErrorMessageDisplay";
+import { mkRawSpec } from "../../../model/i18n/core-types";
 
 export const MaybeContent: React.FC<EmptyProps> = () => {
   const linkedContentState = useLinkedContentLoadingStateSummary();
@@ -30,7 +31,9 @@ export const MaybeContent: React.FC<EmptyProps> = () => {
       return (
         <div className="m-4">
           <h2>Problem loading content</h2>
-          <ErrorMessageDisplay errorMessage={linkedContentState.message} />
+          <ErrorMessageDisplay
+            errorSpec={mkRawSpec(linkedContentState.message)}
+          />
         </div>
       );
     case "pending": {

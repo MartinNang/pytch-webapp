@@ -4,6 +4,7 @@ import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
 import Button from "react-bootstrap/Button";
 import { envVarOrDefault } from "../env-utils";
 import { ErrorMessageDisplay } from "./ErrorMessageDisplay";
+import { mkRawSpec } from "../model/i18n/core-types";
 
 // Accept props of broader type than "FallbackProps" to allow use in
 // other contexts.
@@ -21,7 +22,7 @@ export const ExceptionDisplay: React.FC<ExceptionDisplayProps> = (props) => {
       windowTitle={t("unexpected.window-title")}
     >
       <div className="content">
-        <ErrorMessageDisplay errorMessage={error.message} />
+        <ErrorMessageDisplay errorSpec={mkRawSpec(error.message)} />
         <div className="button-container">
           <a href={envVarOrDefault("BASE_URL", "https://pytch.org/")}>
             <Button>{t("unexpected.button.return-home")}</Button>
