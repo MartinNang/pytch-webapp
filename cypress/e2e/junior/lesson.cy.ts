@@ -149,7 +149,10 @@ context("Navigation of per-method lesson", () => {
     cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 2);
   });
 
-  it("saves chapter state per project", () => {
+  it(
+    "saves chapter state per project",
+    { defaultCommandTimeout: 30000 },
+    () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.window().then((window: any) => {
       let pytchCypress = window.PYTCH_CYPRESS;

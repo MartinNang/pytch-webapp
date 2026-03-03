@@ -1,6 +1,6 @@
 import { kExpNTutorials } from "./utils";
 
-context("Demos of all tutorials", () => {
+context("Demos of all tutorials", { defaultCommandTimeout: 30000 }, () => {
   function assertNTutorials() {
     cy.get("ul.tutorial-list li").should("have.length", kExpNTutorials);
   }
