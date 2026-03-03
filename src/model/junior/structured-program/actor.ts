@@ -49,8 +49,6 @@ export const zActor = z.strictObject({
 });
 export type Actor = z.infer<typeof zActor>;
 
-type ActorKindAndName = Pick<Actor, "kind" | "name">;
-
 export type HandlerInActorContext = {
   actor: Actor;
   handler: EventHandler;

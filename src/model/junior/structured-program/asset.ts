@@ -1,4 +1,3 @@
-import { assertNever } from "../../../utils";
 import { Uuid } from "./core-types";
 
 // Compatible with AssetPresentation
