@@ -1,5 +1,9 @@
 import { i18n, TOptions } from "i18next";
-import { I18nStringSpec, RawOrI18nStringSpec } from "./core-types";
+import {
+  I18nStringSpec,
+  I18nStringSpecWithKeyPart,
+  RawOrI18nStringSpec,
+} from "./core-types";
 import { assertNever } from "../../utils";
 
 export function i18nTranslationOptions(
@@ -31,6 +35,13 @@ export function i18nTranslationOptions(
   return tOptions;
 }
 
+export function translatedSpec(
+  i18n: i18n,
+  spec: I18nStringSpecWithKeyPart
+): string {
+  return i18n.t(spec.keyPart, i18nTranslationOptions(i18n, spec));
+}
+
 /** Resolve the given `spec` into a human-readable string.  If the
  * `spec` is of kind `"raw"`, it is already human-readable.  If of kind
  * `"i18n"`, translate the contained `spec.spec`, assuming that its
@@ -43,7 +54,7 @@ export function resolveRawOrI18n(
     case "raw":
       return spec.text;
     case "i18n": {
-      return i18n.t(spec.spec.keyPart, i18nTranslationOptions(i18n, spec.spec));
+      return translatedSpec(i18n, spec.spec);
     }
     default:
       return assertNever(spec);
