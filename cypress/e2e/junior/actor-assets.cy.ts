@@ -28,14 +28,17 @@ context("Working with assets of an actor", () => {
     clickUniqueButton(expButtonMatch);
   };
 
-  const tryAddFromFixture = (fixtureBasename: string) => {
+  const tryAddFromFixture = (
+    ownerKindName: string,
+    fixtureBasename: string
+  ) => {
     launchAdd.assetFromThisDevice([fixtureBasename]);
-    clickUniqueButton("Add to project");
+    clickUniqueButton(`Add to ${ownerKindName}`);
   };
 
-  const addFromFixture = (fixtureBasename: string) => {
+  const addFromFixture = (ownerKindName: string, fixtureBasename: string) => {
     launchAdd.assetFromThisDevice([fixtureBasename]);
-    settleModalDialog("Add to project");
+    settleModalDialog(`Add to ${ownerKindName}`);
   };
 
   it("can add and delete Costumes from medialib", () => {
@@ -136,9 +139,9 @@ context("Working with assets of an actor", () => {
     selectSprite("Snake");
 
     selectActorAspect("Sounds");
-    addFromFixture("silence-500ms.mp3");
+    addFromFixture("sprite", "silence-500ms.mp3");
     assertSoundNames("sprite", ["silence-500ms.mp3"]);
-    addFromFixture("sine-1kHz-2s.mp3");
+    addFromFixture("sprite", "sine-1kHz-2s.mp3");
     assertSoundNames("sprite", ["silence-500ms.mp3", "sine-1kHz-2s.mp3"]);
 
     const allCostumes = [
@@ -148,9 +151,9 @@ context("Working with assets of an actor", () => {
     ];
     selectActorAspect("Costumes");
     assertCostumeNames(allCostumes.slice(0, 1));
-    addFromFixture("green-circle-64.png");
+    addFromFixture("sprite", "green-circle-64.png");
     assertCostumeNames(allCostumes.slice(0, 2));
-    addFromFixture("purple-circle-64.png");
+    addFromFixture("sprite", "purple-circle-64.png");
     assertCostumeNames(allCostumes);
   });
 
@@ -159,7 +162,7 @@ context("Working with assets of an actor", () => {
 
     selectSprite("Snake");
     selectActorAspect("Costumes");
-    addFromFixture(assetFilename);
+    addFromFixture("sprite", assetFilename);
     assertCostumeNames(["python-logo.png", assetFilename]);
   });
 
@@ -187,8 +190,12 @@ context("Working with assets of an actor", () => {
   it("forbids adding duplicate assets", () => {
     const assertErrorCorrect = (actorKind: ActorKind, targetMatch: string) => {
       selectActorAspect("Sounds");
-      addFromFixture("silence-500ms.mp3");
-      tryAddFromFixture("silence-500ms.mp3");
+
+      // In English, actorKind (the string literal) happens to match the
+      // display name for owner kind.
+      addFromFixture(actorKind, "silence-500ms.mp3");
+
+      tryAddFromFixture(actorKind, "silence-500ms.mp3");
 
       cy.get(".add-asset-failures .modal-body").as("err-msg");
       cy.get("@err-msg").contains('Cannot add "silence-500ms.mp3"');
@@ -206,15 +213,15 @@ context("Working with assets of an actor", () => {
     assertErrorCorrect("stage", "to the stage");
   });
 
-  const addSampleSounds = () => {
+  const addSampleSounds = (kindDisplayName: string) => {
     selectActorAspect("Sounds");
-    addFromFixture("silence-500ms.mp3");
-    addFromFixture("sine-1kHz-2s.mp3");
+    addFromFixture(kindDisplayName, "silence-500ms.mp3");
+    addFromFixture(kindDisplayName, "sine-1kHz-2s.mp3");
   };
 
   it("can rename assets", () => {
     selectSprite("Snake");
-    addSampleSounds();
+    addSampleSounds("sprite");
 
     launchRenameAssetByIndex(0);
     cy.get(".CompoundTextInput input").type("{selectAll}{del}hush");
@@ -235,7 +242,8 @@ context("Working with assets of an actor", () => {
       actorKind: ActorKind,
       containsMatch: string
     ) => {
-      addSampleSounds();
+      // In English, actorKind === displayName
+      addSampleSounds(actorKind);
 
       launchRenameAssetByIndex(0);
       cy.get(".CompoundTextInput input").type("{selectAll}{del}sine-1kHz-2s");
