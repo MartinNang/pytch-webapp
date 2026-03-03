@@ -44,6 +44,7 @@
   "hat-block-content.start-as-clone": "when I start as a clone",
   "hat-block-content.key-pressed": "when <key /> key pressed",
   "hat-block-content.message-received": "when I receive “<msg />”",
+  "hat-block-content.new-message-received": "message-1",
 
   "key-choice-modal.title": "Choose a key",
 

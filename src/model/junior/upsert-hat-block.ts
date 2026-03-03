@@ -15,11 +15,11 @@ import { ActorKind, HandlerInActorContext } from "./structured-program";
 export type HandlerUpsertionMode = "choosing-hat-block" | "choosing-key";
 
 const kSpaceKeyDescriptor = descriptorFromBrowserKeyName(" ");
-const kDefaultWhenIReceiveMessage = "message-1";
 
 type UpsertHatBlockRunArgs = {
   operation: HandlerUpsertionOperation;
   actorKind: ActorKind;
+  newWhenIReceiveMessage: string;
 };
 
 type UpsertHatBlockRunState = {
@@ -64,7 +64,7 @@ async function prepare(
   // case of an update to an existing key-pressed or message-received
   // hat-block.
   let keyIfChosen = kSpaceKeyDescriptor;
-  let messageIfChosen = kDefaultWhenIReceiveMessage;
+  let messageIfChosen = args.newWhenIReceiveMessage;
   let chosenKind: EventDescriptorKind = "green-flag";
 
   switch (operation.action.kind) {
