@@ -32,7 +32,7 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
           </>
         );
       case "keynavhelp":
-            return <KeyNavHelpSidebar />;
+        return <KeyNavHelpSidebar />;
       case "lesson":
       case "specimen":
         // This is a bit of a fudge.  We treat these both as "lesson"

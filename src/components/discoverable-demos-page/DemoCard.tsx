@@ -71,29 +71,31 @@ export const DemoCard: React.FC<DemoCardProps> = ({
     <Card className={"flex-row flex-wrap card"}>
       <Card.Header className={"p-0 w-100"}>
         <Row className={"pill-row w-100 p-3 m-0"}>
-          {capitalise(demo.programKind) === ProgramType.flat ? (
-            <Button
-              className={"pill-icon flat-icon"}
-              onClick={() =>
-                setProgramType(capitalise(demo.programKind.toString()))
-              }
-            >
-              <img src={flatIcon} alt={"flat project"} />
-            </Button>
-          ) : demo.programKind === ProgramType.perMethod.toLowerCase() ? (
-            <Button
-              className={"pill-icon per-method-icon"}
-              onClick={() => {
-                setProgramType(capitalise(demo.programKind?.toString()));
-                console.log(
-                  "setting program type to",
-                  demo.programKind.toString()
-                );
-              }}
-            >
-              <img src={permethodIcon} alt={"per-method project"} />
-            </Button>
-          ) : undefined}
+          {
+            capitalise(demo.programKind) === ProgramType.flat ? (
+              <Button
+                className={"pill-icon flat-icon"}
+                onClick={() =>
+                  setProgramType(capitalise(demo.programKind.toString()))
+                }
+              >
+                <img src={flatIcon} alt={"flat project"} />
+              </Button>
+            ) : demo.programKind === ProgramType.perMethod.toLowerCase() ? (
+              <Button
+                className={"pill-icon per-method-icon"}
+                onClick={() => {
+                  setProgramType(capitalise(demo.programKind?.toString()));
+                  console.log(
+                    "setting program type to",
+                    demo.programKind.toString()
+                  );
+                }}
+              >
+                <img src={permethodIcon} alt={"per-method project"} />
+              </Button>
+            ) : undefined
+          }
 
           <Button
             className={

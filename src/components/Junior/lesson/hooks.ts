@@ -1,7 +1,8 @@
 import { useStoreState } from "../../../store";
 import { LinkedJrTutorial } from "../../../model/junior/jr-tutorial";
 import {
-  LinkedContentKind, LinkedDemo,
+  LinkedContentKind,
+  LinkedDemo,
   LinkedSpecimen,
 } from "../../../model/linked-content";
 
@@ -21,8 +22,7 @@ export const useHasLinkedLesson = () =>
 
 export const useHasLinkedSpecimen = () => useHasLinkedContentOfKind("specimen");
 
-export const useHasLinkedDemo = () =>
-  useHasLinkedContentOfKind("demo");
+export const useHasLinkedDemo = () => useHasLinkedContentOfKind("demo");
 
 export function useMappedLinkedJrTutorial<Result>(
   mapContent: (tutorial: LinkedJrTutorial) => Result,

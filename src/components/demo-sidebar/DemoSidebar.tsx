@@ -1,14 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Col,
-  Container,
-  Placeholder,
-  Row,
-} from "react-bootstrap";
+import { Col, Container, Placeholder, Row } from "react-bootstrap";
 import { useLinkedDemo } from "../Junior/lesson/hooks";
-import {DemoHeader} from "./DemoHeader";
-import {ChaptersOverview} from "./ChaptersOverview";
-import {DemoChapter} from "./DemoChapter";
+import { DemoHeader } from "./DemoHeader";
+import { ChaptersOverview } from "./ChaptersOverview";
+import { DemoChapter } from "./DemoChapter";
 
 export const DemoSidebar = () => {
   const maybeDemo = useLinkedDemo();
@@ -86,7 +81,6 @@ export const DemoSidebar = () => {
         behavior: "smooth",
         block: "start",
       });
-
     }
   }, [activeChapter]);
 
@@ -144,31 +138,31 @@ export const DemoSidebar = () => {
         <div className="inner-content">
           <Container className={"d-flex flex-column h-100"}>
             <DemoHeader
-                loading={loading}
-                activeChapter={activeChapter}
-                maybeDemo={maybeDemo}
-                headings={headings}
-                chaptersRef={chaptersRef}
-                navCaretRef={navCaretRef}
-                navigationOpen={navigationOpen}
-                setNavigationOpen={setNavigationOpen}
+              loading={loading}
+              activeChapter={activeChapter}
+              maybeDemo={maybeDemo}
+              headings={headings}
+              chaptersRef={chaptersRef}
+              navCaretRef={navCaretRef}
+              navigationOpen={navigationOpen}
+              setNavigationOpen={setNavigationOpen}
             />
             <DemoSubheader />
             <ChaptersOverview
-                navigationOpen={navigationOpen}
-                activeChapter={activeChapter}
-                loading={loading}
-                headings={headings}
-                chaptersRef={chaptersRef}
-                setActiveChapter={setActiveChapter}
+              navigationOpen={navigationOpen}
+              activeChapter={activeChapter}
+              loading={loading}
+              headings={headings}
+              chaptersRef={chaptersRef}
+              setActiveChapter={setActiveChapter}
             />
             <DemoChapter
-            activeChapter={activeChapter}
-            loading={loading}
-            headings={headings}
-            setActiveChapter={setActiveChapter}
-            navigationOpen={navigationOpen}
-            chapterContents={chapterContents}
+              activeChapter={activeChapter}
+              loading={loading}
+              headings={headings}
+              setActiveChapter={setActiveChapter}
+              navigationOpen={navigationOpen}
+              chapterContents={chapterContents}
             />
             <DemoFooter />
           </Container>

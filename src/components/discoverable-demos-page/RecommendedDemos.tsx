@@ -1,24 +1,18 @@
-import React, {useState} from "react";
-import {
-    Card,
-    Carousel,
-    Col,
-    Placeholder,
-    Row,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Carousel, Col, Placeholder, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Demo, ProgramType, ProjectType } from "./DemoCard";
-import {useStoreActions} from "../../store";
+import { useStoreActions } from "../../store";
 import flatIcon from "../../images/flat-simple.png";
 import permethodIcon from "../../images/per-method-simple.png";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const RecommendedDemos = ({
-    loading,
-    recommendedDemos
-} : {
-    loading: boolean;
-    recommendedDemos: Demo[];
+  loading,
+  recommendedDemos,
+}: {
+  loading: boolean;
+  recommendedDemos: Demo[];
 }) => {
 
     function RecommendedDemoCardSkeleton() {

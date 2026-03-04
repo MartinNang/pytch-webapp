@@ -92,6 +92,13 @@ export const DemoList: React.FC<EmptyProps> = () => {
   const [demos, setDemos] = useState<Demo[]>([]);
   const [sortedDemos, setSortedDemos] = useState<Demo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [filteredDemos, setFilteredDemos] = useState(sortedDemos);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [projectType, setProjectType] = useState<string>(ProjectType.all);
+  const [programType, setProgramType] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("Last Updated");
+  const [activePage, setActivePage] = useState(1);
+  const [recommendedDemos, setRecommendedDemos] = useState<Demo[]>([]);
 
   useEffect(() => {
     document.title = "Pytch: Demos";
@@ -126,14 +133,6 @@ export const DemoList: React.FC<EmptyProps> = () => {
   }, [demos]);
 
   const paneRef = React.useRef<HTMLDivElement>(null);
-
-  const [filteredDemos, setFilteredDemos] = useState(sortedDemos);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [projectType, setProjectType] = useState<string>(ProjectType.all);
-  const [programType, setProgramType] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("Last Updated");
-  const [activePage, setActivePage] = useState(1);
-  const [recommendedDemos, setRecommendedDemos] = useState<Demo[]>([]);
 
   function handleSearch(): void {
     let searchResults = [...sortedDemos];
