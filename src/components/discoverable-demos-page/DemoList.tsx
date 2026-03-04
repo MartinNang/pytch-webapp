@@ -20,6 +20,8 @@ export enum SortingOptions {
   alphabetAsc = "A to Z",
 }
 
+/** See comments elsewhere about using wavy placeholders instead of a
+ * simple spinner being a separate PR. */
 function DemosContentSkeleton() {
   function DemoCardSkeleton() {
     return (
@@ -88,6 +90,27 @@ function DemosContentSkeleton() {
   );
 }
 
+/** fetch() logic belongs in the model not the component. */
+
+/** Use string literal union types not enum.  (There are a few old
+ * places in the code where I still have enums but in general string
+ * literal unions seem preferred.) */
+
+/** Use stronger type than "string" where possible, e.g., for enum /
+ * string literal union types. */
+
+/** Use the same program-kind string literals as elsewhere, to avoid the
+ * kludge for perMethod below.  In fact is demo.programKind.toString()
+ * === "perMethod" possible, if the typing on demo.programKind is to be
+ * believed? */
+
+/** Don't use human-readable strings as enum values.  Makes i18n harder.
+ * */
+
+/** The data files for the demos need to live not in this repo.  There
+ * needs to be some machinery to support a reasonable workflow for
+ * publishing new demos. */
+
 export const DemoList: React.FC<EmptyProps> = () => {
   const [demos, setDemos] = useState<Demo[]>([]);
   const [sortedDemos, setSortedDemos] = useState<Demo[]>([]);
@@ -104,6 +127,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
     document.title = "Pytch: Demos";
   });
 
+  // Fetch JSON, parse into `demos`, `sortedDemos`, `filteredDemos` state.
   useEffect(() => {
     async function getDemos() {
       await fetch("/data/demos/demos.json").then((res) =>
@@ -126,6 +150,7 @@ export const DemoList: React.FC<EmptyProps> = () => {
     getDemos();
   }, []);
 
+  // Set `recommendedDemos` on change to `demos`.
   useEffect(() => {
     const r = demos.filter((demo: Demo) => demo.recommended === "true");
     setRecommendedDemos(r);
@@ -184,6 +209,9 @@ export const DemoList: React.FC<EmptyProps> = () => {
 
   const itemsPerPage = 10;
 
+  /** Break this 150-line expression into pieces by creating local
+   * components for each of the major parts.  The level of nesting is
+   * also very high. */
   return (
     <>
       <NavBanner />

@@ -64,6 +64,12 @@ export function useMappedLinkedSpecimen<Result>(
 export const useLinkedSpecimen = (): LinkedSpecimen =>
   useMappedLinkedSpecimen((specimen) => specimen);
 
+/** It should be possible to make this work the same way as
+ * useMappedLinkedSpecimen(), i.e., throw an error if the linked content
+ * is not successfully loaded and of the correct kind.  In fact then we
+ * could pull out a common function, since the logic will be identical,
+ * and only the kind string and content type differ. */
+
 export function useMappedLinkedDemo<Result>(
   mapContent: (linkedDemo: LinkedDemo | null) => Result,
   eqResult?: (prev: Result, next: Result) => boolean

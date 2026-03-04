@@ -5,6 +5,27 @@ import { DemoHeader } from "./DemoHeader";
 import { ChaptersOverview } from "./ChaptersOverview";
 import { DemoChapter } from "./DemoChapter";
 
+/** Components should do the bare minimum of model manipulation and
+ * "business logic".  Very often the minimum is "none".  E.g., markdown
+ * parsing does not belong in the component.  It looks like it is useful
+ * to pull out the headings, and split the markdown into chapters, but
+ * that should be done either in the model here in the front end, or
+ * perhaps instead by the "demo compiler" (which doesn't exist yet).
+ *
+ * The useEffect()s with dependency list of a piece of state should not
+ * be needed; re-rendering on state change is React's job.
+ *
+ * There should be no "loading" logic here.  Then (as commented in other
+ * file), "maybeDemo" becomes just "demo", which lets TypeScript help
+ * you more and avoids all the "?." operators and null checks.
+ *
+ * The demo (and its parsed parts such as headers and chapter contents)
+ * can live in the Easy-Peasy model, and don't have to be passed down to
+ * child components.  */
+
+/** The chaptersRef machinery could instead be done with selectors and
+ * data attributes, which might be simpler. */
+
 export const DemoSidebar = () => {
   const maybeDemo = useLinkedDemo();
   const [md, setMd] = useState<string>("");

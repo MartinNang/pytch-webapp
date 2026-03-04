@@ -3,6 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Markdown from "react-markdown";
 import React, { useEffect, useRef, useState } from "react";
 
+/** See comments elsewhere about placeholders. */
+
+/** Is some of the complexity of the below because some demos will have
+ * multiple chapters and some won't?  If that's an important distinction
+ * maybe it could be handled higher up.  PERHAPS even separate
+ * components for "monolithic" vs "structured" demos, with separate
+ * types to avoid all the "headers.length > 1" checks. */
+
 export const DemoChapter = ({
   activeChapter,
   loading,

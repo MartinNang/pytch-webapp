@@ -416,6 +416,8 @@ button.awaiting-action {
       }
     }
 
+    // This image is 4.5MB, which is 6.5× the (gzipped) size of the rest
+    // of the app.  Can it be simplified?
     background-image: url("./images/demos-bg.png");
     background-size: cover;
     min-height: 50vh;

@@ -70,6 +70,7 @@ export const RecommendedDemos = ({
           <Card.Body className={"p-3 px-4 d-flex flex-column"}>
             <Row className={"pill-row p-0 m-0 mb-3"}>
               {
+                /** Looks like this could be done without ?: operator*/
                 recommendedDemo.programKind ===
                 ProgramType.flat.toLowerCase() ? (
                   <div className={"pill-icon flat-icon"}>

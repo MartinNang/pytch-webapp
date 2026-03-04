@@ -13,10 +13,19 @@ type DemoCardProps = {
   setProgramType: (type: string) => void;
 };
 
+/** There is already a type which captures this concept.
+ * PytchProgramKind is a union of string literals. */
 export enum ProgramType {
   flat = "Flat",
   perMethod = "Per-method",
 }
+
+/** Might make sense to split this into two types.  Thers's the concept
+ * of what kind of example this is --- "demo" or "snippet".  And then
+ * there's the concept of which kind of examples the user is interested
+ * in seeing, which is those two and also "all".  Something like: */
+export type ExampleKind = "demo" | "snippet";
+export type ExampleKindSelector = ExampleKind | "all";
 
 export enum ProjectType {
   all = "All",
@@ -24,6 +33,9 @@ export enum ProjectType {
   snippet = "Snippet",
 }
 
+/** True classes don't play well with Easy-Peasy unfortunately, so it
+ * seems to be better to just define a type at the TypeScript level, and
+ * then at the JavaScript level it's just a plain object. */
 export class Demo {
   displayName: string;
   summaryMarkdown: string | undefined;
@@ -54,6 +66,11 @@ export class Demo {
   }
 }
 
+/** Program-type (elsewhere "program kind") is not a human-readable
+ * string, so shouldn't need capitalisation anywhere.  If we want to
+ * present the program-kind to the user then it should be via a lookup,
+ * which can then fairly easily be made translateable. */
+
 export const DemoCard: React.FC<DemoCardProps> = ({
   demo,
   setProjectType,
@@ -72,6 +89,8 @@ export const DemoCard: React.FC<DemoCardProps> = ({
       <Card.Header className={"p-0 w-100"}>
         <Row className={"pill-row w-100 p-3 m-0"}>
           {
+            /** This could be done without the ?: since the two results
+             * are very similar. */
             capitalise(demo.programKind) === ProgramType.flat ? (
               <Button
                 className={"pill-icon flat-icon"}

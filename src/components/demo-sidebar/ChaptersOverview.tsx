@@ -9,6 +9,25 @@ import {
 import Markdown from "react-markdown";
 import React, { RefObject } from "react";
 
+/** The placeholder buttons: Large copy/paste chunks are undesirable,
+ * but anyway I think v1 of this should use a simple spinner.  The wave
+ * placeholders are nice but would be out of place with other spinners,
+ * so if we do change, it should be a separate PR which converts all of
+ * them. */
+
+/** Event handlers are hard to read inline unless they're (say) two
+ * lines max.  Give the function a name.  I can't claim never to have
+ * left diagnostic console.log()s in, but in general they shouldn't be
+ * there. */
+
+/** The "loading" machinery shouldn't be needed once the "loading state"
+ * is managed higher up, by MaybeContent. */
+
+/** Unless not possible (e.g., something has to be dynamically computed)
+ * put styles in SCSS not inline. */
+
+/** Use the classNames() utility function to construct class values. */
+
 export const ChaptersOverview = ({
   navigationOpen,
   activeChapter,
