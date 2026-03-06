@@ -5,6 +5,7 @@ import { assertNever } from "../utils";
 import { GoogleUserInfo } from "../storage/google-drive/shared";
 import { CompoundTextInput } from "./CompoundTextInput";
 import { useActionAsEffect } from "./hooks/use-action-as-effect";
+import { useResolveStringSpec } from "./hooks/resolve-string-spec";
 
 export const GoogleGetFilenameFromUserModal = () => {
   const state = useStoreState(
@@ -137,14 +138,21 @@ type GoogleUserInfoSubHeaderProps = {
 
 const GoogleUserInfoSubHeader: React.FC<GoogleUserInfoSubHeaderProps> = ({
   user,
-}) => (
-  <Modal.Header className="user-info">
-    <p>{user.displayName}</p>
-    <p>
-      <code>{user.emailAddress}</code>
-    </p>
-  </Modal.Header>
-);
+}) => {
+  const resolveStringSpec = useResolveStringSpec();
+
+  const userName = resolveStringSpec(user.displayName);
+  const userEmail = resolveStringSpec(user.emailAddress);
+
+  return (
+    <Modal.Header className="user-info">
+      <p>{userName}</p>
+      <p>
+        <code>{userEmail}</code>
+      </p>
+    </Modal.Header>
+  );
+};
 
 type OutcomesOfKindProps = {
   summaries: Array<string>;
