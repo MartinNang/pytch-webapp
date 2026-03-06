@@ -10,6 +10,8 @@ import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content
 import { pathWithinApp } from "../env-utils";
 import { useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
+import { uniqueUserInputFragment } from "../model/compound-text-input";
+import { useResolveStringSpec } from "./hooks/resolve-string-spec";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
@@ -133,6 +135,7 @@ const GoToMyProjectsDropdownItem: React.FC<EmptyProps> = () => {
 };
 
 export const StageControls: React.FC<EmptyProps> = () => {
+  const resolveStringSpec = useResolveStringSpec();
   const { t } = useTranslation("ide");
   const { t: tProjects } = useTranslation("projects");
   const navigate = useNavigate();
@@ -159,7 +162,10 @@ export const StageControls: React.FC<EmptyProps> = () => {
 
   const runDownloadZipfiles = useRunFlow((f) => f.downloadZipfileFlow);
   const formatSpecifier = filenameFormatSpecifier(linkedContentLoadingState);
-  const onDownload = () => runDownloadZipfiles({ project, formatSpecifier });
+  const uiFragment = uniqueUserInputFragment(formatSpecifier);
+  const uiFragmentInitialValue = resolveStringSpec(uiFragment.initialValue);
+  const onDownload = () =>
+    runDownloadZipfiles({ project, formatSpecifier, uiFragmentInitialValue });
 
   const initiateButtonTour = useStoreActions(
     (actions) => actions.ideLayout.initiateButtonTour
