@@ -12,6 +12,27 @@
   "google-export.placeholder-user.display-name": "unknown user",
   "google-export.placeholder-user.email-address": "unknown email address",
 
+  "google-export.get-filename.title": "Export to Google Drive",
+  "google-export.get-filename.prompt": "Name of file to export:",
+  "google-export.get-filename.button.export": "Export",
+
+  "google-auth.connecting.title": "Connecting to Google account",
+
+  "google-operation.outcome.cancelled": "User cancelled the operation",
+  "google-operation.outcome.no-files-selected": "No files were selected",
+  "google-operation.outcome.error-intro": "An error occurred.  Technical details follow.",
+
+  "google-import.status-title": "Import from Google Drive",
+  "google-export.status-title": "Export to Google Drive",
+
+  "google-export.outcome.successes_one": "The following operation was <b>successful</b>:",
+  "google-export.outcome.successes_other": "The following operations were <b>successful</b>:",
+  "google-export.outcome.failures_one": "The following <b>problem</b> occurred:",
+  "google-export.outcome.failures_other": "The following <b>problems</b> occurred:",
+  "google-export.success": "Project exported to “{{filename}}”",
+  "google-import.success": "Project imported from “{{filename}}”",
+  "google-import.failure": "“{{filename}}” — {{reason}}",
+
   "copy.title": "Copy project",
   "copy.initial-name": "Copy of {{sourceName}}",
   "copy.name-placeholder": "Name for copy of project",
