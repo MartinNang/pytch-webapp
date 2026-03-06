@@ -11,10 +11,10 @@ import {
 } from "../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "./utils";
 import { useFlowActions, useFlowState } from "../../model";
-import { resolveRawOrI18n } from "../../model/i18n/utils";
+import { useResolveStringSpec } from "../hooks/resolve-string-spec";
 
 export const RenameAssetModal = () => {
-  const { i18n } = useTranslation();
+  const resolveStringSpec = useResolveStringSpec();
   const { t } = useTranslation("assets");
   const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameAssetFlow);
@@ -33,8 +33,7 @@ export const RenameAssetModal = () => {
           throw new Error("should not be notifying if successful");
         }
 
-        const messageContent = resolveRawOrI18n(
-          i18n,
+        const messageContent = resolveStringSpec(
           activeFsmState.outcomeNub.messageSpec
         );
         const dismiss = activeFsmState.userAck;
