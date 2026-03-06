@@ -76,6 +76,7 @@ export const RedStop = () => {
 };
 
 const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
+  const resolveStringSpec = useResolveStringSpec();
   const { t } = useTranslation("projects");
   const linkedContentLoadingState = useStoreState(
     (state) => state.activeProject.linkedContentLoadingState
@@ -85,7 +86,11 @@ const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
     (actions) => actions.googleDriveImportExport.exportProject
   );
   const onExport = () => {
-    launchExportProjectOperation({ project, linkedContentLoadingState });
+    launchExportProjectOperation({
+      project,
+      linkedContentLoadingState,
+      resolveStringSpec,
+    });
   };
 
   const googleDriveStatus = useStoreState(
