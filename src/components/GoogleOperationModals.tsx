@@ -1,13 +1,25 @@
 import { Button, Modal, Spinner } from "react-bootstrap";
 import { useStoreState, useStoreActions } from "../store";
 import React, { useEffect } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { assertNever } from "../utils";
 import { GoogleUserInfo } from "../storage/google-drive/shared";
+import {
+  SuccessfulOperation,
+  TaskOutcome,
+  TransferKind,
+} from "../model/google-drive-import-export";
+import { FileProcessingFailure } from "../model/user-interactions/process-files";
 import { CompoundTextInput } from "./CompoundTextInput";
 import { useActionAsEffect } from "./hooks/use-action-as-effect";
 import { useResolveStringSpec } from "./hooks/resolve-string-spec";
+import { resolveRawOrI18n } from "../model/i18n/utils";
+import { ErrorMessageDisplay } from "./ErrorMessageDisplay";
+import { mkRawSpec } from "../model/i18n/core-types";
 
 export const GoogleGetFilenameFromUserModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const state = useStoreState(
     (state) => state.googleDriveImportExport.chooseFilenameFlow.state
   );
@@ -61,10 +73,10 @@ export const GoogleGetFilenameFromUserModal = () => {
       centered
     >
       <Modal.Header>
-        <Modal.Title>Export to Google Drive</Modal.Title>
+        <Modal.Title>{t("google-export.get-filename.title")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>Name of file to export:</p>
+        <p>{t("google-export.get-filename.prompt")}</p>
         <CompoundTextInput
           formatSpecifier={state.formatSpecifier}
           onNewUiFragmentValue={setUserInput}
@@ -74,14 +86,14 @@ export const GoogleGetFilenameFromUserModal = () => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={doCancel}>
-          Cancel
+          {tCommon("button.cancel")}
         </Button>
         <Button
           disabled={!filenameIsValid}
           variant="primary"
           onClick={doSubmit}
         >
-          Export
+          {t("google-export.get-filename.button.export")}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -89,6 +101,8 @@ export const GoogleGetFilenameFromUserModal = () => {
 };
 
 export const GoogleAuthenticationStatusModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const authState = useStoreState(
     (state) => state.googleDriveImportExport.authState
   );
@@ -114,14 +128,14 @@ export const GoogleAuthenticationStatusModal = () => {
           centered
         >
           <Modal.Header>
-            <Modal.Title>Connecting to Google account</Modal.Title>
+            <Modal.Title>{t("google-auth.connecting.title")}</Modal.Title>
           </Modal.Header>
           <Modal.Body className="pending">
             <Spinner animation="border" />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={cancelAuth}>
-              Cancel
+              {tCommon("button.cancel")}
             </Button>
           </Modal.Footer>
         </Modal>
@@ -154,85 +168,123 @@ const GoogleUserInfoSubHeader: React.FC<GoogleUserInfoSubHeaderProps> = ({
   );
 };
 
-type OutcomesOfKindProps = {
-  summaries: Array<string>;
+type OutcomesOfKindListProps = {
+  outcomesKind: "successes" | "failures";
+  items: Array<string>;
 };
-
-type OutcomesOfKindListProps = OutcomesOfKindProps & {
-  intro: React.JSX.Element;
-  className: string;
-};
-
 const OutcomesOfKindList: React.FC<OutcomesOfKindListProps> = ({
-  summaries,
-  intro,
-  className,
+  outcomesKind,
+  items,
 }) => {
   return (
-    <div className={`outcome-summary ${className}`}>
-      {intro}
+    <div className={`outcome-summary ${outcomesKind}`}>
+      <p>
+        <Trans
+          i18nKey={`google-export.outcome.${outcomesKind}`}
+          ns="projects"
+          count={items.length}
+        />
+      </p>
       <ul>
-        {summaries.map((s, idx) => (
-          <li key={idx}>{s}</li>
+        {items.map((item, idx) => (
+          <li key={idx}>{item}</li>
         ))}
       </ul>
     </div>
   );
 };
 
-const OutcomeSuccesses: React.FC<OutcomesOfKindProps> = ({ summaries }) => {
-  const nSummaries = summaries.length;
-  if (nSummaries === 0) {
+type OutcomeSuccessesProps = {
+  operations: Array<SuccessfulOperation>;
+};
+const OutcomeSuccesses: React.FC<OutcomeSuccessesProps> = ({ operations }) => {
+  const { t } = useTranslation("projects");
+  const nOperations = operations.length;
+  if (nOperations === 0) {
     return null;
   }
 
-  const intro =
-    nSummaries === 1 ? (
-      <p>
-        The following operation was <strong>successful</strong>:
-      </p>
-    ) : (
-      <p>
-        The following operations were <strong>successful</strong>:
-      </p>
-    );
-
-  return (
-    <OutcomesOfKindList
-      summaries={summaries}
-      intro={intro}
-      className="successes"
-    />
+  const items = operations.map((op) =>
+    t(`google-${op.kind}.success`, { replace: { filename: op.filename } })
   );
+
+  return <OutcomesOfKindList outcomesKind="successes" items={items} />;
 };
 
-const OutcomeFailures: React.FC<OutcomesOfKindProps> = ({ summaries }) => {
-  const nSummaries = summaries.length;
-  if (nSummaries === 0) {
+type OutcomeFailuresProps = {
+  failures: Array<FileProcessingFailure>;
+};
+
+const OutcomeFailures: React.FC<OutcomeFailuresProps> = ({ failures }) => {
+  const { i18n } = useTranslation();
+  const { t } = useTranslation("projects");
+
+  const nFailures = failures.length;
+  if (nFailures === 0) {
     return null;
   }
 
-  const intro =
-    nSummaries === 1 ? (
-      <p>
-        The following <strong>problem</strong> occurred:
-      </p>
-    ) : (
-      <p>
-        The following <strong>problems</strong> occurred:
-      </p>
-    );
+  const items = failures.map((f) => {
+    const reason = resolveRawOrI18n(i18n, f.reason);
+    return t("google-import.failure", {
+      replace: { filename: f.filename, reason },
+    });
+  });
 
+  return <OutcomesOfKindList outcomesKind="failures" items={items} />;
+};
+
+type TaskOutcomeBodyProps = {
+  outcome: TaskOutcome;
+};
+
+const TaskOutcomeBody: React.FC<TaskOutcomeBodyProps> = ({ outcome }) => {
+  const { t } = useTranslation("projects");
+
+  switch (outcome.kind) {
+    case "cancelled":
+      return (
+        <p className="cancelled-message">
+          {t("google-operation.outcome.cancelled")}
+        </p>
+      );
+    case "no-files-selected":
+      return (
+        <p className="no-files-message">
+          {t("google-operation.outcome.no-files-selected")}
+        </p>
+      );
+    case "error":
+      return <ErrorMessageDisplay errorSpec={mkRawSpec(outcome.message)} />;
+    case "completed":
+      return (
+        <>
+          <OutcomeSuccesses operations={outcome.successes} />
+          <OutcomeFailures failures={outcome.failures} />
+        </>
+      );
+    default:
+      return assertNever(outcome);
+  }
+};
+
+type GoogleTaskStatusModalHeaderProps = {
+  transferKind: TransferKind;
+};
+const GoogleTaskStatusModalHeader: React.FC<
+  GoogleTaskStatusModalHeaderProps
+> = ({ transferKind }) => {
+  const { t } = useTranslation("projects");
+  const i18nKey = `google-${transferKind}.status-title`;
   return (
-    <OutcomesOfKindList
-      summaries={summaries}
-      intro={intro}
-      className="failures"
-    />
+    <Modal.Header>
+      <Modal.Title>{t(i18nKey)}</Modal.Title>
+    </Modal.Header>
   );
 };
 
 export const GoogleTaskStatusModal = () => {
+  const { t: tCommon } = useTranslation("common");
   const taskState = useStoreState(
     (state) => state.googleDriveImportExport.taskState
   );
@@ -256,9 +308,7 @@ export const GoogleTaskStatusModal = () => {
           animation={false}
           centered
         >
-          <Modal.Header>
-            <Modal.Title>{taskState.summary}</Modal.Title>
-          </Modal.Header>
+          <GoogleTaskStatusModalHeader transferKind={taskState.transferKind} />
           <GoogleUserInfoSubHeader user={taskState.user} />
           <Modal.Body className="pending">
             <Spinner animation="border" />
@@ -268,8 +318,6 @@ export const GoogleTaskStatusModal = () => {
     }
     case "done": {
       const dismiss = taskState.dismissNotification;
-      const taskOutcome = taskState.outcome;
-      const maybeMessage = taskOutcome.message && <p>{taskOutcome.message}</p>;
       return (
         <Modal
           className="GoogleTaskStatusModal"
@@ -277,18 +325,14 @@ export const GoogleTaskStatusModal = () => {
           animation={false}
           centered
         >
-          <Modal.Header>
-            <Modal.Title>{taskState.summary}</Modal.Title>
-          </Modal.Header>
+          <GoogleTaskStatusModalHeader transferKind={taskState.transferKind} />
           <GoogleUserInfoSubHeader user={taskState.user} />
           <Modal.Body>
-            {maybeMessage}
-            <OutcomeSuccesses summaries={taskOutcome.successes} />
-            <OutcomeFailures summaries={taskOutcome.failures} />
+            <TaskOutcomeBody outcome={taskState.outcome} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={dismiss}>
-              OK
+              {tCommon("button.ok")}
             </Button>
           </Modal.Footer>
         </Modal>
