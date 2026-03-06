@@ -92,6 +92,11 @@ type ChooseFilenameActiveState = {
 
 type ChooseFilenameState = { kind: "idle" } | ChooseFilenameActiveState;
 
+type OutcomeArgs = {
+  formatSpecifier: FormatSpecifier;
+  initialUserInput: string;
+};
+
 type ChooseFilenameFlow = {
   state: ChooseFilenameState;
   setState: Action<ChooseFilenameFlow, ChooseFilenameState>;
@@ -106,7 +111,7 @@ type ChooseFilenameFlow = {
 
   outcome: Thunk<
     ChooseFilenameFlow,
-    FormatSpecifier,
+    OutcomeArgs,
     void,
     IPytchAppModel,
     Promise<ChooseFilenameOutcome>
@@ -169,14 +174,13 @@ let chooseFilenameFlow: ChooseFilenameFlow = {
     actions._resolve({ kind: "cancelled" });
   }),
 
-  outcome: thunk((actions, formatSpecifier, helpers) => {
+  outcome: thunk((actions, args, helpers) => {
     ensureFlowState("outcome", helpers.getState(), "idle");
-    const userInput = uniqueUserInputFragment(formatSpecifier).initialValue;
     return new Promise<ChooseFilenameOutcome>((resolve) => {
       actions.setState({
         kind: "active",
-        formatSpecifier,
-        userInput,
+        formatSpecifier: args.formatSpecifier,
+        userInput: args.initialUserInput,
         justLaunched: true,
         resolve,
       });
