@@ -111,6 +111,9 @@ function DemosContentSkeleton() {
  * needs to be some machinery to support a reasonable workflow for
  * publishing new demos. */
 
+/** See code for key nav sidebar about fetching a lump of JSON and
+ * processing it.  See how ExternalJsonSlice is used. */
+
 export const DemoList: React.FC<EmptyProps> = () => {
   const [demos, setDemos] = useState<Demo[]>([]);
   const [sortedDemos, setSortedDemos] = useState<Demo[]>([]);

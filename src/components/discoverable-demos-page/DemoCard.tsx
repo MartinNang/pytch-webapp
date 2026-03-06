@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
 import { PytchProgramKind } from "../../model/pytch-program";
+import { assertNever } from "../../utils";
 
 type DemoCardProps = {
   demo: Demo;
@@ -21,11 +22,22 @@ export enum ProgramType {
 }
 
 /** Might make sense to split this into two types.  Thers's the concept
- * of what kind of example this is --- "demo" or "snippet".  And then
+ * of what kind of example this is --- "game" or "snippet".  And then
  * there's the concept of which kind of examples the user is interested
  * in seeing, which is those two and also "all".  Something like: */
-export type ExampleKind = "demo" | "snippet";
-export type ExampleKindSelector = ExampleKind | "all";
+export type DemoKind = "game" | "snippet";
+export type DemoKindSelector = DemoKind | "all";
+
+function displayName(demoKind: DemoKind): string {
+  switch (demoKind) {
+    case "game":
+      return "Game";
+    case "snippet":
+      return "Snippet";
+    default:
+      return assertNever(demoKind);
+  }
+}
 
 export enum ProjectType {
   all = "All",
@@ -36,6 +48,17 @@ export enum ProjectType {
 /** True classes don't play well with Easy-Peasy unfortunately, so it
  * seems to be better to just define a type at the TypeScript level, and
  * then at the JavaScript level it's just a plain object. */
+export type Demo1 = {
+  slug: string;
+  displayName: string;
+  summaryMarkdown: string;
+  lastUpdated: Date;
+  featuredImageUrl: string;
+  programKind: PytchProgramKind;
+  projectType: ProjectType;
+  recommended: boolean;
+};
+
 export class Demo {
   displayName: string;
   summaryMarkdown: string | undefined;
