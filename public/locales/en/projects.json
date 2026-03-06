@@ -35,6 +35,9 @@
   "rename.title": "Rename project “{{oldName}}”",
   "rename.button.rename": "Rename",
 
+  "download-zipfile.name-placeholder.specimen": "your name",
+  "download-zipfile.name-initial-value.unlinked": "pytch-project",
+  "download-zipfile.name-placeholder.unlinked": "filename",
   "download-zipfile.title": "Download zipfile",
   "download-zipfile.button.download": "Download zipfile",
 
