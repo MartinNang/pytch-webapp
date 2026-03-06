@@ -68,8 +68,8 @@ export const RenameAssetModal = () => {
         const formatSpecifier: FormatSpecifier = [
           {
             kind: "user-input",
-            placeholder: t("rename.placeholder"),
-            initialValue: oldStem,
+            placeholder: { ns: "assets", keyPart: "rename.placeholder" },
+            initialValue: { kind: "raw", text: oldStem },
           },
           { kind: "literal", value: fixedSuffix },
         ];

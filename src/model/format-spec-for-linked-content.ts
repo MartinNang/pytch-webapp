@@ -1,6 +1,29 @@
 import { LinkedContentLoadingState } from "./project";
 import { FormatSpecifier } from "./compound-text-input";
 import { assertNever } from "../utils";
+import {
+  I18nStringSpecWithKeyPart,
+  mkRawSpec,
+  RawOrI18nStringSpec,
+} from "./i18n/core-types";
+
+const kUnlinkedSpecifierInitialValueSpec: RawOrI18nStringSpec = {
+  kind: "i18n",
+  spec: {
+    ns: "projects",
+    keyPart: "download-zipfile.name-initial-value.unlinked",
+  },
+};
+
+const kUnlinkedSpecifierPlaceholderSpec: I18nStringSpecWithKeyPart = {
+  ns: "projects",
+  keyPart: "download-zipfile.name-placeholder.unlinked",
+};
+
+const kSpecimenSpecifierPlaceholderSpec: I18nStringSpecWithKeyPart = {
+  ns: "projects",
+  keyPart: "download-zipfile.name-placeholder.specimen",
+};
 
 export function filenameFormatSpecifier(
   loadState: LinkedContentLoadingState
@@ -8,8 +31,8 @@ export function filenameFormatSpecifier(
   const unlinkedSpecifier: FormatSpecifier = [
     {
       kind: "user-input",
-      initialValue: "pytch-project",
-      placeholder: "filename",
+      initialValue: kUnlinkedSpecifierInitialValueSpec,
+      placeholder: kUnlinkedSpecifierPlaceholderSpec,
     },
     { kind: "literal", value: ".zip" },
   ];
@@ -35,8 +58,8 @@ export function filenameFormatSpecifier(
           return [
             {
               kind: "user-input",
-              initialValue: "",
-              placeholder: "your name",
+              initialValue: mkRawSpec(""),
+              placeholder: kSpecimenSpecifierPlaceholderSpec,
             },
             { kind: "literal", value: literalFragment },
           ];

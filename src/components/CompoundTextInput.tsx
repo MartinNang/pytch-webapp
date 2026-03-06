@@ -6,6 +6,8 @@ import {
   FormatSpecifier,
   uniqueUserInputFragment,
 } from "../model/compound-text-input";
+import { useTranslation } from "react-i18next";
+import { resolveRawOrI18n, translatedSpec } from "../model/i18n/utils";
 
 type CompoundTextInputProps = {
   formatSpecifier: FormatSpecifier;
@@ -16,8 +18,13 @@ const CompoundTextInput_: ForwardRefRenderFunction<
   HTMLInputElement,
   CompoundTextInputProps
 > = ({ formatSpecifier, onNewUiFragmentValue, onEnterKey }, ref) => {
+  const { i18n } = useTranslation();
+
   const uiFragment = uniqueUserInputFragment(formatSpecifier);
-  const [uiValue, setUiValue] = useState(uiFragment.initialValue);
+  const uiInitialValue = resolveRawOrI18n(i18n, uiFragment.initialValue);
+  const uiPlaceholder = translatedSpec(i18n, uiFragment.placeholder);
+
+  const [uiValue, setUiValue] = useState(uiInitialValue);
 
   const handleUiChange: React.ChangeEventHandler<HTMLInputElement> = (evt) => {
     const uiValue = evt.target.value;
@@ -44,7 +51,7 @@ const CompoundTextInput_: ForwardRefRenderFunction<
             key={key}
             type="text"
             value={uiValue}
-            placeholder={fragment.placeholder}
+            placeholder={uiPlaceholder}
             onChange={handleUiChange}
             onKeyDown={handleUiKeyPress}
             ref={ref}
