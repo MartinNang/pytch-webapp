@@ -412,6 +412,7 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
     // Any errors thrown from run() will be caught by doTask().
     const run: GoogleDriveTask = async (api, tokenInfo) => {
       const navGuard = new NavigationAbandonmentGuard();
+
       const formatSpecifier = filenameFormatSpecifier(
         descriptor.linkedContentLoadingState
       );
@@ -426,6 +427,7 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
         const chooseFilenameOutcome = await navGuard.throwIfAbandoned(
           actions.chooseFilenameFlow.outcome(outcomeArgs)
         );
+
         if (chooseFilenameOutcome.kind === "cancelled") {
           const cancelledOutcome: TaskOutcome = {
             successes: [],
