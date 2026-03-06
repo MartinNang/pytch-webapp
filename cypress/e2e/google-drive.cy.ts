@@ -2,12 +2,22 @@
 
 import { AsyncFile } from "../../src/storage/google-drive";
 import { MockApiBehaviour } from "../../src/storage/google-drive/mock";
-import { valueCell } from "../../src/utils";
+import { assertNever, valueCell } from "../../src/utils";
 import { assertInIDE, assertModalWithTitle, assertOnHomepage } from "./utils";
 type MatchContent = Parameters<Cypress.Chainable["contains"]>[1];
 
 const kImportModalTitle = "Import from Google Drive";
 const kExportModalTitle = "Export to Google Drive";
+
+type ExpTaskOutcome =
+  | { kind: "cancelled" }
+  | { kind: "no-files-selected" }
+  | { kind: "error"; message: string }
+  | {
+      kind: "completed";
+      successMatchers: Array<string | RegExp>;
+      failureMatchers: Array<string | RegExp>;
+    };
 
 context("Google Drive import and export", () => {
   const setApiBehaviourOpts = (behaviour: MockApiBehaviour) => ({
@@ -87,17 +97,52 @@ context("Google Drive import and export", () => {
       };
     };
 
-    const assertExportFailureShown = (expMessage: string) => {
-      assertModalWithTitle(kExportModalTitle);
-      cy.get(".modal-body")
-        .find(".outcome-summary.failures")
-        .contains(expMessage);
+    const assertTaskDoneInfo = (
+      expHeader: string,
+      expAuthInfoValidity: "valid" | "failed",
+      expOutcome: ExpTaskOutcome
+    ) => {
+      assertModalWithTitle(expHeader);
+
+      const [expUserName, expUserEmail] =
+        expAuthInfoValidity === "valid"
+          ? ["J. Random User", "j.random.user@example.com"]
+          : ["unknown user", "unknown email address"];
+
+      cy.get(".user-info").contains(expUserName);
+      cy.get(".user-info").contains(expUserEmail);
+
+      switch (expOutcome.kind) {
+        case "cancelled":
+          cy.get(".modal-body > p.cancelled-message").should("be.visible");
+          break;
+        case "no-files-selected":
+          cy.get(".modal-body > p.no-files-message").should("be.visible");
+          break;
+        case "error":
+          cy.get(".ErrorMessageDisplay").contains(expOutcome.message);
+          break;
+        case "completed":
+          assertOutcomeContent("successes", expOutcome.successMatchers);
+          assertOutcomeContent("failures", expOutcome.failureMatchers);
+          break;
+        default:
+          assertNever(expOutcome);
+      }
+
       cy.get("button").contains("OK").click();
+    };
+
+    const assertExportErrorShown = (expMessage: string) => {
+      assertTaskDoneInfo(kExportModalTitle, "failed", {
+        kind: "error",
+        message: expMessage,
+      });
     };
 
     const assertExportFails = (expMessage: string) => {
       cy.pytchChooseDropdownEntry("Export");
-      assertExportFailureShown(expMessage);
+      assertExportErrorShown(expMessage);
     };
 
     const assertExportSucceeds = () => {
@@ -130,10 +175,11 @@ context("Google Drive import and export", () => {
         });
         startImportFlow(mockBehaviour);
 
-        assertModalWithTitle(kImportModalTitle);
-        cy.get(".modal-body .outcome-summary.failures").contains(
-          "something_went_wrong"
-        );
+        assertTaskDoneInfo(kImportModalTitle, "failed", {
+          kind: "error",
+          message: "something_went_wrong",
+        });
+
         cy.go("back");
       });
 
@@ -233,7 +279,7 @@ context("Google Drive import and export", () => {
       cy.pytchChooseDropdownEntry("Export");
       assertModalWithTitle("Connecting to Google account");
       cy.get("button").contains("Cancel").click();
-      assertExportFailureShown("User cancelled");
+      assertExportErrorShown("User cancelled");
     });
 
     const assertOutcomeContent = (
@@ -252,33 +298,6 @@ context("Google Drive import and export", () => {
       }
     };
 
-    const assertTaskDoneInfo = (
-      expHeader: string,
-      expAuthInfoValidity: "valid" | "failed",
-      expMessage: string | null,
-      expSuccesses: Array<MatchContent>,
-      expFailures: Array<MatchContent>
-    ) => {
-      assertModalWithTitle(expHeader);
-
-      const [expUserName, expUserEmail] =
-        expAuthInfoValidity === "valid"
-          ? ["J. Random User", "j.random.user@example.com"]
-          : ["unknown user", "unknown email address"];
-
-      cy.get(".user-info").contains(expUserName);
-      cy.get(".user-info").contains(expUserEmail);
-
-      if (expMessage != null) {
-        cy.get(".modal-body > p").contains(expMessage);
-      }
-
-      assertOutcomeContent("successes", expSuccesses);
-      assertOutcomeContent("failures", expFailures);
-
-      cy.get("button").contains("OK").click();
-    };
-
     function successfulExportMockBehaviour(nExports: number): MockApiBehaviour {
       return okBootBehaviour({
         acquireToken: ["ok"],
@@ -295,13 +314,11 @@ context("Google Drive import and export", () => {
       cy.pytchChooseDropdownEntry("Export");
       cy.get("button").contains("Export").click();
 
-      assertTaskDoneInfo(
-        kExportModalTitle,
-        "valid",
-        null,
-        [/Project exported to.*[.]zip/],
-        []
-      );
+      assertTaskDoneInfo(kExportModalTitle, "valid", {
+        kind: "completed",
+        successMatchers: [/Project exported to.*[.]zip/],
+        failureMatchers: [],
+      });
     });
 
     it(`can export (choosing own filename)`, () => {
@@ -316,13 +333,11 @@ context("Google Drive import and export", () => {
       cy.get("@filename").type(`{selectAll}Cool project`);
       cy.get("button").contains("Export").click();
 
-      assertTaskDoneInfo(
-        kExportModalTitle,
-        "valid",
-        null,
-        [/Project exported to "Cool project.zip"/],
-        []
-      );
+      assertTaskDoneInfo(kExportModalTitle, "valid", {
+        kind: "completed",
+        successMatchers: [/Project exported to “Cool project.zip”/],
+        failureMatchers: [],
+      });
       cy.get(".modal-body").should("not.exist");
     });
 
@@ -333,13 +348,7 @@ context("Google Drive import and export", () => {
       cy.pytchChooseDropdownEntry("Export");
       cy.get("button").contains("Cancel").click();
 
-      assertTaskDoneInfo(
-        kExportModalTitle,
-        "valid",
-        null,
-        [],
-        [/User cancelled export/]
-      );
+      assertTaskDoneInfo(kExportModalTitle, "valid", { kind: "cancelled" });
     });
 
     it("shows error if export fails", () => {
@@ -354,13 +363,10 @@ context("Google Drive import and export", () => {
       cy.pytchChooseDropdownEntry("Export");
       cy.get("button").contains("Export").click();
 
-      assertTaskDoneInfo(
-        kExportModalTitle,
-        "failed",
-        null,
-        [],
-        [/Something went wrong/]
-      );
+      assertTaskDoneInfo(kExportModalTitle, "failed", {
+        kind: "error",
+        message: "Something went wrong",
+      });
     });
 
     it("shows error if import fails", () => {
@@ -375,13 +381,10 @@ context("Google Drive import and export", () => {
       cy.contains("My projects").click();
       cy.contains("Import from Google").click();
 
-      assertTaskDoneInfo(
-        kImportModalTitle,
-        "failed",
-        null,
-        [],
-        [/Moon phase wrong/]
-      );
+      assertTaskDoneInfo(kImportModalTitle, "failed", {
+        kind: "error",
+        message: "Moon phase wrong",
+      });
     });
 
     // In the zipfile tests below, if I use ArrayBufferFromString() and
@@ -415,13 +418,11 @@ context("Google Drive import and export", () => {
           cy.contains("My projects").click();
           cy.contains("Import from Google").click();
 
-          assertTaskDoneInfo(
-            kImportModalTitle,
-            "valid",
-            null,
-            [/Imported.*hello-world-123/],
-            []
-          );
+          assertTaskDoneInfo(kImportModalTitle, "valid", {
+            kind: "completed",
+            successMatchers: [/Project imported.*hello-world-123/],
+            failureMatchers: [],
+          });
 
           assertInIDE("flat");
         }
@@ -442,13 +443,9 @@ context("Google Drive import and export", () => {
       cy.contains("My projects").click();
       cy.contains("Import from Google").click();
 
-      assertTaskDoneInfo(
-        kImportModalTitle,
-        "valid",
-        "No files selected",
-        [],
-        []
-      );
+      assertTaskDoneInfo(kImportModalTitle, "valid", {
+        kind: "no-files-selected",
+      });
 
       // Should be left on "My projects" page:
       cy.contains("Import from Google Drive");
@@ -478,13 +475,13 @@ context("Google Drive import and export", () => {
               cy.contains("My projects").click();
               cy.contains("Import from Google").click();
 
-              assertTaskDoneInfo(
-                kImportModalTitle,
-                "valid",
-                null,
-                [/Imported.*hello-world-123/],
-                [/There was a problem.*could not find "meta.json"/]
-              );
+              assertTaskDoneInfo(kImportModalTitle, "valid", {
+                kind: "completed",
+                successMatchers: [/Project imported.*hello-world-123/],
+                failureMatchers: [
+                  /There was a problem.*could not find "meta.json"/,
+                ],
+              });
 
               // Should be left on "My projects" page, with successful
               // project listed:
