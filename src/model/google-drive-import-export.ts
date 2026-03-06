@@ -30,10 +30,12 @@ import {
   uniqueUserInputFragment,
 } from "./compound-text-input";
 import { NavigationAbandonmentGuard } from "../navigation-abandonment-guard";
+import { RawOrI18nStringSpec } from "./i18n/core-types";
 
 type ExportProjectDescriptor = {
   project: StoredProjectContent;
   linkedContentLoadingState: LinkedContentLoadingState;
+  resolveStringSpec: (spec: RawOrI18nStringSpec) => string;
 };
 
 type ApiBootStatus =
@@ -414,9 +416,15 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
         descriptor.linkedContentLoadingState
       );
 
+      const uiFragment = uniqueUserInputFragment(formatSpecifier);
+      const initialUserInput = descriptor.resolveStringSpec(
+        uiFragment.initialValue
+      );
+
       try {
+        const outcomeArgs = { formatSpecifier, initialUserInput };
         const chooseFilenameOutcome = await navGuard.throwIfAbandoned(
-          actions.chooseFilenameFlow.outcome(formatSpecifier)
+          actions.chooseFilenameFlow.outcome(outcomeArgs)
         );
         if (chooseFilenameOutcome.kind === "cancelled") {
           const cancelledOutcome: TaskOutcome = {
