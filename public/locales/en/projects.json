@@ -9,6 +9,9 @@
   "import-from-google-drive": "Import from Google Drive",
   "export-to-google-drive": "Export to Google Drive",
 
+  "google-export.placeholder-user.display-name": "unknown user",
+  "google-export.placeholder-user.email-address": "unknown email address",
+
   "copy.title": "Copy project",
   "copy.initial-name": "Copy of {{sourceName}}",
   "copy.name-placeholder": "Name for copy of project",
