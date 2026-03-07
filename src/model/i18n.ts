@@ -65,6 +65,7 @@ export let i18nContextState: I18nContextState = {
           "projects",
           "tutorials",
           "vm",
+          "welcome",
         ],
         defaultNS: "common",
         fallbackLng: "en",
