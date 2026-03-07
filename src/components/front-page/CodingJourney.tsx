@@ -7,7 +7,7 @@ import { useRunFlow } from "../../model";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./CodingJourney.scss";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 type CodingJourneysModalProps = {
   isShown: boolean;
@@ -17,10 +17,12 @@ const CodingJourneysModal: React.FC<CodingJourneysModalProps> = ({
   isShown,
   dismiss,
 }) => {
-  const { t } = useTranslation("projects");
+  const { t: tWelcome } = useTranslation("welcome");
+  const { t: tCommon } = useTranslation("common");
+  const { t: tProjects } = useTranslation("projects");
   const navigate = useNavigate();
   const runCreateProjectFlow = useRunFlow((f) => f.createProjectFlow);
-  const createArgs = { initialName: t("create.initial-name") };
+  const createArgs = { initialName: tProjects("create.initial-name") };
   const runCreateProject = () => runCreateProjectFlow(createArgs);
 
   return (
@@ -32,7 +34,7 @@ const CodingJourneysModal: React.FC<CodingJourneysModalProps> = ({
       animation={false}
     >
       <Modal.Header closeButton>
-        <Modal.Title>I want to...</Modal.Title>
+        <Modal.Title>{tWelcome("coding-journey.modal.title")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <section className="narrow-screen-warning">
@@ -40,11 +42,11 @@ const CodingJourneysModal: React.FC<CodingJourneysModalProps> = ({
             <FontAwesomeIcon icon="exclamation-triangle" />
           </p>
           <p className="text-content">
-            We advise using Pytch on a device with a reasonably large screen.
+            {tWelcome("coding-journey.modal.narrow-screen-warning")}
           </p>
         </section>
         <Button onClick={() => navigate("tutorials/")}>
-          Start learning from basics with guided help and tutorials
+          {tWelcome("coding-journey.modal.button.tutorials")}
         </Button>
         <Button
           onClick={() => {
@@ -52,12 +54,12 @@ const CodingJourneysModal: React.FC<CodingJourneysModalProps> = ({
             runCreateProject();
           }}
         >
-          Start a new project and work on my own
+          {tWelcome("coding-journey.modal.button.new-project")}
         </Button>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={dismiss}>
-          Close
+          {tCommon("button.ok")}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -84,9 +86,11 @@ export const CodingJourney: React.FC<EmptyProps> = () => {
         >
           <div className="hover-darken" />
           <p className="label-text">
-            &gt;&gt;&gt; Start your
-            <br />
-            coding journey
+            <Trans
+              ns="welcome"
+              i18nKey="coding-journey.button.label"
+              components={{ br: <br /> }}
+            />
           </p>
         </div>
       </div>

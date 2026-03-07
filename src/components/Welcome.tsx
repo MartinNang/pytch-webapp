@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { NavBanner } from "./NavBanner";
 import { EmptyProps } from "../utils";
 import { useStoreActions } from "../store";
@@ -20,6 +21,7 @@ const NewsLink: React.FC<EmptyProps> = () => {
 };
 
 const Welcome: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("welcome");
   // I have NO IDEA why the following is needed.  I suspect a bug in
   // Vite or the bundler.  Without the following line, the value
   // "pytchAppModel" exported from model/index.ts is not defined before
@@ -40,10 +42,7 @@ const Welcome: React.FC<EmptyProps> = () => {
         <Header />
         <CodingJourney />
 
-        <h3 className="pytch-summary">
-          Pytch helps people to learn Python by building on skills they have
-          developed in Scratch
-        </h3>
+        <h3 className="pytch-summary">{t("pytch-summary")}</h3>
 
         <NewsLink />
         <CardCarousel />
