@@ -47,6 +47,11 @@ context("Upload project from zipfile", () => {
     cy.get(".ActorCardContent").should("have.length", 2);
   });
 
+  it("v4 with JFIF asset", () => {
+    cy.pytchTryUploadZipfiles(["with-jfif-backdrop.zip"]);
+    cy.get(".ActorCardContent").should("have.length", 1);
+  });
+
   it("can upload multiple valid zipfiles", () => {
     cy.pytchTryUploadZipfiles([
       "hello-world-format-v1.zip",
