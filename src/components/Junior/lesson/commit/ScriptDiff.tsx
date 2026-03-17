@@ -125,8 +125,10 @@ const ScriptDiffViewLine: React.FC<ScriptDiffViewLineProps> = ({ line }) => {
     case "add-padding":
     case "change-padding":
     case "del-padding": {
-      const key = `script-diff.code-help.${line.helpTextKeyNub}`;
-      const helpContent = line.helpTextKeyNub === "" ? "" : t(key);
+      const helpContent =
+        line.helpTextKeyNub === ""
+          ? ""
+          : t(`script-diff.code-help.${line.helpTextKeyNub}` as const);
       return (
         <div className={line.kind}>
           <pre className="lineno" />
