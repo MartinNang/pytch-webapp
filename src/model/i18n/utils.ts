@@ -17,7 +17,11 @@ export function i18nTranslationOptions(
       if (paramName in resolvedParams) {
         console.error(`indirect param "${paramName}" already exists in params`);
       } else {
-        const value = i18n.t(fqKey.key, { ns: fqKey.ns });
+        // It would be nice if we could get rid of this "as any" but
+        // nothing obvious is coming to mind, since the values are
+        // dynamic.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const value = i18n.t(fqKey.key as any, { ns: fqKey.ns });
         resolvedParams[paramName] = value;
       }
     }
