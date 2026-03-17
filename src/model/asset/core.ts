@@ -138,6 +138,11 @@ type AssetOperationContextKey =
   | `${AssetOperationScope}.${AssetMimeType}`
   | "flat.any";
 
+export function assetOperationContextKey(context: AssetOperationContext) {
+  // Type inference doesn't manage to work this out:
+  return `${context.scope}.${context.assetKind}` as AssetOperationContextKey;
+}
+
 export type GeneralisedAssetKind = AssetOperationContext["assetKind"];
 
 export class AssetOperationContextOps {
