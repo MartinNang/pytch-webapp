@@ -84,7 +84,6 @@ const SchedulerStepErrorIntro: SchedulerStepErrorIntroComponent = ({
           className: errorContext.target_class_name,
           eventLabel: errorContext.event_label,
         }}
-
       />
     </p>
   );
