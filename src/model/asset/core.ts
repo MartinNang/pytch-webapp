@@ -126,6 +126,8 @@ export type AssetPresentationData =
   | ImageAssetPresentationData
   | SoundAssetPresentationData;
 
+export type AssetSource = "media-library" | "this-device";
+
 export type AssetOperationScope = "flat" | ActorKind;
 
 // The second disjunct is for when we're adding assets (of either kind,

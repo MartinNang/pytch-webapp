@@ -22,6 +22,7 @@ import {
 } from "../../model/user-interactions/clipart-gallery-select";
 import { AssetOperationContext } from "../../model/asset";
 import { useTranslation } from "react-i18next";
+import { AssetSource } from "../../model/asset/core";
 
 export const AppearancesList = () => {
   const { t } = useTranslation("assets");
@@ -35,7 +36,7 @@ export const AppearancesList = () => {
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
 
-  const tButtonLabel = (src: string) => t(`add-button.${src}`);
+  const tButtonLabel = (src: AssetSource) => t(`add-button.${src}`);
 
   const actorAppearances = AssetMetaDataOps.filterByActorMimeType(
     assets,
