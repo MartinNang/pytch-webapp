@@ -45,7 +45,7 @@ const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
 
   return (
     <Button className="go-to-line" onClick={gotoLine}>
-      {t(key, { lineNo, colNo })}
+      {t(key, { replace: { lineNo, colNo } })}
     </Button>
   );
 };

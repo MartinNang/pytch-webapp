@@ -43,7 +43,7 @@ export const UpsertSpriteModal = () => {
         case "invalid": {
           const keySuffix = nameValidity.reasonKey;
           const fullKey = `upsert-sprite.invalid-name.${keySuffix}` as const;
-          return <p>{t(fullKey, { name })}</p>;
+          return <p>{t(fullKey, { replace: { name } })}</p>;
         }
         default:
           return assertNever(nameValidity);
