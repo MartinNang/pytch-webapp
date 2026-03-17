@@ -31,7 +31,7 @@ export const AddAssetsModal = () => {
 
       case "interacting":
       case "attempting": {
-        const keyStem = `add.${assetKind}`;
+        const keyStem = `add.${assetKind}` as const;
         const settle = settleFunctions(isSubmittable, activeState);
 
         const titleText = t(`${keyStem}.interacting.title`);

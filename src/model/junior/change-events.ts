@@ -52,7 +52,7 @@ export function perMethodScriptChangedDescription(
   change: PerMethodScriptChanged
 ): NotableChangeSummarySpec {
   const eventKind = {
-    ns: "vm",
+    ns: "vm" as const,
     key: `event-kind.${change.actorKind}.${change.handlerEventKind}`,
   };
 

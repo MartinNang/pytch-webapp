@@ -14,7 +14,7 @@ export const AddAssetFailuresList: React.FC<AddAssetFailuresListProps> = ({
   dismiss,
 }) => {
   const { t } = useTranslation("assets");
-  const keyStem = `add.${assetKind}`;
+  const keyStem = `add.${assetKind}` as const;
 
   const nFailures = failures.length;
   const titleText = t(`${keyStem}.failures.title`, { count: nFailures });

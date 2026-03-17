@@ -219,7 +219,7 @@ const CopyHint: React.FC<CopyHintProps> = ({ nAdds }) => {
     return false;
   } else {
     const keySuffix = nAdds === 1 ? "single" : "multi";
-    const i18nKey = `flat-tutorial.patch.copy-hint.${keySuffix}`;
+    const i18nKey = `flat-tutorial.patch.copy-hint.${keySuffix}` as const;
 
     return (
       <div className="copy-hint">

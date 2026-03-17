@@ -250,13 +250,15 @@ export const AddClipArtModal = () => {
         const { selectedIds, filterState, operationContext } =
           activeState.runState;
         const { scope, assetKind } = operationContext;
-        const keyStem = `add.${assetKind}`;
+        const keyStem = `add.${assetKind}` as const;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
         const nSelected = nSelectedItemsInGallery(galleryState, selectedIds);
 
-        const buttonKey = `add.media-library.${scope}.interacting.button`;
+        const buttonKey =
+          `add.media-library.${scope}.interacting.button` as const;
+
         const buttonContent =
           activeState.kind === "attempting" ? (
             <Spinner size="sm" />

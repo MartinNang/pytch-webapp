@@ -41,7 +41,7 @@ const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
   };
 
   const keySuffix = colNo == null ? "no-col" : "with-col";
-  const key = `error.location.user-code.${keySuffix}`;
+  const key = `error.location.user-code.${keySuffix}` as const;
 
   return (
     <Button className="go-to-line" onClick={gotoLine}>
@@ -95,7 +95,7 @@ const InternalCodeErrorLocation: React.FC<InternalCodeErrorLocationProps> = ({
   colNo,
 }) => {
   const keySuffix = colNo == null ? "no-col" : "with-col";
-  const key = `error.location.internal.${keySuffix}`;
+  const key = `error.location.internal.${keySuffix}` as const;
 
   return (
     <span>

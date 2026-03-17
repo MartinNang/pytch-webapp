@@ -275,7 +275,7 @@ const GoogleTaskStatusModalHeader: React.FC<
   GoogleTaskStatusModalHeaderProps
 > = ({ transferKind }) => {
   const { t } = useTranslation("projects");
-  const i18nKey = `google-${transferKind}.status-title`;
+  const i18nKey = `google-${transferKind}.status-title` as const;
   return (
     <Modal.Header>
       <Modal.Title>{t(i18nKey)}</Modal.Title>
