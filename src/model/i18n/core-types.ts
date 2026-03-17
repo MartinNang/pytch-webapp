@@ -15,7 +15,7 @@ export type I18nStringSpec = {
   keyPart: string | null;
   params?: I18nParams;
   indirectParams?: Record<string, I18nFullyQualifiedKey>;
-  ns: string;
+  ns: I18nNamespace;
 };
 
 export type I18nStringSpecWithKeyPart = I18nStringSpec & { keyPart: string };
