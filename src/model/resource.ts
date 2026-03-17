@@ -1,3 +1,5 @@
-import { AssetMimeType } from "./junior/structured-program";
+import { ActorKind, AssetMimeType } from "./junior/structured-program";
 
-export type ResourceKind = AssetMimeType | "flat-asset" | "script";
+export type ScopedResourceKind =
+  | `${ActorKind}.${AssetMimeType | "script"}`
+  | "flat.flat-asset";
