@@ -12,6 +12,7 @@ import {
 import { useStoreState } from "../../store";
 import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import { useDevWorkContext } from "../../model/help-sidebar";
+import { ErrorFetchingSomething } from "../ErrorFetchingSomething";
 
 import "./KeyNavHelpSidebar.scss";
 
@@ -149,7 +150,6 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
 };
 
 const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
-  const { t } = useTranslation("ide");
   const contentState = useStoreState(
     (s) => s.ideLayout.keyboardShortcutsHelpContent
   );
@@ -168,12 +168,7 @@ const KeyNavHelpSidebarMaybeContent: React.FC<EmptyProps> = () => {
         />
       );
     case "error":
-      return (
-        <>
-          <h1>{t("key-nav-help.error.title")}</h1>
-          <p>{t("key-nav-help.error.message")}</p>
-        </>
-      );
+      return <ErrorFetchingSomething resourceKeySuffix="keynavhelp" />;
     default:
       return assertNever(contentState.contentFetchState);
   }
