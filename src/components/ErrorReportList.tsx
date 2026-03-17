@@ -8,6 +8,12 @@ import { IErrorReport } from "../model/ui";
 import { getFlatAceController } from "../skulpt-connection/code-editor";
 import { EmptyProps, failIfNull } from "../utils";
 import { Button } from "react-bootstrap";
+import {
+  zAttributeWatcherErrorKey,
+  zBuildErrorKey,
+  zOneFrameErrorKey,
+  zRenderErrorKey,
+} from "../skulpt-connection/error-kinds";
 
 type UserCodeErrorLocationProps = {
   lineNo: number;
@@ -52,11 +58,12 @@ export type SchedulerStepErrorIntroComponent =
 const SchedulerStepErrorIntro: SchedulerStepErrorIntroComponent = ({
   errorContext,
 }) => {
+  const keySuffix = zOneFrameErrorKey.parse(errorContext.target_class_kind);
   return (
     <p>
       <Trans
         ns="vm"
-        i18nKey={`error.intro.one-frame.${errorContext.target_class_kind}`}
+        i18nKey={`error.intro.one-frame.${keySuffix}`}
         values={{
           className: errorContext.target_class_name,
           methodName: errorContext.callable_name,
@@ -202,12 +209,13 @@ const runtimeContextTraceback = (pytchError: any) => {
 
 const buildErrorIntro = (errorContext: any) => {
   const phase = errorContext.phase;
-  const keySuffix =
+  const keySuffix = zBuildErrorKey.parse(
     phase === "register-actor"
       ? `register-actor.${errorContext.phaseDetail.kind}`
       : phase === "import" || phase === "create-project"
       ? phase
-      : "unknown";
+      : "unknown"
+  );
 
   return (
     <p>
@@ -221,11 +229,12 @@ const buildErrorIntro = (errorContext: any) => {
 };
 
 const renderErrorIntro = (errorContext: any) => {
+  const keySuffix = zRenderErrorKey.parse(errorContext.target_class_kind);
   return (
     <p>
       <Trans
         ns="vm"
-        i18nKey={`error.intro.render.${errorContext.target_class_kind}`}
+        i18nKey={`error.intro.render.${keySuffix}`}
         values={{ className: errorContext.target_class_name }}
       />
     </p>
@@ -233,12 +242,14 @@ const renderErrorIntro = (errorContext: any) => {
 };
 
 const attributeWatchErrorIntro = (errorContext: any) => {
-  const ownerKind = errorContext.owner_kind ?? "unknown";
+  const keySuffix = zAttributeWatcherErrorKey.parse(
+    errorContext.owner_kind ?? "unknown"
+  );
   return (
     <p>
       <Trans
         ns="vm"
-        i18nKey={`error.intro.attribute-watcher.${ownerKind}`}
+        i18nKey={`error.intro.attribute-watcher.${keySuffix}`}
         values={{
           attributeName: errorContext.attribute_name,
           ownerName: errorContext.owner_name,
