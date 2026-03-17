@@ -17,6 +17,14 @@ type TwoStateSwitchTexts = {
   falseStatus: React.JSX.Element;
 };
 
+export type TwoStateSwitchI18nSpec = I18nStringSpec & {
+  keyPart:
+    | "copy.switch.none"
+    | "copy.switch.jr-tutorial"
+    | "copy.switch.specimen"
+    | "add.media-library.switch";
+};
+
 const useRenderedSpec = (spec: I18nStringSpec): TwoStateSwitchTexts => {
   const { i18n } = useTranslation(spec.ns);
 
