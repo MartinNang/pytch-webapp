@@ -23,3 +23,5 @@ export const mkRawSpec = (text: string): RawOrI18nStringSpec => ({
   kind: "raw",
   text,
 });
+
+export const defaultNS = "common";
