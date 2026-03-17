@@ -6,11 +6,18 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
 
+type NameInvalidReasonKey =
+  | "is-stage"
+  | "is-empty"
+  | "not-identifier"
+  | "already-exists"
+  | "is-reserved";
+
 export type NameValidity =
   | { status: "valid" }
-  | { status: "invalid"; reasonKey: string };
+  | { status: "invalid"; reasonKey: NameInvalidReasonKey };
 
-const invalidBecause = (reasonKey: string): NameValidity => ({
+const invalidBecause = (reasonKey: NameInvalidReasonKey): NameValidity => ({
   status: "invalid",
   reasonKey,
 });
