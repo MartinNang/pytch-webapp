@@ -1,4 +1,5 @@
 import { ensureDivOfClass, isDivOfClass, parsedHtmlBody } from "../../utils";
+import { I18nResources } from "../i18n/core-types";
 import { PytchProgramKind } from "../pytch-program";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import { EventDescriptor } from "./structured-program";
@@ -86,7 +87,7 @@ export type JrTutorialChapterChunk =
 
 export type JrTutorialChapterTitle =
   | { kind: "html"; elt: HTMLElement }
-  | { kind: "i18nKey"; key: string };
+  | { kind: "i18nKey"; key: keyof I18nResources["tutorials"] };
 
 export type JrTutorialChapter = {
   index: number;
