@@ -134,6 +134,10 @@ export type AssetOperationContext =
   | { scope: AssetOperationScope; assetKind: AssetMimeType }
   | { scope: "flat"; assetKind: "any" };
 
+type AssetOperationContextKey =
+  | `${AssetOperationScope}.${AssetMimeType}`
+  | "flat.any";
+
 export type GeneralisedAssetKind = AssetOperationContext["assetKind"];
 
 export class AssetOperationContextOps {
