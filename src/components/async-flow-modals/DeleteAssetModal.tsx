@@ -2,17 +2,17 @@ import { useTranslation } from "react-i18next";
 import { useFlowState } from "../../model";
 import { GenericConfirmActionModal } from "./GenericConfirmActionModal";
 import { asyncFlowModal } from "./utils";
+import { assetOperationContextKey } from "../../model/asset/core";
 
 export const DeleteAssetModal = () => {
   const { t: tAssets } = useTranslation("assets");
   const { fsmState } = useFlowState((f) => f.deleteAssetFlow);
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { displayName, operationContext } = activeFsmState.runState;
-    const { scope, assetKind } = operationContext;
-    const t = (keyNub: "title" | "body") => {
-      const i18nKey = `delete.${scope}.${assetKind}.${keyNub}` as const;
-      const replace = { displayName };
-      return tAssets(i18nKey, { replace });
+    const keyNub = assetOperationContextKey(operationContext);
+    const t = (keySuffix: "title" | "body") => {
+      const i18nKey = `delete.${keyNub}.${keySuffix}` as const;
+      return tAssets(i18nKey, { replace: { displayName } });
     };
 
     return (
