@@ -17,6 +17,7 @@ import {
 } from "../ErrorReportList";
 import { useStoreState } from "../../store";
 import { Button } from "react-bootstrap";
+import { zOneFrameErrorKey } from "../../skulpt-connection/error-kinds";
 
 const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
   lineNo,
@@ -73,11 +74,12 @@ const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
 const SchedulerStepErrorIntro: SchedulerStepErrorIntroComponent = ({
   errorContext,
 }) => {
+  const keySuffix = zOneFrameErrorKey.parse(errorContext.target_class_kind);
   return (
     <p>
       <Trans
         ns="vm"
-        i18nKey={`error.intro.one-frame.jr.${errorContext.target_class_kind}`}
+        i18nKey={`error.intro.one-frame.jr.${keySuffix}`}
         values={{
           className: errorContext.target_class_name,
           eventLabel: errorContext.event_label,
