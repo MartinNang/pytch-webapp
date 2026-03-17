@@ -2,9 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import "./ErrorFetchingSomething.scss";
+import { FetchedResourceKind } from "../model/fetched-resource";
 
 type ErrorFetchingSomethingProps = {
-  resourceKeySuffix: string;
+  resourceKeySuffix: FetchedResourceKind;
 };
 export const ErrorFetchingSomething: React.FC<ErrorFetchingSomethingProps> = ({
   resourceKeySuffix,
