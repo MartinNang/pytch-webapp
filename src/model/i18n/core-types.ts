@@ -1,3 +1,8 @@
+import { CustomTypeOptions } from "i18next";
+
+export type I18nResources = CustomTypeOptions["resources"];
+export type I18nNamespace = keyof I18nResources;
+
 // The "replace" options is type as "any"; try something a bit richer.
 export type I18nParams = Record<string, unknown> & { count?: number };
 
