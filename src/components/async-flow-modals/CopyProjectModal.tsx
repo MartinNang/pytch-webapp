@@ -12,10 +12,9 @@ import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
-import { TwoStateSwitch } from "../TwoStateSwitch";
-import { I18nStringSpec } from "../../model/i18n/core-types";
+import { TwoStateSwitch, TwoStateSwitchI18nSpec } from "../TwoStateSwitch";
 
-function specForKeepLink(ref: LinkedContentRef): I18nStringSpec {
+function specForKeepLink(ref: LinkedContentRef): TwoStateSwitchI18nSpec {
   const params = (() => {
     switch (ref.kind) {
       case "none":

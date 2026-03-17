@@ -25,7 +25,7 @@ export type TwoStateSwitchI18nSpec = I18nStringSpec & {
     | "add.media-library.switch";
 };
 
-const useRenderedSpec = (spec: I18nStringSpec): TwoStateSwitchTexts => {
+const useRenderedSpec = (spec: TwoStateSwitchI18nSpec): TwoStateSwitchTexts => {
   const { i18n } = useTranslation(spec.ns);
 
   const keyBase = spec.keyPart;
@@ -45,7 +45,7 @@ const useRenderedSpec = (spec: I18nStringSpec): TwoStateSwitchTexts => {
 };
 
 type TwoStateSwitchProps = {
-  i18nSpec: I18nStringSpec;
+  i18nSpec: TwoStateSwitchI18nSpec;
   boolState: boolean;
   setBoolState: (newState: boolean) => void;
   className?: string;
