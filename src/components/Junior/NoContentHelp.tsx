@@ -1,19 +1,16 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import { useTranslation } from "react-i18next";
-import { ResourceKind } from "../../model/resource";
-import { AssetOperationScope } from "../../model/asset/core";
+import { ScopedResourceKind } from "../../model/resource";
 
 type NoContentHelpProps = {
-  scope: AssetOperationScope;
-  resourceKind: ResourceKind;
+  scopedResourceKind: ScopedResourceKind;
 };
 export const NoContentHelp: React.FC<NoContentHelpProps> = ({
-  scope,
-  resourceKind,
+  scopedResourceKind,
 }) => {
   const { t } = useTranslation("ide");
-  const content = t(`no-content-help.${scope}.${resourceKind}`);
+  const content = t(`no-content-help.${scopedResourceKind}`);
 
   return (
     <Card className="NoContentHelp" body>
