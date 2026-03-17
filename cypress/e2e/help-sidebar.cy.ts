@@ -208,3 +208,19 @@ context("Help sidebar (cross-mode)", () => {
     );
   });
 });
+
+context("Key-nav help sidebar", () => {
+  beforeEach(() => {
+    cy.pytchExactlyOneProject();
+    cy.intercept("GET", "**/keyboard-shortcuts.json", {
+      statusCode: 404,
+      body: "404 Not Found!",
+    });
+  });
+
+  it("message for failure", () => {
+    cy.get('button[data-activity-bar-tab="keynavhelp"]').click();
+    cy.get(".KeyNavHelpSidebar").contains("Sorry");
+    cy.get(".KeyNavHelpSidebar").contains("keyboard navigation");
+  });
+});
