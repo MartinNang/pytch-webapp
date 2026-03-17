@@ -17,8 +17,9 @@ export const AddScript: React.FC<LearnerTaskCommitAddScript> = ({
   const actor = path.actor;
   const actorKind = actor.kind;
 
-  const hasArgument = EventDescriptorKindOps.arity(event.kind) === 1;
-  const maybeProvideArgumentContent = hasArgument && (
+  const maybeProvideArgumentContent = EventDescriptorKindOps.hasArgument(
+    event.kind
+  ) && (
     <>
       <p>{t(`commit.add-script.fill-in-argument.${event.kind}`)}</p>
       <DisplayHatBlock
