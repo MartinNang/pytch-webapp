@@ -54,6 +54,8 @@
   "delete.flat.image.body": "Are you sure you want to delete the image “{{displayName}}” from your project?",
   "delete.flat.audio.title": "Delete sound “{{displayName}}”?",
   "delete.flat.audio.body": "Are you sure you want to delete the sound “{{displayName}}” from your project?",
+  "delete.flat.any.title": "Delete asset “{{displayName}}”?",
+  "delete.flat.any.body": "Are you sure you want to delete the asset “{{displayName}}” from your project?",
 
   "rename.title": "Rename “{{oldBasename}}”",
   "rename.failure-title": "Rename of “{{oldBasename}}” failed",
