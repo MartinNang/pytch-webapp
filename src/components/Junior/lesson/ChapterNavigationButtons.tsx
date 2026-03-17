@@ -15,10 +15,10 @@ export const ChapterNavigationButtons: React.FC<
   ChapterNavigationButtonsProps
 > = ({ next, prev }) => {
   const { t: tTutorials } = useTranslation("tutorials");
-  const t = (keySuffix: string, displayTitle: string) =>
-    tTutorials(`chapter-navigation.${keySuffix}`, {
-      replace: { displayTitle },
-    });
+  const t = (keySuffix: "prev" | "next", displayTitle: string) => {
+    const i18nKey = `chapter-navigation.${keySuffix}` as const;
+    return tTutorials(i18nKey, { replace: { displayTitle } });
+  };
 
   // To keep the layout simple (via justify-content: space-between),
   // generate an empty DIV for an unwanted button, rather than leaving
