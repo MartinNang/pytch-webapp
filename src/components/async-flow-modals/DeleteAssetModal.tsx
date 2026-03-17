@@ -9,10 +9,11 @@ export const DeleteAssetModal = () => {
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { displayName, operationContext } = activeFsmState.runState;
     const { scope, assetKind } = operationContext;
-    const t = (keyNub: string) =>
-      tAssets(`delete.${scope}.${assetKind}.${keyNub}`, {
-        replace: { displayName },
-      });
+    const t = (keyNub: "title" | "body") => {
+      const i18nKey = `delete.${scope}.${assetKind}.${keyNub}` as const;
+      const replace = { displayName };
+      return tAssets(i18nKey, { replace });
+    };
 
     return (
       <GenericConfirmActionModal
