@@ -65,9 +65,10 @@ type PrettyCodeLine<RichLineT> = {
 
 type PaddingKind = "add-padding" | "change-padding" | "del-padding";
 
+type HelpTextKeyNub = "add" | "delete" | "";
 type PrettyPaddingLine = {
   kind: PaddingKind;
-  helpTextKeyNub: string; // Can be empty
+  helpTextKeyNub: HelpTextKeyNub;
 };
 
 /** One line making up a pretty-printed display of a code diff.  Either
@@ -118,7 +119,11 @@ class ViewBuilder<RichLineT> {
    * output, assigning them the given `kind`.  The line closest to the
    * middle of the new lines has the given `helpText`.  For non-positive
    * `nLines`, do nothing. */
-  pushPadding(kind: PaddingKind, nLines: number, helpTextKeyNub: string) {
+  pushPadding(
+    kind: PaddingKind,
+    nLines: number,
+    helpTextKeyNub: HelpTextKeyNub
+  ) {
     // Allow calls where no padding is required:
     if (nLines <= 0) return;
 
