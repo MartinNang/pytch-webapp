@@ -7,6 +7,7 @@
   "fetch-failure.intro": "Sorry, there was a problem fetching the following information.  Please contact the Pytch team if the problem persists.",
 
   "fetch-failure.description.help-sidebar": "Information for the help sidebar",
+  "fetch-failure.description.keynavhelp": "Information for the keyboard navigation help",
   "fetch-failure.description.project-list": "Stored list of projects",
 
   "load-project-failure.window-title": "Pytch: Problem loading project",
