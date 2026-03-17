@@ -119,6 +119,16 @@ const TaskCheckboxButton: React.FC<TaskCheckboxButtonProps> = ({
   );
 };
 
+// Can we reduce duplication between this type and the i18n string data?
+type HelpStageButtonLabelKeySuffix =
+  | "label.hide"
+  | "label.show-me"
+  | "label.hint"
+  | "description.hide"
+  | "description.show-solution"
+  | "description.show-first-hint"
+  | "description.show-another-hint";
+
 type HelpStageButtonProps = {
   keyPath: string;
   nStagesTotal: number;
@@ -135,7 +145,9 @@ const HelpStageButton: React.FC<HelpStageButtonProps> = ({
 }) => {
   const keyPrefix = "learner-task.help-stage-button";
   const { t: tTutorials } = useTranslation("tutorials");
-  const t = (keySuffix: string) => tTutorials(`${keyPrefix}.${keySuffix}`);
+
+  const t = (keySuffix: HelpStageButtonLabelKeySuffix) =>
+    tTutorials(`${keyPrefix}.${keySuffix}`);
 
   if (nStagesTotal === 0) {
     return false;
