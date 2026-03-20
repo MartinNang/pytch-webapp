@@ -1,136 +1,55 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Col, Container, Placeholder, Row } from "react-bootstrap";
+import React, { useEffect, useRef } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLinkedDemo } from "../Junior/lesson/hooks";
 import { DemoHeader } from "./DemoHeader";
 import { ChaptersOverview } from "./ChaptersOverview";
 import { DemoChapter } from "./DemoChapter";
-
-/** Components should do the bare minimum of model manipulation and
- * "business logic".  Very often the minimum is "none".  E.g., markdown
- * parsing does not belong in the component.  It looks like it is useful
- * to pull out the headings, and split the markdown into chapters, but
- * that should be done either in the model here in the front end, or
- * perhaps instead by the "demo compiler" (which doesn't exist yet).
- *
- * The useEffect()s with dependency list of a piece of state should not
- * be needed; re-rendering on state change is React's job.
- *
- * There should be no "loading" logic here.  Then (as commented in other
- * file), "maybeDemo" becomes just "demo", which lets TypeScript help
- * you more and avoids all the "?." operators and null checks.
- *
- * The demo (and its parsed parts such as headers and chapter contents)
- * can live in the Easy-Peasy model, and don't have to be passed down to
- * child components.  */
-
-/** The chaptersRef machinery could instead be done with selectors and
- * data attributes, which might be simpler. */
+import { useStoreActions, useStoreState } from "../../store";
+import classNames from "classnames";
 
 export const DemoSidebar = () => {
-  const maybeDemo = useLinkedDemo();
-  const [md, setMd] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+  const linkedDemo = useLinkedDemo();
 
-  useEffect(() => {
-    setMd(maybeDemo?.demo.chapters || "");
-    if (maybeDemo?.demo) setLoading(false);
-  }, [maybeDemo]);
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
 
-  const [activeChapter, setActiveChapter] = useState<number>(0);
-  const [headings, setHeadings] = useState<string[] | null>(null);
-  const [chapterContents, setChapterContents] = useState<string[] | null>(null);
-  const [navigationOpen, setNavigationOpen] = useState(true);
-
-  /**
-   * Parse markdown file by mapping every line of text to the previous
-   * top level heading. Ignores lines of text written before the first heading.
-   * @param markdown markdown text
-   */
-  function parseMarkdown(markdown: string) {
-    let headingsMatch: RegExpMatchArray | null =
-      markdown.match(/(?<=(^#)\s).*/gm);
-
-    if (headingsMatch) {
-      // TODO: should empty headings be ignored/filtered?
-      let headings: string[] = headingsMatch?.filter(
-        (heading) => heading.length > 0
-      );
-
-      if (headings !== null) {
-        let headingsIndex = 0;
-        let content = [];
-        let lines = markdown.split("\n");
-        for (let linesIndex = 0; linesIndex < lines.length; linesIndex++) {
-          let line = lines[linesIndex];
-          if (line.startsWith("# " + headings[headingsIndex])) {
-            headingsIndex++;
-          } else if (headingsIndex > 0) {
-            if (content[headingsIndex - 1]) {
-              content[headingsIndex - 1] += line + "\n";
-            } else {
-              content[headingsIndex - 1] = line;
-            }
-          }
-        }
-        return { headings, res: content };
-      }
-    }
-    return null;
-  }
-
-  useEffect(() => {
-    let data = parseMarkdown(md || "");
-    setHeadings(data?.headings || null);
-    setChapterContents(data?.res || null);
-  }, [md]);
+  const setIsNavigationExpanded = useStoreActions(
+    (actions) => actions.ideLayout.demoSidebar.setIsNavigationExpanded
+  );
 
   const chaptersRef = useRef<Array<HTMLLIElement | null>>([]);
   const navCaretRef = useRef<HTMLButtonElement | null>(null);
 
-  useEffect(() => {
-    chaptersRef.current = chaptersRef.current.slice(0, headings?.length);
-    if (headings && headings?.length <= 1) {
-      setNavigationOpen(false);
-    }
-  }, [headings]);
+  chaptersRef.current = chaptersRef.current.slice(0, linkedDemo.demo.headings?.length);
 
   useEffect(() => {
-    console.log("scrolling?", chaptersRef);
-    if (chaptersRef && chaptersRef.current) {
-      console.log("scrolling into view", activeChapter, chaptersRef.current);
-      chaptersRef?.current[activeChapter]?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (linkedDemo.demo.headings.length > 1) {
+      setIsNavigationExpanded(true);
     }
-  }, [activeChapter]);
+    else setIsNavigationExpanded(false);
+  }, []);
 
   // the following useEffect methods are needed to return focus to the previously used button after scrolling
   // to the active chapter in the chapter navigation
   useEffect(() => {
     navCaretRef.current?.focus();
-  }, [navigationOpen]);
+  }, [isNavigationExpanded]);
 
   function DemoSubheader() {
     return (
       <Row
-        className={
-          "demo-sub-header px-4 " +
-          (maybeDemo?.demo.summaryMarkdown || loading ? "py-3" : "py-2")
+        className={classNames(
+          "demo-sub-header",
+          "px-4",
+          linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
+          )
         }
       >
-        <Col
-          className={"p-0 m-0"}
-          style={{ color: "white", fontSize: "0.9rem" }}
-        >
-          {loading ? (
-            <>
-              <Placeholder xs={12} className={"rounded-1 placeholder-wave"} />
-              <Placeholder xs={10} className={"rounded-1 placeholder-wave"} />
-            </>
-          ) : (
-            maybeDemo?.demo.summaryMarkdown
-          )}
+        <Col>
+          {
+            linkedDemo.demo.summaryMarkdown
+          }
         </Col>
       </Row>
     );
@@ -139,15 +58,11 @@ export const DemoSidebar = () => {
   function DemoFooter() {
     return (
       <Row className={"demo-footer py-3 px-3"}>
-        <div className={"d-flex align-items-center flex-grow-1 w-auto"}>
-          {loading ? (
-            <Placeholder animation={"wave"} />
-          ) : (
-            <p className={"mb-0"}>
-              Published on{" "}
-              {new Date(maybeDemo?.demo.lastUpdated || "").toLocaleDateString()}
-            </p>
-          )}
+        <div>
+          <p>
+            Published on{" "}
+            {new Date(linkedDemo.demo.lastUpdated || "").toLocaleDateString()}
+          </p>
         </div>
       </Row>
     );
@@ -157,34 +72,16 @@ export const DemoSidebar = () => {
     <div className="DemoSidebar" tabIndex={-1}>
       <div className="content">
         <div className="inner-content">
-          <Container className={"d-flex flex-column h-100"}>
+          <Container>
             <DemoHeader
-              loading={loading}
-              activeChapter={activeChapter}
-              maybeDemo={maybeDemo}
-              headings={headings}
               chaptersRef={chaptersRef}
               navCaretRef={navCaretRef}
-              navigationOpen={navigationOpen}
-              setNavigationOpen={setNavigationOpen}
             />
             <DemoSubheader />
             <ChaptersOverview
-              navigationOpen={navigationOpen}
-              activeChapter={activeChapter}
-              loading={loading}
-              headings={headings}
               chaptersRef={chaptersRef}
-              setActiveChapter={setActiveChapter}
             />
-            <DemoChapter
-              activeChapter={activeChapter}
-              loading={loading}
-              headings={headings}
-              setActiveChapter={setActiveChapter}
-              navigationOpen={navigationOpen}
-              chapterContents={chapterContents}
-            />
+            <DemoChapter />
             <DemoFooter />
           </Container>
         </div>

@@ -1,109 +1,113 @@
 import React, { RefObject } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Placeholder, Row } from "react-bootstrap";
-import { LinkedDemo } from "../../model/linked-content";
+import { Button, Row } from "react-bootstrap";
+import { useStoreActions, useStoreState } from "../../store";
+import { useLinkedDemo } from "../Junior/lesson/hooks";
+import classNames from "classnames";
 
 /** Put style in SCSS not inline.  Then you can use variables like
  * $pytch-colour-main-yellow instead of the RGB string. */
 
-/** Handling "loading" state should be done higher up. */
+/** Handling "loading" state should be done higher up. - Done*/
 
 /** Same comment as elsewhere re should we distinguish between
  * "monolithic" and "structured" demos (according to one big lump vs
  * split into chapters). */
 
 export const DemoHeader = ({
-  loading,
-  activeChapter,
-  maybeDemo,
-  headings,
   chaptersRef,
   navCaretRef,
-  navigationOpen,
-  setNavigationOpen,
 }: {
-  loading: boolean;
-  activeChapter: number;
-  maybeDemo: LinkedDemo | null;
-  headings: string[] | null;
   chaptersRef: RefObject<(HTMLLIElement | null)[]>;
   navCaretRef: RefObject<HTMLButtonElement | null>;
-  navigationOpen: boolean;
-  setNavigationOpen: (ac: boolean) => void;
 }) => {
-  return (
-    <Row className="demo-header p-3">
-      <div className={"p-0 py-1 m-0 ps-2 " + (loading ? "w-75" : "w-auto")}>
-        {loading ? (
-          <Placeholder
-            xs={12}
-            size={"lg"}
-            className={"placeholder-wave rounded-1"}
-          />
-        ) : (
-          <h1
-            style={{
-              fontSize: "1.1rem",
-              padding: 0,
-              margin: 0,
-              color: "#FFF792",
-              lineBreak: "anywhere",
-            }}
-          >
-            {maybeDemo?.demo.displayName}
-          </h1>
-        )}
-      </div>
-      <div className={"w-auto d-flex"}>
-        <div
-          className={
-            "chapter-pill rounded-pill " + (loading ? "placeholder" : undefined)
-          }
-        >
-          {loading ? (
-            <div className={"rounded-1 p-2"} />
-          ) : (
-            <>
-              <FontAwesomeIcon icon={"layer-group"} />
-              <span style={{ fontSize: "0.8rem", paddingLeft: 2 }}>
-                {activeChapter + 1}/{headings?.length}
-              </span>
-            </>
-          )}
+  const activeChapter = useStoreState(
+    (state) => state.ideLayout.demoSidebar.activeChapter
+  );
+
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
+
+  const setIsNavigationExpanded = useStoreActions(
+    (actions) => actions.ideLayout.demoSidebar.setIsNavigationExpanded
+  );
+
+  const linkedDemo = useLinkedDemo();
+  const headings = linkedDemo.demo.headings;
+
+  function DemoHeaderContent() {
+    function DemoName() {
+      return (
+        <div className={classNames("px-0", "py-1", "m-0", "ps-2", "w-auto")}>
+          <h1>{linkedDemo.demo.displayName}</h1>
         </div>
-        {loading ? (
-          <div className={"placeholder rounded-1 ms-3 placeholder-caret"}></div>
-        ) : undefined}
-        {headings && headings?.length > 1 ? (
-          <Button
-            aria-label={"Expand or collapse chapters navigation menu"}
-            className={"w-auto caret p-0 ms-2"}
-            key={"nav-caret"}
-            id={"nav-caret"}
-            ref={navCaretRef}
-            onClick={() => {
-              setNavigationOpen(!navigationOpen);
-              console.log(
-                "switching to",
-                !navigationOpen,
-                document.activeElement
-              );
-              navCaretRef.current?.focus();
-            }}
-            onFocus={() => {
-              chaptersRef.current[activeChapter]?.scrollIntoView({
-                behavior: "smooth",
-              });
-              console.log("focusing");
-            }}
-          >
-            <FontAwesomeIcon
-              icon={"caret-down"}
-              className={"nav-caret " + (navigationOpen ? "nav-expanded" : "")}
-            />
-          </Button>
-        ) : undefined}
-      </div>
+      );
+    }
+
+    function DemoChapterCount() {
+      return (
+        <div className={classNames("chapter-pill", "rounded-pill")}>
+          <FontAwesomeIcon icon={"layer-group"} />
+          <span aria-label={`Chapter ${activeChapter + 1} out of ${headings.length}`}>
+            {activeChapter + 1}/{headings?.length}
+          </span>
+        </div>
+      );
+    }
+
+    function DemoChapterNavButton() {
+      return (
+        <Button
+          aria-label={"Expand or collapse chapters navigation menu"}
+          className={classNames("w-auto", "caret", "p-0", "ms-2")}
+          key={"nav-caret"}
+          id={"nav-caret"}
+          ref={navCaretRef}
+          onClick={() => {
+            setIsNavigationExpanded(!isNavigationExpanded);
+            navCaretRef.current?.focus();
+          }}
+          onFocus={() => {
+            chaptersRef.current[activeChapter]?.scrollIntoView({
+              behavior: "smooth",
+            });
+          }}
+        >
+          <FontAwesomeIcon
+            icon={"caret-down"}
+            className={classNames("nav-caret", { isNavigationExpanded })}
+          />
+        </Button>
+      );
+    }
+
+    function DemoHeaderMono() {
+      return <DemoName />;
+    }
+
+    function DemoHeaderStructured() {
+      return (
+        <>
+          <DemoName />
+          <div className={classNames("w-auto", "d-flex")}>
+            <DemoChapterCount />
+            <DemoChapterNavButton />
+          </div>
+        </>
+      );
+    }
+
+    if (headings.length > 1) {
+      return <DemoHeaderStructured />;
+    } else {
+      return <DemoHeaderMono />;
+    }
+  }
+
+  return (
+    <Row className={classNames("demo-header", "p-3")}>
+      <DemoHeaderContent />
     </Row>
   );
 };

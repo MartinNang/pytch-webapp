@@ -1,31 +1,28 @@
-import { Button, Col, Container, Placeholder, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Markdown from "react-markdown";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  KeyboardEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useStoreActions, useStoreState } from "../../store";
+import { useLinkedDemo } from "../Junior/lesson/hooks";
+import classNames from "classnames";
 
-/** See comments elsewhere about placeholders. */
+export const DemoChapter = () => {
+  const activeChapter = useStoreState(
+    (state) => state.ideLayout.demoSidebar.activeChapter
+  );
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
 
-/** Is some of the complexity of the below because some demos will have
- * multiple chapters and some won't?  If that's an important distinction
- * maybe it could be handled higher up.  PERHAPS even separate
- * components for "monolithic" vs "structured" demos, with separate
- * types to avoid all the "headers.length > 1" checks. */
+  const setActiveChapter = useStoreActions(
+    (actions) => actions.ideLayout.demoSidebar.setActiveChapter
+  );
 
-export const DemoChapter = ({
-  activeChapter,
-  loading,
-  headings,
-  setActiveChapter,
-  navigationOpen,
-  chapterContents,
-}: {
-  activeChapter: number;
-  loading: boolean;
-  headings: string[] | null;
-  setActiveChapter: (ac: number) => void;
-  navigationOpen: boolean;
-  chapterContents: string[] | null;
-}) => {
   const navPrevChapterRef = useRef<HTMLButtonElement | null>(null);
   const navNextChapterRef = useRef<HTMLButtonElement | null>(null);
 
@@ -33,92 +30,28 @@ export const DemoChapter = ({
   const [rightButtonPressed, setRightButtonPressed] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("focus on prev", navPrevChapterRef.current);
     navPrevChapterRef.current?.focus();
   }, [leftButtonPressed]);
 
   useEffect(() => {
-    console.log("focus on next", navNextChapterRef.current);
     navNextChapterRef.current?.focus();
   }, [rightButtonPressed]);
 
-  function PlaceholderChapter() {
-    return (
-      <>
-        <Placeholder
-          xs={12}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <Placeholder
-          xs={12}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <Placeholder
-          xs={5}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <br />
-        <br />
-        <Placeholder
-          xs={12}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <Placeholder
-          xs={12}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <Placeholder
-          xs={12}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <Placeholder
-          xs={12}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-        <Placeholder
-          xs={1}
-          className={"rounded-1 placeholder-wave"}
-          size={"sm"}
-        />
-      </>
-    );
-  }
-
-  function PlaceholderChapterNavigation() {
-    return (
-      <>
-        <Placeholder.Button
-          variant={"primary"}
-          className={"me-1 placeholder-glow"}
-        />
-        <Placeholder.Button
-          variant={"primary"}
-          className={"placeholder-glow"}
-        />
-      </>
-    );
-  }
+  const linkedDemo = useLinkedDemo();
+  const headings = linkedDemo.demo.headings;
+  const chapters = linkedDemo.demo.chapters;
 
   function DemoChapterNavigation() {
     function handlePrevChapterClicked() {
-      if (headings?.length) {
+      if (headings.length) {
         let newActiveChapter = activeChapter - 1;
         if (newActiveChapter < 0) newActiveChapter = headings.length - 1;
-        console.log("new active chapter", newActiveChapter);
         setActiveChapter(newActiveChapter);
         setLeftButtonPressed(!leftButtonPressed);
       } else return 0;
     }
 
     function handleFocusOnPrevChapter() {
-      console.log("focusing on prev button");
       let currentButton = document.activeElement;
       let prevButton = currentButton?.previousElementSibling as HTMLElement;
       prevButton?.focus();
@@ -127,15 +60,28 @@ export const DemoChapter = ({
     function handleNextChapterClicked() {
       if (headings?.length) {
         let newActiveChapter = activeChapter + 1;
-        console.log("new active chapter", newActiveChapter);
         if (newActiveChapter >= headings.length) newActiveChapter = 0;
         setActiveChapter(newActiveChapter);
         setRightButtonPressed(!rightButtonPressed);
       } else return 0;
     }
 
+    const handleNextChapterKeyDown: KeyboardEventHandler = (e) => {
+      switch (e.key) {
+        case "ArrowUp":
+        case "ArrowLeft": {
+          e.preventDefault();
+          handleFocusOnPrevChapter();
+          break;
+        }
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          break;
+      }
+    };
+
     function handleFocusOnNextChapter() {
-      console.log("focusing on next chapter button");
       let currentButton = document.activeElement;
       let nextButton = currentButton?.nextElementSibling as HTMLElement;
       nextButton?.focus();
@@ -178,20 +124,7 @@ export const DemoChapter = ({
           variant={"primary"}
           className={"ms-1"}
           onClick={handleNextChapterClicked}
-          onKeyDown={(e) => {
-            switch (e.key) {
-              case "ArrowUp":
-              case "ArrowLeft": {
-                e.preventDefault();
-                handleFocusOnPrevChapter();
-                break;
-              }
-              case "ArrowDown":
-              case "ArrowRight":
-                e.preventDefault();
-                break;
-            }
-          }}
+          onKeyDown={handleNextChapterKeyDown}
         >
           <FontAwesomeIcon icon={"angle-right"} color={"white"} />
         </Button>
@@ -200,75 +133,44 @@ export const DemoChapter = ({
   }
 
   return (
-    <Row
-      className={"h-100"}
-      style={{ backgroundColor: "#99E1DF", minHeight: 0 }}
-    >
+    <Row className={"demo-chapter"}>
       <Container
-        className={"chapter-content px-4 pt-3"}
-        style={{
-          borderTopLeftRadius: navigationOpen ? "20px" : "0px",
-          borderTopRightRadius: navigationOpen ? "20px" : "0px",
-          boxShadow: navigationOpen
-            ? "rgba(0, 0, 0, 0.12) 0px 3px 8px"
-            : "none",
-        }}
+        className={classNames("chapter-content", "pt-3", {
+          isNavigationExpanded,
+        })}
       >
-        <Row className={"mb-3"}>
-          <div className={"w-50 flex-grow-1 align-items-center d-flex"}>
+        <Row className={"mb-3 px-4"}>
+          <div className={"w-50 flex-grow-1 align-items-center d-flex p-0"}>
             <h2 className={"chapter-heading"}>
               <div className={"d-flex flex-row"}>
                 <div className={"w-100"}>
-                  {loading ? (
-                    <Placeholder
-                      xs={12}
-                      className={"rounded-1 placeholder-wave"}
-                    />
-                  ) : (
-                    <>
-                      {headings ? (
-                        <>
-                          {headings?.length > 1 ? (
-                            <span className={"me-1"}>{activeChapter + 1}.</span>
-                          ) : undefined}
-                          <span>
-                            <Markdown
-                              components={{
-                                p(props) {
-                                  return <span>{props.children}</span>;
-                                },
-                              }}
-                            >
-                              {headings[activeChapter]}
-                            </Markdown>
-                          </span>
-                        </>
-                      ) : undefined}
-                    </>
-                  )}
+                  {headings.length > 1 ? (
+                    <span className={"me-1"}>{activeChapter + 1}.</span>
+                  ) : undefined}
+                  <span>
+                    <Markdown
+                      components={{
+                        p(props) {
+                          return <span>{props.children}</span>;
+                        },
+                      }}
+                    >
+                      {headings[activeChapter]}
+                    </Markdown>
+                  </span>
                 </div>
               </div>
             </h2>
           </div>
-          {(headings && headings?.length > 1) || loading ? (
+          {headings?.length > 1 ? (
             <div className={"w-auto chapter-navigation"}>
-              {loading ? (
-                <PlaceholderChapterNavigation />
-              ) : (
-                <DemoChapterNavigation />
-              )}
+              <DemoChapterNavigation />
             </div>
           ) : undefined}
         </Row>
-        <Row className={"flex-grow-1"} style={{ minHeight: 0 }}>
-          <Col className={"chapter-markdown"}>
-            {loading ? (
-              <PlaceholderChapter />
-            ) : (
-              <Markdown>
-                {chapterContents ? chapterContents[activeChapter] : ""}
-              </Markdown>
-            )}
+        <Row className={"flex-grow-1 chapter-markdown-wrapper"}>
+          <Col className={"chapter-markdown px-4"}>
+            <Markdown>{chapters[activeChapter]}</Markdown>
           </Col>
         </Row>
       </Container>

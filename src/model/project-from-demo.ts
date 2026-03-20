@@ -36,7 +36,6 @@ export type ProjectFromDemoFlow = {
         IPytchAppModel,
         void
     >;
-    // redirectToProject: SThunk<string, Promise<void>>;
 }
 
 export function demoUrl(s: string) :string {

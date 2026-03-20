@@ -64,34 +64,30 @@ export function useMappedLinkedSpecimen<Result>(
 export const useLinkedSpecimen = (): LinkedSpecimen =>
   useMappedLinkedSpecimen((specimen) => specimen);
 
-/** It should be possible to make this work the same way as
+/** TODO It should be possible to make this work the same way as
  * useMappedLinkedSpecimen(), i.e., throw an error if the linked content
  * is not successfully loaded and of the correct kind.  In fact then we
  * could pull out a common function, since the logic will be identical,
  * and only the kind string and content type differ. */
 
 export function useMappedLinkedDemo<Result>(
-  mapContent: (linkedDemo: LinkedDemo | null) => Result,
+  mapContent: (specimen: LinkedDemo) => Result,
   eqResult?: (prev: Result, next: Result) => boolean
 ) {
   return useStoreState((state) => {
     const contentState = state.activeProject.linkedContentLoadingState;
 
-    if (contentState.kind === "succeeded") {
-      if (contentState.content.kind === "demo") {
-        return mapContent(contentState.content);
-      } else {
-        throw new Error("linked demo is not suitable");
-      }
-    } else if (contentState.kind === "pending") {
-      return mapContent(null);
-    } else {
-      throw new Error("linked demo failed to load");
-    }
+    if (contentState.kind !== "succeeded")
+      throw new Error("linked demo has not been loaded");
+
+    if (contentState.content.kind !== "demo")
+      throw new Error("linked content is wrong kind");
+
+    return mapContent(contentState.content);
   }, eqResult);
 }
 
-export const useLinkedDemo = (): LinkedDemo | null =>
+export const useLinkedDemo = (): LinkedDemo =>
   useMappedLinkedDemo((demo) => demo);
 
 // Not exactly a hook, but similar in spirit.

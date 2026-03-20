@@ -86,8 +86,12 @@ export const NavBanner = () => {
           </li>
           <li>
             <NavDropdown title="Explore" id="basic-nav-dropdown">
-              <NavDropdown.Item href="/tutorials/">Tutorials</NavDropdown.Item>
-              <NavDropdown.Item href="/demos/">Demos</NavDropdown.Item>
+              <NavDropdown.Item>
+                <Link to={"/tutorials/"}>Tutorials</Link>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <Link to={"/demos/"}>Demos</Link>
+              </NavDropdown.Item>
             </NavDropdown>
           </li>
           <li>

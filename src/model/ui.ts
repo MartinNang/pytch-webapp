@@ -79,6 +79,7 @@ import {
   StartTutorialAtCheckpointFlow,
   startTutorialAtCheckpointFlow,
 } from "./user-interactions/start-tutorial-at-checkpoint";
+import { demoSidebar, IDemoSidebar } from "./demo-sidebar";
 
 export interface IStageDisplaySize {
   width: number;
@@ -119,6 +120,7 @@ export interface IIDELayout {
   buttonTourProgressIndex: number;
   buttonTourProgressStage: Computed<IIDELayout, ButtonTourStage | null>;
   helpSidebar: IHelpSidebar;
+  demoSidebar: IDemoSidebar;
   keyboardShortcutsHelpContent: KeyboardShortcutsHelpContent;
   _setIsFullScreen: Action<IIDELayout, boolean>;
   setIsFullScreen: Thunk<IIDELayout, boolean>;
@@ -287,6 +289,7 @@ export const ideLayout: IIDELayout = {
   }),
 
   helpSidebar,
+  demoSidebar,
   keyboardShortcutsHelpContent,
 };
 

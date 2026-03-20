@@ -17,8 +17,8 @@ import {
 } from "./linked-content-core";
 import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
-// import demos from "../../public/data/demos/demos.json";
 import { demoUrl } from "./project-from-demo";
+import {parseMarkdown} from "./demo-sidebar";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -27,7 +27,8 @@ export type LessonDescriptor = {
 
 export type DemoDescriptor = {
   demoContentHash: DemoContentHash;
-  chapters?: string;
+  headings: string[];
+  chapters: string[]; // TODO: bring headings and chapter content into model - done
   displayName: string;
   summaryMarkdown: string;
   lastUpdated: string;
@@ -120,15 +121,21 @@ async function demoDescriptorFromRelativePath(relativePath: string, slug: string
   console.log('relative path', relativePath);
   const mdUrl = demoUrl(`${slug}/description.md`);
 
-  const chapters = await fetchDemoChaptersFromMd(mdUrl);
+  const chaptersContent = await fetchDemoChaptersFromMd(mdUrl);
+  let demoChapters = null;
+  if (chaptersContent) {
+    demoChapters = parseMarkdown(chaptersContent);
+  }
   const demo = await fetchDemo(slug);
+
   return {
     displayName: demo.displayName,
     lastUpdated: demo.lastUpdated,
     project: demo.project,
     summaryMarkdown: demo.summaryMarkdown,
     demoContentHash: slug,
-    chapters: chapters
+    headings: demoChapters?.headings || [],
+    chapters: demoChapters?.content || []
   };
 }
 

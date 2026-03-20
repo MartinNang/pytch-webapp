@@ -33,7 +33,7 @@ import { DeliberateFailureWithBoundary } from "./components/DeliberateFailure";
 import { fireAndForgetEvent } from "./model/anonymous-instrumentation";
 import { StandalonePlayDemo } from "./components/StandalonePlayDemo";
 import { StartTutorialAtCheckpoint } from "./components/StartTutorialAtCheckpoint";
-import { DemoList } from "./components/discoverable-demos-page/DemoList";
+import { DemosList } from "./components/discoverable-demos-page/DemosList";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -102,7 +102,7 @@ function App() {
         },
         {
           path: "demos/",
-          element: <DemoList />,
+          element: <DemosList />,
         },
         {
           path: "ide/:projectIdString",

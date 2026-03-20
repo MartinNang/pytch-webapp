@@ -1,4 +1,4 @@
-# _Basic Jumping_
+# Basic Jumping
 Thanks [GrafxKid](https://opengameart.org/content/green-robot) for costume!
 
 Start off in the middle left/right, and quite near the bottom,

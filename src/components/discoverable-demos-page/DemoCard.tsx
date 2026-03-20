@@ -1,170 +1,177 @@
-import React from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
-import flatIcon from "../../images/flat-simple.png";
-import permethodIcon from "../../images/per-method-simple.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Card, Row, Col } from "react-bootstrap";
 import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
-import { PytchProgramKind } from "../../model/pytch-program";
-import { assertNever } from "../../utils";
+import {
+  Demo,
+  displayDemoKindName,
+  getProgramKindIcon,
+  resetVideo,
+} from "../../model/discoverable-demos";
+import { pathWithinApp } from "../../env-utils";
+import classNames from "classnames";
+import { useFocusContext } from "../hooks/focus-steering";
+import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 
 type DemoCardProps = {
   demo: Demo;
-  setProjectType: (type: string) => void;
-  setProgramType: (type: string) => void;
 };
 
-/** There is already a type which captures this concept.
- * PytchProgramKind is a union of string literals. */
-export enum ProgramType {
-  flat = "Flat",
-  perMethod = "Per-method",
-}
-
-/** Might make sense to split this into two types.  Thers's the concept
- * of what kind of example this is --- "game" or "snippet".  And then
- * there's the concept of which kind of examples the user is interested
- * in seeing, which is those two and also "all".  Something like: */
-export type DemoKind = "game" | "snippet";
-export type DemoKindSelector = DemoKind | "all";
-
-function displayName(demoKind: DemoKind): string {
-  switch (demoKind) {
-    case "game":
-      return "Game";
-    case "snippet":
-      return "Snippet";
-    default:
-      return assertNever(demoKind);
-  }
-}
-
-export enum ProjectType {
-  all = "All",
-  game = "Game",
-  snippet = "Snippet",
-}
-
-/** True classes don't play well with Easy-Peasy unfortunately, so it
- * seems to be better to just define a type at the TypeScript level, and
- * then at the JavaScript level it's just a plain object. */
-export type Demo1 = {
-  slug: string;
-  displayName: string;
-  summaryMarkdown: string;
-  lastUpdated: Date;
-  featuredImageUrl: string;
-  programKind: PytchProgramKind;
-  projectType: ProjectType;
-  recommended: boolean;
-};
-
-export class Demo {
-  displayName: string;
-  summaryMarkdown: string | undefined;
-  lastUpdated: Date;
-  featuredImage: string | undefined;
-  programKind: PytchProgramKind;
-  projectType: ProjectType;
-  slug: string;
-  recommended?: string;
-
-  constructor(
-    displayName: string,
-    summaryMarkdown: string | undefined,
-    lastUpdated: Date,
-    isGroup: boolean,
-    featuredImage: string | undefined,
-    programType: PytchProgramKind,
-    projectType: ProjectType,
-    slug: string
-  ) {
-    this.displayName = displayName;
-    this.summaryMarkdown = summaryMarkdown;
-    this.lastUpdated = lastUpdated;
-    this.featuredImage = featuredImage;
-    this.programKind = programType;
-    this.projectType = projectType;
-    this.slug = slug;
-  }
-}
-
-/** Program-type (elsewhere "program kind") is not a human-readable
- * string, so shouldn't need capitalisation anywhere.  If we want to
- * present the program-kind to the user then it should be via a lookup,
- * which can then fairly easily be made translateable. */
-
-export const DemoCard: React.FC<DemoCardProps> = ({
-  demo,
-  setProjectType,
-  setProgramType,
-}) => {
+export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const createProject = useStoreActions(
     (actions) => actions.projectFromDemoFlow.createProject
   );
 
-  function capitalise(word: string) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
+  const [hover, setHover] = useState<boolean>(false);
+  const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (demo.featuredImageUrl?.toLowerCase().startsWith("/")) {
+      setImageSrc(pathWithinApp(demo.featuredImageUrl));
+    } else if (demo.featuredImageUrl) {
+      setImageSrc(demo.featuredImageUrl);
+    }
+  }, [hover, demo]);
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const setProgramKind = useStoreActions(
+    (actions) => actions.discoverableDemos.searchFilters.setProgramKindSelector
+  );
+
+  const setDemoKind = useStoreActions(
+    (actions) => actions.discoverableDemos.searchFilters.setDemoKindSelector
+  );
+
+  const searchForDemos = useStoreActions(
+    (actions) => actions.discoverableDemos.searchForDemos
+  );
+
+  const handleMouseOverCard = () => {
+    setHover(true);
+    resetVideo(videoRef);
+  };
+
+  const handleMouseOutCard = () => {
+    setHover(false);
+  };
+
+  const handleFocusCard = () => {
+    setHover(true);
+    resetVideo(videoRef);
+  };
+
+  const handleBlurCard = () => {
+    setHover(false);
+  };
+
+  const programKindIcon = getProgramKindIcon(demo.programKind);
+
+  const handleProgramKindPillClick = () => {
+    setProgramKind(demo.programKind);
+    searchForDemos();
+  };
+
+  const handleDemoKindPillClick = () => {
+    setDemoKind(demo.demoKind);
+    searchForDemos();
+  };
+
+  const isGame: boolean = demo.demoKind === "game";
+  const isSnippet: boolean = demo.demoKind === "snippet";
+
+  const focusContext = useFocusContext();
+  const showVideo = hover && demo.featuredVideoUrl;
+  const showImage = !showVideo;
+
+  function DemoThumbnailContent() {
+    return (
+      <>
+        {demo.featuredVideoUrl ? (
+          <video
+            controls={false}
+            autoPlay={true}
+            muted={true}
+            className={classNames("h-100 w-100 object-fit-cover", {
+              showVideo,
+            })}
+            onMouseOver={() => {
+              setHover(true);
+            }}
+            onMouseOut={() => setHover(false)}
+            controlsList="nofullscreen"
+            ref={videoRef}
+            tabIndex={-1}
+          >
+            <source src={demo.featuredVideoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : null}
+        <Card.Img
+          variant={"top"}
+          className={classNames("h-100", { showImage })}
+          src={imageSrc}
+        />
+      </>
+    );
   }
 
   return (
-    <Card className={"flex-row flex-wrap card"}>
+    <Card
+      className={focusGroupItemClass("flex-row flex-wrap card")}
+      tabIndex={0}
+      onMouseOver={handleMouseOverCard}
+      onMouseOut={handleMouseOutCard}
+      onFocus={handleFocusCard}
+      onBlur={handleBlurCard}
+      onClick={focusContext.onGroupItemClick}
+      data-demo-slug={demo.slug}
+      ref={cardRef}
+    >
       <Card.Header className={"p-0 w-100"}>
         <Row className={"pill-row w-100 p-3 m-0"}>
-          {
-            /** This could be done without the ?: since the two results
-             * are very similar. */
-            capitalise(demo.programKind) === ProgramType.flat ? (
-              <Button
-                className={"pill-icon flat-icon"}
-                onClick={() =>
-                  setProgramType(capitalise(demo.programKind.toString()))
-                }
-              >
-                <img src={flatIcon} alt={"flat project"} />
-              </Button>
-            ) : demo.programKind === ProgramType.perMethod.toLowerCase() ? (
-              <Button
-                className={"pill-icon per-method-icon"}
-                onClick={() => {
-                  setProgramType(capitalise(demo.programKind?.toString()));
-                  console.log(
-                    "setting program type to",
-                    demo.programKind.toString()
-                  );
-                }}
-              >
-                <img src={permethodIcon} alt={"per-method project"} />
-              </Button>
-            ) : undefined
-          }
-
           <Button
-            className={
-              "ms-auto pill-project-type " +
-              (demo.projectType === ProjectType.game
-                ? "game-pill"
-                : "snippet-pill")
-            }
-            onClick={() => setProjectType(capitalise(demo.projectType))}
+            className={"pill-icon"}
+            onClick={handleProgramKindPillClick}
+            tabIndex={-1}
           >
-            <p>{capitalise(demo.projectType)}</p>
+            <img src={programKindIcon.src} alt={programKindIcon.alt} />
+          </Button>
+          <Button
+            className={classNames(
+              "ms-auto",
+              "pill-demo-kind",
+              { isGame },
+              { isSnippet }
+            )}
+            onClick={handleDemoKindPillClick}
+            tabIndex={-1}
+          >
+            <p>{displayDemoKindName(demo.demoKind)}</p>
           </Button>
         </Row>
-        <Card.Img
-          variant={"top"}
-          className={"h-100 p-1"}
-          src={demo.featuredImage}
-        />
+        <div className={"thumbnail-wrapper"}>
+          <div className={"thumbnail"}>
+            <DemoThumbnailContent />
+          </div>
+        </div>
       </Card.Header>
       <Card.Body className={"p-4 py-3"}>
-        <Link to={""} onClick={() => createProject(demo.slug)}>
+        <Link
+          to={""}
+          onClick={(event) => {
+            createProject(demo.slug);
+            focusContext.onGroupItemClick(event);
+          }}
+          tabIndex={-1}
+        >
           <h3>{demo.displayName}</h3>
         </Link>
-        <p className={"demo-summaryMarkdown"}>{demo.summaryMarkdown}</p>
+        <p>{demo.summaryMarkdown}</p>
 
         <Row className={"share-row"}>
-          <Col xs={6} className={"align-items-end d-flex"}>
+          <Col xs={12} sm={12} md={6} className={"align-items-end d-flex"}>
             <p className={"m-0"}>
               {new Date(demo.lastUpdated).toLocaleDateString()}
             </p>

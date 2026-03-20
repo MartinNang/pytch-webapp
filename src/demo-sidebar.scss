@@ -4,7 +4,7 @@ $chapter-navigation-link-height: 3rem;
 
 .DemoSidebar {
   overflow: auto;
-  overflow-x: clip !important;
+  overflow-x: clip;
   overscroll-behavior-y: none;
   height: 100%;
 
@@ -13,330 +13,364 @@ $chapter-navigation-link-height: 3rem;
 
     .inner-content {
       height: 100%;
+
+      & > .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
-}
 
-.chapters-overview {
-  background-color: #99E1DF;
+  .demo-header {
+    h1 {
+      font-size: 1.1rem;
+    }
 
-  ul.chapters-list {
-    max-height: $chapter-navigation-link-height * 3;
-    list-style: none;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    overflow-x: clip;
-    scroll-snap-type: y proximity;
-    border-left: 3px $pytch-colour-main-blue-darkened solid;
+    padding: 0;
+    color: #FFF792;
+    line-break: anywhere;
+  }
 
-    /* two items */
-    &:has(li:first-child:nth-last-child(2)),
-    &:has(li:first-child:nth-last-child(2) ~ li) {
-      height: 6.5rem;
+  .chapters-overview {
+    background-color: #99E1DF;
 
-      &:before {
-        inline-size: 2 * $chapter-navigation-link-height;
+    .chapters-navigation {
+      color: white;
+
+      button {
+        display: inline-block;
+        background-color: $pytch-colour-accent-cyan;
+
+        p {
+          margin: 0;
+        }
       }
     }
 
-    &:before {
-      border-left: 3px solid #265378;
-      inline-size: 200px;
-      writing-mode: vertical-lr;
-      position: absolute;
-      margin-left: -35px;
-    }
+    ul.chapters-list {
+      max-height: $chapter-navigation-link-height * 3;
+      list-style: none;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      overflow-x: clip;
+      scroll-snap-type: y proximity;
+      border-left: 3px $pytch-colour-main-blue-darkened solid;
 
-    li {
-      position: relative;
-      scroll-snap-align: start;
-      padding-left: 0 !important;
-      margin-left: -2px;
-      top: 0;
+      /* two items */
+      &:has(li:first-child:nth-last-child(2)),
+      &:has(li:first-child:nth-last-child(2) ~ li) {
+        height: 6.5rem;
 
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0.5rem;
+        &:before {
+          inline-size: 2 * $chapter-navigation-link-height;
+        }
       }
 
       &:before {
-        content: "";
-        border-bottom: 3px solid #265378;
-        inline-size: 20px;
+        border-left: 3px solid #265378;
+        inline-size: 200px;
         writing-mode: vertical-lr;
-        width: 1rem;
-        border-bottom-left-radius: 4px;
-        border-left: 2px solid #265378;
         position: absolute;
-        margin-top: 0.6rem;
-        display: block;
+        margin-left: -35px;
+      }
+
+      li {
+        position: relative;
+        scroll-snap-align: start;
+        margin-left: -2px;
+        top: 0;
+        width: 100%;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0.5rem;
+        }
+
+        &:before {
+          content: "";
+          border-bottom: 3px solid $pytch-colour-main-blue-darkened;
+          inline-size: 20px;
+          writing-mode: vertical-lr;
+          width: 1rem;
+          border-bottom-left-radius: 4px;
+          border-left: 2px solid $pytch-colour-main-blue-darkened;
+          position: absolute;
+          margin-top: 0.6rem;
+          display: block;
+        }
+
+        button {
+          transition: background-color 0.1s cubic-bezier(.25, .8, .25, 1),
+          transform 0.1s cubic-bezier(.25, .8, .25, 1);
+          background-color: transparent;
+          color: black;
+          margin-left: 2rem;
+          margin-right: 2rem;
+          width: calc(100% - 3rem);
+          text-align: start;
+          border: none;
+
+          &.active {
+            background-color: $pytch-colour-accent-cyan;
+            color: white;
+          }
+
+          &:hover {
+            border: none;
+
+            &:not(.active, .loading) {
+              background-color: rgb(193, 238, 237);
+            }
+          }
+        }
       }
     }
+  }
 
-    button {
-      transition: background-color 0.1s cubic-bezier(.25, .8, .25, 1),
-      transform 0.1s cubic-bezier(.25, .8, .25, 1);
+  .demo-chapter {
+    height: 100%;
+    background-color: $pytch-colour-tint-mint;
+    min-height: 0;
 
-      background-color: transparent !important;
-      color: black !important;
+    .chapter-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      transition: border-top-left-radius 1s cubic-bezier(.25, .8, .25, 1),
+      border-top-right-radius 1s cubic-bezier(.25, .8, .25, 1),
+      box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+      background-color: rgb(249, 252, 253);
+      box-shadow: none;
 
-      margin-left: 2rem;
-      margin-right: 2rem;
-      width: calc(100% - 3rem);
-
-      &.active {
-        background-color: #00B5B0 !important;
-        color: white !important;
+      &.isNavigationExpanded {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 3px 8px;
       }
 
-      &:hover:not(.active, .loading) {
-        background-color: rgb(193, 238, 237) !important;
+      .chapter-heading {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin: 0;
+        width: 100%;
+
+        h2 {
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
+
+        p {
+          margin: 0;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      h2 {
+        font-size: 1.15rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+      }
+
+      h4 {
+        font-size: 1.05rem;
+      }
+
+      h5 {
+        font-size: 1.03rem;
+      }
+
+      h6 {
+        font-size: 1.02rem;
+      }
+
+      a {
+        color: black;
+        text-decoration: underline !important;
+      }
+
+      .chapter-navigation {
+
+        .btn.btn-primary {
+          height: 36px;
+          border-radius: 10px;
+          background-color: $pytch-colour-main-blue;
+          border-color: $pytch-colour-main-blue;
+
+          &:hover {
+            background-color: $pytch-colour-main-blue-darkened;
+          }
+        }
+      }
+
+      .chapter-markdown-wrapper {
+        min-height: 0;
+
+        .chapter-markdown {
+          line-break: anywhere;
+          overflow-x: clip;
+          overflow-y: scroll;
+          transition: max-height 0.1s cubic-bezier(.25, .8, .25, 1);
+          height: 100%;
+
+          img {
+            max-width: 100%;
+          }
+        }
       }
     }
   }
-}
 
-.chapter-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  transition: border-top-left-radius 1s cubic-bezier(.25,.8,.25,1),
-  border-top-right-radius 1s cubic-bezier(.25,.8,.25,1),
-  box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
-  background-color: #F8F8F8;
+  .demo-header {
+    justify-content: space-between;
+    align-items: center;
+    background-color: $pytch-colour-main-blue;
+    width: auto;
 
-  .chapter-heading {
-    margin: 0;
-    width: 100%;
-
-    h2 {
-      font-size: 1.2rem !important;
-      font-weight: bold !important;
-
-      p {
-        display: -webkit-box !important;
-        -webkit-box-orient: vertical !important;
-        -webkit-line-clamp: 1 !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-      }
-    }
-  }
-
-  h2 {
-    font-size: 1.15rem;
-  }
-
-  h3 {
-    font-size: 1.1rem;
-  }
-
-  h4 {
-    font-size: 1.05rem;
-  }
-
-  h5 {
-    font-size: 1.03rem;
-  }
-
-  h6 {
-    font-size: 1.02rem;
-  }
-
-  a {
-    color: black;
-    text-decoration: underline !important;
-  }
-
-  .chapter-navigation {
-    .btn.btn-primary {
-      height: 36px;
+    .chapter-pill {
+      padding: 7px 15px;
+      color: black;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       &.placeholder {
-        width: 36px;
+        width: 45px;
+        height: 25px;
+      }
+
+      span {
+        font-size: 0.8rem;
+        padding-left: 2px;
+      }
+    }
+
+    #nav-caret {
+      border: none;
+    }
+  }
+
+  .demo-sub-header {
+    background-color: $pytch-colour-main-blue-darkened;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & .col {
+      padding: 0;
+      margin: 0;
+      color: white;
+      font-size: 0.9rem;
+    }
+  }
+
+  .demo-footer {
+    background-color: $pytch-colour-main-blue-darkened;
+    color: white;
+
+    & > div {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      width: auto;
+    }
+
+    p {
+      font-size: 0.8rem;
+      margin-bottom: 0;
+    }
+
+    button.share-button {
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      border: none;
+
+      &:hover {
+        background-color: lightgray;
       }
     }
   }
 
-  .btn.btn-primary {
-    border-radius: 10px;
-    background-color: $pytch-colour-main-blue;
-    border-color: $pytch-colour-main-blue;
+  .linked-projects .card {
+    border-radius: 20px;
+    background-color: #D3D5FF;
+    border: none;
+    max-height: 150px;
+    transition: transform 0.1s cubic-bezier(.25, .8, .25, 1);
 
     &:hover {
-      background-color: $pytch-colour-main-blue-darkened;
+      transform: scale(1.03);
     }
-  }
-}
 
-.demo-header {
-  justify-content: space-between;
-  align-items: center;
-  background-color: #306998;
-
-  .chapter-pill {
-    padding: 7px 15px;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &.placeholder {
-      width: 45px;
-     height: 25px;
+    .card-header {
+      height: 100%;
+      background-color: transparent;
+      border: none;
     }
-  }
 
-  .placeholder-caret {
-    width: 15px !important;
-    margin: auto auto auto 5px;
-    background-color: white !important;
-  }
-
-  .caret {
-    background-color: transparent !important;
-    padding: 0;
-    border: none;
-  }
-}
-
-.demo-sub-header {
-  background-color: $pytch-colour-main-blue-darkened;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.demo-footer {
-  background-color: $pytch-colour-main-blue-darkened;
-  color: white;
-
-  p {
-    font-size: 0.8rem;
-  }
-  button.share-button {
-    background-color: white;
-    color: black;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    border: none;
-
-    &:hover {
-      background-color: lightgray;
+    .card-body {
+      .tutorial-pill {
+        background-color: $pytch-colour-accent-flame;
+        font-size: 0.9rem;
+        width: auto;
+        border-radius: 20px;
+        color: white;
+      }
     }
-  }
-}
 
-.linked-projects .card {
-  border-radius: 20px;
-  background-color: #D3D5FF;
-  border: none;
-  max-height: 150px;
-  transition: transform 0.1s cubic-bezier(.25,.8,.25,1);
-
-  &:hover {
-    transform: scale(1.03);
-  }
-
-  .card-header {
-    height: 100%;
-    background-color: transparent;
-    border: none;
-  }
-
-  .card-body {
-    .tutorial-pill {
-      background-color: $pytch-colour-accent-flame;
-      font-size: 0.9rem;
-      width: auto;
-      border-radius: 20px;
-      color: white;
+    h3 {
+      font-size: 1.1rem;
     }
-  }
-
-  h3 {
-    font-size: 1.1rem;
-  }
-
-  p {
-    font-size: 0.9rem;
-  }
-}
-
-.chapters-navigation {
-  color: white;
-
-  button {
-    display: inline-block;
-    background-color: $pytch-colour-accent-cyan;
 
     p {
-      margin: 0;
+      font-size: 0.9rem;
     }
   }
-}
 
-.chapter-navigation-link {
-  top: -3 * $chapter-navigation-link-height;
+  .chapter-navigation-link {
+    top: -3 * $chapter-navigation-link-height;
 
-  p {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.chapter-heading {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: auto;
-  font-size: 1.25rem !important;
-  font-weight: bold !important;
-
-  p {
-    margin: 0;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.nav-caret {
-  transition: transform 0.3s cubic-bezier(.25,.8,.25,1);
-
-  &.nav-expanded {
-    transform: rotateZ(180deg);
+    p {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
-  &:hover {
-    color: $pytch-colour-main-yellow;
+  .nav-caret {
+    transition: transform 0.3s cubic-bezier(.25, .8, .25, 1);
+
+    &.isNavigationExpanded {
+      transform: rotateZ(180deg);
+    }
+
+    &:hover {
+      color: $pytch-colour-main-yellow;
+    }
   }
-}
 
-.chapter-markdown {
-  line-break: anywhere;
-  overflow-x: clip !important;
-  overflow-y: scroll;
-  transition: max-height 0.1s cubic-bezier(.25,.8,.25,1);
-  height: 100%;
-
-  img {
-    max-width: 100%;
+  .loading {
+    cursor: progress;
   }
-}
-
-.loading {
-  cursor: progress !important;
 }
