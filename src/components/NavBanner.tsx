@@ -20,9 +20,8 @@ export const NavBanner = () => {
     const menuDiv = menuRef.current;
     if (menuDiv == null) return;
 
-
     let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
-      if (window["computedStyleMap"] === 'function'){
+      if (window["computedStyleMap"] === "function") {
         const mMenuDisplay = menuDiv.computedStyleMap().get("display");
         if (mMenuDisplay == null) return;
 
@@ -86,11 +85,11 @@ export const NavBanner = () => {
           </li>
           <li>
             <NavDropdown title="Explore" id="basic-nav-dropdown">
-              <NavDropdown.Item>
-                <Link to={"/tutorials/"}>Tutorials</Link>
+              <NavDropdown.Item as={Link} to={"/tutorials/"}>
+                Tutorials
               </NavDropdown.Item>
-              <NavDropdown.Item>
-                <Link to={"/demos/"}>Demos</Link>
+              <NavDropdown.Item as={Link} to={"/demos/"}>
+                Demos
               </NavDropdown.Item>
             </NavDropdown>
           </li>

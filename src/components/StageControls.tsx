@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EmptyProps } from "../utils";
 import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content";
 import { pathWithinApp } from "../env-utils";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,8 +66,11 @@ export const RedStop = () => {
     focusStage();
   };
   return (
-    <Button className="StageControlPseudoButton RedStop" onClick={redStop}
-    aria-label={"Stop project"}>
+    <Button
+      className="StageControlPseudoButton RedStop"
+      onClick={redStop}
+      aria-label={"Stop project"}
+    >
       <FontAwesomeIcon icon="stop" aria-hidden={true} />
     </Button>
   );
@@ -92,22 +95,13 @@ const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
   switch (googleDriveStatus.kind) {
     case "not-yet-started":
     case "pending":
-      return <Dropdown.Item disabled>
-        <FontAwesomeIcon icon="fa-brands fa-google-drive" className={"me-2"} aria-hidden={true} />
-        Export to Google Drive
-      </Dropdown.Item>;
+      return <Dropdown.Item disabled>Export to Google Drive</Dropdown.Item>;
     case "succeeded":
       return (
-        <Dropdown.Item onClick={onExport}>
-          <FontAwesomeIcon icon="fa-brands fa-google-drive" className={"me-2"} aria-hidden={true}/>
-            Export to Google Drive
-        </Dropdown.Item>
+        <Dropdown.Item onClick={onExport}>Export to Google Drive</Dropdown.Item>
       );
     case "failed":
-      return <Dropdown.Item disabled>
-        <FontAwesomeIcon icon="fa-brands fa-google-drive" className={"me-2"} aria-hidden={true}/>
-        Google Drive unavailable
-      </Dropdown.Item>;
+      return <Dropdown.Item disabled>Google Drive unavailable</Dropdown.Item>;
   }
 };
 
@@ -127,10 +121,7 @@ const LaunchCoordsChooserDropdownItem: React.FC<EmptyProps> = () => {
 const GoToMyProjectsDropdownItem: React.FC<EmptyProps> = () => {
   const navigate = useNavigate();
   const goToMyProjects = () => navigate(pathWithinApp("/my-projects/"));
-  return <Dropdown.Item onClick={goToMyProjects}>
-      <FontAwesomeIcon icon="code" className={"me-2"}/>
-      My projects
-  </Dropdown.Item>;
+  return <Dropdown.Item onClick={goToMyProjects}>My projects</Dropdown.Item>;
 };
 
 export const StageControls: React.FC<EmptyProps> = () => {
@@ -174,69 +165,52 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
 
   const fullScreenButton = (
-    <Button className="full-screen square-button" onClick={() => setIsFullScreen(true)}
-    aria-label={"expand"}>
-      <FontAwesomeIcon className="fa-lg" icon="expand" aria-hidden={true}/>
+    <Button
+      className="full-screen square-button"
+      onClick={() => setIsFullScreen(true)}
+      aria-label={"expand"}
+    >
+      <FontAwesomeIcon className="fa-lg" icon="expand" aria-hidden={true} />
     </Button>
   );
 
   const ariaLabel = "Controls";
 
-  const goHome = () => navigate(pathWithinApp("/"));
-
   return isFullScreen ? (
     <section className="StageControls" aria-label={ariaLabel}>
-      <div className="run-stop-controls">
-        <GreenFlag />
-        <RedStop />
-      </div>
+      <GreenFlag />
+      <RedStop />
       <Button
         className="leave-full-screen"
         variant={"secondary"}
         onClick={() => setIsFullScreen(false)}
-      >
-        <FontAwesomeIcon className="fa-lg" icon="compress" aria-hidden={true}/>
-      </Button>
+      ></Button>
     </section>
   ) : (
     <section className="StageControls" aria-label={ariaLabel}>
-    <div className="run-stop-controls">
-        <GreenFlag />
-        <RedStop />
-    </div>
+      <GreenFlag />
+      <RedStop />
       {fullScreenButton}
       <Button
         className={`save-button ${codeStateVsStorage} square-button`}
         onClick={handleSave}
         aria-label={"Save project"}
       >
-        <FontAwesomeIcon className="fa-lg" icon="floppy-disk" />
+        <span>Save</span>
       </Button>
-      {/*<Button onClick={goHome}>*/}
-      {/*  <FontAwesomeIcon aria-label="Home" icon="home" />*/}
-      {/*</Button>*/}
       <Link
         to={"/"}
         className={"StageControlPseudoButton HomeLink btn btn-primary"}
         aria-label={"Home"}
       >
-        <FontAwesomeIcon aria-label="Home" icon="home" aria-hidden={true}/>
+        <FontAwesomeIcon aria-label="Home" icon="home" aria-hidden={true} />
       </Link>
       <DropdownButton align="end" title="⋮" className={"moreOptionsDropdown"}>
         <GoToMyProjectsDropdownItem />
-        <Dropdown.Item onClick={onScreenshot}>
-            <FontAwesomeIcon icon="camera" className={"me-2"}/>
-            Screenshot
-        </Dropdown.Item>
+        <Dropdown.Item onClick={onScreenshot}>Screenshot</Dropdown.Item>
         <Dropdown.Divider />
-        <Dropdown.Item onClick={onCreateCopy}>
-            <FontAwesomeIcon icon="clone" className={"me-2"}/>
-            Make a copy...
-        </Dropdown.Item>
-        <Dropdown.Item onClick={onDownload}>
-            <FontAwesomeIcon icon="download" className={"me-2"}/>
-            Download as zipfile
-        </Dropdown.Item>
+        <Dropdown.Item onClick={onCreateCopy}>Make a copy...</Dropdown.Item>
+        <Dropdown.Item onClick={onDownload}>Download as zipfile</Dropdown.Item>
         <ExportToDriveDropdownItem />
         <Dropdown.Divider />
         <LaunchCoordsChooserDropdownItem />

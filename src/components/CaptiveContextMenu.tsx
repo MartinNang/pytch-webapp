@@ -12,6 +12,7 @@ import React, {
 import { Dropdown } from "react-bootstrap";
 import { useNonNullContext } from "./hooks/non-null-context";
 import { handleMovementKeys } from "./CaptiveContextMenu-utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** Context for internal use by dropdown items within the container.
  * Allows items to, e.g., dismiss the dropdown menu. */
@@ -219,11 +220,17 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
 };
 
 ////////////////////////////////////////////////////////////////////////
+type MenuProps = {
+  toggle?: React.ReactNode;
+};
 
 /** Menu of choices relevant to the element which has a captive context
  * menu.  Should be rendered somewhere within a
  * `CaptiveContextMenu.Container`. */
-const DropdownMenu: React.FC<PropsWithChildren<object>> = ({ children }) => {
+const DropdownMenu: React.FC<PropsWithChildren<MenuProps>> = ({
+  toggle,
+  children,
+}) => {
   const ctx = useNonNullContext(Context);
 
   const onKeydown: KeyboardEventHandler = (evt) => {
@@ -245,7 +252,9 @@ const DropdownMenu: React.FC<PropsWithChildren<object>> = ({ children }) => {
       onKeyDown={onKeydown}
       data-captive-context-menu-container-id={ctx.containerId}
     >
-      <Dropdown.Toggle as="div">⋮</Dropdown.Toggle>
+      <Dropdown.Toggle as="div" className={"captive-dropdown-toggle"}>
+        {toggle || "⋮"}
+      </Dropdown.Toggle>
       <Dropdown.Menu align="end">{children}</Dropdown.Menu>
     </Dropdown>
   );

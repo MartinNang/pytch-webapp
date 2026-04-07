@@ -42,6 +42,7 @@
 
     .ActivityPane {
       @include grid-hstack-two($activity-bar-width, auto);
+      height: 100%;
     }
 
     @include grid-hstack-three(
@@ -70,7 +71,7 @@
     @include grid-hstack-three(
       $activity-bar-width + $help-sidebar-content-width,
       minmax($min-actor-properties-width, 1fr),
-      auto
+      min-content
     );
   }
 }
@@ -947,4 +948,5 @@ $key-chooser-width: 54rem;
 .Junior-LessonContent-container .spinner-container {
   @include full-height-grid-center-center;
   color: #444;
+  height: 100vh;
 }

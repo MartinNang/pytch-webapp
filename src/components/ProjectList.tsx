@@ -108,65 +108,63 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
   // spread out to cover the various cases.
 
   return (
-    <Col xs={12} sm={6} md={4} xl={3}>
-      <li>
-        <CaptiveContextMenu.Container
-          onKeyDown={onKeyDown}
-          className={focusGroupItemClass("ProjectCard-wrapper")}
-          onActivate={onActivate}
-        >
-          <Card className="ProjectCard" onClick={focusContext.onGroupItemClick}>
-            <Card.Header>
-              <Card.Title className="project-name">
-                {project.summary.name}
-              </Card.Title>
-              <div
-                className="dropdown-wrapper"
-                onClick={(e) => {
-                  // Stop the click passing through and opening the project:
-                  e.stopPropagation();
-                  focusContext.onGroupItemClick(e);
-                }}
-              >
-                <CaptiveContextMenu.DropdownMenu>
-                  <CaptiveContextMenu.DropdownItem onInvoke={onActivate}>
-                    Open
-                  </CaptiveContextMenu.DropdownItem>
-                  <CaptiveContextMenu.DropdownItem onInvoke={onRename}>
-                    Rename...
-                  </CaptiveContextMenu.DropdownItem>
-                  <Dropdown.Divider />
-                  <CaptiveContextMenu.DropdownItem
-                    className="danger"
-                    onInvoke={onDelete}
-                  >
-                    DELETE
-                  </CaptiveContextMenu.DropdownItem>
-                </CaptiveContextMenu.DropdownMenu>
-              </div>
-            </Card.Header>
-            <Card.Body>
-              <div
-                className="project-card-content"
-                data-project-id={project.summary.id}
-              >
+    <li>
+      <CaptiveContextMenu.Container
+        onKeyDown={onKeyDown}
+        className={focusGroupItemClass("ProjectCard-wrapper")}
+        onActivate={onActivate}
+      >
+        <Card className="ProjectCard" onClick={focusContext.onGroupItemClick}>
+          <Card.Header>
+            <Card.Title className="project-name">
+              {project.summary.name}
+            </Card.Title>
+            <div
+              className="dropdown-wrapper"
+              onClick={(e) => {
+                // Stop the click passing through and opening the project:
+                e.stopPropagation();
+                focusContext.onGroupItemClick(e);
+              }}
+            >
+              <CaptiveContextMenu.DropdownMenu>
+                <CaptiveContextMenu.DropdownItem onInvoke={onActivate}>
+                  Open
+                </CaptiveContextMenu.DropdownItem>
+                <CaptiveContextMenu.DropdownItem onInvoke={onRename}>
+                  Rename...
+                </CaptiveContextMenu.DropdownItem>
+                <Dropdown.Divider />
+                <CaptiveContextMenu.DropdownItem
+                  className="danger"
+                  onInvoke={onDelete}
+                >
+                  DELETE
+                </CaptiveContextMenu.DropdownItem>
+              </CaptiveContextMenu.DropdownMenu>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            <div
+              className="project-card-content"
+              data-project-id={project.summary.id}
+            >
               <span
                 className={`selection-check${maybeSelectedExtraClass}`}
                 onClick={onToggleIsSelected}
               >
                 <FontAwesomeIcon className="fa-lg" icon="check-circle" />
               </span>
-                <div className="project-description">
-                  <MtimeDisplay mtime={project.summary.mtime} />
-                  <p className="project-summary">{summary}</p>
-                </div>
-                <EditorKindThumbnail programKind={project.summary.programKind} />
+              <div className="project-description">
+                <MtimeDisplay mtime={project.summary.mtime} />
+                <p className="project-summary">{summary}</p>
               </div>
-            </Card.Body>
-          </Card>
-        </CaptiveContextMenu.Container>
-      </li>
-    </Col>
+              <EditorKindThumbnail programKind={project.summary.programKind} />
+            </div>
+          </Card.Body>
+        </Card>
+      </CaptiveContextMenu.Container>
+    </li>
   );
 };
 
@@ -291,7 +289,7 @@ const LoadedProjectList: React.FC = () => {
             <Project key={p.summary.id} project={p} anySelected={anySelected} />
           ))}
         </ol>
-        </FocusGroupContainer>
+      </FocusGroupContainer>
     </>
   );
 };

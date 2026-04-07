@@ -51,6 +51,21 @@ export const DemoChapter = () => {
       } else return 0;
     }
 
+    const handlePrevChapterKeyDown: KeyboardEventHandler = (e) => {
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight": {
+          e.preventDefault();
+          handleFocusOnNextChapter();
+          break;
+        }
+        case "ArrowLeft":
+        case "ArrowUp":
+          e.preventDefault();
+          break;
+      }
+    };
+
     function handleFocusOnPrevChapter() {
       let currentButton = document.activeElement;
       let prevButton = currentButton?.previousElementSibling as HTMLElement;
@@ -94,21 +109,9 @@ export const DemoChapter = () => {
           ref={navPrevChapterRef}
           aria-label={"Previous chapter"}
           variant={"primary"}
+          className={"prev-chapter"}
           onClick={handlePrevChapterClicked}
-          onKeyDown={(e) => {
-            switch (e.key) {
-              case "ArrowDown":
-              case "ArrowRight": {
-                e.preventDefault();
-                handleFocusOnNextChapter();
-                break;
-              }
-              case "ArrowLeft":
-              case "ArrowUp":
-                e.preventDefault();
-                break;
-            }
-          }}
+          onKeyDown={handlePrevChapterKeyDown}
         >
           <FontAwesomeIcon
             icon={"angle-right"}
@@ -122,7 +125,7 @@ export const DemoChapter = () => {
           tabIndex={-1}
           ref={navNextChapterRef}
           variant={"primary"}
-          className={"ms-1"}
+          className={"ms-1 next-chapter"}
           onClick={handleNextChapterClicked}
           onKeyDown={handleNextChapterKeyDown}
         >

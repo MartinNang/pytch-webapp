@@ -55,7 +55,7 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
       <Button
         variant="outline-secondary"
         size="sm"
-        className="disclosure-button expand-button m-1"
+        className="disclosure-button expand-button m-0"
         onClick={toggleState}
         aria-label="Show output and errors"
         aria-expanded={false}

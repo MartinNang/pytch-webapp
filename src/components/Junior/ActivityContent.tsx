@@ -1,7 +1,10 @@
 import React from "react";
 import { EmptyProps, assertNever } from "../../utils";
 import { useJrEditState } from "./hooks";
-import { MaybeContent, MaybeContent as MaybeLessonContent } from "./lesson/MaybeContent";
+import {
+  MaybeContent,
+  MaybeContent as MaybeLessonContent,
+} from "./lesson/MaybeContent";
 import { WidthMonitor } from "./WidthMonitor";
 import { HelpSidebar } from "../HelpSidebar";
 import Tutorial from "../Tutorial";
@@ -28,7 +31,9 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
         return (
           <>
             <WidthMonitor nonStageWd={980} />
-            <MaybeContent />
+            <div className={"bg-white h-100"}>
+              <MaybeContent />
+            </div>
           </>
         );
       case "helpsidebar":

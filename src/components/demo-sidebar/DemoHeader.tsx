@@ -49,7 +49,11 @@ export const DemoHeader = ({
       return (
         <div className={classNames("chapter-pill", "rounded-pill")}>
           <FontAwesomeIcon icon={"layer-group"} />
-          <span aria-label={`Chapter ${activeChapter + 1} out of ${headings.length}`}>
+          <span
+            aria-label={`Chapter ${activeChapter + 1} out of ${
+              headings.length
+            }`}
+          >
             {activeChapter + 1}/{headings?.length}
           </span>
         </div>
@@ -60,7 +64,9 @@ export const DemoHeader = ({
       return (
         <Button
           aria-label={"Expand or collapse chapters navigation menu"}
-          className={classNames("w-auto", "caret", "p-0", "ms-2")}
+          className={classNames("w-auto", "caret", "p-0", "ms-2", {
+            isNavigationExpanded,
+          })}
           key={"nav-caret"}
           id={"nav-caret"}
           ref={navCaretRef}

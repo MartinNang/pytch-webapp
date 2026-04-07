@@ -68,13 +68,17 @@
     li {
       padding: 12px 0px;
       font-size: 1rem;
-
-      @include white-hover-yellow();
-      cursor: pointer;
+      color: white;
       user-select: none;
 
       a {
         color: inherit;
+        cursor: pointer;
+        @include white-hover-yellow();
+
+        &.dropdown-item {
+          color: black;
+        }
       }
 
       @media screen and (min-width: $width-breakpoint-lg) {

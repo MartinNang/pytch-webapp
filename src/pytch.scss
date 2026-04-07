@@ -29,6 +29,7 @@ code {
   bottom: 0;
   display: flex;
   flex-direction: column;
+  background-color: $main-bg-color;
   overflow-y: auto;
 }
 
@@ -157,24 +158,21 @@ $tutorial-display-side-margin: 3rem;
 
   .card-header {
     position: relative;
-    background-color: #d3d5ff;
+    background-color: $pytch-colour-accent-lavender;
     border-radius: var(--bs-card-inner-border-radius)
       var(--bs-card-inner-border-radius) 0px 0px;
-    border: none;
 
     .h5 {
-      margin: 1rem 1.5rem;
-      //text-align: center;
-      font-size: 1.5rem;
+      margin: 0.25rem 0px;
+      text-align: center;
+      font-size: 1.25rem;
     }
   }
   .card-body {
     position: relative;
-    background-color: #d3d5ff;
-    //background-color: $secondary-bg-color;
+    background-color: $secondary-bg-color;
     border-radius: 0px 0px var(--bs-card-inner-border-radius)
       var(--bs-card-inner-border-radius);
-    padding-bottom: 2rem;
   }
 }
 
