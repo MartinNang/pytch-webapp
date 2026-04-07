@@ -266,7 +266,9 @@ $chapter-navigation-link-height: 3rem;
     #nav-caret {
       border: none;
       transition: transform 0.3s cubic-bezier(.25, .8, .25, 1),
-      background-color 0.3s cubic-bezier(.25, .8, .25, 1);
+      color 0.3s cubic-bezier(.25, .8, .25, 1);
+      color: white;
+      background-color: transparent;
 
       &.isNavigationExpanded {
         transform: rotateZ(180deg);
