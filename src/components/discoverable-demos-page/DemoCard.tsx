@@ -96,9 +96,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
             className={classNames("h-100 w-100 object-fit-cover", {
               showVideo,
             })}
-            onMouseOver={() => {
-              setHover(true);
-            }}
+            onMouseOver={() => setHover(true)}
             onMouseOut={() => setHover(false)}
             controlsList="nofullscreen"
             ref={videoRef}

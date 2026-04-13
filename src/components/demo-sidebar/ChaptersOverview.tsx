@@ -98,15 +98,27 @@ export const ChaptersOverview = ({
     }
 
     return (
-      <ul
-        className={"chapters-list m-0 p-0"}
-        tabIndex={-1}
-        onKeyDown={handleChaptersListOnKeyDown}
-      >
-        {headings?.map((heading: string, index: number) => {
-          return <ChapterHeading index={index} heading={heading} />;
-        })}
-      </ul>
+      <Row className={"overflow-scroll nav-tree"}>
+        <Col xs={1} className={"p-0 m-0"}>
+          <div className={"tree"}>
+            <div className={"stem"} />
+            {headings?.map(() => {
+              return <div className={"branch"} />;
+            })}
+          </div>
+        </Col>
+        <Col className={"p-0 m-0"}>
+          <ul
+            className={"chapters-list m-0 p-0"}
+            tabIndex={-1}
+            onKeyDown={handleChaptersListOnKeyDown}
+          >
+            {headings?.map((heading: string, index: number) => {
+              return <ChapterHeading index={index} heading={heading} />;
+            })}
+          </ul>
+        </Col>
+      </Row>
     );
   }
 

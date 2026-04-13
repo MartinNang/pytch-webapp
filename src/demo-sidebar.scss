@@ -38,6 +38,7 @@ $chapter-navigation-link-height: 3rem;
 
     .chapters-navigation {
       color: white;
+      width: 100%;
 
       button {
         display: inline-block;
@@ -49,14 +50,37 @@ $chapter-navigation-link-height: 3rem;
       }
     }
 
-    ul.chapters-list {
+    .tree {
+      height: 7.9rem;
+      width: auto;
+      border-bottom-left-radius: 4px;
+      position: relative;
+
+      .branch {
+        height: 30px;
+        border: 3px solid $pytch-colour-main-blue-darkened;
+        margin-bottom: 18px;
+        border-bottom-left-radius: 15px;
+        border-right: none;
+        border-top: none;
+      }
+
+      .stem {
+        height: 6.25rem;
+        border: 2px solid $pytch-colour-main-blue-darkened;
+        position: absolute;
+      }
+    }
+
+    .nav-tree {
       max-height: $chapter-navigation-link-height * 3;
+    }
+
+    ul.chapters-list {
       list-style: none;
       overflow-y: auto;
-      overscroll-behavior-y: contain;
       overflow-x: clip;
       scroll-snap-type: y proximity;
-      border-left: 3px $pytch-colour-main-blue-darkened solid;
 
       /* two items */
       &:has(li:first-child:nth-last-child(2)),
@@ -64,7 +88,7 @@ $chapter-navigation-link-height: 3rem;
         height: 6.5rem;
 
         &:before {
-          inline-size: 2 * $chapter-navigation-link-height;
+          inline-size: 3 * $chapter-navigation-link-height;
         }
       }
 
@@ -89,19 +113,10 @@ $chapter-navigation-link-height: 3rem;
 
         &:last-child {
           margin-bottom: 0.5rem;
-        }
 
-        &:before {
-          content: "";
-          border-bottom: 3px solid $pytch-colour-main-blue-darkened;
-          inline-size: 20px;
-          writing-mode: vertical-lr;
-          width: 1rem;
-          border-bottom-left-radius: 4px;
-          border-left: 2px solid $pytch-colour-main-blue-darkened;
-          position: absolute;
-          margin-top: 0.6rem;
-          display: block;
+          &:before {
+            margin-top: 10px;
+          }
         }
 
         button {

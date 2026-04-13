@@ -1,45 +1,45 @@
-import {Action, Thunk, thunk} from "easy-peasy";
-import {LinkedContentRef} from "./linked-content-core";
-import {projectDescriptor, projectSummary} from "../storage/zipfile";
-import {fetchArrayBuffer, propSetterAction} from "../utils";
+import { Action, Thunk, thunk } from "easy-peasy";
+import { LinkedContentRef } from "./linked-content-core";
+import { projectDescriptor, projectSummary } from "../storage/zipfile";
+import { fetchArrayBuffer, propSetterAction } from "../utils";
 
-import {createNewProject, CreateProjectOptions} from "../database/indexed-db";
+import { createNewProject, CreateProjectOptions } from "../database/indexed-db";
 
-import {IPytchAppModel} from "./index";
-import {ProjectId} from "./project-core";
+import { IPytchAppModel } from "./index";
+import { ProjectId } from "./project-core";
 
 type ProjectFromDemoState =
-    | { state: "idle" }
-    | { state: "fetching" }
-    | { state: "creating-project" }
-    | { state: "redirecting"}
-    | { state: "failed"; message: string };
+  | { state: "idle" }
+  | { state: "fetching" }
+  | { state: "creating-project" }
+  | { state: "redirecting" }
+  | { state: "failed"; message: string };
 
 type SAction<PayloadT = void> = Action<ProjectFromDemoFlow, PayloadT>;
 
 type SThunk<PayloadT = void, ReturnT = void> = Thunk<
-    ProjectFromDemoFlow,
-    PayloadT,
-    unknown,
-    IPytchAppModel,
-    ReturnT
+  ProjectFromDemoFlow,
+  PayloadT,
+  unknown,
+  IPytchAppModel,
+  ReturnT
 >;
 
 export type ProjectFromDemoFlow = {
-    state: ProjectFromDemoState;
-    setState: SAction<ProjectFromDemoState>;
-    createProject: SThunk<string, Promise<void>>;
-    redirectToProject: Thunk<
-      ProjectFromDemoFlow,
-        ProjectId,
-        void,
-        IPytchAppModel,
-        void
-    >;
-}
+  state: ProjectFromDemoState;
+  setState: SAction<ProjectFromDemoState>;
+  createProject: SThunk<string, Promise<void>>;
+  redirectToProject: Thunk<
+    ProjectFromDemoFlow,
+    ProjectId,
+    void,
+    IPytchAppModel,
+    void
+  >;
+};
 
-export function demoUrl(s: string) :string {
-    return "/data/demos/" + s;
+export function demoUrl(s: string): string {
+  return "/data/demos/" + s;
 }
 
 export let projectFromDemoFlow: ProjectFromDemoFlow = {
@@ -47,9 +47,9 @@ export let projectFromDemoFlow: ProjectFromDemoFlow = {
   setState: propSetterAction("state"),
   createProject: thunk(async (actions, demo, helpers) => {
     const allActions = helpers.getStoreActions();
-    console.log(demo);
     const relativePath = `${demo}/project.zip`;
     const url = demoUrl(`${relativePath}`);
+    console.log(url);
 
     const zipData = await fetchArrayBuffer(url);
     const demoProject = await projectDescriptor(undefined, zipData);
