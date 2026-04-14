@@ -1,11 +1,11 @@
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { CompoundTextInput } from "../CompoundTextInput";
 import {
-  flowFocusOrBlurFun,
+  focusOrBlurElementFun,
   isInteractable,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
@@ -19,9 +19,6 @@ export const DownloadZipfileModal = () => {
     (f) => f.downloadZipfileFlow
   );
   const { setUiFragmentValue } = useFlowActions((f) => f.downloadZipfileFlow);
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { formatSpecifier } = activeFsmState.runState;
@@ -47,7 +44,7 @@ export const DownloadZipfileModal = () => {
             formatSpecifier={formatSpecifier}
             onNewUiFragmentValue={setUiFragmentValue}
             onEnterKey={settle.submit}
-            ref={inputRef}
+            ref={focusOrBlurElementFun(fsmState)}
           />
         </Modal.Body>
         <Modal.Footer>

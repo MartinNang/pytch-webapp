@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import { submitOnEnterKeyFun } from "../../utils";
 import { asyncFlowModal } from "./utils";
 import {
-  flowFocusOrBlurFun,
+  focusOrBlurElementFun,
   isInteractable,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
@@ -17,9 +17,6 @@ export const RenameProjectModal = () => {
   const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameProjectFlow);
   const { setNewName } = useFlowActions((f) => f.renameProjectFlow);
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { oldName, newName } = activeFsmState.runState;
@@ -53,7 +50,7 @@ export const RenameProjectModal = () => {
               value={newName}
               onChange={handleChange}
               onKeyDown={handleKeyPress}
-              ref={inputRef}
+              ref={focusOrBlurElementFun(fsmState)}
             ></Form.Control>
           </Form>
         </Modal.Body>

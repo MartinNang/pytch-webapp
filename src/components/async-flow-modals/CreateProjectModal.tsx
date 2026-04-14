@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -14,7 +14,7 @@ import FlatEditorThumbnail from "../../images/flat.png";
 import PerMethodEditorThumbnail from "../../images/per-method.png";
 import { asyncFlowModal } from "../async-flow-modals/utils";
 import {
-  flowFocusOrBlurFun,
+  focusOrBlurElementFun,
   isActive,
   isInteractable,
   settleFunctions,
@@ -32,9 +32,6 @@ export const CreateProjectModal = () => {
   const { setEditorKind, setWhetherExample, setName } = useFlowActions(
     (f) => f.createProjectFlow
   );
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { name, editorKind, whetherExample } = activeFsmState.runState;
@@ -96,7 +93,7 @@ export const CreateProjectModal = () => {
                 onKeyDown={handleKeyPress}
                 placeholder={t("create.name-placeholder")}
                 tabIndex={-1}
-                ref={inputRef}
+                ref={focusOrBlurElementFun(fsmState)}
               />
             </Form.Group>
             <hr />

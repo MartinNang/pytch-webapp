@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent } from "react";
 import { useStoreState, useStoreActions } from "../store";
-import { focusOrBlurFun, submitOnEnterKeyFun } from "../utils";
+import { focusOrBlurElementFun, submitOnEnterKeyFun } from "../utils";
 
 import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,9 +14,6 @@ const QuestionInputPanel = () => {
   );
 
   const isInteractable = state === "interactable";
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(focusOrBlurFun(inputRef, isInteractable, isInteractable));
 
   if (!isInteractable) {
     return null;
@@ -42,7 +39,7 @@ const QuestionInputPanel = () => {
       {maybePrompt == null ? null : <div className="prompt">{maybePrompt}</div>}
       <div className="input">
         <Form.Control
-          ref={inputRef}
+          ref={focusOrBlurElementFun(true, true)}
           type="text"
           value={answer}
           onChange={handleChange}
