@@ -48,6 +48,8 @@
     "mocha": "ts-mocha -p ./unit-tests/tsconfig.json --watch --watch-files \"unit-tests/**/*.spec.ts\",\"src/**/*.ts\" unit-tests/**/*.spec.ts unit-tests/*.spec.ts"
   },
   "devDependencies": {
+    "@eslint-react/eslint-plugin": "^4.2.3",
+    "@eslint/js": "^10.0.1",
     "@types/chai": "^4.3.5",
     "@types/file-saver": "^2.0.5",
     "@types/marked": "^5.0.0",
@@ -55,22 +57,19 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.50.1",
-    "@typescript-eslint/parser": "^8.50.1",
     "@vitejs/plugin-react": "^5.1.1",
     "chai": "^4.3.7",
     "cypress": "^13.17.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-parallel": "^0.13.0",
     "cypress-wait-until": "^1.7.1",
-    "eslint": "^9.14.0",
-    "eslint-plugin-react": "^7.37.0",
+    "jiti": "^2.6.1",
     "prettier": "^3.0.0",
     "sass-embedded": "^1.93.3",
     "ts-mocha": "^10.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.13.0",
+    "typescript-eslint": "^8.58.2",
     "vite": "^7.2.4"
   }
 }
