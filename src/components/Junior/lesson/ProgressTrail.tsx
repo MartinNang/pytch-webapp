@@ -234,9 +234,10 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
     );
     if (mEltIndex != null) {
       // Set bookmark *after* ProgressTrail has rendered.
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         focusContext.bookmarkItemByKeyAndIndex(kFocusGroupKey, mEltIndex);
       });
+      return () => clearTimeout(timeoutId);
     }
   }, [focusContext, nodeDescriptors, activeChapterIndex]);
 

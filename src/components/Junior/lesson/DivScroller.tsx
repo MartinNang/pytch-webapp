@@ -21,7 +21,7 @@ export const DivScroller: React.FC<DivScrollerProps> = (props) => {
     const containerDiv = props.containerDivRef.current;
     if (containerDiv != null) {
       const desiredScrollTop = scrollTopFromPageKey.get(props.pageKey) ?? 0;
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         containerDiv.scrollTop = desiredScrollTop;
       });
 
@@ -30,8 +30,10 @@ export const DivScroller: React.FC<DivScrollerProps> = (props) => {
 
       containerDiv.addEventListener("scroll", updateScrollTopMap);
 
-      return () =>
+      return () => {
         containerDiv.removeEventListener("scroll", updateScrollTopMap);
+        clearTimeout(timeoutId);
+      };
     }
   });
 
