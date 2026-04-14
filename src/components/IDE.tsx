@@ -114,9 +114,9 @@ const IDE: React.FC<EmptyProps> = () => {
       const focusContext = createFocusContext(programKind);
       return (
         <ErrorBoundary FallbackComponent={ExceptionDisplay}>
-          <FocusContext.Provider value={focusContext}>
+          <FocusContext value={focusContext}>
             <IDELayout />
-          </FocusContext.Provider>
+          </FocusContext>
         </ErrorBoundary>
       );
     }

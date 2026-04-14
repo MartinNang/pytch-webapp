@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "esModuleInterop": true,
-    "module": "commonJS"
+    "module": "commonJS",
+    "types": ["mocha"]
   }
 }

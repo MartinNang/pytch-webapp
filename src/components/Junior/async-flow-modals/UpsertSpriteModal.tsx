@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
@@ -6,7 +6,7 @@ import { Form } from "react-bootstrap";
 import { assertNever, onChangeFun, submitOnEnterKeyFun } from "../../../utils";
 import { useJrEditActions, useJrEditState } from "../hooks";
 import {
-  flowFocusOrBlurFun,
+  focusOrBlurElementFun,
   isInteractable,
   settleFunctions,
 } from "../../../model/user-interactions/async-user-flow";
@@ -18,9 +18,6 @@ export const UpsertSpriteModal = () => {
   const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useJrEditState((s) => s.upsertSpriteFlow);
   const { setName } = useJrEditActions((a) => a.upsertSpriteFlow);
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     if (activeFsmState.kind === "awaiting-ack-of-notification") {
@@ -93,7 +90,7 @@ export const UpsertSpriteModal = () => {
               onChange={handleNameChange}
               onKeyDown={handleKeyPress}
               tabIndex={-1}
-              ref={inputRef}
+              ref={focusOrBlurElementFun(fsmState)}
             ></Form.Control>
           </Form>
           <Alert

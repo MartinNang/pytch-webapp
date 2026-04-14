@@ -63,17 +63,17 @@ describe("Structured programs", () => {
 
     it("find matching", () => {
       assert.equal(
-        Ops.firstMatching(assets, id1, "image").name,
+        Ops.firstMatching(assets, id1, "image")?.name,
         `${id1}/banana.png`
       );
 
       assert.equal(
-        Ops.firstMatching(assets, id1, "audio").name,
+        Ops.firstMatching(assets, id1, "audio")?.name,
         `${id1}/whoosh.mp3`
       );
 
       assert.equal(
-        Ops.firstMatching(assets, id2, "image").name,
+        Ops.firstMatching(assets, id2, "image")?.name,
         `${id2}/face.jpg`
       );
 
@@ -311,7 +311,7 @@ describe("Structured programs", () => {
 
         const updatedId = StructuredProgramOps.upsertHandler(program, {
           actorId: bananaId,
-          action: { kind: "update", handlerId, previousEvent: null },
+          action: { kind: "update", handlerId, previousEvent: eventDescriptor },
           eventDescriptor: { kind: "green-flag" },
         });
         assert.equal(updatedId, handlerId);
@@ -640,7 +640,7 @@ describe("Structured programs", () => {
       pendingWarp.set({ handlerId: "h1", lineNo: 42, colNo: 8 });
       assert.equal(pendingWarp.acquireIfForHandler("nonsense"), null);
       const target = pendingWarp.acquireIfForHandler("h1");
-      assert.equal(target.handlerId, "h1");
+      assert.equal(target?.handlerId, "h1");
       assert.equal(pendingWarp.acquireIfForHandler("h1"), null);
     });
   });

@@ -165,9 +165,11 @@ const RichPythonCode: React.FC<{ richPython: RichPython }> = ({
   return richPython.map((fragment, idx) => {
     switch (fragment.kind) {
       case "literal":
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         return <span key={idx}>{fragment.value}</span>;
       case "meta-var":
         return (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <span key={idx} className="meta-var">
             {fragment.name}
           </span>
@@ -384,6 +386,7 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
   const workContextKey = DevWorkContextOps.asFlatKey(workContext);
   const renderedEntries = entries.map((entry, idx) => (
     <HelpElement
+      // eslint-disable-next-line @eslint-react/no-array-index-key
       key={`${sectionSlug}-${idx}-${workContextKey}`}
       {...entry}
       workContext={workContext}

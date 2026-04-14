@@ -10,17 +10,19 @@ import { InertNavBanner } from "./NavBanner";
 
 const Content: React.FC<EmptyProps> = () => {
   const { fsmState } = useFlowState((f) => f.startTutorialAtCheckpointFlow);
-  let lastErrorMessage = useRef<string>(null);
+  let lastErrorMessageRef = useRef<string>(null);
 
   // In the case of error, remember the message and display it even
   // after the async-user-flow has completed.  This avoids the user
   // looking at a mostly-blank page.
 
   if (fsmState.kind === "awaiting-ack-of-error")
-    lastErrorMessage.current = fsmState.errorMessage;
+    lastErrorMessageRef.current = fsmState.errorMessage;
 
-  if (fsmState.kind === "idle" && lastErrorMessage.current != null)
-    return <ExceptionDisplay error={{ message: lastErrorMessage.current }} />;
+  if (fsmState.kind === "idle" && lastErrorMessageRef.current != null)
+    return (
+      <ExceptionDisplay error={{ message: lastErrorMessageRef.current }} />
+    );
 
   // Otherwise, handle as normal "modal".
 

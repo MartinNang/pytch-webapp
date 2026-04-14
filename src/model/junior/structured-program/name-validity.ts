@@ -61,7 +61,7 @@ export const nameValidity = (
  * in the given array of `existingNames`, where `N` counts up the
  * integers from 1. */
 export const unusedSpriteName = (existingNames: Array<string>): string => {
-  let name = "";
+  let name: string;
   let suffix = 1;
 
   do {

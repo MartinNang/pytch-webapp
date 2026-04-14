@@ -108,7 +108,7 @@ function useRefFromConnector(connector: (el: HTMLElement) => void) {
   );
 }
 
-function refFromDragConnector<PropsT>([props, connector, preview]: [
+function useRefFromDragConnector<PropsT>([props, connector, preview]: [
   PropsT,
   ConnectDragSource,
   ConnectDragPreview,
@@ -117,7 +117,7 @@ function refFromDragConnector<PropsT>([props, connector, preview]: [
   return [props, ref, preview] as const;
 }
 
-function refFromDropConnector<PropsT>([props, connector]: [
+function useRefFromDropConnector<PropsT>([props, connector]: [
   PropsT,
   ConnectDropTarget,
 ]) {
@@ -135,7 +135,7 @@ export const usePytchScriptDrag = (handlerId: Uuid) => {
   const setScriptDragInProgress = useJrEditActions(
     (a) => a.setScriptDragInProgress
   );
-  return refFromDragConnector(
+  return useRefFromDragConnector(
     useDrag<PytchScriptDragItem, void, PytchScriptDragProps>(
       () => ({
         type: "pytch-script",
@@ -161,7 +161,7 @@ export const usePytchScriptDrop = (actorId: Uuid, handlerId: Uuid) => {
     (actions) => actions.activeProject.reorderHandlers
   );
 
-  return refFromDropConnector(
+  return useRefFromDropConnector(
     useDrop<PytchScriptDragItem, void, PytchScriptDropProps>(
       () => ({
         accept: "pytch-script",
@@ -189,7 +189,7 @@ type AssetCardDragItem = { fullPathname: string };
 
 type AssetCardDragProps = { isDragging: boolean };
 export const useAssetCardDrag = (fullPathname: string, allowed: boolean) => {
-  return refFromDragConnector(
+  return useRefFromDragConnector(
     useDrag<AssetCardDragItem, void, AssetCardDragProps>(() => ({
       canDrag: allowed,
       type: "jr-asset-card",
@@ -206,7 +206,7 @@ export const useAssetCardDrop = (fullPathname: string, allowed: boolean) => {
     (actions) => actions.activeProject.reorderAssetsAndSync
   );
 
-  return refFromDropConnector(
+  return useRefFromDropConnector(
     useDrop<AssetCardDragItem, void, AssetCardDropProps>(() => ({
       accept: "jr-asset-card",
       canDrop: (item) => allowed && item.fullPathname !== fullPathname,
@@ -331,7 +331,7 @@ export const useHelpHatBlockDrag = (eventDescriptor?: EventDescriptor) => {
   const setScriptDragInProgress = useJrEditActions(
     (a) => a.setScriptDragInProgress
   );
-  return refFromDragConnector(
+  return useRefFromDragConnector(
     useDrag<HelpHatBlockDragItem, void, HelpHatBlockDragProps>(
       () => ({
         canDrag: eventDescriptor != null,
@@ -355,7 +355,7 @@ export const useHelpHatBlockDrop = (actorId: Uuid) => {
     (actions) => actions.activeProject.upsertHandler
   );
 
-  return refFromDropConnector(
+  return useRefFromDropConnector(
     useDrop<HelpHatBlockDragItem, void, HelpHatBlockDropProps>(
       () => ({
         accept: "help-hat-block",

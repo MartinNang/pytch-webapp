@@ -1,4 +1,4 @@
-import React, { ClipboardEventHandler, useRef } from "react";
+import React, { ClipboardEventHandler, useEffect, useRef } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
@@ -256,11 +256,13 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
   const patchDivs = tableElts.map((table, idx) => {
     showLeadingSpaces(table);
     insertAddAndDelSymbols(table);
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     return <RawElement key={idx} className="patch" element={table} />;
   });
 
   const contentDivs = patchDivs
     .map((div, idx) => [
+      // eslint-disable-next-line @eslint-react/no-array-index-key
       ...(idx > 0 ? [<VerticalEllipsis key={`ellip-${idx}`} />] : []),
       [div],
     ])
@@ -305,7 +307,7 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
 };
 
 const TutorialChapter = () => {
-  const lastRenderedChapter = useRef<number>(-1);
+  const lastRenderedChapterRef = useRef<number>(-1);
 
   const maybeTrackedTutorial = useStoreState(
     (state) => state.activeProject.project?.trackedTutorial
@@ -330,12 +332,17 @@ const TutorialChapter = () => {
   const chapterIndex = Math.min(rawChapterIndex, maxValidIndex);
   const activeChapter = allChapters[chapterIndex];
 
-  if (chapterIndex !== lastRenderedChapter.current) {
-    if (lastRenderedChapter.current !== -1) {
-      setTimeout(focusChapterContent);
+  useEffect(() => {
+    if (chapterIndex !== lastRenderedChapterRef.current) {
+      let cleanup = () => {};
+      if (lastRenderedChapterRef.current !== -1) {
+        const timeoutId = setTimeout(focusChapterContent);
+        cleanup = () => clearTimeout(timeoutId);
+      }
+      lastRenderedChapterRef.current = chapterIndex;
+      return cleanup;
     }
-    lastRenderedChapter.current = chapterIndex;
-  }
+  }, [chapterIndex]);
 
   const navigateToChapterFun = (chapterIndex: number) => () =>
     navigateToChapter(chapterIndex);
@@ -362,6 +369,7 @@ const TutorialChapter = () => {
       <div className="TutorialChapter-container">
         <div className="TutorialChapter" tabIndex={-1}>
           {contentBodyElements.map((element, idx) => (
+            // eslint-disable-next-line @eslint-react/no-array-index-key
             <TutorialElement key={idx} element={element} />
           ))}
           <ChapterNavigationButtons {...navigationButtonsProps} />

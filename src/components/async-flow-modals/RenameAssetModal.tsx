@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { CompoundTextInput } from "../CompoundTextInput";
 import { FormatSpecifier } from "../../model/compound-text-input";
 import {
-  flowFocusOrBlurFun,
+  focusOrBlurElementFun,
   isInteractable,
   settleFunctions,
 } from "../../model/user-interactions/async-user-flow";
@@ -19,9 +19,6 @@ export const RenameAssetModal = () => {
   const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameAssetFlow);
   const { setNewStem } = useFlowActions((f) => f.renameAssetFlow);
-
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(flowFocusOrBlurFun(inputRef, fsmState));
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { oldStem, fixedSuffix } = activeFsmState.runState;
@@ -86,7 +83,7 @@ export const RenameAssetModal = () => {
                 formatSpecifier={formatSpecifier}
                 onNewUiFragmentValue={setNewStem}
                 onEnterKey={settle.submit}
-                ref={inputRef}
+                ref={focusOrBlurElementFun(fsmState)}
               />
             </Modal.Body>
             <Modal.Footer>

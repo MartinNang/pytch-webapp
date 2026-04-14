@@ -64,7 +64,7 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
 }) => {
   const { t } = useTranslation("ide");
   const { t: tCommon } = useTranslation("common");
-  const [selectedKey, selectKey] = useState(startingKey);
+  const [selectedKey, setSelectedKey] = useState(startingKey);
 
   // Suppress bootstrap's restore-focus behaviour; we handle that
   // ourselves in the UpsertHandlerModal.
@@ -91,7 +91,7 @@ export const KeyChoiceModal: React.FC<KeyChoiceModalProps> = ({
                       key={descr.browserKeyName}
                       descriptor={descr}
                       selectedKey={selectedKey}
-                      onClick={() => selectKey(descr)}
+                      onClick={() => setSelectedKey(descr)}
                       onDoubleClick={() => onAccept(descr)}
                     />
                   ))}

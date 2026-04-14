@@ -77,7 +77,7 @@ export const InfoPanel = () => {
   const setActiveTab = useJrEditActions((a) => a.expandAndSetActive);
   const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
   const tabContentId = useId();
-  const wasCollapsed = useRef<boolean | null>(null);
+  const wasCollapsedRef = useRef<boolean | null>(null);
 
   const toggleState = () => toggleStateAction();
 
@@ -93,14 +93,14 @@ export const InfoPanel = () => {
   );
 
   const maybeFocusButton = (elt: HTMLElement | null) => {
-    if (elt != null && wasCollapsed.current !== isCollapsed) {
-      if (wasCollapsed.current != null) {
+    if (elt != null && wasCollapsedRef.current !== isCollapsed) {
+      if (wasCollapsedRef.current != null) {
         const mButton = elt.querySelector(
           ":scope .disclosure-button"
         ) as HTMLButtonElement | null;
         mButton?.focus();
       }
-      wasCollapsed.current = isCollapsed;
+      wasCollapsedRef.current = isCollapsed;
     }
   };
 

@@ -65,6 +65,8 @@ export const VariableWatchers = () => {
   return (
     <div id="pytch-attribute-watchers" style={sizeStyle}>
       {watchers.map((w) => (
+        // The key is inside w, but eslint doesn't realize that.
+        // eslint-disable-next-line @eslint-react/no-missing-key
         <VariableWatcher {...w} {...scaleProps} />
       ))}
     </div>

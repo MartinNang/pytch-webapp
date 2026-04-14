@@ -10,7 +10,7 @@ import {
 } from "../../skulpt-connection/code-editor";
 import {
   ErrorReportComponents,
-  componentsContext,
+  ComponentsContext,
   SchedulerStepErrorIntroComponent,
   UserCodeErrorLocationComponent,
   ErrorReportList as ErrorReportList_Generic,
@@ -104,9 +104,9 @@ export const ErrorReportList: React.FC<EmptyProps> = () => {
       return <ErrorReportList_Generic />;
     case "per-method":
       return (
-        <componentsContext.Provider value={juniorComponents}>
+        <ComponentsContext value={juniorComponents}>
           <ErrorReportList_Generic />
-        </componentsContext.Provider>
+        </ComponentsContext>
       );
     default:
       return assertNever(programKind);

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, { createContext, createElement, useContext } from "react";
+import React, { createContext, createElement, use } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useStoreState } from "../store";
 import Alert from "react-bootstrap/Alert";
@@ -79,7 +79,7 @@ export type ErrorReportComponents = {
   schedulerStepErrorIntro: SchedulerStepErrorIntroComponent;
 };
 
-export const componentsContext = createContext<ErrorReportComponents>({
+export const ComponentsContext = createContext<ErrorReportComponents>({
   userCodeErrorLocation: UserCodeErrorLocation,
   schedulerStepErrorIntro: SchedulerStepErrorIntro,
 });
@@ -117,7 +117,7 @@ const ErrorLocation: React.FC<ErrorLocationProps> = ({
   isUserCode,
 }) => {
   const userCodeErrorLocationComponent =
-    useContext(componentsContext).userCodeErrorLocation;
+    use(ComponentsContext).userCodeErrorLocation;
 
   return isUserCode ? (
     createElement(userCodeErrorLocationComponent, {
@@ -265,7 +265,7 @@ type ErrorIntroProps = {
 const ErrorIntro: React.FC<ErrorIntroProps> = ({ errorContext }) => {
   const { t } = useTranslation("vm");
   const schedulerStepErrorIntroComponent =
-    useContext(componentsContext).schedulerStepErrorIntro;
+    use(ComponentsContext).schedulerStepErrorIntro;
 
   switch (errorContext.kind) {
     case "build":
@@ -360,6 +360,7 @@ export const ErrorReportList: React.FC<EmptyProps> = () => {
       <p className="error-pane-intro">{t(`error.pane-intro.${context}`)}</p>
       <ol className="ErrorReportList">
         {errors.map((errorReport, index) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <ErrorReport key={index} errorReport={errorReport} />
         ))}
       </ol>

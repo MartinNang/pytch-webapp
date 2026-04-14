@@ -92,13 +92,13 @@ export class PytchProgramOps {
    * `PytchProgram` if successful.  If not successful, throw an error.
    * */
   static fromJson(json: string): PytchProgram {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let obj: any = null;
-    try {
-      obj = JSON.parse(json);
-    } catch {
-      throw new Error("malformed JSON for PytchProgram");
-    }
+    const obj = (() => {
+      try {
+        return JSON.parse(json);
+      } catch {
+        throw new Error("malformed JSON for PytchProgram");
+      }
+    })();
 
     const parseResult = zPytchProgram.safeParse(obj);
     if (!parseResult.success) {

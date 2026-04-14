@@ -128,20 +128,12 @@ export function onChangeFun<EltType extends HTMLElement & WithStringValue>(
   return (e: React.ChangeEvent<EltType>) => setFun(e.target.value);
 }
 
-export function focusOrBlurFun<Elt extends HTMLElement>(
-  elementRef: React.RefObject<Elt | null>,
+export function focusOrBlurElementFun(
   isActive: boolean,
   isInteractable: boolean
-) {
-  if (!isActive)
-    return () => {
-      /* Do nothing. */
-    };
-
-  const element = () =>
-    failIfNull(elementRef.current, "isActive but elementRef null");
-
-  return isInteractable ? () => element().focus() : () => element().blur();
+): (elt: HTMLElement | null) => void {
+  if (!isActive) return (_elt) => {};
+  return isInteractable ? (elt) => elt?.focus() : (elt) => elt?.blur();
 }
 
 export const readArrayBuffer = (file: File): Promise<ArrayBuffer> => {

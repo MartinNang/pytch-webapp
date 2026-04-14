@@ -16,11 +16,9 @@ import { useStoreState } from "../../../store";
 // (reasonably enough) renders poorly on Safari.
 type ToCEntryProps = { key: React.Key; title: JrTutorialChapterTitle };
 const ToCEntry: React.FC<ToCEntryProps> = (props) => {
-  const liRef = React.useRef<HTMLLIElement>(null);
-
-  useEffect(() => {
-    let liElt = liRef.current;
+  const populate = (liElt: HTMLLIElement | null) => {
     if (liElt == null) return;
+    if (liElt.dataset.contentPopulated === "yes") return;
 
     if (props.title.kind !== "html") {
       throw new Error('expecting "html" title in ToC');
@@ -30,12 +28,10 @@ const ToCEntry: React.FC<ToCEntryProps> = (props) => {
       liElt.appendChild(node.cloneNode(true));
     });
 
-    return () => {
-      liElt.innerHTML = "";
-    };
-  }, [liRef]);
+    liElt.dataset.contentPopulated = "yes";
+  };
 
-  return <li ref={liRef} />;
+  return <li ref={populate} />;
 };
 
 const LessonTableOfContents: React.FC<{ key: React.Key }> = () => {
@@ -52,6 +48,7 @@ const LessonTableOfContents: React.FC<{ key: React.Key }> = () => {
       <h1 className="title">{t("chapter.toc-title")}</h1>
       <ol className="toc-contents">
         {realChapters.map((chapter, idx) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <ToCEntry key={idx} title={chapter.title} />
         ))}
       </ol>
@@ -109,19 +106,26 @@ function taskInteractionKind(
 
 export const Chapter: React.FC<EmptyProps> = () => {
   const { t } = useTranslation("tutorials");
-  const lastRenderedChapter = useRef<number>(-1);
+  const lastRenderedChapterRef = useRef<number>(-1);
 
   const state = useMappedLinkedJrTutorial(mapTutorial, eqState);
   const allowRandomChapterAccess = useStoreState(
     (state) => state.tutorialCollection.allowRandomChapterAccess
   );
 
-  if (state.chapterIndex !== lastRenderedChapter.current) {
-    if (lastRenderedChapter.current !== -1) {
-      setTimeout(focusChapterContent);
+  const chapterIndex = state.chapterIndex;
+
+  useEffect(() => {
+    if (chapterIndex !== lastRenderedChapterRef.current) {
+      let cleanup = () => {};
+      if (lastRenderedChapterRef.current !== -1) {
+        const timeoutId = setTimeout(focusChapterContent);
+        cleanup = () => clearTimeout(timeoutId);
+      }
+      lastRenderedChapterRef.current = chapterIndex;
+      return cleanup;
     }
-    lastRenderedChapter.current = state.chapterIndex;
-  }
+  }, [chapterIndex]);
 
   let body: Array<React.JSX.Element> = [];
   let chunkIdx = 0;
@@ -134,7 +138,7 @@ export const Chapter: React.FC<EmptyProps> = () => {
       continue;
     }
 
-    const keyPath = `${state.chapterIndex}/${chunkIdx}`;
+    const keyPath = `${chapterIndex}/${chunkIdx}`;
     switch (chunk.kind) {
       case "element":
         body.push(<RawOrCodeSnippet key={keyPath} element={chunk.element} />);
@@ -163,13 +167,13 @@ export const Chapter: React.FC<EmptyProps> = () => {
     ++chunkIdx;
   }
 
-  if (state.chapterIndex === 0) {
-    const key = `${state.chapterIndex}/toc`;
+  if (chapterIndex === 0) {
+    const key = `${chapterIndex}/toc`;
     body.push(<LessonTableOfContents key={key} />);
   }
 
   if (!state.allChapterTasksDone && !allowRandomChapterAccess) {
-    const key = `${state.chapterIndex}/hint`;
+    const key = `${chapterIndex}/hint`;
     body.push(
       <div key={key} className="hint-do-task-to-see-more">
         {t("chapter.hint-do-task")}

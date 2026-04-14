@@ -3,7 +3,7 @@
 const helpContainerSelector = ".ActivityContent > .HelpSidebar";
 const helpToggleSelector = '.tabkey-icon svg[data-icon="circle-question"]';
 
-const useSectionHeadings = (callback: (headings: Array<string>) => void) => {
+const withSectionHeadings = (callback: (headings: Array<string>) => void) => {
   cy.request("data/help-sidebar.json").then((response) => {
     const headingBlocks = response.body.filter(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -113,14 +113,14 @@ sidebarTestSpecs.forEach((spec) =>
     });
 
     it("has section list in sidebar", () =>
-      useSectionHeadings((headings) => {
+      withSectionHeadings((headings) => {
         openSidebar();
         assertAllCollapsed(headings);
         closeSidebar();
       }));
 
     it("can expand/contract one section", () =>
-      useSectionHeadings((headings) => {
+      withSectionHeadings((headings) => {
         openSidebar();
         getHelpContainer().contains("Operators").click();
         getHelpContainer().contains("math.floor");
@@ -131,7 +131,7 @@ sidebarTestSpecs.forEach((spec) =>
       }));
 
     it("can expand one section then another", () =>
-      useSectionHeadings((headings) => {
+      withSectionHeadings((headings) => {
         openSidebar();
         getHelpContainer().contains("Operators").click();
         getHelpContainer().contains("math.floor");
@@ -157,7 +157,7 @@ sidebarTestSpecs.forEach((spec) =>
       }));
 
     it("collapses sections when hiding sidebar", () => {
-      useSectionHeadings((headings) => {
+      withSectionHeadings((headings) => {
         openSidebar();
         getHelpContainer().contains("Operators").click();
         getHelpContainer().contains("math.floor");
@@ -203,7 +203,7 @@ context("Help sidebar (cross-mode)", () => {
     cy.get(helpContainerSelector).contains("Sound").click();
 
     cy.pytchSwitchProject("Test seed project");
-    useSectionHeadings((headings) =>
+    withSectionHeadings((headings) =>
       assertAllSectionsCollapsed(helpContainerSelector, headings)
     );
   });

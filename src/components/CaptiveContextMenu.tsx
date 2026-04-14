@@ -16,7 +16,7 @@ import { handleMovementKeys } from "./CaptiveContextMenu-utils";
 /** Context for internal use by dropdown items within the container.
  * Allows items to, e.g., dismiss the dropdown menu. */
 type ContextT = {
-  idSuffix: string;
+  ccMenuId: string;
   containerId: string;
   menuId: string;
   show: boolean;
@@ -68,9 +68,9 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
 
   const divRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
-  const idSuffix = useId();
-  const containerId = `captive-context-menu-container${idSuffix}`;
-  const menuId = `captive-context-menu${idSuffix}`;
+  const ccMenuId = useId();
+  const containerId = `captive-context-menu-container${ccMenuId}`;
+  const menuId = `captive-context-menu${ccMenuId}`;
 
   const toggleShow = () => setShow(!show);
 
@@ -80,38 +80,38 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
     div.focus();
   };
 
-  // If the context menu is shown, dismiss it on any click anywhere in
-  // the whole document which is not on a descendant of ourself.
-  const docClick = (evt: MouseEvent) => {
-    let tgt = evt.target as HTMLElement | null;
-    let closestId: string | null = null;
-    while (tgt != null) {
-      const maybeId = tgt.dataset.captiveContextMenuContainerId;
-      if (maybeId != null) {
-        closestId = maybeId;
-        break;
-      }
-      tgt = tgt.parentElement;
-    }
-
-    if (closestId === containerId) return;
-
-    setShow(false);
-  };
-
-  // The "Escape" key (anywhere) should dismiss the dropdown.  (This
-  // handler is only set up if `shown`.)
-  const docKeyDown = (evt: KeyboardEvent) => {
-    if (evt.key === "Escape") {
-      setShow(false);
-      focusContainer();
-    }
-  };
-
-  // Add (and register "remove" clean-ups) for document-level keypress
-  // and click listeners.
+  // Add (and register "remove" clean-ups) for document-level click and
+  // keypress listeners.
   useEffect(() => {
     if (!show) return;
+
+    // If the context menu is shown, dismiss it on any click anywhere in
+    // the whole document which is not on a descendant of ourself.
+    const docClick = (evt: MouseEvent) => {
+      let tgt = evt.target as HTMLElement | null;
+      let closestId: string | null = null;
+      while (tgt != null) {
+        const maybeId = tgt.dataset.captiveContextMenuContainerId;
+        if (maybeId != null) {
+          closestId = maybeId;
+          break;
+        }
+        tgt = tgt.parentElement;
+      }
+
+      if (closestId === containerId) return;
+
+      setShow(false);
+    };
+
+    // The "Escape" key (anywhere) should dismiss the dropdown.  (This
+    // handler is only set up if `shown`.)
+    const docKeyDown = (evt: KeyboardEvent) => {
+      if (evt.key === "Escape") {
+        setShow(false);
+        focusContainer();
+      }
+    };
 
     document.addEventListener("click", docClick);
     document.addEventListener("keydown", docKeyDown);
@@ -119,17 +119,17 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
       document.removeEventListener("keydown", docKeyDown);
       document.removeEventListener("click", docClick);
     };
-  }, [docClick, docKeyDown, show]);
+  }, [show, containerId]);
 
   // When first rendered, focus the first dropdown-item.
-  const itemSelector = `:scope a[data-ccm-container="${idSuffix}"]`;
+  const itemSelector = `:scope a[data-ccm-container="${ccMenuId}"]`;
   useEffect(() => {
     if (!show) return;
     const containerDiv = divRef.current;
     if (containerDiv == null) return;
     const firstItem = containerDiv.querySelector<HTMLElement>(itemSelector);
     firstItem?.focus();
-  }, [show]);
+  }, [show, itemSelector]);
 
   // Handle keypresses into the element with captive context menu:
   //
@@ -181,7 +181,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
   };
 
   const contextValue: ContextT = {
-    idSuffix,
+    ccMenuId,
     containerId,
     menuId,
     show,
@@ -198,7 +198,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
     : {};
 
   return (
-    <Context.Provider value={contextValue}>
+    <Context value={contextValue}>
       <div
         id={containerId}
         className={className}
@@ -214,7 +214,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
       >
         {children}
       </div>
-    </Context.Provider>
+    </Context>
   );
 };
 
@@ -302,7 +302,7 @@ const DropdownItem: React.FC<PropsWithChildren<DropdownItemProps>> = ({
 
   return (
     <Dropdown.Item
-      data-ccm-container={ctx.idSuffix}
+      data-ccm-container={ctx.ccMenuId}
       onClick={onClick}
       onKeyDown={onKeyDown}
       {...rest}

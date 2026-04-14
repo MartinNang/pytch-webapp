@@ -211,26 +211,30 @@ export class ActorOps {
     const tgtIdx = ActorOps.handlerIndexById(actor, targetHandlerId);
     const handlers = actor.handlers;
 
-    let newHandlers: Array<EventHandler> = [];
-    if (tgtIdx === srcIdx) {
-      // Odd, but OK I suppose.
-      newHandlers = handlers;
-    } else if (tgtIdx > srcIdx) {
-      newHandlers = handlers
-        .slice(0, srcIdx)
-        .concat(handlers.slice(srcIdx + 1, tgtIdx + 1));
-      newHandlers.push(handlers[srcIdx]);
-      newHandlers = newHandlers.concat(handlers.slice(tgtIdx + 1));
-    } else if (tgtIdx < srcIdx) {
-      newHandlers = handlers.slice(0, tgtIdx);
-      newHandlers.push(handlers[srcIdx]);
-      newHandlers = newHandlers
-        .concat(handlers.slice(tgtIdx, srcIdx))
-        .concat(handlers.slice(srcIdx + 1));
-    } else {
-      // REALLY should not get here.
-      throw new Error(`${tgtIdx} and ${srcIdx} not ordered`);
-    }
+    const newHandlers = (() => {
+      if (tgtIdx === srcIdx) {
+        // Odd, but OK I suppose.
+        return handlers;
+      } else if (tgtIdx > srcIdx) {
+        let newHandlers = handlers
+          .slice(0, srcIdx)
+          .concat(handlers.slice(srcIdx + 1, tgtIdx + 1));
+        newHandlers.push(handlers[srcIdx]);
+        newHandlers = newHandlers.concat(handlers.slice(tgtIdx + 1));
+        return newHandlers;
+      } else if (tgtIdx < srcIdx) {
+        let newHandlers = handlers.slice(0, tgtIdx);
+        newHandlers.push(handlers[srcIdx]);
+        newHandlers = newHandlers
+          .concat(handlers.slice(tgtIdx, srcIdx))
+          .concat(handlers.slice(srcIdx + 1));
+        return newHandlers;
+      } else {
+        // REALLY should not get here.
+        throw new Error(`${tgtIdx} and ${srcIdx} not ordered`);
+      }
+    })();
+
     actor.handlers = newHandlers;
   }
 

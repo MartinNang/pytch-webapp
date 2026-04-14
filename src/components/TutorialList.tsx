@@ -39,7 +39,7 @@ const TutorialList: React.FC<EmptyProps> = () => {
     if (syncState === SyncState.SyncNotStarted) {
       loadSummaries();
     }
-  }, [syncState, docTitle]);
+  }, [loadSummaries, syncState, docTitle]);
 
   const paneRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {

@@ -115,7 +115,7 @@ export const UpsertHandlerModal = () => {
   const { t } = useTranslation("ide");
   const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("per-method");
-  const prevMode = useRef<HandlerUpsertionMode | null>(null);
+  const prevModeRef = useRef<HandlerUpsertionMode | null>(null);
 
   const { fsmState, isSubmittable } = useJrEditState(
     (s) => s.upsertHatBlockFlow
@@ -171,7 +171,7 @@ export const UpsertHandlerModal = () => {
     };
 
     if (mode === "choosing-key") {
-      prevMode.current = mode;
+      prevModeRef.current = mode;
       return (
         <KeyChoiceModal
           startingKey={keyIfChosen}
@@ -206,11 +206,11 @@ export const UpsertHandlerModal = () => {
     );
 
     const keyPressedOptionDivRefCb = (elt: HTMLDivElement | null) => {
-      if (prevMode.current === "choosing-key" && elt != null) {
+      if (prevModeRef.current === "choosing-key" && elt != null) {
         const dropdownDivs = elt.getElementsByClassName("KeyEditor");
         const mDropdownDiv = dropdownDivs[0] as HTMLDivElement | null;
         mDropdownDiv?.focus();
-        prevMode.current = mode;
+        prevModeRef.current = mode;
       }
     };
 

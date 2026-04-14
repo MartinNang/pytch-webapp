@@ -187,6 +187,7 @@ const OutcomesOfKindList: React.FC<OutcomesOfKindListProps> = ({
       </p>
       <ul>
         {items.map((item, idx) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <li key={idx}>{item}</li>
         ))}
       </ul>

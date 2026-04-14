@@ -59,12 +59,12 @@ const switchTabViaKeyFun: (
 type DiffViewKindSelectorProps = {
   viewKind: DiffViewKind;
   setViewKind: SetViewKindFun;
-  tabSetIdNub: string;
+  tabSetId: string;
 };
 const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
   viewKind,
   setViewKind,
-  tabSetIdNub,
+  tabSetId,
 }) => {
   const { t } = useTranslation("tutorials");
 
@@ -73,7 +73,7 @@ const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
     const isActive = viewKind === thisViewKind;
     const classes = classNames("DiffViewKindOption", { isActive });
     const switchTabViaKey = switchTabViaKeyFun(setViewKind);
-    const ids = tabAndPanelIds(tabSetIdNub, thisViewKind);
+    const ids = tabAndPanelIds(tabSetId, thisViewKind);
     return (
       <li
         className="DiffViewKindOption-container"
@@ -168,6 +168,7 @@ const ScriptDiffView: React.FC<ScriptDiffViewProps> = ({
   const classes = classNames("ScriptDiffView", { isActive });
 
   const rawContent = lines.map((line, idx) => (
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     <ScriptDiffViewLine key={idx} line={line} />
   ));
 
@@ -212,30 +213,30 @@ type ScriptCodeDiffProps = {
 };
 export const ScriptCodeDiff: React.FC<ScriptCodeDiffProps> = ({ richDiff }) => {
   const [viewKind, setViewKind] = useState<DiffViewKind>("bare-old");
-  const tabSetIdNub = useId();
+  const tabSetId = useId();
   return (
     <>
       <div className="code-representations">
         <ScriptDiffView
           thisViewKind="bare-old"
           activeViewKind={viewKind}
-          tabSetIdNub={tabSetIdNub}
+          tabSetIdNub={tabSetId}
           lines={richDiff.viewBareOld()}
         />
         <ScriptDiffView
           thisViewKind="old-diff"
           activeViewKind={viewKind}
-          tabSetIdNub={tabSetIdNub}
+          tabSetIdNub={tabSetId}
           lines={richDiff.viewOldDiff()}
         />
         <ScriptDiffView
           thisViewKind="new-diff"
           activeViewKind={viewKind}
-          tabSetIdNub={tabSetIdNub}
+          tabSetIdNub={tabSetId}
           lines={richDiff.viewNewDiff()}
         />
       </div>
-      <DiffViewKindSelector {...{ viewKind, setViewKind, tabSetIdNub }} />
+      <DiffViewKindSelector {...{ viewKind, setViewKind, tabSetId }} />
     </>
   );
 };
