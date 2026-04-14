@@ -109,18 +109,18 @@ function taskInteractionKind(
 
 export const Chapter: React.FC<EmptyProps> = () => {
   const { t } = useTranslation("tutorials");
-  const lastRenderedChapter = useRef<number>(-1);
+  const lastRenderedChapterRef = useRef<number>(-1);
 
   const state = useMappedLinkedJrTutorial(mapTutorial, eqState);
   const allowRandomChapterAccess = useStoreState(
     (state) => state.tutorialCollection.allowRandomChapterAccess
   );
 
-  if (state.chapterIndex !== lastRenderedChapter.current) {
-    if (lastRenderedChapter.current !== -1) {
+  if (state.chapterIndex !== lastRenderedChapterRef.current) {
+    if (lastRenderedChapterRef.current !== -1) {
       setTimeout(focusChapterContent);
     }
-    lastRenderedChapter.current = state.chapterIndex;
+    lastRenderedChapterRef.current = state.chapterIndex;
   }
 
   let body: Array<React.JSX.Element> = [];

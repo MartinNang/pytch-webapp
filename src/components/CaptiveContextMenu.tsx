@@ -16,7 +16,7 @@ import { handleMovementKeys } from "./CaptiveContextMenu-utils";
 /** Context for internal use by dropdown items within the container.
  * Allows items to, e.g., dismiss the dropdown menu. */
 type ContextT = {
-  idSuffix: string;
+  ccMenuId: string;
   containerId: string;
   menuId: string;
   show: boolean;
@@ -68,9 +68,9 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
 
   const divRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
-  const idSuffix = useId();
-  const containerId = `captive-context-menu-container${idSuffix}`;
-  const menuId = `captive-context-menu${idSuffix}`;
+  const ccMenuId = useId();
+  const containerId = `captive-context-menu-container${ccMenuId}`;
+  const menuId = `captive-context-menu${ccMenuId}`;
 
   const toggleShow = () => setShow(!show);
 
@@ -122,7 +122,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
   }, [docClick, docKeyDown, show]);
 
   // When first rendered, focus the first dropdown-item.
-  const itemSelector = `:scope a[data-ccm-container="${idSuffix}"]`;
+  const itemSelector = `:scope a[data-ccm-container="${ccMenuId}"]`;
   useEffect(() => {
     if (!show) return;
     const containerDiv = divRef.current;
@@ -181,7 +181,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
   };
 
   const contextValue: ContextT = {
-    idSuffix,
+    ccMenuId,
     containerId,
     menuId,
     show,
@@ -302,7 +302,7 @@ const DropdownItem: React.FC<PropsWithChildren<DropdownItemProps>> = ({
 
   return (
     <Dropdown.Item
-      data-ccm-container={ctx.idSuffix}
+      data-ccm-container={ctx.ccMenuId}
       onClick={onClick}
       onKeyDown={onKeyDown}
       {...rest}

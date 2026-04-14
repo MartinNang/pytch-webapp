@@ -59,16 +59,16 @@ export const CopyProjectModal = () => {
   const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.saveProjectAsFlow);
   const { setNameOfCopy } = useFlowActions((f) => f.saveProjectAsFlow);
-  const focusRequired = useRef<boolean>(true);
+  const focusRequiredRef = useRef<boolean>(true);
 
   if (fsmState.kind === "idle") {
-    focusRequired.current = true;
+    focusRequiredRef.current = true;
   }
 
   const maybeFocusTextInput = (elt: HTMLInputElement | null) => {
-    if (elt != null && focusRequired.current) {
+    if (elt != null && focusRequiredRef.current) {
       setTimeout(() => elt.focus());
-      focusRequired.current = false;
+      focusRequiredRef.current = false;
     }
   };
 

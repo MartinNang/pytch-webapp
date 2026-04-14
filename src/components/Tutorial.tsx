@@ -305,7 +305,7 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
 };
 
 const TutorialChapter = () => {
-  const lastRenderedChapter = useRef<number>(-1);
+  const lastRenderedChapterRef = useRef<number>(-1);
 
   const maybeTrackedTutorial = useStoreState(
     (state) => state.activeProject.project?.trackedTutorial
@@ -330,11 +330,11 @@ const TutorialChapter = () => {
   const chapterIndex = Math.min(rawChapterIndex, maxValidIndex);
   const activeChapter = allChapters[chapterIndex];
 
-  if (chapterIndex !== lastRenderedChapter.current) {
-    if (lastRenderedChapter.current !== -1) {
+  if (chapterIndex !== lastRenderedChapterRef.current) {
+    if (lastRenderedChapterRef.current !== -1) {
       setTimeout(focusChapterContent);
     }
-    lastRenderedChapter.current = chapterIndex;
+    lastRenderedChapterRef.current = chapterIndex;
   }
 
   const navigateToChapterFun = (chapterIndex: number) => () =>
