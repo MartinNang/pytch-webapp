@@ -16,11 +16,9 @@ import { useStoreState } from "../../../store";
 // (reasonably enough) renders poorly on Safari.
 type ToCEntryProps = { key: React.Key; title: JrTutorialChapterTitle };
 const ToCEntry: React.FC<ToCEntryProps> = (props) => {
-  const liRef = React.useRef<HTMLLIElement>(null);
-
-  useEffect(() => {
-    let liElt = liRef.current;
+  const populate = (liElt: HTMLLIElement | null) => {
     if (liElt == null) return;
+    if (liElt.dataset.contentPopulated === "yes") return;
 
     if (props.title.kind !== "html") {
       throw new Error('expecting "html" title in ToC');
@@ -30,12 +28,10 @@ const ToCEntry: React.FC<ToCEntryProps> = (props) => {
       liElt.appendChild(node.cloneNode(true));
     });
 
-    return () => {
-      liElt.innerHTML = "";
-    };
-  }, [liRef]);
+    liElt.dataset.contentPopulated = "yes";
+  };
 
-  return <li ref={liRef} />;
+  return <li ref={populate} />;
 };
 
 const LessonTableOfContents: React.FC<{ key: React.Key }> = () => {
