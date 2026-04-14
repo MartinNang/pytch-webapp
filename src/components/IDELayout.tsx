@@ -44,7 +44,8 @@ export const IDELayout: React.FC<EmptyProps> = () => {
   useActionAsEffect((actions) => actions.reloadServer.maybeConnect);
 
   // Even though we refer to activityContentFullStateLabel, we only want
-  // to set the bookmark on initial render; hence empty deps array.
+  // to set the bookmark on initial render; hence omitting
+  // activityContentFullStateLabel from deps array.
   useEffect(() => {
     // TODO: The facts about which activities are present and which one
     // is active when booted are spread across the code.  Here, and in
@@ -72,7 +73,10 @@ export const IDELayout: React.FC<EmptyProps> = () => {
     })();
 
     focusContext.bookmarkItemByKeyAndIndex("ActivityBar", defaultBookmark);
-  }, []);
+  },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+    [focusContext]
+  );
 
   if (isFullScreen) {
     return <FullScreenLayout />;

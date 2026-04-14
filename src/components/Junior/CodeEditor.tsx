@@ -98,7 +98,13 @@ const ScriptsEditor = () => {
     return () => {
       conjoinedResizeObserver.disconnect();
     };
-  }, [handlerIds]);
+  },
+  // This is all quite fragile, so leave deps array alone until we can
+  // look again in more depth.
+  //
+  // eslint-disable-next-line @eslint-react/exhaustive-deps
+  [handlerIds]
+  );
 
   const nHandlers = handlerIds.length;
 
