@@ -288,7 +288,8 @@ context("Create project from specimen", () => {
 
     // Create and open new project from specimen.
     cy.visit(kFlatLessonUrl);
-    cy.get(".activity-bar-tabs > *").should("have.length", 3);
+    // help-sidebar, specimen-info, keynav-help-sidebar, language-choice
+    cy.get(".activity-bar-tabs > *").should("have.length", 4);
     cy.get(".activity-content-expanded-specimen .specimen-name").contains(
       "Hello World Specimen"
     );
@@ -299,7 +300,8 @@ context("Create project from specimen", () => {
     cy.contains("My projects").click();
     cy.pytchOpenProject("Test seed project");
     cy.get(".activity-content-expanded-helpsidebar");
-    cy.get(".activity-bar-tabs > *").should("have.length", 2);
+    // help-sidebar, keynav-help-sidebar, language-choice
+    cy.get(".activity-bar-tabs > *").should("have.length", 3);
   });
 
   it("shows linked-content activity pane (per-method)", () => {
