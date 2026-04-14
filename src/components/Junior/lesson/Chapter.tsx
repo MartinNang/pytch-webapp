@@ -116,7 +116,9 @@ export const Chapter: React.FC<EmptyProps> = () => {
     (state) => state.tutorialCollection.allowRandomChapterAccess
   );
 
-  if (state.chapterIndex !== lastRenderedChapterRef.current) {
+  const chapterIndex = state.chapterIndex;
+
+  if (chapterIndex !== lastRenderedChapterRef.current) {
     if (lastRenderedChapterRef.current !== -1) {
       setTimeout(focusChapterContent);
     }
@@ -134,7 +136,7 @@ export const Chapter: React.FC<EmptyProps> = () => {
       continue;
     }
 
-    const keyPath = `${state.chapterIndex}/${chunkIdx}`;
+    const keyPath = `${chapterIndex}/${chunkIdx}`;
     switch (chunk.kind) {
       case "element":
         body.push(<RawOrCodeSnippet key={keyPath} element={chunk.element} />);
@@ -163,13 +165,13 @@ export const Chapter: React.FC<EmptyProps> = () => {
     ++chunkIdx;
   }
 
-  if (state.chapterIndex === 0) {
-    const key = `${state.chapterIndex}/toc`;
+  if (chapterIndex === 0) {
+    const key = `${chapterIndex}/toc`;
     body.push(<LessonTableOfContents key={key} />);
   }
 
   if (!state.allChapterTasksDone && !allowRandomChapterAccess) {
-    const key = `${state.chapterIndex}/hint`;
+    const key = `${chapterIndex}/hint`;
     body.push(
       <div key={key} className="hint-do-task-to-see-more">
         {t("chapter.hint-do-task")}
