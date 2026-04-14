@@ -377,6 +377,19 @@ export const useHelpHatBlockDrop = (actorId: Uuid) => {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+export const useI18nResolvedLanguage = (): string => {
+  const { i18n } = useTranslation();
+  const resolvedLng = i18n.resolvedLanguage;
+  if (resolvedLng == null) {
+    console.warn("I18n: no resolved language");
+    return "unknown";
+  } else {
+    return resolvedLng;
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 export const useLaunchUpsertHatBlockFlow = (
   actorKind: ActorKind,
   operation: HandlerUpsertionOperation
