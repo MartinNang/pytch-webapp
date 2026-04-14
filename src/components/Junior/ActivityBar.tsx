@@ -81,12 +81,12 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
   );
 
   const tabs: Array<ActivityBarTabKey> = hasLinkedLesson
-    ? ["helpsidebar", "lesson", "keynavhelp"]
+    ? ["helpsidebar", "lesson", "keynavhelp", "i18n"]
     : hasLinkedSpecimen
-    ? ["helpsidebar", "specimen", "keynavhelp"]
+    ? ["helpsidebar", "specimen", "keynavhelp", "i18n"]
     : hasLinkedTutorial
-    ? ["helpsidebar", "tutorial", "keynavhelp"]
-    : ["helpsidebar", "keynavhelp"];
+    ? ["helpsidebar", "tutorial", "keynavhelp", "i18n"]
+    : ["helpsidebar", "keynavhelp", "i18n"];
 
   const focusGroupExtraClass =
     activityContentState.kind === "collapsed" ? "gfs__help__container" : "";
