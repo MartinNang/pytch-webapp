@@ -83,12 +83,13 @@ context("Global focus steering shortcuts", () => {
       assertFocus("activity-tab", "helpsidebar");
 
       realPress("End");
-      assertFocus("activity-tab", "keynavhelp");
+      assertFocus("activity-tab", "i18n");
       invokeFocusShortcut("a");
       assertFocus("flat-asset", 4);
       invokeFocusShortcut("h");
-      assertFocus("activity-tab", "keynavhelp");
+      assertFocus("activity-tab", "i18n");
 
+      realPress("ArrowUp");
       realPress("Enter");
       realPress("Tab");
       assertFocus("keynav-help");
@@ -198,12 +199,13 @@ context("Global focus steering shortcuts", () => {
       assertFocus("activity-tab", "helpsidebar");
 
       realPress("End");
-      assertFocus("activity-tab", "keynavhelp");
+      assertFocus("activity-tab", "i18n");
       invokeFocusShortcut("c");
       assertFocus("add-script-button");
       invokeFocusShortcut("h");
-      assertFocus("activity-tab", "keynavhelp");
+      assertFocus("activity-tab", "i18n");
 
+      realPress("ArrowUp");
       realPress("Enter");
       realPress("Tab");
       assertFocus("keynav-help");
