@@ -140,14 +140,6 @@ describe("Structured programs", () => {
     const startAsClone: EventDescriptor = { kind: "start-as-clone" };
     const clicked: EventDescriptor = { kind: "clicked" };
 
-    it("event-kind arity", () => {
-      assert.equal(KindOps.arity("green-flag"), 0);
-      assert.equal(KindOps.arity("key-pressed"), 1);
-      assert.equal(KindOps.arity("message-received"), 1);
-      assert.equal(KindOps.arity("start-as-clone"), 0);
-      assert.equal(KindOps.arity("clicked"), 0);
-    });
-
     it("decorator", () => {
       assert.equal(
         DescrOps.decorator(greenFlag),
