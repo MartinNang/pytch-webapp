@@ -73,6 +73,9 @@ const Key: React.FC<{ keyDescr: KeyDescriptor }> = ({ keyDescr }) => {
 
 const TextContent: React.FC<{ markdown: string }> = ({ markdown }) => {
   const html = markedParse(markdown);
+
+  // We control the inputs so this is OK.
+  // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
   return <div dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
