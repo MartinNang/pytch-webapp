@@ -16,8 +16,6 @@
  * be kept in sync.
  */
 
-/* eslint-disable no-undef */
-
 ace.define(
   "ace/theme/pytch-css",
   ["require", "exports", "module"],
