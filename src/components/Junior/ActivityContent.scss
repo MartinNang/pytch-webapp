@@ -3,3 +3,11 @@
 // individual rules and files.
 
 @import "../../pytch-variables.scss";
+
+.ActivityContent .container.help-text {
+  h1 {
+    color: $pytch-colour-main-blue-darkened;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+}
