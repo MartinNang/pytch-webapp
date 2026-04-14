@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, ForwardRefRenderFunction } from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { assertNever } from "../utils";
 import {
@@ -13,11 +13,14 @@ type CompoundTextInputProps = {
   formatSpecifier: FormatSpecifier;
   onNewUiFragmentValue: (uiFragmentValue: string) => void;
   onEnterKey: () => void;
+  ref: React.Ref<HTMLInputElement>;
 };
-const CompoundTextInput_: ForwardRefRenderFunction<
-  HTMLInputElement,
-  CompoundTextInputProps
-> = ({ formatSpecifier, onNewUiFragmentValue, onEnterKey }, ref) => {
+export const CompoundTextInput: React.FC<CompoundTextInputProps> = ({
+  formatSpecifier,
+  onNewUiFragmentValue,
+  onEnterKey,
+  ref,
+}) => {
   const { i18n } = useTranslation();
 
   const uiFragment = uniqueUserInputFragment(formatSpecifier);
@@ -78,5 +81,3 @@ const CompoundTextInput_: ForwardRefRenderFunction<
     </Form>
   );
 };
-
-export const CompoundTextInput = forwardRef(CompoundTextInput_);
