@@ -92,5 +92,7 @@
   "activity-bar.tooltip.tutorial": "Tutorial content",
   "activity-bar.tooltip.specimen": "Lesson information",
 
+  "language-chooser.header": "Language",
+
   "$RUBBISH$": ""
 }
