@@ -38,6 +38,7 @@ const NotableChangeToast: React.FC<NotableChangeToastProps> = ({
       </Toast.Header>
       <Toast.Body>
         {description.body.map((fragment, idx) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <p key={idx}>{fragment}</p>
         ))}
       </Toast.Body>

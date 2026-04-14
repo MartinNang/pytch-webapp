@@ -168,6 +168,7 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
     if (d.kind === "ellipsis") {
       return (
         <div
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           key={`ellipsis-${displayedIdx}`}
           className="progress-node-no-hover"
         />
@@ -209,6 +210,7 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
     return (
       <div
         ref={forceTabIndex}
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         key={`labelled-${displayedIdx}`}
         data-chapter-index={`${d.index}`}
         className={classes}
@@ -314,6 +316,7 @@ const GenericProgressTrail: React.FC<GenericProgressTrailProps> = ({
   const nodeBackgrounds = nodeDescriptors.map((d, idx) => {
     const isActive = d.kind !== "ellipsis" && d.index === activeChapterIndex;
     const classes = classNames("progress-node-background", { isActive });
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     return <div key={idx} className={classes} />;
   });
 

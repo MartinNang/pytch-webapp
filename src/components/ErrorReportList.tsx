@@ -360,6 +360,7 @@ export const ErrorReportList: React.FC<EmptyProps> = () => {
       <p className="error-pane-intro">{t(`error.pane-intro.${context}`)}</p>
       <ol className="ErrorReportList">
         {errors.map((errorReport, index) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <ErrorReport key={index} errorReport={errorReport} />
         ))}
       </ol>

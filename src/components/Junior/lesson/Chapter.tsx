@@ -48,6 +48,7 @@ const LessonTableOfContents: React.FC<{ key: React.Key }> = () => {
       <h1 className="title">{t("chapter.toc-title")}</h1>
       <ol className="toc-contents">
         {realChapters.map((chapter, idx) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <ToCEntry key={idx} title={chapter.title} />
         ))}
       </ol>

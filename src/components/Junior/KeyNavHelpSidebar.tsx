@@ -22,9 +22,11 @@ function joinedList(
 ): React.JSX.Element {
   let pieces: Array<React.JSX.Element> = [];
   keyDescrs.forEach((keyDescr, idx) => {
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     const keyElt = <Key key={idx} keyDescr={keyDescr} />;
     pieces.push(
       idx > 0 ? (
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         <div key={idx} className="d-inline-block">
           <span className="key-conj px-2">{joinText}</span>
           {keyElt}
@@ -105,6 +107,7 @@ const SectionEntryContent: React.FC<{ entry: SectionEntry }> = ({ entry }) => {
 const SectionEntriesContent: React.FC<{
   entries: Array<SectionEntry>;
 }> = ({ entries }) =>
+  // eslint-disable-next-line @eslint-react/no-array-index-key
   entries.map((entry, idx) => <SectionEntryContent key={idx} entry={entry} />);
 
 const SectionContent: React.FC<{ section: Section }> = ({ section }) => {
@@ -143,6 +146,7 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
       <h1>{t("key-nav-help.title")}</h1>
       <p>{t("key-nav-help.intro")}</p>
       {relevantSections.map((section, idx) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         <SectionContent key={idx} section={section} />
       ))}
     </Container>

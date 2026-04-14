@@ -76,6 +76,7 @@ const HelpStage: React.FC<HelpStageProps> = ({
   );
 
   const content = stage.fragments.map((fragment, idx) => (
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     <HelpStageFragment key={idx} fragment={fragment} />
   ));
   return (

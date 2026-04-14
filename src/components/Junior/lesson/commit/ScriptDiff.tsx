@@ -168,6 +168,7 @@ const ScriptDiffView: React.FC<ScriptDiffViewProps> = ({
   const classes = classNames("ScriptDiffView", { isActive });
 
   const rawContent = lines.map((line, idx) => (
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     <ScriptDiffViewLine key={idx} line={line} />
   ));
 

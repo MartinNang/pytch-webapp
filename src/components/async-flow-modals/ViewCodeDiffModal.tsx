@@ -45,6 +45,7 @@ const SideBySideDiffContribution: React.FC<SideBySideDiffContributionProps> = ({
         // Ensure distinct objects for the two elements:
         const tdA = <PreTableDatum content={line} />;
         const tdB = <PreTableDatum content={line} />;
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         return <DiffTableRow key={idx} a={tdA} b={tdB} />;
       });
       return <tbody className="diff-hunk context">{trElts}</tbody>;
@@ -52,6 +53,7 @@ const SideBySideDiffContribution: React.FC<SideBySideDiffContributionProps> = ({
     case "add": {
       const trElts = change.bLines.map((line, idx) => {
         const td = <PreTableDatum content={line} />;
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         return <DiffTableRow key={idx} b={td} />;
       });
       return <tbody className="diff-hunk add">{trElts}</tbody>;
@@ -59,6 +61,7 @@ const SideBySideDiffContribution: React.FC<SideBySideDiffContributionProps> = ({
     case "del": {
       const trElts = change.aLines.map((line, idx) => {
         const td = <PreTableDatum content={line} />;
+        // eslint-disable-next-line @eslint-react/no-array-index-key
         return <DiffTableRow key={idx} a={td} />;
       });
       return <tbody className="diff-hunk del">{trElts}</tbody>;
@@ -80,6 +83,7 @@ const SideBySideDiff: React.FC<SideBySideDiffProps> = ({ changes }) => {
           </tr>
         </tbody>
         {changes.map((ch, i) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key
           <SideBySideDiffContribution key={i} change={ch} />
         ))}
       </table>

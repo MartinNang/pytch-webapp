@@ -256,11 +256,13 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
   const patchDivs = tableElts.map((table, idx) => {
     showLeadingSpaces(table);
     insertAddAndDelSymbols(table);
+    // eslint-disable-next-line @eslint-react/no-array-index-key
     return <RawElement key={idx} className="patch" element={table} />;
   });
 
   const contentDivs = patchDivs
     .map((div, idx) => [
+      // eslint-disable-next-line @eslint-react/no-array-index-key
       ...(idx > 0 ? [<VerticalEllipsis key={`ellip-${idx}`} />] : []),
       [div],
     ])
@@ -367,6 +369,7 @@ const TutorialChapter = () => {
       <div className="TutorialChapter-container">
         <div className="TutorialChapter" tabIndex={-1}>
           {contentBodyElements.map((element, idx) => (
+            // eslint-disable-next-line @eslint-react/no-array-index-key
             <TutorialElement key={idx} element={element} />
           ))}
           <ChapterNavigationButtons {...navigationButtonsProps} />
