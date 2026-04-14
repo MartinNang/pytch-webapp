@@ -238,7 +238,7 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
         focusContext.bookmarkItemByKeyAndIndex(kFocusGroupKey, mEltIndex);
       });
     }
-  }, [activeChapterIndex]);
+  }, [focusContext, nodeDescriptors, activeChapterIndex]);
 
   // Handle the sequence of events where the user:
   //
@@ -261,7 +261,7 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
       kFocusGroupKey,
       (elt) => mDataAttrIntValue(elt, "chapterIndex") === activeChapterIndex
     );
-  }, [maxJumpableChapterIndex]);
+  }, [focusContext, activeChapterIndex, maxJumpableChapterIndex]);
 
   function onActivate(elt: HTMLElement) {
     const mChapterIndex = mDataAttrIntValue(elt, "chapterIndex");

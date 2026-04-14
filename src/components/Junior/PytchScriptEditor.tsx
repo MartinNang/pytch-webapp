@@ -73,7 +73,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
 
     inputDiv.addEventListener("keydown", scroll);
     return () => inputDiv.removeEventListener("keydown", scroll);
-  }, [aceParentRef]);
+  }, [handlerId, aceParentRef]);
 
   useEffect(() => {
     const aceParentDiv = aceParentRef.current;
@@ -117,7 +117,7 @@ export const PytchScriptEditor: React.FC<PytchScriptEditorProps> = ({
     });
 
     return disconnectObserver;
-  }, [aceParentRef, conjoinedResizeObserver]);
+  }, [handlerId, aceParentRef, conjoinedResizeObserver]);
 
   const classes = classNames(
     "PytchScriptEditor",
