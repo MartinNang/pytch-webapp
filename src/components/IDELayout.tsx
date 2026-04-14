@@ -60,7 +60,10 @@ export const IDELayout: React.FC<EmptyProps> = () => {
         case "expanded-tutorial":
           return 1;
         case "expanded-keynavhelp":
-          console.warn("should not have expanded-keynavhelp on first render");
+        case "expanded-i18n":
+          console.warn(
+            "should not have expanded-(keynavhelp|i18n) on first render"
+          );
           // But return something non-erroneous anyway.
           return 0;
         default:
