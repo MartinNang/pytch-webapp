@@ -311,7 +311,7 @@ describe("Structured programs", () => {
 
         const updatedId = StructuredProgramOps.upsertHandler(program, {
           actorId: bananaId,
-          action: { kind: "update", handlerId, previousEvent: null },
+          action: { kind: "update", handlerId, previousEvent: eventDescriptor },
           eventDescriptor: { kind: "green-flag" },
         });
         assert.equal(updatedId, handlerId);
