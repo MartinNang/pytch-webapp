@@ -23,6 +23,7 @@ export type InfoPanelState = "collapsed" | "expanded";
 
 export type ActivityBarTabKey =
   | "helpsidebar"
+  | "i18n"
   | "keynavhelp"
   | "lesson"
   | "specimen"
