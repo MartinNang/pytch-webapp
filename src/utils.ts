@@ -128,22 +128,6 @@ export function onChangeFun<EltType extends HTMLElement & WithStringValue>(
   return (e: React.ChangeEvent<EltType>) => setFun(e.target.value);
 }
 
-export function focusOrBlurFun<Elt extends HTMLElement>(
-  elementRef: React.RefObject<Elt | null>,
-  isActive: boolean,
-  isInteractable: boolean
-) {
-  if (!isActive)
-    return () => {
-      /* Do nothing. */
-    };
-
-  const element = () =>
-    failIfNull(elementRef.current, "isActive but elementRef null");
-
-  return isInteractable ? () => element().focus() : () => element().blur();
-}
-
 export function focusOrBlurElementFun(
   isActive: boolean,
   isInteractable: boolean

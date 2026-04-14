@@ -459,29 +459,7 @@ export function settleFunctions<RunStateT>(
 }
 
 ////////////////////////////////////////////////////////////////////////
-// Helper for passing to useEffect() to give focus to an input element
-
-export function flowFocusOrBlurFun<Elt extends HTMLElement, RunStateT>(
-  elementRef: React.RefObject<Elt | null>,
-  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
-) {
-  return () => {
-    if (!isActive(fsmState)) {
-      return;
-    }
-
-    const element = elementRef.current;
-    if (element == null) {
-      return;
-    }
-
-    if (isInteractable(fsmState)) {
-      element.focus();
-    } else {
-      element.blur();
-    }
-  };
-}
+// Ref callback to give focus to an input element
 
 export function focusOrBlurElementFun<RunStateT>(
   fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
