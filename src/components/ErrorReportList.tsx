@@ -79,7 +79,7 @@ export type ErrorReportComponents = {
   schedulerStepErrorIntro: SchedulerStepErrorIntroComponent;
 };
 
-export const componentsContext = createContext<ErrorReportComponents>({
+export const ComponentsContext = createContext<ErrorReportComponents>({
   userCodeErrorLocation: UserCodeErrorLocation,
   schedulerStepErrorIntro: SchedulerStepErrorIntro,
 });
@@ -117,7 +117,7 @@ const ErrorLocation: React.FC<ErrorLocationProps> = ({
   isUserCode,
 }) => {
   const userCodeErrorLocationComponent =
-    useContext(componentsContext).userCodeErrorLocation;
+    useContext(ComponentsContext).userCodeErrorLocation;
 
   return isUserCode ? (
     createElement(userCodeErrorLocationComponent, {
@@ -265,7 +265,7 @@ type ErrorIntroProps = {
 const ErrorIntro: React.FC<ErrorIntroProps> = ({ errorContext }) => {
   const { t } = useTranslation("vm");
   const schedulerStepErrorIntroComponent =
-    useContext(componentsContext).schedulerStepErrorIntro;
+    useContext(ComponentsContext).schedulerStepErrorIntro;
 
   switch (errorContext.kind) {
     case "build":
