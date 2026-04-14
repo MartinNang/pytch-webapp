@@ -19,6 +19,7 @@ import { FocusGroupContainer } from "../FocusGroupContainer";
 const iconFromTabKey: Record<ActivityBarTabKey, IconName> = {
   helpsidebar: "question-circle",
   keynavhelp: "keyboard",
+  i18n: "language",
   lesson: "book",
   tutorial: "book",
   specimen: "book",
