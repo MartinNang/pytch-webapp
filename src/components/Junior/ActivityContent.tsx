@@ -7,6 +7,8 @@ import { HelpSidebar } from "../HelpSidebar";
 import { Tutorial } from "../Tutorial";
 import { KeyNavHelpSidebar } from "./KeyNavHelpSidebar";
 
+import "./ActivityContent.scss";
+
 export const ActivityContent: React.FC<EmptyProps> = () => {
   const s = useJrEditState((s) => s.activityContentState);
 

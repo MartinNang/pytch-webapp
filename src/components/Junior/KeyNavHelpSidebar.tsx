@@ -139,7 +139,7 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
   const relevantSections = content.sections.filter(sectionIsRelevant);
 
   return (
-    <Container>
+    <Container className="help-text">
       <h1>{t("key-nav-help.title")}</h1>
       <p>{t("key-nav-help.intro")}</p>
       {relevantSections.map((section, idx) => (

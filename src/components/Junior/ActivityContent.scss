@@ -1,0 +1,13 @@
+// Should complete this refactoring.  Some of the common styling has
+// been brought across to this file, but other bits of styling remain in
+// individual rules and files.
+
+@import "../../pytch-variables.scss";
+
+.ActivityContent .container.help-text {
+  h1 {
+    color: $pytch-colour-main-blue-darkened;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+}
