@@ -86,10 +86,13 @@
   "help-sidebar.stage-no-motion": "The Stage has no motion methods.",
 
   "activity-bar.tooltip.helpsidebar": "Scratch/Python help",
+  "activity-bar.tooltip.i18n": "Choose language",
   "activity-bar.tooltip.keynavhelp": "Keyboard navigation help",
   "activity-bar.tooltip.lesson": "Lesson content",
   "activity-bar.tooltip.tutorial": "Tutorial content",
   "activity-bar.tooltip.specimen": "Lesson information",
+
+  "language-chooser.header": "Language",
 
   "$RUBBISH$": ""
 }

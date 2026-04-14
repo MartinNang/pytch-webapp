@@ -35,12 +35,13 @@ context("Kbd-nav of activity bar", () => {
     assertFocusAfterKey("ArrowDown", "tutorial");
     assertFocusAfterKey("ArrowDown", "keynavhelp");
     assertFocusAfterKey("ArrowUp", "tutorial");
-    assertFocusAfterKey("End", "keynavhelp");
+    assertFocusAfterKey("End", "i18n");
     assertFocusAfterKey("Home", "helpsidebar");
     assertFocusAfterKey("Home", "helpsidebar");
     assertFocusAfterKey("ArrowRight", "tutorial");
     assertFocusAfterKey("ArrowRight", "keynavhelp");
-    assertFocusAfterKey("ArrowRight", "keynavhelp");
+    assertFocusAfterKey("ArrowRight", "i18n");
+    assertFocusAfterKey("ArrowLeft", "keynavhelp");
     assertFocusAfterKey("ArrowLeft", "tutorial");
     assertFocusAfterKey("ArrowLeft", "helpsidebar");
     assertFocusAfterKey("ArrowRight", "tutorial");
@@ -63,7 +64,8 @@ context("Kbd-nav of activity bar", () => {
     assertActivityAfterEnter(null);
     assertActivityAfterEnter("HelpSidebar");
 
-    assertFocusAfterKey("End", "keynavhelp");
+    assertFocusAfterKey("End", "i18n");
+    assertFocusAfterKey("ArrowLeft", "keynavhelp");
     assertActivityAfterEnter("KeyNavHelpSidebar");
     assertActivityAfterEnter(null);
     assertActivityAfterEnter("KeyNavHelpSidebar");

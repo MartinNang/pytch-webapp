@@ -6,6 +6,7 @@ import { WidthMonitor } from "./WidthMonitor";
 import { HelpSidebar } from "../HelpSidebar";
 import { Tutorial } from "../Tutorial";
 import { KeyNavHelpSidebar } from "./KeyNavHelpSidebar";
+import { LanguageChooser } from "./LanguageChooser";
 
 import "./ActivityContent.scss";
 
@@ -27,6 +28,8 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
         );
       case "keynavhelp":
         return <KeyNavHelpSidebar />;
+      case "i18n":
+        return <LanguageChooser />;
       case "lesson":
       case "specimen":
         // This is a bit of a fudge.  We treat these both as "lesson"

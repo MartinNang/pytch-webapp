@@ -130,8 +130,8 @@ context("Navigation of per-method lesson", () => {
     assertJrTutChapterNumber(3);
     cy.get('.LearnerTask[data-task-index="6"][data-task-kind="current"]');
 
-    // help-sidebar, lesson, keynav-help-sidebar
-    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 3);
+    // help-sidebar, lesson, keynav-help-sidebar, language-choice
+    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 4);
   });
 
   it("obeys sever-link setting", () => {
@@ -145,8 +145,8 @@ context("Navigation of per-method lesson", () => {
     cy.title().should("match", /Pytch: Copy of/);
     cy.get(".Junior-LessonContent").should("not.exist");
 
-    // help-sidebar, keynav-help-sidebar
-    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 2);
+    // help-sidebar, keynav-help-sidebar, language-choice
+    cy.get(".ActivityBar li.ActivityBarTab").should("have.length", 3);
   });
 
   it(

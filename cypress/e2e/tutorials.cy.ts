@@ -79,7 +79,8 @@ context("Demo of a tutorial", () => {
   });
 
   it("creates project and launches IDE", () => {
-    cy.get(".ActivityBar .ActivityBarTab").should("have.length", 2);
+    // help-sidebar, keynav-help-sidebar, language-choice
+    cy.get(".ActivityBar .ActivityBarTab").should("have.length", 3);
     assertInIDE("flat");
   });
 

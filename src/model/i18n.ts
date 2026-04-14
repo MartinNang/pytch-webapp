@@ -7,6 +7,11 @@ import { propSetterAction } from "../utils";
 import { pathWithinApp } from "../env-utils";
 import { defaultNS } from "./i18n/core-types";
 
+export const supportedLanguages = [
+  { lngCode: "en", name: "English" },
+  // Coming soon: { lngCode: "ga", name: "Gaeilge" },
+];
+
 // "Slice action" / "slice async thunk" types, forward-referencing the
 // model slice type I18nContextState.
 
