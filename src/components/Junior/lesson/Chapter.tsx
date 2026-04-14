@@ -118,12 +118,17 @@ export const Chapter: React.FC<EmptyProps> = () => {
 
   const chapterIndex = state.chapterIndex;
 
-  if (chapterIndex !== lastRenderedChapterRef.current) {
-    if (lastRenderedChapterRef.current !== -1) {
-      setTimeout(focusChapterContent);
+  useEffect(() => {
+    if (chapterIndex !== lastRenderedChapterRef.current) {
+      let cleanup = () => {};
+      if (lastRenderedChapterRef.current !== -1) {
+        const timeoutId = setTimeout(focusChapterContent);
+        cleanup = () => clearTimeout(timeoutId);
+      }
+      lastRenderedChapterRef.current = chapterIndex;
+      return cleanup;
     }
-    lastRenderedChapterRef.current = state.chapterIndex;
-  }
+  }, [chapterIndex]);
 
   let body: Array<React.JSX.Element> = [];
   let chunkIdx = 0;

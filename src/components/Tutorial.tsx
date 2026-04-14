@@ -1,4 +1,4 @@
-import React, { ClipboardEventHandler, useRef } from "react";
+import React, { ClipboardEventHandler, useEffect, useRef } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
@@ -330,12 +330,17 @@ const TutorialChapter = () => {
   const chapterIndex = Math.min(rawChapterIndex, maxValidIndex);
   const activeChapter = allChapters[chapterIndex];
 
-  if (chapterIndex !== lastRenderedChapterRef.current) {
-    if (lastRenderedChapterRef.current !== -1) {
-      setTimeout(focusChapterContent);
+  useEffect(() => {
+    if (chapterIndex !== lastRenderedChapterRef.current) {
+      let cleanup = () => {};
+      if (lastRenderedChapterRef.current !== -1) {
+        const timeoutId = setTimeout(focusChapterContent);
+        cleanup = () => clearTimeout(timeoutId);
+      }
+      lastRenderedChapterRef.current = chapterIndex;
+      return cleanup;
     }
-    lastRenderedChapterRef.current = chapterIndex;
-  }
+  }, [chapterIndex]);
 
   const navigateToChapterFun = (chapterIndex: number) => () =>
     navigateToChapter(chapterIndex);
