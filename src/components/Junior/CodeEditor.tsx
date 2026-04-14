@@ -91,19 +91,20 @@ const ScriptsEditor = () => {
 
   const conjoinedResizeObserver = new ConjoinedResizeObserver(handlerIds);
 
-  useEffect(() => {
-    // Purge map entries for handlers not in this instantiation of editor.
-    aceControllerMap.deleteExcept(handlerIds);
+  useEffect(
+    () => {
+      // Purge map entries for handlers not in this instantiation of editor.
+      aceControllerMap.deleteExcept(handlerIds);
 
-    return () => {
-      conjoinedResizeObserver.disconnect();
-    };
-  },
-  // This is all quite fragile, so leave deps array alone until we can
-  // look again in more depth.
-  //
-  // eslint-disable-next-line @eslint-react/exhaustive-deps
-  [handlerIds]
+      return () => {
+        conjoinedResizeObserver.disconnect();
+      };
+    },
+    // This is all quite fragile, so leave deps array alone until we can
+    // look again in more depth.
+    //
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+    [handlerIds]
   );
 
   const nHandlers = handlerIds.length;
