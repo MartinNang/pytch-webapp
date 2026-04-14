@@ -119,7 +119,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
       document.removeEventListener("keydown", docKeyDown);
       document.removeEventListener("click", docClick);
     };
-  }, [show]);
+  }, [show, containerId]);
 
   // When first rendered, focus the first dropdown-item.
   const itemSelector = `:scope a[data-ccm-container="${ccMenuId}"]`;
@@ -129,7 +129,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
     if (containerDiv == null) return;
     const firstItem = containerDiv.querySelector<HTMLElement>(itemSelector);
     firstItem?.focus();
-  }, [show]);
+  }, [show, itemSelector]);
 
   // Handle keypresses into the element with captive context menu:
   //

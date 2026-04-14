@@ -87,7 +87,7 @@ const ScriptsEditor = () => {
     if (scrollDiv != null && scriptWasJustAdded) {
       scrollDiv.scrollTo({ top: scrollDiv.scrollHeight });
     }
-  }, [scriptsDivRef.current, scriptWasJustAdded]);
+  }, [scriptWasJustAdded]);
 
   const conjoinedResizeObserver = new ConjoinedResizeObserver(handlerIds);
 
