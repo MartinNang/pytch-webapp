@@ -144,6 +144,14 @@ export function focusOrBlurFun<Elt extends HTMLElement>(
   return isInteractable ? () => element().focus() : () => element().blur();
 }
 
+export function focusOrBlurElementFun(
+  isActive: boolean,
+  isInteractable: boolean
+): (elt: HTMLElement | null) => void {
+  if (!isActive) return (_elt) => {};
+  return isInteractable ? (elt) => elt?.focus() : (elt) => elt?.blur();
+}
+
 export const readArrayBuffer = (file: File): Promise<ArrayBuffer> => {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();

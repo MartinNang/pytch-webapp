@@ -483,6 +483,15 @@ export function flowFocusOrBlurFun<Elt extends HTMLElement, RunStateT>(
   };
 }
 
+export function focusOrBlurElementFun<RunStateT>(
+  fsmState: AsyncUserFlowFsmState<RunStateT, unknown>
+): (elt: HTMLElement | null) => void {
+  if (!isActive(fsmState)) return (_elt) => {};
+  return isInteractable(fsmState)
+    ? (elt) => elt?.focus()
+    : (elt) => elt?.blur();
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Helpers for writing actions which operate on the RunStateT
 
