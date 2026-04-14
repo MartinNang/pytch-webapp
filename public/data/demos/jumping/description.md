@@ -19,8 +19,7 @@ immediately, so the player can't stack jumps.
 Remember that we ARE now jumping.
 
 # Smooth Jumping
-
-To get a smooth jump, start by moving up quite quickly, then reduce
+To get a smooth jump, start by moving up quite quickly, then reduce 
 how much we move up every frame.  At some point, the y_velocity
 variable will become NEGATIVE, meaning we will move DOWN.  We stop
 this whole process just after we've done the movement with a velociy

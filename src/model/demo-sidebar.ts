@@ -19,14 +19,17 @@ export function parseMarkdown(markdown: string) {
         if (headings !== null) {
             let headingsIndex = 0;
             let content = [];
-            let lines = markdown.split("\n");
+
+            // use a lookbehind zero-length assertion to keep newline characters
+            let lines = markdown.split(/(?<=\n)/g);
+            
             for (let linesIndex = 0; linesIndex < lines.length; linesIndex++) {
                 let line = lines[linesIndex];
                 if (line.startsWith("# " + headings[headingsIndex])) {
                     headingsIndex++;
                 } else if (headingsIndex > 0) {
                     if (content[headingsIndex - 1]) {
-                        content[headingsIndex - 1] += line + "\n";
+                        content[headingsIndex - 1] += line;
                     } else {
                         content[headingsIndex - 1] = line;
                     }

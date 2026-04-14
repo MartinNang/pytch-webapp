@@ -135,6 +135,8 @@ export const DemoChapter = () => {
     );
   }
 
+  console.log('test', chapters);
+
   return (
     <Row className={"demo-chapter"}>
       <Container

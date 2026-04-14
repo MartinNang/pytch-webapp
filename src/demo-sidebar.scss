@@ -39,6 +39,7 @@ $chapter-navigation-link-height: 3rem;
     .chapters-navigation {
       color: white;
       width: 100%;
+      margin: 0;
 
       button {
         display: inline-block;
@@ -84,6 +85,7 @@ $chapter-navigation-link-height: 3rem;
 
     .nav-tree {
       max-height: $chapter-navigation-link-height * 3;
+      overflow: auto;
     }
 
     ul.chapters-list {

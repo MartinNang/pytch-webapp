@@ -28,7 +28,7 @@ export type LessonDescriptor = {
 export type DemoDescriptor = {
   demoContentHash: DemoContentHash;
   headings: string[];
-  chapters: string[]; // TODO: bring headings and chapter content into model - done
+  chapters: string[];
   displayName: string;
   summaryMarkdown: string;
   lastUpdated: string;

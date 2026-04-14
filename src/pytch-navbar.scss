@@ -78,6 +78,10 @@
 
         &.dropdown-item {
           color: black;
+
+          &:active {
+            color: white;
+          }
         }
       }
 
