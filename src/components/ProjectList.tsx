@@ -363,8 +363,8 @@ const MaybeProjectList: React.FC<EmptyProps> = () => {
 export const ProjectList: React.FC<EmptyProps> = () => {
   const focusContext = createFocusContext("my-projects-list");
   return (
-    <FocusContext.Provider value={focusContext}>
+    <FocusContext value={focusContext}>
       <MaybeProjectList />
-    </FocusContext.Provider>
+    </FocusContext>
   );
 };

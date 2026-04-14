@@ -104,9 +104,9 @@ export const ErrorReportList: React.FC<EmptyProps> = () => {
       return <ErrorReportList_Generic />;
     case "per-method":
       return (
-        <ComponentsContext.Provider value={juniorComponents}>
+        <ComponentsContext value={juniorComponents}>
           <ErrorReportList_Generic />
-        </ComponentsContext.Provider>
+        </ComponentsContext>
       );
     default:
       return assertNever(programKind);

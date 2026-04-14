@@ -198,7 +198,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
     : {};
 
   return (
-    <Context.Provider value={contextValue}>
+    <Context value={contextValue}>
       <div
         id={containerId}
         className={className}
@@ -214,7 +214,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
       >
         {children}
       </div>
-    </Context.Provider>
+    </Context>
   );
 };
 
