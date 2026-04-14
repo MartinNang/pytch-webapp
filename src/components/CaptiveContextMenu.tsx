@@ -80,38 +80,38 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
     div.focus();
   };
 
-  // If the context menu is shown, dismiss it on any click anywhere in
-  // the whole document which is not on a descendant of ourself.
-  const docClick = (evt: MouseEvent) => {
-    let tgt = evt.target as HTMLElement | null;
-    let closestId: string | null = null;
-    while (tgt != null) {
-      const maybeId = tgt.dataset.captiveContextMenuContainerId;
-      if (maybeId != null) {
-        closestId = maybeId;
-        break;
-      }
-      tgt = tgt.parentElement;
-    }
-
-    if (closestId === containerId) return;
-
-    setShow(false);
-  };
-
-  // The "Escape" key (anywhere) should dismiss the dropdown.  (This
-  // handler is only set up if `shown`.)
-  const docKeyDown = (evt: KeyboardEvent) => {
-    if (evt.key === "Escape") {
-      setShow(false);
-      focusContainer();
-    }
-  };
-
-  // Add (and register "remove" clean-ups) for document-level keypress
-  // and click listeners.
+  // Add (and register "remove" clean-ups) for document-level click and
+  // keypress listeners.
   useEffect(() => {
     if (!show) return;
+
+    // If the context menu is shown, dismiss it on any click anywhere in
+    // the whole document which is not on a descendant of ourself.
+    const docClick = (evt: MouseEvent) => {
+      let tgt = evt.target as HTMLElement | null;
+      let closestId: string | null = null;
+      while (tgt != null) {
+        const maybeId = tgt.dataset.captiveContextMenuContainerId;
+        if (maybeId != null) {
+          closestId = maybeId;
+          break;
+        }
+        tgt = tgt.parentElement;
+      }
+
+      if (closestId === containerId) return;
+
+      setShow(false);
+    };
+
+    // The "Escape" key (anywhere) should dismiss the dropdown.  (This
+    // handler is only set up if `shown`.)
+    const docKeyDown = (evt: KeyboardEvent) => {
+      if (evt.key === "Escape") {
+        setShow(false);
+        focusContainer();
+      }
+    };
 
     document.addEventListener("click", docClick);
     document.addEventListener("keydown", docKeyDown);
@@ -119,7 +119,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
       document.removeEventListener("keydown", docKeyDown);
       document.removeEventListener("click", docClick);
     };
-  }, [docClick, docKeyDown, show]);
+  }, [show]);
 
   // When first rendered, focus the first dropdown-item.
   const itemSelector = `:scope a[data-ccm-container="${ccMenuId}"]`;
