@@ -1,6 +1,6 @@
 import { Button, Col, Collapse, Container, Row } from "react-bootstrap";
 import Markdown from "react-markdown";
-import React, { KeyboardEventHandler, RefObject } from "react";
+import React, { KeyboardEventHandler, RefObject, useEffect } from "react";
 import { useStoreActions, useStoreState } from "../../store";
 import { useLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
@@ -74,8 +74,9 @@ export const ChaptersOverview = ({
           ref={(el) => {
             if (active) {
               el?.scrollIntoView({
-                behavior: "smooth",
                 block: "center",
+                //FIXME: smooth scroll snaps to top of parent before scrolling;
+                // this becomes more noticable with higher chapter counts
               });
             }
           }}
@@ -98,7 +99,7 @@ export const ChaptersOverview = ({
     }
 
     return (
-      <Row className={"overflow-scroll nav-tree"}>
+      <Row tabIndex={-1} className={"overflow-scroll nav-tree"}>
         <Col xs={1} className={"p-0 m-0"}>
           <div className={"tree"}>
             <div className={"stem"} />

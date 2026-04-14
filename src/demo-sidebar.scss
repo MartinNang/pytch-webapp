@@ -51,23 +51,33 @@ $chapter-navigation-link-height: 3rem;
     }
 
     .tree {
-      height: 7.9rem;
-      width: auto;
-      border-bottom-left-radius: 4px;
       position: relative;
+      margin-left: 25px;
+      margin-top: -0.15rem;
 
       .branch {
-        height: 30px;
-        border: 3px solid $pytch-colour-main-blue-darkened;
-        margin-bottom: 18px;
-        border-bottom-left-radius: 15px;
+        height: 2rem;
+        border: 0.2rem solid $pytch-colour-main-blue-darkened;
+        margin-bottom: 1rem;
+        border-bottom-left-radius: 8px;
         border-right: none;
         border-top: none;
+        width: 1rem;
+      }
+
+      /* two items */
+      &:has(.branch:first-child:nth-last-child(2)),
+      &:has(.branch:first-child:nth-last-child(2) ~ .branch) {
+        height: 6.5rem;
+
+        &:before {
+          inline-size: 3 * $chapter-navigation-link-height;
+        }
       }
 
       .stem {
-        height: 6.25rem;
-        border: 2px solid $pytch-colour-main-blue-darkened;
+        height: calc(100% - 0.5rem);
+        border-left: 0.2rem solid $pytch-colour-main-blue-darkened;
         position: absolute;
       }
     }

@@ -18,16 +18,25 @@ export const DemoSidebar = () => {
     (actions) => actions.ideLayout.demoSidebar.setIsNavigationExpanded
   );
 
+  const setActiveChapter = useStoreActions(
+    (actions) => actions.ideLayout.demoSidebar.setActiveChapter
+  );
+
   const chaptersRef = useRef<Array<HTMLLIElement | null>>([]);
   const navCaretRef = useRef<HTMLButtonElement | null>(null);
 
-  chaptersRef.current = chaptersRef.current.slice(0, linkedDemo.demo.headings?.length);
+  chaptersRef.current = chaptersRef.current.slice(
+    0,
+    linkedDemo.demo.headings?.length
+  );
 
   useEffect(() => {
     if (linkedDemo.demo.headings.length > 1) {
       setIsNavigationExpanded(true);
-    }
-    else setIsNavigationExpanded(false);
+    } else setIsNavigationExpanded(false);
+
+    // reset to prevent new demo from starting at a non-existing chapter on load
+    setActiveChapter(0);
   }, []);
 
   // the following useEffect methods are needed to return focus to the previously used button after scrolling
@@ -43,14 +52,9 @@ export const DemoSidebar = () => {
           "demo-sub-header",
           "px-4",
           linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
-          )
-        }
+        )}
       >
-        <Col>
-          {
-            linkedDemo.demo.summaryMarkdown
-          }
-        </Col>
+        <Col>{linkedDemo.demo.summaryMarkdown}</Col>
       </Row>
     );
   }
@@ -73,14 +77,9 @@ export const DemoSidebar = () => {
       <div className="content">
         <div className="inner-content">
           <Container>
-            <DemoHeader
-              chaptersRef={chaptersRef}
-              navCaretRef={navCaretRef}
-            />
+            <DemoHeader chaptersRef={chaptersRef} navCaretRef={navCaretRef} />
             <DemoSubheader />
-            <ChaptersOverview
-              chaptersRef={chaptersRef}
-            />
+            <ChaptersOverview chaptersRef={chaptersRef} />
             <DemoChapter />
             <DemoFooter />
           </Container>

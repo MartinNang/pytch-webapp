@@ -186,7 +186,7 @@ export const RecommendedDemos = () => {
     case "available": {
       const recommendedDemos = contentFetchState.content.recommendedDemos;
       return (
-        <div className={"row demos-recommended"}>
+        <div className={"row demos-recommended mb-5"}>
           <Row className={"pt-5 justify-content-between mb-3"}>
             <h2 className={"w-auto m-0"}>Recommended</h2>
             <p className={"w-auto m-0 mt-auto"}>
