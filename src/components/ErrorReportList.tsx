@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, { createContext, createElement, useContext } from "react";
+import React, { createContext, createElement, use } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useStoreState } from "../store";
 import Alert from "react-bootstrap/Alert";
@@ -117,7 +117,7 @@ const ErrorLocation: React.FC<ErrorLocationProps> = ({
   isUserCode,
 }) => {
   const userCodeErrorLocationComponent =
-    useContext(ComponentsContext).userCodeErrorLocation;
+    use(ComponentsContext).userCodeErrorLocation;
 
   return isUserCode ? (
     createElement(userCodeErrorLocationComponent, {
@@ -265,7 +265,7 @@ type ErrorIntroProps = {
 const ErrorIntro: React.FC<ErrorIntroProps> = ({ errorContext }) => {
   const { t } = useTranslation("vm");
   const schedulerStepErrorIntroComponent =
-    useContext(ComponentsContext).schedulerStepErrorIntro;
+    use(ComponentsContext).schedulerStepErrorIntro;
 
   switch (errorContext.kind) {
     case "build":
