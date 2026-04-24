@@ -1,4 +1,4 @@
-import { action, Action, thunk, Thunk } from "easy-peasy";
+import { action, Action, generic, Generic, thunk, Thunk } from "easy-peasy";
 import { urlWithinApp } from "../env-utils";
 import { fetchParsedJsonValue } from "../utils";
 
@@ -16,7 +16,7 @@ type ContentFetchState<ContentT> =
  * `maybeLoadContent()` thunk via an effect, for which
  * `useActionAsEffect()` is helpful. */
 export type ExternalJsonSlice<ContentT> = {
-  contentFetchState: ContentFetchState<ContentT>;
+  contentFetchState: Generic<ContentFetchState<ContentT>>;
   setRequestingContent: Action<ExternalJsonSlice<ContentT>>;
   setContentFetchError: Action<ExternalJsonSlice<ContentT>>;
   setContent: Action<ExternalJsonSlice<ContentT>, ContentT>;
@@ -33,7 +33,7 @@ export function externalJsonSlice<ContentT>(
   contentFromRawObj: (rawObj: unknown) => ContentT
 ): ExternalJsonSlice<ContentT> {
   return {
-    contentFetchState: { state: "idle" },
+    contentFetchState: generic({ state: "idle" }),
 
     setRequestingContent: action((state) => {
       state.contentFetchState = { state: "requesting" };
