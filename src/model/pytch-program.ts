@@ -14,13 +14,23 @@ import {
   zStructuredProgram,
 } from "./junior/structured-program/program";
 
+const kPytchProgramKindValue_Flat = "flat" as const;
+const kPytchProgramKindValue_PerMethod = "per-method" as const;
+
+export const kPytchProgramKindValues = [
+  kPytchProgramKindValue_Flat,
+  kPytchProgramKindValue_PerMethod,
+];
+export const zPytchProgramKind = z.literal(kPytchProgramKindValues);
+export type PytchProgramKind = z.infer<typeof zPytchProgramKind>;
+
 const zPytchProgramFlat = z.strictObject({
-  kind: z.literal("flat"),
+  kind: z.literal(kPytchProgramKindValue_Flat),
   text: z.string(),
 });
 
 const zPytchProgramPerMethod = z.strictObject({
-  kind: z.literal("per-method"),
+  kind: z.literal(kPytchProgramKindValue_PerMethod),
   program: zStructuredProgram,
 });
 
@@ -29,13 +39,6 @@ export const zPytchProgram = z.discriminatedUnion("kind", [
   zPytchProgramPerMethod,
 ]);
 export type PytchProgram = z.infer<typeof zPytchProgram>;
-
-export type PytchProgramKind = PytchProgram["kind"];
-
-export const PytchProgramAllKinds: Array<PytchProgramKind> = [
-  "flat",
-  "per-method",
-];
 
 export type PytchProgramOfKind<KindT extends PytchProgram["kind"]> =
   PytchProgram & { kind: KindT };

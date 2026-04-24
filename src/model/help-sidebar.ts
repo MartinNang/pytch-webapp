@@ -1,7 +1,7 @@
 import { makeScratchSVG } from "./scratchblocks-render";
 import { markedParse } from "../components/hooks/sync-marked";
 import { assertNever, failIfNull } from "../utils";
-import { PytchProgramKind, PytchProgramAllKinds } from "./pytch-program";
+import { PytchProgramKind, kPytchProgramKindValues } from "./pytch-program";
 import {
   ActorKind,
   ActorKindOps,
@@ -311,7 +311,7 @@ const makeRichPythonLut = (
   };
 
   return new Map(
-    PytchProgramAllKinds.map((kind) => [kind, richPythonForKind(kind)])
+    kPytchProgramKindValues.map((kind) => [kind, richPythonForKind(kind)])
   );
 };
 

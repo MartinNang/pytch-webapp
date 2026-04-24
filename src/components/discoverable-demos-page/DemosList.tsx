@@ -18,7 +18,7 @@ import {
   kSortingOptions,
 } from "../../model/discoverable-demos";
 import { useStoreActions, useStoreState } from "../../store";
-import { PytchProgramAllKinds } from "../../model/pytch-program";
+import { kPytchProgramKindValues } from "../../model/pytch-program";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
 
@@ -140,7 +140,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                       ref={programKindRef}
                     >
                       <option value={"all"}>Program type</option>
-                      {Object.values(PytchProgramAllKinds).map(
+                      {kPytchProgramKindValues.map(
                         (programKind) => (
                           <option
                             selected={
