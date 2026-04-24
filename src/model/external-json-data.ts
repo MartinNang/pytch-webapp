@@ -52,12 +52,15 @@ export function externalJsonSlice<ContentT>(
     contentFetchState: generic({ state: "idle" }),
 
     setRequestingContent: action((state) => {
+      assertFetchState(state.contentFetchState, "idle");
       state.contentFetchState = { state: "requesting" };
     }),
     setContentFetchError: action((state) => {
+      assertFetchState(state.contentFetchState, "requesting");
       state.contentFetchState = { state: "error" };
     }),
     setContent: action((state, content) => {
+      assertFetchState(state.contentFetchState, "requesting");
       state.contentFetchState = { state: "available", content };
     }),
 
