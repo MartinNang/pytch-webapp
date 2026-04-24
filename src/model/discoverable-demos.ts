@@ -12,8 +12,8 @@ import { RefObject } from "react";
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
 
-export const kDemoKinds = ["game", "snippet"] as const;
-export const zDemoKind = z.literal(kDemoKinds);
+export const kDemoKindValues = ["game" as const, "snippet" as const];
+export const zDemoKind = z.literal(kDemoKindValues);
 export type DemoKind = z.infer<typeof zDemoKind>;
 
 export const kSortingOptions = ["lastUpdated", "alphabetAsc"] as const;

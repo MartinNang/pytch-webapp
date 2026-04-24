@@ -7,7 +7,7 @@ import { DemoCard } from "./DemoCard";
 import { PaginationProvider } from "../PaginationProvider";
 import { RecommendedDemos } from "./RecommendedDemos";
 import {
-  kDemoKinds,
+  kDemoKindValues,
   DemoKindSelector,
   discoverableDemos,
   displayDemoKindName,
@@ -261,7 +261,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   ref={demoKindRef}
                 >
                   <option value={"all"}>All</option>
-                  {Object.values(kDemoKinds).map((demoKind) => (
+                  {kDemoKindValues.map((demoKind) => (
                     <option
                       selected={demoKind === searchFilters.demoKindSelector}
                       value={demoKind}
