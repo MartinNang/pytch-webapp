@@ -8,6 +8,7 @@ import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
 import { RefObject } from "react";
+import { fetchParsedJsonValue } from "../utils";
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
@@ -128,6 +129,46 @@ function cmpCatalogueEntriesByDisplayName(
   b: DemoCatalogueEntry
 ) {
   return a.displayName.localeCompare(b.displayName);
+}
+
+function demoResourceUrl(
+  uuid: string,
+  language: string,
+  relativeUrl: string
+): string {
+  return demoUrl(`${uuid}/${language}/${relativeUrl}`);
+}
+
+export function demoThumbnailImageUrl(demo: DemoCatalogueEntry): string {
+  const relativeUrl = `content/thumbnail${demo.thumbnailImageExtension}`;
+  return demoResourceUrl(demo.uuid, "en", relativeUrl);
+}
+
+export function maybeDemoThumbnailVideoUrl(
+  demo: DemoCatalogueEntry
+): string | null {
+  if (demo.thumbnailVideoExtension == null) {
+    return null;
+  }
+
+  const relativeUrl = `content/thumbnail${demo.thumbnailVideoExtension}`;
+  return demoResourceUrl(demo.uuid, "en", relativeUrl);
+}
+
+export function demoProjectZipfileUrl(demoUuid: string): string {
+  return demoResourceUrl(demoUuid, "en", "project.zip");
+}
+
+export function demoDescriptionUrl(demoUuid: string): string {
+  return demoResourceUrl(demoUuid, "en", "content/description.md");
+}
+
+export async function demoCatalogueEntryFromServer(
+  demoUuid: string
+): Promise<DemoCatalogueEntry> {
+  const url = demoResourceUrl(demoUuid, "en", "metadata.json");
+  const json = await fetchParsedJsonValue(url);
+  return zDemoCatalogueEntry.parse(json);
 }
 
 export type DemosContent = {
