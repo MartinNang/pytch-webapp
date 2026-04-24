@@ -17,6 +17,7 @@ import {
 import { activeActorKindSelector } from "../components/Junior/hooks";
 import { kActorKindValues } from "./junior/structured-program/actor";
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
+import { urlWithinApp } from "../env-utils";
 
 export type ElementArray = Array<Element>;
 
@@ -436,7 +437,7 @@ const groupHelpIntoSections = (rawHelpData: any): HelpContent => {
 
 export type IHelpSidebar = ExternalJsonSlice<HelpContent>;
 export const helpSidebar = externalJsonSlice(
-  "/data/help-sidebar.json",
+  () => urlWithinApp("/data/help-sidebar.json"),
   groupHelpIntoSections
 );
 
