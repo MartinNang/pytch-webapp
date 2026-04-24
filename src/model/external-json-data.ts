@@ -23,6 +23,22 @@ export type ExternalJsonSlice<ContentT> = {
   maybeLoadContent: Thunk<ExternalJsonSlice<ContentT>>;
 };
 
+function assertFetchState<
+  ContentT,
+  RequiredStateKindT extends ContentFetchState<ContentT>["state"],
+>(
+  fetchState: ContentFetchState<ContentT>,
+  requiredStateKind: RequiredStateKindT
+): asserts fetchState is ContentFetchState<ContentT> & {
+  state: RequiredStateKindT;
+} {
+  const gotStateKind = fetchState.state;
+  if (gotStateKind !== requiredStateKind)
+    throw new Error(
+      `expecting state "${requiredStateKind}" but got "${gotStateKind}"`
+    );
+}
+
 /** Construct a new object suitable for use as a model slice value.  The
  * resulting `maybeLoadContent()` thunk fetches JSON from the given
  * `urlNub` (after conversion to be "within the app"), and then passes
