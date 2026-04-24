@@ -230,10 +230,6 @@ export async function dereferenceLinkedDemo(
   programKind: PytchProgramKind,
   ref: LinkedDemoRef
 ): Promise<LinkedDemo> {
-  const contentHash = ref.slug;
-  const relativePath = `demos/${contentHash}`;
-
-  const demo = await demoDescriptorFromRelativePath(relativePath, ref.slug);
-
+  const demo = await demoDescriptorFromUuid(ref.uuid);
   return { kind: "demo", demo };
 }
