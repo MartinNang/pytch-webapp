@@ -98,6 +98,12 @@ export type Demo = {
   recommended: boolean;
 };
 
+export type DemosContent = {
+  allDemos: Demo[];
+  recommendedDemos: Demo[];
+  searchResults: Demo[];
+};
+
 export type IDiscoverableDemos = {
   fetchedDemos: ExternalJsonSlice<DemosContent>;
   setSearchResults: Action<DemosContent, Demo[]>;
@@ -107,12 +113,6 @@ export type IDiscoverableDemos = {
   setSortBy: Action<IDiscoverableDemos, SortBy>;
   recommendedIndex: number;
   setRecommendedIndex: Action<IDiscoverableDemos, number>;
-};
-
-export type DemosContent = {
-  allDemos: Demo[];
-  recommendedDemos: Demo[];
-  searchResults: Demo[];
 };
 
 export type IDemosSearchFilters = {
