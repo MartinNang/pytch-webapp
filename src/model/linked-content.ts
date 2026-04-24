@@ -28,13 +28,12 @@ export type LessonDescriptor = {
 };
 
 export type DemoDescriptor = {
-  demoContentHash: DemoContentHash;
+  uuid: string;
   headings: string[];
   chapters: string[];
   displayName: string;
   summaryMarkdown: string;
   lastUpdated: string;
-  project: StandaloneProjectDescriptor;
 };
 
 type LinkedNoContent = { kind: "none" };
