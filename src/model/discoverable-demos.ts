@@ -152,7 +152,7 @@ export function demosIndexUrl(language: string): string {
 
 export const discoverableDemos: IDiscoverableDemos = {
   fetchedDemos: externalJsonSlice(
-    demoUrl("demos.json"),
+    () => demosIndexUrl("en"),
     groupDemosIntoSections // TODO: check if deep comparison prevents endless re-render
   ),
   searchFilters: {
