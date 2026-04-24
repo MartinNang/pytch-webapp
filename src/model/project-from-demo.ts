@@ -7,6 +7,7 @@ import { createNewProject, CreateProjectOptions } from "../database/indexed-db";
 
 import { IPytchAppModel } from "./index";
 import { ProjectId } from "./project-core";
+import { envVarOrFail } from "../env-utils";
 
 type ProjectFromDemoState =
   | { state: "idle" }
@@ -38,8 +39,9 @@ export type ProjectFromDemoFlow = {
   >;
 };
 
-export function demoUrl(s: string): string {
-  return "/data/demos/" + s;
+export function demoUrl(relativeUrl: string): string {
+  const demosDataRoot = envVarOrFail("VITE_DEMO_CATALOGUE_BASE");
+  return [demosDataRoot, relativeUrl].join("/");
 }
 
 export let projectFromDemoFlow: ProjectFromDemoFlow = {
