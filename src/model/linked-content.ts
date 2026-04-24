@@ -1,4 +1,4 @@
-import { assertNever, fetchArrayBuffer } from "../utils";
+import { assertNever, fetchArrayBuffer, fetchText } from "../utils";
 import {
   projectDescriptor as projectDescriptorFromData,
   StandaloneProjectDescriptor,
@@ -21,6 +21,10 @@ import { PytchProgramKind } from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
 import { demoUrl } from "./project-from-demo";
 import { parseMarkdown } from "./demo-sidebar";
+import {
+  demoCatalogueEntryFromServer,
+  demoDescriptionUrl,
+} from "./discoverable-demos";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -123,22 +127,21 @@ export async function fetchDemo(slug: string) {
   return demos.find((d: { slug: string }) => d.slug === slug);
 }
 
-async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
-  const mdUrl = demoUrl(`${slug}/description.md`);
-
-  const chaptersContent = await fetchDemoChaptersFromMd(mdUrl);
-  let demoChapters = null;
-  if (chaptersContent) {
-    demoChapters = parseMarkdown(chaptersContent);
+async function demoDescriptorFromUuid(uuid: string): Promise<DemoDescriptor> {
+  const mdUrl = demoDescriptionUrl(uuid);
+  const chaptersContent = await fetchText(mdUrl);
+  if (chaptersContent == null) {
+    throw new Error(`failed to fetch demo description markdown from ${mdUrl}`);
   }
-  const demo = await fetchDemo(slug);
+
+  const demoChapters = parseMarkdown(chaptersContent);
+  const demo = await demoCatalogueEntryFromServer(uuid);
 
   return {
+    uuid,
     displayName: demo.displayName,
     lastUpdated: demo.lastUpdated,
-    project: demo.project,
     summaryMarkdown: demo.summaryMarkdown,
-    demoContentHash: slug,
     headings: demoChapters?.headings || [],
     chapters: demoChapters?.content || [],
   };
