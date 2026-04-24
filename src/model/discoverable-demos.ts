@@ -172,9 +172,9 @@ export async function demoCatalogueEntryFromServer(
 }
 
 export type DemosContent = {
-  allDemos: Demo[];
-  recommendedDemos: Demo[];
-  searchResults: Demo[];
+  allDemos: DemoCatalogue;
+  recommendedDemos: DemoCatalogue;
+  searchResults: DemoCatalogue;
 };
 
 export type IDiscoverableDemos = {
