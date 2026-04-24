@@ -116,6 +116,20 @@ export type DemoCatalogueEntry = z.infer<typeof zDemoCatalogueEntry>;
 export const zDemoCatalogue = z.array(zDemoCatalogueEntry);
 type DemoCatalogue = z.infer<typeof zDemoCatalogue>;
 
+function cmpCatalogueEntriesByLastUpdated(
+  a: DemoCatalogueEntry,
+  b: DemoCatalogueEntry
+) {
+  return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+}
+
+function cmpCatalogueEntriesByDisplayName(
+  a: DemoCatalogueEntry,
+  b: DemoCatalogueEntry
+) {
+  return a.displayName.localeCompare(b.displayName);
+}
+
 export type DemosContent = {
   allDemos: Demo[];
   recommendedDemos: Demo[];
