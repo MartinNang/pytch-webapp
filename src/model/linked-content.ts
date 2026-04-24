@@ -118,7 +118,6 @@ export async function fetchDemo(slug: string) {
 }
 
 async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
-  console.log('relative path', relativePath);
   const mdUrl = demoUrl(`${slug}/description.md`);
 
   const chaptersContent = await fetchDemoChaptersFromMd(mdUrl);

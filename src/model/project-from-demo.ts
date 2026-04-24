@@ -49,7 +49,6 @@ export let projectFromDemoFlow: ProjectFromDemoFlow = {
     const allActions = helpers.getStoreActions();
     const relativePath = `${demo}/project.zip`;
     const url = demoUrl(`${relativePath}`);
-    console.log(url);
 
     const zipData = await fetchArrayBuffer(url);
     const demoProject = await projectDescriptor(undefined, zipData);
