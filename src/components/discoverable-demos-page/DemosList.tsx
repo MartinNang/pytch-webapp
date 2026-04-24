@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavBanner } from "../NavBanner";
-import { EmptyProps, mDataAttrStringValue } from "../../utils";
+import { assertNever, EmptyProps, mDataAttrStringValue } from "../../utils";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DemoCard } from "./DemoCard";
@@ -224,13 +224,14 @@ export const DemosList: React.FC<EmptyProps> = () => {
         );
       }
       case "error":
-      default:
         return (
           <>
             <h1>Problem</h1>
             <p>Sorry, there was a problem fetching the help information.</p>
           </>
         );
+      default:
+        return assertNever(contentFetchState);
     }
   }
 

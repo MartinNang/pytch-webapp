@@ -11,6 +11,7 @@ import {
 import classNames from "classnames";
 import { CarouselRef } from "react-bootstrap/Carousel";
 import { pathWithinApp } from "../../env-utils";
+import { assertNever } from "../../utils";
 
 export const RecommendedDemos = () => {
   function RecommendedDemoCard({ recommendedDemo }: { recommendedDemo: Demo }) {
@@ -220,12 +221,13 @@ export const RecommendedDemos = () => {
       );
     }
     case "error":
-    default:
       return (
         <>
           <h1>Problem</h1>
           <p>Sorry, there was a problem fetching the help information.</p>
         </>
       );
+    default:
+      return assertNever(contentFetchState);
   }
 };
