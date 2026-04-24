@@ -40,10 +40,14 @@ function assertFetchState<
 }
 
 /** Construct a new object suitable for use as a model slice value.  The
- * resulting `maybeLoadContent()` thunk fetches JSON from the given
- * `urlNub` (after conversion to be "within the app"), and then passes
- * the parsed result through the given `contentFromRawObj()` conversion
- * function. */
+ * resulting `maybeLoadContent()` thunk fetches JSON from the URL
+ * returned by the given `urlFun`, and then passes the parsed result
+ * through the given `contentFromRawObj()` conversion function.
+ *
+ * Note that the given `urlFun()` is only invoked once the
+ * `maybeLoadContent()` action is called.  This allows the function to
+ * use information which is only available once the app has fully
+ * booted, for instance calls to `envVarOrFail()`. */
 export function externalJsonSlice<ContentT>(
   urlFun: () => string,
   contentFromRawObj: (rawObj: unknown) => ContentT
