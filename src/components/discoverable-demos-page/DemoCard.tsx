@@ -13,6 +13,7 @@ import {
 import classNames from "classnames";
 import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
+import { format } from "date-fns";
 
 type DemoCardProps = {
   demo: DemoCatalogueEntry;
@@ -110,6 +111,8 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
     );
   }
 
+  const absTimestamp = format(demo.lastUpdated, "PP");
+
   return (
     <Card
       className={focusGroupItemClass("flex-row flex-wrap card")}
@@ -165,9 +168,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
 
         <Row className={"share-row"}>
           <Col xs={12} sm={12} md={6} className={"align-items-end d-flex"}>
-            <p className={"m-0"}>
-              {new Date(demo.lastUpdated).toLocaleDateString()}
-            </p>
+            <p className={"m-0"}>{absTimestamp}</p>
           </Col>
         </Row>
       </Card.Body>

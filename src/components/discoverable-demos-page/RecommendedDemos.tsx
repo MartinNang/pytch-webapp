@@ -13,6 +13,7 @@ import {
 import classNames from "classnames";
 import { CarouselRef } from "react-bootstrap/Carousel";
 import { assertNever } from "../../utils";
+import { format } from "date-fns/format";
 
 export const RecommendedDemos = () => {
   function DemoCard({ demo }: { demo: DemoCatalogueEntry }) {
@@ -87,6 +88,7 @@ export const RecommendedDemos = () => {
     };
 
     const programKindIcon = getProgramKindIcon(demo.programKind);
+    const absTimestamp = format(demo.lastUpdated, "PP");
 
     return (
       <Card
@@ -137,9 +139,7 @@ export const RecommendedDemos = () => {
             <p className={"demo-description"}>{demo.summaryMarkdown}</p>
             <Row className={"footer-row"}>
               <Col xs={12} sm={6} className={"align-items-end d-flex"}>
-                <p className={"m-0"}>
-                  {new Date(demo.lastUpdated).toLocaleDateString()}
-                </p>
+                <p className={"m-0"}>{absTimestamp}</p>
               </Col>
             </Row>
           </Card.Body>
