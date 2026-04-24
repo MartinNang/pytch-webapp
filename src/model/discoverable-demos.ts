@@ -146,6 +146,10 @@ const groupDemosIntoSections = (rawHelpData: any): DemosContent => {
   return dContent;
 };
 
+export function demosIndexUrl(language: string): string {
+  return demoUrl(`index/${language}/demos.json`);
+}
+
 export const discoverableDemos: IDiscoverableDemos = {
   fetchedDemos: externalJsonSlice(
     demoUrl("demos.json"),
