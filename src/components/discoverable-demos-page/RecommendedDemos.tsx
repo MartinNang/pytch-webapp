@@ -4,8 +4,10 @@ import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
 import {
   DemoCatalogueEntry,
+  demoThumbnailImageUrl,
   displayDemoKindName,
   getProgramKindIcon,
+  maybeDemoThumbnailVideoUrl,
   resetVideo,
 } from "../../model/discoverable-demos";
 import classNames from "classnames";
@@ -32,24 +34,24 @@ export const RecommendedDemos = () => {
     const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-      if (recommendedDemo.featuredImageUrl?.toLowerCase().startsWith("/")) {
-        setImageSrc(pathWithinApp(recommendedDemo.featuredImageUrl));
-      } else if (recommendedDemo.featuredImageUrl) {
-        setImageSrc(recommendedDemo.featuredImageUrl);
-      }
+      setImageSrc(demoThumbnailImageUrl(recommendedDemo));
     }, [hover, recommendedDemo]);
 
     const cardRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    const showVideo = hover && recommendedDemo.featuredVideoUrl;
+    const hasThumbnailVideo = recommendedDemo.thumbnailVideoExtension != null;
+
+    const showVideo = hover && hasThumbnailVideo;
     const showImage = !showVideo;
 
     function RecommendedDemoThumbnail() {
       return (
         <>
-          {recommendedDemo.featuredVideoUrl ? (
+          {hasThumbnailVideo ? (
             <video
+              // FIXME Restructure to avoid the non-null-assertion operator.
+              src={maybeDemoThumbnailVideoUrl(recommendedDemo)!}
               controls={false}
               autoPlay={true}
               muted={true}
@@ -64,7 +66,6 @@ export const RecommendedDemos = () => {
               ref={videoRef}
               tabIndex={-1}
             >
-              <source src={recommendedDemo.featuredVideoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           ) : null}
