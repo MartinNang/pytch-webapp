@@ -1,4 +1,4 @@
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind, zPytchProgramKind } from "./pytch-program";
 import { util } from "zod/v3";
 import assertNever = util.assertNever;
 import { demoUrl } from "./project-from-demo";
@@ -97,6 +97,24 @@ export type Demo = {
   demoKind: DemoKind;
   recommended: boolean;
 };
+
+const zDemoCatalogueEntry = z.strictObject({
+  uuid: z.string(),
+  displayName: z.string(),
+  authorName: z.string(),
+  programKind: zPytchProgramKind,
+  demoKind: zDemoKind,
+  summaryMarkdown: z.string(),
+  lastUpdated: z.string(),
+  recommended: z.boolean(),
+  thumbnailImageExtension: z.string(),
+  thumbnailVideoExtension: z.union([z.null(), z.string()]),
+  latestUuid: z.string(),
+});
+export type DemoCatalogueEntry = z.infer<typeof zDemoCatalogueEntry>;
+
+export const zDemoCatalogue = z.array(zDemoCatalogueEntry);
+type DemoCatalogue = z.infer<typeof zDemoCatalogue>;
 
 export type DemosContent = {
   allDemos: Demo[];
