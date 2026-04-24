@@ -249,7 +249,7 @@ export const discoverableDemos: IDiscoverableDemos = {
   searchForDemos: action((state) => {
     if (state.fetchedDemos.contentFetchState.state === "available") {
       const demosContent = state.fetchedDemos.contentFetchState.content;
-      let searchResults: Demo[] = [...demosContent.allDemos];
+      let searchResults: DemoCatalogue = [...demosContent.allDemos];
       const searchFilters: FilterActionTypes<IDemosSearchFilters> =
         state.searchFilters;
       const sortBy: SortBy = state.sortBy;
@@ -276,16 +276,10 @@ export const discoverableDemos: IDiscoverableDemos = {
 
       switch (sortBy) {
         case "alphabetAsc":
-          searchResults = searchResults.sort((a, b) =>
-            a.displayName.localeCompare(b.displayName)
-          );
+          searchResults = searchResults.sort(cmpCatalogueEntriesByDisplayName);
           break;
         case "lastUpdated":
-          searchResults = searchResults.sort(
-            (a, b) =>
-              new Date(b.lastUpdated).getTime() -
-              new Date(a.lastUpdated).getTime()
-          );
+          searchResults = searchResults.sort(cmpCatalogueEntriesByLastUpdated);
           break;
         default:
           assertNever(sortBy);
