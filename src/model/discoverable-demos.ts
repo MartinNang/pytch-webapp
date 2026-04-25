@@ -197,13 +197,15 @@ export type IDemosSearchFilters = {
 };
 
 const groupDemosIntoSections = (rawHelpData: any): DemosContent => {
+  const demoCatalogue = zDemoCatalogue.parse(rawHelpData);
+
   let dContent: DemosContent = {
     recommendedDemos: [],
     allDemos: [],
     searchResults: [],
   };
 
-  for (const datum of rawHelpData) {
+  for (const datum of demoCatalogue) {
     if (datum.recommended) {
       dContent.recommendedDemos.push(datum);
     }
