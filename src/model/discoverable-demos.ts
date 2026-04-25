@@ -196,29 +196,13 @@ export type IDemosSearchFilters = {
   setProgramKindSelector: Action<IDemosSearchFilters, PytchProgramKindSelector>;
 };
 
-const groupDemosIntoSections = (rawHelpData: any): DemosContent => {
-  const demoCatalogue = zDemoCatalogue.parse(rawHelpData);
-
-  let dContent: DemosContent = {
-    recommendedDemos: [],
-    allDemos: [],
-    searchResults: [],
-  };
-
-  for (const datum of demoCatalogue) {
-    if (datum.recommended) {
-      dContent.recommendedDemos.push(datum);
-    }
-    dContent.allDemos.push(datum);
-  }
-
-  dContent.searchResults = dContent.allDemos.sort((a: Demo, b: Demo) => {
-    return (
-      new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-    );
-  });
-
-  return dContent;
+const groupDemosIntoSections = (
+  rawDemoCatalogueData: unknown
+): DemosContent => {
+  const allDemos = zDemoCatalogue.parse(rawDemoCatalogueData);
+  const recommendedDemos = allDemos.filter((demo) => demo.recommended);
+  const searchResults = allDemos.sort(cmpCatalogueEntriesByLastUpdated);
+  return { allDemos, recommendedDemos, searchResults };
 };
 
 export function demosIndexUrl(language: string): string {
