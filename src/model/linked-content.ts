@@ -111,13 +111,6 @@ export async function lessonDescriptorFromRelativePath(
   return { specimenContentHash, project };
 }
 
-async function fetchDemoChaptersFromMd(
-  url: string
-): Promise<string | undefined> {
-  let res = await fetch(url);
-  return res.text();
-}
-
 export async function fetchDemo(slug: string) {
   let response = await fetch("/data/demos/demos.json");
   if (!response.ok) {
