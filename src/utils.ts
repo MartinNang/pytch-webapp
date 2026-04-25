@@ -238,6 +238,12 @@ export async function hexSHA256(data: ArrayBuffer | string): Promise<string> {
   return _hexOfBuffer(hash);
 }
 
+export async function fetchText(...args: Parameters<typeof fetch>) {
+  const rawResp = await fetch(...args);
+  const text = await rawResp.text();
+  return text;
+}
+
 export async function fetchArrayBuffer(...args: Parameters<typeof fetch>) {
   const rawResp = await fetch(...args);
   const data = await rawResp.arrayBuffer();
@@ -246,8 +252,7 @@ export async function fetchArrayBuffer(...args: Parameters<typeof fetch>) {
 
 export async function fetchParsedJsonValue(...args: Parameters<typeof fetch>) {
   const response = await fetch(...args);
-  const text = await response.text();
-  const value = JSON.parse(text);
+  const value = await response.json();
   return value;
 }
 

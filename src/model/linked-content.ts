@@ -1,4 +1,4 @@
-import {assertNever, fetchArrayBuffer} from "../utils";
+import { assertNever, fetchArrayBuffer } from "../utils";
 import {
   projectDescriptor as projectDescriptorFromData,
   StandaloneProjectDescriptor,
@@ -13,12 +13,14 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  SpecimenContentHash, DemoContentHash, LinkedDemoRef,
+  SpecimenContentHash,
+  DemoContentHash,
+  LinkedDemoRef,
 } from "./linked-content-core";
-import {PytchProgramKind} from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
 import { demoUrl } from "./project-from-demo";
-import {parseMarkdown} from "./demo-sidebar";
+import { parseMarkdown } from "./demo-sidebar";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -41,9 +43,13 @@ const kLinkedNoContent: LinkedNoContent = { kind: "none" };
 
 export type LinkedSpecimen = { kind: "specimen"; lesson: LessonDescriptor };
 
-export type LinkedDemo = { kind: "demo"; demo:  DemoDescriptor};
+export type LinkedDemo = { kind: "demo"; demo: DemoDescriptor };
 
-export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen | LinkedDemo;
+export type LinkedContent =
+  | LinkedNoContent
+  | LinkedJrTutorial
+  | LinkedSpecimen
+  | LinkedDemo;
 
 export type LinkedContentKind = LinkedContent["kind"];
 
@@ -102,10 +108,11 @@ export async function lessonDescriptorFromRelativePath(
   return { specimenContentHash, project };
 }
 
-
-async function fetchDemoChaptersFromMd(url: string): Promise<string | undefined> {
+async function fetchDemoChaptersFromMd(
+  url: string
+): Promise<string | undefined> {
   let res = await fetch(url);
-    return res.text();
+  return res.text();
 }
 
 export async function fetchDemo(slug: string) {
@@ -118,7 +125,6 @@ export async function fetchDemo(slug: string) {
 }
 
 async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
-  console.log('relative path', relativePath);
   const mdUrl = demoUrl(`${slug}/description.md`);
 
   const chaptersContent = await fetchDemoChaptersFromMd(mdUrl);
@@ -135,7 +141,7 @@ async function demoDescriptorFromRelativePath(relativePath: string, slug: string
     summaryMarkdown: demo.summaryMarkdown,
     demoContentHash: slug,
     headings: demoChapters?.headings || [],
-    chapters: demoChapters?.content || []
+    chapters: demoChapters?.content || [],
   };
 }
 
@@ -219,8 +225,8 @@ export function useLinkedContentLoadingStateSummary() {
 }
 
 export async function dereferenceLinkedDemo(
-    programKind: PytchProgramKind,
-    ref: LinkedDemoRef
+  programKind: PytchProgramKind,
+  ref: LinkedDemoRef
 ): Promise<LinkedDemo> {
   const contentHash = ref.slug;
   const relativePath = `demos/${contentHash}`;
@@ -229,4 +235,3 @@ export async function dereferenceLinkedDemo(
 
   return { kind: "demo", demo };
 }
-

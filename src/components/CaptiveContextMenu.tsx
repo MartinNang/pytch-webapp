@@ -12,7 +12,6 @@ import React, {
 import { Dropdown } from "react-bootstrap";
 import { useNonNullContext } from "./hooks/non-null-context";
 import { handleMovementKeys } from "./CaptiveContextMenu-utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** Context for internal use by dropdown items within the container.
  * Allows items to, e.g., dismiss the dropdown menu. */

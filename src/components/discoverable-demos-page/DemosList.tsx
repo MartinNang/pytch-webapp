@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavBanner } from "../NavBanner";
-import { EmptyProps, mDataAttrStringValue } from "../../utils";
+import { assertNever, EmptyProps, mDataAttrStringValue } from "../../utils";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DemoCard } from "./DemoCard";
 import { PaginationProvider } from "../PaginationProvider";
 import { RecommendedDemos } from "./RecommendedDemos";
 import {
-  kDemoKinds,
+  kDemoKindValues,
   DemoKindSelector,
   discoverableDemos,
   displayDemoKindName,
@@ -18,7 +18,7 @@ import {
   kSortingOptions,
 } from "../../model/discoverable-demos";
 import { useStoreActions, useStoreState } from "../../store";
-import { PytchProgramAllKinds } from "../../model/pytch-program";
+import { kPytchProgramKindValues } from "../../model/pytch-program";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
 
@@ -140,18 +140,16 @@ export const DemosList: React.FC<EmptyProps> = () => {
                       ref={programKindRef}
                     >
                       <option value={"all"}>Program type</option>
-                      {Object.values(PytchProgramAllKinds).map(
-                        (programKind) => (
-                          <option
-                            selected={
-                              programKind === searchFilters.programKindSelector
-                            }
-                            value={programKind}
-                          >
-                            {displayProgramKindName(programKind)}
-                          </option>
-                        )
-                      )}
+                      {kPytchProgramKindValues.map((programKind) => (
+                        <option
+                          selected={
+                            programKind === searchFilters.programKindSelector
+                          }
+                          value={programKind}
+                        >
+                          {displayProgramKindName(programKind)}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Form.Group>
                   <Form.Group className={"w-auto"}>
@@ -217,20 +215,21 @@ export const DemosList: React.FC<EmptyProps> = () => {
             <PaginationProvider
               activePage={activePage}
               setActivePage={setActivePage}
-              list={demosContent}
+              nItems={demosContent.searchResults.length}
               itemsPerPage={itemsPerPage}
             />
           </>
         );
       }
       case "error":
-      default:
         return (
           <>
             <h1>Problem</h1>
             <p>Sorry, there was a problem fetching the help information.</p>
           </>
         );
+      default:
+        return assertNever(contentFetchState);
     }
   }
 
@@ -260,7 +259,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   ref={demoKindRef}
                 >
                   <option value={"all"}>All</option>
-                  {Object.values(kDemoKinds).map((demoKind) => (
+                  {kDemoKindValues.map((demoKind) => (
                     <option
                       selected={demoKind === searchFilters.demoKindSelector}
                       value={demoKind}

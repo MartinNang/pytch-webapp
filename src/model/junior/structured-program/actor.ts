@@ -4,10 +4,9 @@ import { EventHandler, EventHandlerOps, zEventHandler } from "./event";
 import { assertNever, hexSHA256 } from "../../../utils";
 import { IEmbodyContext, NoIdActor } from "./skeleton";
 
-const zActorKind = z.literal(["sprite", "stage"]);
+export const kActorKindValues = ["sprite" as const, "stage" as const];
+const zActorKind = z.literal(kActorKindValues);
 export type ActorKind = z.infer<typeof zActorKind>;
-
-export const kBothActorKinds: Array<ActorKind> = ["sprite", "stage"];
 
 export type ActorKindNames = {
   subclass: string;

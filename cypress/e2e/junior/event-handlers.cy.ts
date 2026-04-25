@@ -14,7 +14,7 @@ import {
   launchAdd,
 } from "./utils";
 import { saveButton } from "../utils";
-import { kBothActorKinds } from "../../../src/model/junior/structured-program/actor";
+import { kActorKindValues } from "../../../src/model/junior/structured-program/actor";
 import { kHandlerHatBlockOptions } from "../../../src/model/junior/upsert-hat-block";
 
 context("Create/modify/delete event handlers", () => {
@@ -28,7 +28,7 @@ context("Create/modify/delete event handlers", () => {
     cy.get(".NoContentHelp").contains("Your stage has no scripts");
   });
 
-  kBothActorKinds.forEach((actorKind) =>
+  kActorKindValues.forEach((actorKind) =>
     it(`shows correct hat-block options (${actorKind})`, () => {
       if (actorKind === "sprite") {
         selectSprite("Snake");

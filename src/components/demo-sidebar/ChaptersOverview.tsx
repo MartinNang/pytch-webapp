@@ -1,6 +1,6 @@
 import { Button, Col, Collapse, Container, Row } from "react-bootstrap";
 import Markdown from "react-markdown";
-import React, { KeyboardEventHandler, RefObject, useEffect } from "react";
+import React, { KeyboardEventHandler, RefObject } from "react";
 import { useStoreActions, useStoreState } from "../../store";
 import { useLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";

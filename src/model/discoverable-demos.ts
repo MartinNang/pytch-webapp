@@ -12,8 +12,8 @@ import { RefObject } from "react";
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
 
-export const kDemoKinds = ["game", "snippet"] as const;
-export const zDemoKind = z.literal(kDemoKinds);
+export const kDemoKindValues = ["game" as const, "snippet" as const];
+export const zDemoKind = z.literal(kDemoKindValues);
 export type DemoKind = z.infer<typeof zDemoKind>;
 
 export const kSortingOptions = ["lastUpdated", "alphabetAsc"] as const;
@@ -98,21 +98,20 @@ export type Demo = {
   recommended: boolean;
 };
 
+export type DemosContent = {
+  allDemos: Demo[];
+  recommendedDemos: Demo[];
+  searchResults: Demo[];
+};
+
 export type IDiscoverableDemos = {
   fetchedDemos: ExternalJsonSlice<DemosContent>;
-  setSearchResults: Action<DemosContent, Demo[]>;
   searchFilters: IDemosSearchFilters;
   searchForDemos: Action<IDiscoverableDemos>;
   sortBy: SortBy;
   setSortBy: Action<IDiscoverableDemos, SortBy>;
   recommendedIndex: number;
   setRecommendedIndex: Action<IDiscoverableDemos, number>;
-};
-
-export type DemosContent = {
-  allDemos: Demo[];
-  recommendedDemos: Demo[];
-  searchResults: Demo[];
 };
 
 export type IDemosSearchFilters = {
@@ -152,9 +151,6 @@ export const discoverableDemos: IDiscoverableDemos = {
     demoUrl("demos.json"),
     groupDemosIntoSections // TODO: check if deep comparison prevents endless re-render
   ),
-  setSearchResults: action((state, newSearchResults) => {
-    state.searchResults = newSearchResults;
-  }),
   searchFilters: {
     searchTerm: "",
     demoKindSelector: "all",
