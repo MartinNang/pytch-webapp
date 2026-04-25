@@ -3,7 +3,7 @@ import { urlWithinApp } from "../env-utils";
 import { fetchParsedJsonValue } from "../utils";
 
 type ContentFetchState<ContentT> =
-  | { state: "idle" }
+  | { state: "idle"; urlFun: () => string }
   | { state: "requesting" }
   | { state: "available"; content: ContentT }
   | { state: "error" };
