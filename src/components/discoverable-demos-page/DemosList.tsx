@@ -215,7 +215,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
             <PaginationProvider
               activePage={activePage}
               setActivePage={setActivePage}
-              list={demosContent}
+              nItems={demosContent.searchResults.length}
               itemsPerPage={itemsPerPage}
             />
           </>

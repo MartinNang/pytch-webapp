@@ -5,17 +5,17 @@ type PaginationProviderProps = {
   activePage: number;
   setActivePage: (page: number) => void;
   itemsPerPage: number;
-  list: any;
+  nItems: number;
 };
 
 export const PaginationProvider: React.FC<PaginationProviderProps> = ({
   activePage,
   setActivePage,
   itemsPerPage,
-  list,
+  nItems,
 }) => {
   let paginationItems = [];
-  const lastPage = Math.ceil(list.length / itemsPerPage);
+  const lastPage = Math.ceil(nItems / itemsPerPage);
 
   if (lastPage > 1) {
     // render first, prev
