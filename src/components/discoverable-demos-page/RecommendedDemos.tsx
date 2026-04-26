@@ -15,17 +15,13 @@ import { CarouselRef } from "react-bootstrap/Carousel";
 import { assertNever } from "../../utils";
 
 export const RecommendedDemos = () => {
-  function RecommendedDemoCard({
-    recommendedDemo,
-  }: {
-    recommendedDemo: DemoCatalogueEntry;
-  }) {
+  function DemoCard({ demo }: { demo: DemoCatalogueEntry }) {
     const createProject = useStoreActions(
       (actions) => actions.projectFromDemoFlow.createProject
     );
 
-    const isGame: boolean = recommendedDemo.demoKind === "game";
-    const isSnippet: boolean = recommendedDemo.demoKind === "snippet";
+    const isGame: boolean = demo.demoKind === "game";
+    const isSnippet: boolean = demo.demoKind === "snippet";
 
     const linkRef = useRef<HTMLAnchorElement>(null);
 
@@ -33,24 +29,24 @@ export const RecommendedDemos = () => {
     const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-      setImageSrc(demoThumbnailImageUrl(recommendedDemo));
-    }, [hover, recommendedDemo]);
+      setImageSrc(demoThumbnailImageUrl(demo));
+    }, [hover, demo]);
 
     const cardRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    const hasThumbnailVideo = recommendedDemo.thumbnailVideoExtension != null;
+    const hasThumbnailVideo = demo.thumbnailVideoExtension != null;
 
     const showVideo = hover && hasThumbnailVideo;
     const showImage = !showVideo;
 
-    function RecommendedDemoThumbnail() {
+    function DemoThumbnail() {
       return (
         <>
           {hasThumbnailVideo ? (
             <video
               // FIXME Restructure to avoid the non-null-assertion operator.
-              src={maybeDemoThumbnailVideoUrl(recommendedDemo)!}
+              src={maybeDemoThumbnailVideoUrl(demo)!}
               controls={false}
               autoPlay={true}
               muted={true}
@@ -95,7 +91,7 @@ export const RecommendedDemos = () => {
       setHover(false);
     };
 
-    const programKindIcon = getProgramKindIcon(recommendedDemo.programKind);
+    const programKindIcon = getProgramKindIcon(demo.programKind);
 
     return (
       <Card
@@ -115,7 +111,7 @@ export const RecommendedDemos = () => {
           }
         >
           <Card.Header className={"p-0 w-100 h-100"}>
-            <RecommendedDemoThumbnail />
+            <DemoThumbnail />
           </Card.Header>
         </Col>
         <Col xs={12} sm={6} md={6}>
@@ -133,25 +129,21 @@ export const RecommendedDemos = () => {
                   { isSnippet }
                 )}
               >
-                <p>{displayDemoKindName(recommendedDemo.demoKind)}</p>
+                <p>{displayDemoKindName(demo.demoKind)}</p>
               </div>
             </Row>
             <Link
               ref={linkRef}
               to={""}
-              onClick={() => createProject(recommendedDemo.uuid)}
+              onClick={() => createProject(demo.uuid)}
             >
-              <h3 style={{ fontWeight: "bold" }}>
-                {recommendedDemo.displayName}
-              </h3>
+              <h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3>
             </Link>
-            <p className={"demo-description"}>
-              {recommendedDemo.summaryMarkdown}
-            </p>
+            <p className={"demo-description"}>{demo.summaryMarkdown}</p>
             <Row className={"footer-row"}>
               <Col xs={12} sm={6} className={"align-items-end d-flex"}>
                 <p className={"m-0"}>
-                  {new Date(recommendedDemo.lastUpdated).toLocaleDateString()}
+                  {new Date(demo.lastUpdated).toLocaleDateString()}
                 </p>
               </Col>
             </Row>
@@ -217,7 +209,7 @@ export const RecommendedDemos = () => {
           >
             {recommendedDemos?.map((recommendedDemo) => (
               <Carousel.Item>
-                <RecommendedDemoCard recommendedDemo={recommendedDemo} />
+                <DemoCard demo={recommendedDemo} />
               </Carousel.Item>
             ))}
           </Carousel>
