@@ -47,7 +47,7 @@ import { I18nContextState, i18nContextState } from "./i18n";
 
 import { useStoreActions, useStoreState } from "../store";
 import { ProjectFromDemoFlow, projectFromDemoFlow } from "./project-from-demo";
-import {discoverableDemos, IDiscoverableDemos} from "./discoverable-demos";
+import { discoverableDemos, IDiscoverableDemos } from "./discoverable-demos";
 
 export interface IPytchAppModel {
   navigationRequestQueue: NavigationRequestQueue;

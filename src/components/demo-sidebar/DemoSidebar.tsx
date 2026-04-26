@@ -6,6 +6,7 @@ import { ChaptersOverview } from "./ChaptersOverview";
 import { DemoChapter } from "./DemoChapter";
 import { useStoreActions, useStoreState } from "../../store";
 import classNames from "classnames";
+import { format } from "date-fns/format";
 
 export const DemoSidebar = () => {
   const linkedDemo = useLinkedDemo();
@@ -60,13 +61,12 @@ export const DemoSidebar = () => {
   }
 
   function DemoFooter() {
+    const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
+
     return (
       <Row className={"demo-footer py-3 px-3"}>
         <div>
-          <p>
-            Published on{" "}
-            {new Date(linkedDemo.demo.lastUpdated || "").toLocaleDateString()}
-          </p>
+          <p>Published on {absTimestamp}</p>
         </div>
       </Row>
     );

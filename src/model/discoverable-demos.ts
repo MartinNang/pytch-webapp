@@ -8,7 +8,7 @@ import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
 import { RefObject } from "react";
-import { fetchParsedJsonValue } from "../utils";
+import { fetchParsedJsonValue, propSetterAction } from "../utils";
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
@@ -17,9 +17,9 @@ export const kDemoKindValues = ["game" as const, "snippet" as const];
 export const zDemoKind = z.literal(kDemoKindValues);
 export type DemoKind = z.infer<typeof zDemoKind>;
 
-export const kSortingOptions = ["lastUpdated", "alphabetAsc"] as const;
-export const zSortingOptions = z.literal(kSortingOptions);
-export type SortBy = z.infer<typeof zSortingOptions>;
+export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
+export const zSortBy = z.literal(kSortByValues);
+export type SortBy = z.infer<typeof zSortBy>;
 
 export function displayDemoKindName(demoKind: DemoKind): string {
   switch (demoKind) {
@@ -84,21 +84,6 @@ export function getProgramKindIcon(
   }
 }
 
-/** True classes don't play well with Easy-Peasy unfortunately, so it
- * seems to be better to just define a type at the TypeScript level, and
- * then at the JavaScript level it's just a plain object. - Done */
-export type Demo = {
-  slug: string;
-  displayName: string;
-  summaryMarkdown: string;
-  lastUpdated: Date;
-  featuredImageUrl: string;
-  featuredVideoUrl: string;
-  programKind: PytchProgramKind;
-  demoKind: DemoKind;
-  recommended: boolean;
-};
-
 const zDemoCatalogueEntry = z.strictObject({
   uuid: z.string(),
   displayName: z.string(),
@@ -130,6 +115,9 @@ function cmpCatalogueEntriesByDisplayName(
 ) {
   return a.displayName.localeCompare(b.displayName);
 }
+
+// TODO: Search for all occurrences of "en" (including quotes) when we
+// think about how to update for multiple languages.
 
 function demoResourceUrl(
   uuid: string,
@@ -177,6 +165,15 @@ export type DemosContent = {
   searchResults: DemoCatalogue;
 };
 
+export type IDemosSearchFilters = {
+  searchTerm: string;
+  demoKindSelector: DemoKindSelector;
+  programKindSelector: PytchProgramKindSelector;
+  setSearchTerm: Action<IDemosSearchFilters, string>;
+  setDemoKindSelector: Action<IDemosSearchFilters, DemoKindSelector>;
+  setProgramKindSelector: Action<IDemosSearchFilters, PytchProgramKindSelector>;
+};
+
 export type IDiscoverableDemos = {
   fetchedDemos: ExternalJsonSlice<DemosContent>;
   searchFilters: IDemosSearchFilters;
@@ -185,15 +182,6 @@ export type IDiscoverableDemos = {
   setSortBy: Action<IDiscoverableDemos, SortBy>;
   recommendedIndex: number;
   setRecommendedIndex: Action<IDiscoverableDemos, number>;
-};
-
-export type IDemosSearchFilters = {
-  searchTerm: string;
-  demoKindSelector: DemoKindSelector;
-  programKindSelector: PytchProgramKindSelector;
-  setSearchTerm: Action<IDemosSearchFilters, string>;
-  setDemoKindSelector: Action<IDemosSearchFilters, DemoKindSelector>;
-  setProgramKindSelector: Action<IDemosSearchFilters, PytchProgramKindSelector>;
 };
 
 const groupDemosIntoSections = (
@@ -218,15 +206,9 @@ export const discoverableDemos: IDiscoverableDemos = {
     searchTerm: "",
     demoKindSelector: "all",
     programKindSelector: "all",
-    setSearchTerm: action((state, newSearchTerm) => {
-      state.searchTerm = newSearchTerm;
-    }),
-    setDemoKindSelector: action((state, newDemoKindSelector) => {
-      state.demoKindSelector = newDemoKindSelector;
-    }),
-    setProgramKindSelector: action((state, newProgramKindSelector) => {
-      state.programKindSelector = newProgramKindSelector;
-    }),
+    setSearchTerm: propSetterAction("searchTerm"),
+    setDemoKindSelector: propSetterAction("demoKindSelector"),
+    setProgramKindSelector: propSetterAction("programKindSelector"),
   },
   sortBy: "lastUpdated",
   setSortBy: action((state, newSortBy) => {

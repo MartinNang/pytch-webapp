@@ -2,7 +2,7 @@ import { Button, Col, Collapse, Container, Row } from "react-bootstrap";
 import Markdown from "react-markdown";
 import React, { KeyboardEventHandler, RefObject } from "react";
 import { useStoreActions, useStoreState } from "../../store";
-import { useLinkedDemo } from "../Junior/lesson/hooks";
+import { useLinkedDemo, useMappedLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
 
 export const ChaptersOverview = ({
@@ -10,6 +10,7 @@ export const ChaptersOverview = ({
 }: {
   chaptersRef: RefObject<(HTMLLIElement | null)[]>;
 }) => {
+  const demoUuid = useMappedLinkedDemo((demo) => demo.demo.uuid);
   const isNavigationExpanded = useStoreState(
     (state) => state.ideLayout.demoSidebar.isNavigationExpanded
   );
@@ -103,8 +104,8 @@ export const ChaptersOverview = ({
         <Col xs={1} className={"p-0 m-0"}>
           <div className={"tree"}>
             <div className={"stem"} />
-            {headings?.map(() => {
-              return <div className={"branch"} />;
+            {headings?.map((_, index) => {
+              return <div key={`${demoUuid}/${index}`} className={"branch"} />;
             })}
           </div>
         </Col>
@@ -115,7 +116,13 @@ export const ChaptersOverview = ({
             onKeyDown={handleChaptersListOnKeyDown}
           >
             {headings?.map((heading: string, index: number) => {
-              return <ChapterHeading index={index} heading={heading} />;
+              return (
+                <ChapterHeading
+                  key={`${demoUuid}/${index}`}
+                  index={index}
+                  heading={heading}
+                />
+              );
             })}
           </ul>
         </Col>

@@ -21,14 +21,12 @@ export const NavBanner = () => {
     if (menuDiv == null) return;
 
     let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
-      if (window["computedStyleMap"] === "function") {
-        const mMenuDisplay = menuDiv.computedStyleMap().get("display");
-        if (mMenuDisplay == null) return;
+      const menuDisplay = window
+        .getComputedStyle(menuDiv)
+        .getPropertyValue("display");
 
-        const menuDisplay = mMenuDisplay as CSSKeywordValue;
-        if (menuIsExpanded && menuDisplay.value === "none") {
-          setMenuIsExpanded(false);
-        }
+      if (menuIsExpanded && menuDisplay === "none") {
+        setMenuIsExpanded(false);
       }
     });
 

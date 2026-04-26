@@ -361,4 +361,3 @@ export function mDataAttrStringValue(elt: HTMLElement, attrName: string) {
   }
   return mStrValue;
 }
-

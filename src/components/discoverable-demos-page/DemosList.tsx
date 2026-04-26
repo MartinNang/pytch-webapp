@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { NavBanner } from "../NavBanner";
 import { assertNever, EmptyProps, mDataAttrStringValue } from "../../utils";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
@@ -9,13 +9,12 @@ import { RecommendedDemos } from "./RecommendedDemos";
 import {
   kDemoKindValues,
   DemoKindSelector,
-  discoverableDemos,
   displayDemoKindName,
   displayProgramKindName,
   displaySortByName,
   PytchProgramKindSelector,
   SortBy,
-  kSortingOptions,
+  kSortByValues,
 } from "../../model/discoverable-demos";
 import { useStoreActions, useStoreState } from "../../store";
 import { kPytchProgramKindValues } from "../../model/pytch-program";
@@ -75,18 +74,13 @@ export const DemosList: React.FC<EmptyProps> = () => {
   const itemsPerPage = 10;
 
   const searchTermRef = useRef<HTMLInputElement>(null);
-  const programKindRef = useRef<HTMLSelectElement>(null);
-  const demoKindRef = useRef<HTMLSelectElement>(null);
-  const sortByRef = useRef<HTMLSelectElement>(null);
 
-  function handleChangeProgramKind() {
-    if (programKindRef.current) {
-      setProgramKindSelector(
-        (programKindRef.current.value as PytchProgramKindSelector) || "all"
-      );
-      searchForDemos();
-    }
-  }
+  const handleChangeProgramKind: ChangeEventHandler<HTMLSelectElement> = (
+    evt
+  ) => {
+    setProgramKindSelector(evt.target.value as PytchProgramKindSelector);
+    searchForDemos();
+  };
 
   function DemosHeader() {
     return (
@@ -111,12 +105,10 @@ export const DemosList: React.FC<EmptyProps> = () => {
   }
 
   function DemosSearch() {
-    function handleChangeSortBy() {
-      if (sortByRef.current) {
-        setSortBy(sortByRef?.current?.value as SortBy);
-        searchForDemos();
-      }
-    }
+    const handleChangeSortBy: ChangeEventHandler<HTMLSelectElement> = (evt) => {
+      setSortBy(evt.target.value as SortBy);
+      searchForDemos();
+    };
 
     return (
       <>
@@ -136,17 +128,12 @@ export const DemosList: React.FC<EmptyProps> = () => {
                     <Form.Select
                       aria-label="Program type"
                       className={"border-0"}
-                      onInputCapture={handleChangeProgramKind}
-                      ref={programKindRef}
+                      value={searchFilters.programKindSelector}
+                      onInput={handleChangeProgramKind}
                     >
                       <option value={"all"}>Program type</option>
                       {kPytchProgramKindValues.map((programKind) => (
-                        <option
-                          selected={
-                            programKind === searchFilters.programKindSelector
-                          }
-                          value={programKind}
-                        >
+                        <option key={programKind} value={programKind}>
                           {displayProgramKindName(programKind)}
                         </option>
                       ))}
@@ -157,15 +144,11 @@ export const DemosList: React.FC<EmptyProps> = () => {
                     <Form.Select
                       aria-label="Sort by"
                       className={"border-0"}
-                      onInputCapture={handleChangeSortBy}
+                      onInput={handleChangeSortBy}
                       value={sortBy}
-                      ref={sortByRef}
                     >
-                      {Object.values(kSortingOptions).map((sortingOption) => (
-                        <option
-                          selected={sortingOption === discoverableDemos.sortBy}
-                          value={sortingOption}
-                        >
+                      {Object.values(kSortByValues).map((sortingOption) => (
+                        <option key={sortingOption} value={sortingOption}>
                           {displaySortByName(sortingOption)}
                         </option>
                       ))}
@@ -203,7 +186,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
             {demosContent.searchResults
               .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
               .map((demo) => (
-                <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+                <Col key={demo.uuid} xs={12} sm={6} lg={4} className={"mb-5"}>
                   <DemoCard demo={demo} />
                 </Col>
               ))}
@@ -233,16 +216,20 @@ export const DemosList: React.FC<EmptyProps> = () => {
     }
   }
 
-  function handleChangeSearchTerm() {
-    setSearchTerm(searchTermRef?.current?.value || "");
+  const handleChangeSearchTerm: ChangeEventHandler<HTMLInputElement> = (
+    evt
+  ) => {
+    setSearchTerm(evt.target.value);
     searchForDemos();
-  }
+  };
 
   function DemosSearchField() {
-    function handleChangeDemoKind() {
-      setDemoKindSelector(demoKindRef?.current?.value as DemoKindSelector);
+    const handleChangeDemoKind: ChangeEventHandler<HTMLSelectElement> = (
+      evt
+    ) => {
+      setDemoKindSelector(evt.target.value as DemoKindSelector);
       searchForDemos();
-    }
+    };
 
     return (
       <Form.Group className="mb-3">
@@ -256,14 +243,10 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   value={searchFilters.demoKindSelector}
                   className={"project-type"}
                   onInput={handleChangeDemoKind}
-                  ref={demoKindRef}
                 >
                   <option value={"all"}>All</option>
                   {kDemoKindValues.map((demoKind) => (
-                    <option
-                      selected={demoKind === searchFilters.demoKindSelector}
-                      value={demoKind}
-                    >
+                    <option key={demoKind} value={demoKind}>
                       {displayDemoKindName(demoKind)}
                     </option>
                   ))}
@@ -276,7 +259,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   className={"w-100"}
                   placeholder=""
                   value={searchFilters.searchTerm}
-                  onInputCapture={handleChangeSearchTerm}
+                  onInput={handleChangeSearchTerm}
                   ref={searchTermRef}
                 />
               </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Card, Row, Col } from "react-bootstrap";
 import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
@@ -10,10 +10,10 @@ import {
   maybeDemoThumbnailVideoUrl,
   resetVideo,
 } from "../../model/discoverable-demos";
-import { pathWithinApp } from "../../env-utils";
 import classNames from "classnames";
 import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
+import { format } from "date-fns";
 
 type DemoCardProps = {
   demo: DemoCatalogueEntry;
@@ -25,11 +25,6 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   );
 
   const [hover, setHover] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setImageSrc(demoThumbnailImageUrl(demo));
-  }, [hover, demo]);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -80,7 +75,8 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const isSnippet: boolean = demo.demoKind === "snippet";
 
   const focusContext = useFocusContext();
-  const hasThumbnailVideo = demo.thumbnailVideoExtension != null;
+  const mVideoSrc = maybeDemoThumbnailVideoUrl(demo);
+  const hasThumbnailVideo = mVideoSrc != null;
 
   const showVideo = hover && hasThumbnailVideo;
   const showImage = !showVideo;
@@ -90,8 +86,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
       <>
         {hasThumbnailVideo ? (
           <video
-            // FIXME Restructure to avoid the non-null-assertion operator.
-            src={maybeDemoThumbnailVideoUrl(demo)!}
+            src={mVideoSrc}
             controls={false}
             autoPlay={true}
             muted={true}
@@ -110,11 +105,13 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         <Card.Img
           variant={"top"}
           className={classNames("h-100 thumbnail-bg", { showImage })}
-          src={imageSrc}
+          src={demoThumbnailImageUrl(demo)}
         />
       </>
     );
   }
+
+  const absTimestamp = format(demo.lastUpdated, "PP");
 
   return (
     <Card
@@ -171,9 +168,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
 
         <Row className={"share-row"}>
           <Col xs={12} sm={12} md={6} className={"align-items-end d-flex"}>
-            <p className={"m-0"}>
-              {new Date(demo.lastUpdated).toLocaleDateString()}
-            </p>
+            <p className={"m-0"}>{absTimestamp}</p>
           </Col>
         </Row>
       </Card.Body>

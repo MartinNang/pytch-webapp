@@ -14,12 +14,10 @@ import {
   LinkedNoContentRef,
   LinkedSpecimenRef,
   SpecimenContentHash,
-  DemoContentHash,
   LinkedDemoRef,
 } from "./linked-content-core";
 import { PytchProgramKind } from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
-import { demoUrl } from "./project-from-demo";
 import { parseMarkdown } from "./demo-sidebar";
 import {
   demoCatalogueEntryFromServer,
@@ -109,13 +107,6 @@ export async function lessonDescriptorFromRelativePath(
   );
 
   return { specimenContentHash, project };
-}
-
-async function fetchDemoChaptersFromMd(
-  url: string
-): Promise<string | undefined> {
-  let res = await fetch(url);
-  return res.text();
 }
 
 export async function fetchDemo(slug: string) {
