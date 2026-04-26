@@ -148,7 +148,6 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const resolveStringSpec = useResolveStringSpec();
   const { t } = useTranslation("ide");
   const { t: tProjects } = useTranslation("projects");
-  const navigate = useNavigate();
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
   );
