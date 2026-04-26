@@ -316,11 +316,11 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   block: "center",
                 }),
               onActivate: (elt: HTMLElement) => {
-                const mDemoSlug = mDataAttrStringValue(elt, "demoSlug");
-                if (mDemoSlug) {
-                  createProject(mDemoSlug);
+                const mDemoUuid = mDataAttrStringValue(elt, "demoUuid");
+                if (mDemoUuid) {
+                  createProject(mDemoUuid);
                 } else {
-                  console.warn("no demo slug found");
+                  console.warn("no demo uuid found");
                 }
               },
             }}
