@@ -3,7 +3,7 @@ import { Button, Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
 import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
 import {
-  Demo,
+  DemoCatalogueEntry,
   displayDemoKindName,
   getProgramKindIcon,
   resetVideo,
@@ -14,7 +14,11 @@ import { pathWithinApp } from "../../env-utils";
 import { assertNever } from "../../utils";
 
 export const RecommendedDemos = () => {
-  function RecommendedDemoCard({ recommendedDemo }: { recommendedDemo: Demo }) {
+  function RecommendedDemoCard({
+    recommendedDemo,
+  }: {
+    recommendedDemo: DemoCatalogueEntry;
+  }) {
     const createProject = useStoreActions(
       (actions) => actions.projectFromDemoFlow.createProject
     );
@@ -135,7 +139,7 @@ export const RecommendedDemos = () => {
             <Link
               ref={linkRef}
               to={""}
-              onClick={() => createProject(recommendedDemo.slug)}
+              onClick={() => createProject(recommendedDemo.uuid)}
             >
               <h3 style={{ fontWeight: "bold" }}>
                 {recommendedDemo.displayName}
