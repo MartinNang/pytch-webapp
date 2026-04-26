@@ -69,15 +69,15 @@ export function externalJsonSlice<ContentT>(
       const fetchState = state.contentFetchState;
       if (fetchState.state !== "idle") return;
 
+      const url = fetchState.urlFun();
       actions.setRequestingContent();
 
       try {
-        const url = urlWithinApp(urlNub);
         const rawObject = await fetchParsedJsonValue(url);
         const content = contentFromRawObj(rawObject);
         actions.setContent(content);
       } catch (err) {
-        console.error(`error fetching content from "${urlNub}":`, err);
+        console.error(`error fetching content from "${url}":`, err);
         actions.setContentFetchError();
       }
     }),
