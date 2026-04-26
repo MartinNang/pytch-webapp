@@ -19,7 +19,7 @@ export type LinkedSpecimenRef = z.infer<typeof zLinkedSpecimenRef>;
 
 const zLinkedDemoRef = z.object({
   kind: z.literal("demo"),
-  slug: z.string(),
+  uuid: z.string(),
 });
 export type LinkedDemoRef = z.infer<typeof zLinkedDemoRef>;
 
