@@ -12,7 +12,6 @@ import {
 } from "../../model/discoverable-demos";
 import classNames from "classnames";
 import { CarouselRef } from "react-bootstrap/Carousel";
-import { pathWithinApp } from "../../env-utils";
 import { assertNever } from "../../utils";
 
 export const RecommendedDemos = () => {

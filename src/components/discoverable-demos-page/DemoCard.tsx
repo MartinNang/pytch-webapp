@@ -10,7 +10,6 @@ import {
   maybeDemoThumbnailVideoUrl,
   resetVideo,
 } from "../../model/discoverable-demos";
-import { pathWithinApp } from "../../env-utils";
 import classNames from "classnames";
 import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";

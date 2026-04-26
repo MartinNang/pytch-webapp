@@ -84,21 +84,6 @@ export function getProgramKindIcon(
   }
 }
 
-/** True classes don't play well with Easy-Peasy unfortunately, so it
- * seems to be better to just define a type at the TypeScript level, and
- * then at the JavaScript level it's just a plain object. - Done */
-export type Demo = {
-  slug: string;
-  displayName: string;
-  summaryMarkdown: string;
-  lastUpdated: Date;
-  featuredImageUrl: string;
-  featuredVideoUrl: string;
-  programKind: PytchProgramKind;
-  demoKind: DemoKind;
-  recommended: boolean;
-};
-
 const zDemoCatalogueEntry = z.strictObject({
   uuid: z.string(),
   displayName: z.string(),

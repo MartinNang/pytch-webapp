@@ -14,12 +14,10 @@ import {
   LinkedNoContentRef,
   LinkedSpecimenRef,
   SpecimenContentHash,
-  DemoContentHash,
   LinkedDemoRef,
 } from "./linked-content-core";
 import { PytchProgramKind } from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
-import { demoUrl } from "./project-from-demo";
 import { parseMarkdown } from "./demo-sidebar";
 import {
   demoCatalogueEntryFromServer,
