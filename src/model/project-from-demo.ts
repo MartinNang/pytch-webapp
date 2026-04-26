@@ -8,6 +8,7 @@ import { createNewProject, CreateProjectOptions } from "../database/indexed-db";
 import { IPytchAppModel } from "./index";
 import { ProjectId } from "./project-core";
 import { envVarOrFail } from "../env-utils";
+import { demoProjectZipfileUrl } from "./discoverable-demos";
 
 type ProjectFromDemoState =
   | { state: "idle" }
@@ -47,17 +48,17 @@ export function demoUrl(relativeUrl: string): string {
 export let projectFromDemoFlow: ProjectFromDemoFlow = {
   state: { state: "idle" },
   setState: propSetterAction("state"),
-  createProject: thunk(async (actions, demo, helpers) => {
+  createProject: thunk(async (actions, demoUuid, helpers) => {
     const allActions = helpers.getStoreActions();
-    const relativePath = `${demo}/project.zip`;
-    const url = demoUrl(`${relativePath}`);
+
+    const url = demoProjectZipfileUrl(demoUuid);
 
     const zipData = await fetchArrayBuffer(url);
     const demoProject = await projectDescriptor(undefined, zipData);
 
     const linkedContentRef: LinkedContentRef = {
       kind: "demo",
-      slug: demo,
+      uuid: demoUuid,
     };
 
     const creationOptions: CreateProjectOptions = {
