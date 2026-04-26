@@ -45,11 +45,11 @@ function assertFetchState<
  * the parsed result through the given `contentFromRawObj()` conversion
  * function. */
 export function externalJsonSlice<ContentT>(
-  urlNub: string,
+  urlFun: () => string,
   contentFromRawObj: (rawObj: unknown) => ContentT
 ): ExternalJsonSlice<ContentT> {
   return {
-    contentFetchState: generic({ state: "idle" }),
+    contentFetchState: generic({ state: "idle", urlFun }),
 
     setRequestingContent: action((state) => {
       assertFetchState(state.contentFetchState, "idle");
