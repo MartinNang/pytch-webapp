@@ -140,18 +140,16 @@ export const DemosList: React.FC<EmptyProps> = () => {
                       ref={programKindRef}
                     >
                       <option value={"all"}>Program type</option>
-                      {kPytchProgramKindValues.map(
-                        (programKind) => (
-                          <option
-                            selected={
-                              programKind === searchFilters.programKindSelector
-                            }
-                            value={programKind}
-                          >
-                            {displayProgramKindName(programKind)}
-                          </option>
-                        )
-                      )}
+                      {kPytchProgramKindValues.map((programKind) => (
+                        <option
+                          selected={
+                            programKind === searchFilters.programKindSelector
+                          }
+                          value={programKind}
+                        >
+                          {displayProgramKindName(programKind)}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Form.Group>
                   <Form.Group className={"w-auto"}>
