@@ -66,7 +66,8 @@ export function externalJsonSlice<ContentT>(
 
     maybeLoadContent: thunk(async (actions, _voidPayload, helpers) => {
       const state = helpers.getState();
-      if (state.contentFetchState.state !== "idle") return;
+      const fetchState = state.contentFetchState;
+      if (fetchState.state !== "idle") return;
 
       actions.setRequestingContent();
 
