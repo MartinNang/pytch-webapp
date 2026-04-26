@@ -3,9 +3,11 @@ import { Button, Card, Row, Col } from "react-bootstrap";
 import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
 import {
-  Demo,
+  DemoCatalogueEntry,
+  demoThumbnailImageUrl,
   displayDemoKindName,
   getProgramKindIcon,
+  maybeDemoThumbnailVideoUrl,
   resetVideo,
 } from "../../model/discoverable-demos";
 import { pathWithinApp } from "../../env-utils";
@@ -14,7 +16,7 @@ import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 
 type DemoCardProps = {
-  demo: Demo;
+  demo: DemoCatalogueEntry;
 };
 
 export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
@@ -26,11 +28,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (demo.featuredImageUrl?.toLowerCase().startsWith("/")) {
-      setImageSrc(pathWithinApp(demo.featuredImageUrl));
-    } else if (demo.featuredImageUrl) {
-      setImageSrc(demo.featuredImageUrl);
-    }
+    setImageSrc(demoThumbnailImageUrl(demo));
   }, [hover, demo]);
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -82,14 +80,18 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const isSnippet: boolean = demo.demoKind === "snippet";
 
   const focusContext = useFocusContext();
-  const showVideo = hover && demo.featuredVideoUrl;
+  const hasThumbnailVideo = demo.thumbnailVideoExtension != null;
+
+  const showVideo = hover && hasThumbnailVideo;
   const showImage = !showVideo;
 
   function DemoThumbnailContent() {
     return (
       <>
-        {demo.featuredVideoUrl ? (
+        {hasThumbnailVideo ? (
           <video
+            // FIXME Restructure to avoid the non-null-assertion operator.
+            src={maybeDemoThumbnailVideoUrl(demo)!}
             controls={false}
             autoPlay={true}
             muted={true}
@@ -101,7 +103,6 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
             controlsList="nofullscreen"
             ref={videoRef}
             tabIndex={-1}
-            src={demo.featuredVideoUrl}
           >
             Your browser does not support the video tag.
           </video>
@@ -124,7 +125,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
       onFocus={handleFocusCard}
       onBlur={handleBlurCard}
       onClick={focusContext.onGroupItemClick}
-      data-demo-slug={demo.slug}
+      data-demo-uuid={demo.uuid}
       ref={cardRef}
     >
       <Card.Header className={"p-0 w-100"}>
@@ -159,7 +160,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         <Link
           to={""}
           onClick={(event) => {
-            createProject(demo.slug);
+            createProject(demo.uuid);
             focusContext.onGroupItemClick(event);
           }}
           tabIndex={-1}

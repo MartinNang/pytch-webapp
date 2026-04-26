@@ -1,4 +1,4 @@
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind, zPytchProgramKind } from "./pytch-program";
 import { util } from "zod/v3";
 import assertNever = util.assertNever;
 import { demoUrl } from "./project-from-demo";
@@ -8,6 +8,7 @@ import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
 import { RefObject } from "react";
+import { fetchParsedJsonValue } from "../utils";
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
@@ -98,10 +99,82 @@ export type Demo = {
   recommended: boolean;
 };
 
+const zDemoCatalogueEntry = z.strictObject({
+  uuid: z.string(),
+  displayName: z.string(),
+  authorName: z.string(),
+  programKind: zPytchProgramKind,
+  demoKind: zDemoKind,
+  summaryMarkdown: z.string(),
+  lastUpdated: z.string(),
+  recommended: z.boolean(),
+  thumbnailImageExtension: z.string(),
+  thumbnailVideoExtension: z.union([z.null(), z.string()]),
+  latestUuid: z.string(),
+});
+export type DemoCatalogueEntry = z.infer<typeof zDemoCatalogueEntry>;
+
+export const zDemoCatalogue = z.array(zDemoCatalogueEntry);
+type DemoCatalogue = z.infer<typeof zDemoCatalogue>;
+
+function cmpCatalogueEntriesByLastUpdated(
+  a: DemoCatalogueEntry,
+  b: DemoCatalogueEntry
+) {
+  return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+}
+
+function cmpCatalogueEntriesByDisplayName(
+  a: DemoCatalogueEntry,
+  b: DemoCatalogueEntry
+) {
+  return a.displayName.localeCompare(b.displayName);
+}
+
+function demoResourceUrl(
+  uuid: string,
+  language: string,
+  relativeUrl: string
+): string {
+  return demoUrl(`${uuid}/${language}/${relativeUrl}`);
+}
+
+export function demoThumbnailImageUrl(demo: DemoCatalogueEntry): string {
+  const relativeUrl = `content/thumbnail${demo.thumbnailImageExtension}`;
+  return demoResourceUrl(demo.uuid, "en", relativeUrl);
+}
+
+export function maybeDemoThumbnailVideoUrl(
+  demo: DemoCatalogueEntry
+): string | null {
+  if (demo.thumbnailVideoExtension == null) {
+    return null;
+  }
+
+  const relativeUrl = `content/thumbnail${demo.thumbnailVideoExtension}`;
+  return demoResourceUrl(demo.uuid, "en", relativeUrl);
+}
+
+export function demoProjectZipfileUrl(demoUuid: string): string {
+  return demoResourceUrl(demoUuid, "en", "project.zip");
+}
+
+export function demoDescriptionUrl(demoUuid: string): string {
+  return demoResourceUrl(demoUuid, "en", "content/description.md");
+}
+
+export async function demoCatalogueEntryFromServer(
+  demoUuid: string
+): Promise<DemoCatalogueEntry> {
+  const url = demoResourceUrl(demoUuid, "en", "metadata.json");
+  const json = await fetchParsedJsonValue(url);
+  return zDemoCatalogueEntry.parse(json);
+}
+
 export type DemosContent = {
-  allDemos: Demo[];
-  recommendedDemos: Demo[];
-  searchResults: Demo[];
+  allDemos: DemoCatalogue;
+  recommendedDemos: DemoCatalogue;
+  searchResults: DemoCatalogue;
 };
 
 export type IDiscoverableDemos = {
@@ -123,27 +196,13 @@ export type IDemosSearchFilters = {
   setProgramKindSelector: Action<IDemosSearchFilters, PytchProgramKindSelector>;
 };
 
-const groupDemosIntoSections = (rawHelpData: any): DemosContent => {
-  let dContent: DemosContent = {
-    recommendedDemos: [],
-    allDemos: [],
-    searchResults: [],
-  };
-
-  for (const datum of rawHelpData) {
-    if (datum.recommended) {
-      dContent.recommendedDemos.push(datum);
-    }
-    dContent.allDemos.push(datum);
-  }
-
-  dContent.searchResults = dContent.allDemos.sort((a: Demo, b: Demo) => {
-    return (
-      new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-    );
-  });
-
-  return dContent;
+const groupDemosIntoSections = (
+  rawDemoCatalogueData: unknown
+): DemosContent => {
+  const allDemos = zDemoCatalogue.parse(rawDemoCatalogueData);
+  const recommendedDemos = allDemos.filter((demo) => demo.recommended);
+  const searchResults = allDemos.sort(cmpCatalogueEntriesByLastUpdated);
+  return { allDemos, recommendedDemos, searchResults };
 };
 
 export function demosIndexUrl(language: string): string {
@@ -176,7 +235,7 @@ export const discoverableDemos: IDiscoverableDemos = {
   searchForDemos: action((state) => {
     if (state.fetchedDemos.contentFetchState.state === "available") {
       const demosContent = state.fetchedDemos.contentFetchState.content;
-      let searchResults: Demo[] = [...demosContent.allDemos];
+      let searchResults: DemoCatalogue = [...demosContent.allDemos];
       const searchFilters: FilterActionTypes<IDemosSearchFilters> =
         state.searchFilters;
       const sortBy: SortBy = state.sortBy;
@@ -203,16 +262,10 @@ export const discoverableDemos: IDiscoverableDemos = {
 
       switch (sortBy) {
         case "alphabetAsc":
-          searchResults = searchResults.sort((a, b) =>
-            a.displayName.localeCompare(b.displayName)
-          );
+          searchResults = searchResults.sort(cmpCatalogueEntriesByDisplayName);
           break;
         case "lastUpdated":
-          searchResults = searchResults.sort(
-            (a, b) =>
-              new Date(b.lastUpdated).getTime() -
-              new Date(a.lastUpdated).getTime()
-          );
+          searchResults = searchResults.sort(cmpCatalogueEntriesByLastUpdated);
           break;
         default:
           assertNever(sortBy);
