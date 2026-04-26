@@ -3,7 +3,7 @@ import { Button, Card, Row, Col } from "react-bootstrap";
 import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
 import {
-  Demo,
+  DemoCatalogueEntry,
   displayDemoKindName,
   getProgramKindIcon,
   resetVideo,
@@ -14,7 +14,7 @@ import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 
 type DemoCardProps = {
-  demo: Demo;
+  demo: DemoCatalogueEntry;
 };
 
 export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
@@ -124,7 +124,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
       onFocus={handleFocusCard}
       onBlur={handleBlurCard}
       onClick={focusContext.onGroupItemClick}
-      data-demo-slug={demo.slug}
+      data-demo-uuid={demo.uuid}
       ref={cardRef}
     >
       <Card.Header className={"p-0 w-100"}>
@@ -159,7 +159,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         <Link
           to={""}
           onClick={(event) => {
-            createProject(demo.slug);
+            createProject(demo.uuid);
             focusContext.onGroupItemClick(event);
           }}
           tabIndex={-1}
