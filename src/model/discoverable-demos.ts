@@ -106,7 +106,6 @@ export type DemosContent = {
 
 export type IDiscoverableDemos = {
   fetchedDemos: ExternalJsonSlice<DemosContent>;
-  setSearchResults: Action<DemosContent, Demo[]>;
   searchFilters: IDemosSearchFilters;
   searchForDemos: Action<IDiscoverableDemos>;
   sortBy: SortBy;
@@ -152,9 +151,6 @@ export const discoverableDemos: IDiscoverableDemos = {
     demoUrl("demos.json"),
     groupDemosIntoSections // TODO: check if deep comparison prevents endless re-render
   ),
-  setSearchResults: action((state, newSearchResults) => {
-    state.searchResults = newSearchResults;
-  }),
   searchFilters: {
     searchTerm: "",
     demoKindSelector: "all",
