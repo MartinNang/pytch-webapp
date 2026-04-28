@@ -20,6 +20,7 @@ import { useStoreActions, useStoreState } from "../../store";
 import { kPytchProgramKindValues } from "../../model/pytch-program";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
+import { CreateProjectFromDemoModal } from "./CreateProjectFromDemoModal";
 
 /** TODO The data files for the demos need to live not in this repo.  There
  * needs to be some machinery to support a reasonable workflow for
@@ -285,6 +286,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
 
   return (
     <>
+      <CreateProjectFromDemoModal />
       <FocusContext.Provider value={focusContext}>
         <NavBanner />
         <div className="DemosList" tabIndex={-1} ref={paneRef}>
