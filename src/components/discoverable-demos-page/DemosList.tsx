@@ -222,12 +222,11 @@ const DemosResults: React.FC<EmptyProps> = () => {
 
       return (
         <>
-          {demosThisPage
-            .map((demo) => (
-              <Col key={demo.uuid} xs={12} sm={6} lg={4} className={"mb-5"}>
-                <DemoCard demo={demo} />
-              </Col>
-            ))}
+          {demosThisPage.map((demo) => (
+            <Col key={demo.uuid} xs={12} sm={6} lg={4} className={"mb-5"}>
+              <DemoCard demo={demo} />
+            </Col>
+          ))}
           {nFoundDemos === 0 ? (
             <Col className={"no-results"}>
               <p>No demos found.</p>

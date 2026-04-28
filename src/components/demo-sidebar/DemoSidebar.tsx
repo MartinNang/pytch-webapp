@@ -36,12 +36,14 @@ export const DemoSidebar = () => {
       setIsNavigationExpanded(true);
     } else setIsNavigationExpanded(false);
 
-    // reset to prevent new demo from starting at a non-existing chapter on load
+    // reset to prevent new demo from starting at a non-existing chapter
+    // on load
     setActiveChapter(0);
   }, []);
 
-  // the following useEffect methods are needed to return focus to the previously used button after scrolling
-  // to the active chapter in the chapter navigation
+  // the following useEffect methods are needed to return focus to the
+  // previously used button after scrolling to the active chapter in the
+  // chapter navigation
   useEffect(() => {
     navCaretRef.current?.focus();
   }, [isNavigationExpanded]);
