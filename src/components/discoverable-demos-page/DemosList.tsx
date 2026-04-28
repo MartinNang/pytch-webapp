@@ -9,7 +9,6 @@ import { RecommendedDemos } from "./RecommendedDemos";
 import {
   kDemoKindValues,
   DemoKindSelector,
-  discoverableDemos,
   displayDemoKindName,
   displayProgramKindName,
   displaySortByName,
@@ -75,9 +74,6 @@ export const DemosList: React.FC<EmptyProps> = () => {
   const itemsPerPage = 10;
 
   const searchTermRef = useRef<HTMLInputElement>(null);
-  const programKindRef = useRef<HTMLSelectElement>(null);
-  const demoKindRef = useRef<HTMLSelectElement>(null);
-  const sortByRef = useRef<HTMLSelectElement>(null);
 
   const handleChangeProgramKind: ChangeEventHandler<HTMLSelectElement> = (
     evt
@@ -132,7 +128,6 @@ export const DemosList: React.FC<EmptyProps> = () => {
                     <Form.Select
                       aria-label="Program type"
                       className={"border-0"}
-                      ref={programKindRef}
                       value={searchFilters.programKindSelector}
                       onInput={handleChangeProgramKind}
                     >
@@ -151,7 +146,6 @@ export const DemosList: React.FC<EmptyProps> = () => {
                       className={"border-0"}
                       onInput={handleChangeSortBy}
                       value={sortBy}
-                      ref={sortByRef}
                     >
                       {Object.values(kSortByValues).map((sortingOption) => (
                         <option key={sortingOption} value={sortingOption}>
@@ -249,7 +243,6 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   value={searchFilters.demoKindSelector}
                   className={"project-type"}
                   onInput={handleChangeDemoKind}
-                  ref={demoKindRef}
                 >
                   <option value={"all"}>All</option>
                   {kDemoKindValues.map((demoKind) => (
