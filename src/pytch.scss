@@ -425,12 +425,12 @@ button.awaiting-action {
     h1 {
       justify-content: center;
       width: 100%;
-      font-family: "Hanken Grotesk", sans-serif;
+      font-family: $pytch-body-font;
       font-size: calc(1.375rem + 1.5vw);
     }
 
     h2 {
-      font-family: "Hanken Grotesk", sans-serif;
+      font-family: $pytch-body-font;
       font-size: calc(0.8rem + 1.25vw);
     }
   }
