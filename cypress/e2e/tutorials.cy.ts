@@ -10,7 +10,7 @@ import {
 context("Work with tutorials list", () => {
   it("shows list of tutorials", () => {
     cy.visit("/");
-    cy.get(".NavBar li").contains("Tutorials").click();
+    cy.pytchTutorialsFromHome();
     cy.contains("Boing");
     // Expect some "beginner" and some "advanced":
     cy.get(".tag-difficulty")
