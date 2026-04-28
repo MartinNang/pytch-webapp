@@ -203,7 +203,7 @@ export const RecommendedDemos = () => {
             ref={carouselRef}
           >
             {recommendedDemos?.map((recommendedDemo) => (
-              <Carousel.Item>
+              <Carousel.Item key={recommendedDemo.uuid}>
                 <DemoCard demo={recommendedDemo} />
               </Carousel.Item>
             ))}

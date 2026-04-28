@@ -142,6 +142,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                       <option value={"all"}>Program type</option>
                       {kPytchProgramKindValues.map((programKind) => (
                         <option
+                          key={programKind}
                           selected={
                             programKind === searchFilters.programKindSelector
                           }
@@ -163,6 +164,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                     >
                       {Object.values(kSortingOptions).map((sortingOption) => (
                         <option
+                          key={sortingOption}
                           selected={sortingOption === discoverableDemos.sortBy}
                           value={sortingOption}
                         >
@@ -203,7 +205,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
             {demosContent.searchResults
               .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
               .map((demo) => (
-                <Col xs={12} sm={6} lg={4} className={"mb-5"}>
+                <Col key={demo.uuid} xs={12} sm={6} lg={4} className={"mb-5"}>
                   <DemoCard demo={demo} />
                 </Col>
               ))}
@@ -261,6 +263,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                   <option value={"all"}>All</option>
                   {kDemoKindValues.map((demoKind) => (
                     <option
+                      key={demoKind}
                       selected={demoKind === searchFilters.demoKindSelector}
                       value={demoKind}
                     >
