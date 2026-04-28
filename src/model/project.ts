@@ -114,8 +114,7 @@ type SyncRequestOutcome = "succeeded" | "failed";
 type SyncRequestState = "pending" | SyncRequestOutcome;
 
 interface ILoadSaveRequest {
-  projectId?: ProjectId;
-  demoId?: string;
+  projectId: ProjectId;
   seqnum: number;
   state: SyncRequestState;
 }
