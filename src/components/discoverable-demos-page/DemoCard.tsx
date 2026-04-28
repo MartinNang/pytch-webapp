@@ -24,11 +24,6 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   );
 
   const [hover, setHover] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setImageSrc(demoThumbnailImageUrl(demo));
-  }, [hover, demo]);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -79,7 +74,8 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const isSnippet: boolean = demo.demoKind === "snippet";
 
   const focusContext = useFocusContext();
-  const hasThumbnailVideo = demo.thumbnailVideoExtension != null;
+  const mVideoSrc = maybeDemoThumbnailVideoUrl(demo);
+  const hasThumbnailVideo = mVideoSrc != null;
 
   const showVideo = hover && hasThumbnailVideo;
   const showImage = !showVideo;
@@ -89,8 +85,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
       <>
         {hasThumbnailVideo ? (
           <video
-            // FIXME Restructure to avoid the non-null-assertion operator.
-            src={maybeDemoThumbnailVideoUrl(demo)!}
+            src={mVideoSrc}
             controls={false}
             autoPlay={true}
             muted={true}
@@ -109,7 +104,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         <Card.Img
           variant={"top"}
           className={classNames("h-100 thumbnail-bg", { showImage })}
-          src={imageSrc}
+          src={demoThumbnailImageUrl(demo)}
         />
       </>
     );
