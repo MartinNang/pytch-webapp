@@ -213,7 +213,9 @@ export const StageControls: React.FC<EmptyProps> = () => {
         className="leave-full-screen"
         variant={"secondary"}
         onClick={() => setIsFullScreen(false)}
-      ></Button>
+      >
+        <FontAwesomeIcon className="fa-lg" icon="compress" aria-hidden={true} />
+      </Button>
     </section>
   ) : (
     <section
