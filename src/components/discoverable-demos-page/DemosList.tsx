@@ -245,7 +245,7 @@ const DemosResults: React.FC<EmptyProps> = () => {
       return (
         <>
           <h1>Problem</h1>
-          <p>Sorry, there was a problem fetching the help information.</p>
+          <p>Sorry, there was a problem fetching the demos information.</p>
         </>
       );
     default:
