@@ -10,9 +10,6 @@ import { RefObject } from "react";
 import { fetchParsedJsonValue, propSetterAction } from "../utils";
 import { envVarOrFail } from "../env-utils";
 
-export type DemoKindSelector = DemoKind | "all";
-export type PytchProgramKindSelector = PytchProgramKind | "all";
-
 export const kDemoKindValues = ["game" as const, "snippet" as const];
 export const zDemoKind = z.literal(kDemoKindValues);
 export type DemoKind = z.infer<typeof zDemoKind>;
@@ -20,6 +17,9 @@ export type DemoKind = z.infer<typeof zDemoKind>;
 export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
 export const zSortBy = z.literal(kSortByValues);
 export type SortBy = z.infer<typeof zSortBy>;
+
+export type DemoKindSelector = DemoKind | "all";
+export type PytchProgramKindSelector = PytchProgramKind | "all";
 
 export function displayDemoKindName(demoKind: DemoKind): string {
   switch (demoKind) {
@@ -189,7 +189,11 @@ export type IDiscoverableDemos = {
   setRecommendedIndex: Action<IDiscoverableDemos, number>;
 };
 
-const groupDemosIntoSections = (
+export function demosIndexUrl(language: string): string {
+  return demoUrl(`index/${language}/demos.json`);
+}
+
+const demosContentFromRawCatalogue = (
   rawDemoCatalogueData: unknown
 ): DemosContent => {
   const allDemos = zDemoCatalogue.parse(rawDemoCatalogueData);
@@ -198,14 +202,10 @@ const groupDemosIntoSections = (
   return { allDemos, recommendedDemos, searchResults };
 };
 
-export function demosIndexUrl(language: string): string {
-  return demoUrl(`index/${language}/demos.json`);
-}
-
 export const discoverableDemos: IDiscoverableDemos = {
   fetchedDemos: externalJsonSlice(
     () => demosIndexUrl("en"),
-    groupDemosIntoSections // TODO: check if deep comparison prevents endless re-render
+    demosContentFromRawCatalogue // TODO: check if deep comparison prevents endless re-render
   ),
   searchFilters: {
     searchTerm: "",
@@ -222,10 +222,10 @@ export const discoverableDemos: IDiscoverableDemos = {
   searchForDemos: action((state) => {
     if (state.fetchedDemos.contentFetchState.state === "available") {
       const demosContent = state.fetchedDemos.contentFetchState.content;
-      let searchResults: DemoCatalogue = [...demosContent.allDemos];
-      const searchFilters: FilterActionTypes<IDemosSearchFilters> =
-        state.searchFilters;
-      const sortBy: SortBy = state.sortBy;
+      const searchFilters = state.searchFilters;
+      const sortBy = state.sortBy;
+
+      let searchResults = [...demosContent.allDemos];
 
       if (searchFilters.searchTerm.length > 0) {
         searchResults = searchResults.filter((demo) =>
