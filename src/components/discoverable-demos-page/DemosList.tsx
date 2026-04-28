@@ -214,17 +214,21 @@ const DemosResults: React.FC<EmptyProps> = () => {
       );
     case "available": {
       const demosContent = contentFetchState.content;
+      const nFoundDemos = demosContent.searchResults.length;
+      const demosThisPage = demosContent.searchResults.slice(
+        (activePage - 1) * kDemosPerPage,
+        activePage * kDemosPerPage
+      );
 
       return (
         <>
-          {demosContent.searchResults
-            .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
+          {demosThisPage
             .map((demo) => (
               <Col key={demo.uuid} xs={12} sm={6} lg={4} className={"mb-5"}>
                 <DemoCard demo={demo} />
               </Col>
             ))}
-          {demosContent.searchResults.length === 0 ? (
+          {nFoundDemos === 0 ? (
             <Col className={"no-results"}>
               <p>No demos found.</p>
             </Col>
@@ -232,8 +236,8 @@ const DemosResults: React.FC<EmptyProps> = () => {
           <PaginationProvider
             activePage={activePage}
             setActivePage={setActivePage}
-            nItems={demosContent.searchResults.length}
-            itemsPerPage={itemsPerPage}
+            nItems={nFoundDemos}
+            itemsPerPage={kDemosPerPage}
           />
         </>
       );
