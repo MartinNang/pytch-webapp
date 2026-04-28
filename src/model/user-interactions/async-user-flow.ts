@@ -163,6 +163,7 @@ type AsyncUserFlowSliceFuncs<
     RunStateT,
     AttemptOutcomeNubT
   >;
+  autoSubmit?: boolean;
 };
 
 function baseAsyncUserFlowSlice<
@@ -178,6 +179,8 @@ function baseAsyncUserFlowSlice<
     AttemptOutcomeNubT
   >
 ): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
+  const autoSubmit = funcs.autoSubmit ?? false;
+
   return {
     fsmState: generic({ kind: "idle" }),
     isSubmittable: computed((state) => {
@@ -227,6 +230,10 @@ function baseAsyncUserFlowSlice<
           runState: initRunState,
           userSettle,
         });
+
+        if (autoSubmit) {
+          userSettle("submit");
+        }
 
         const settleResult = await throwIfAbandoned(userSettlePromise);
         if (settleResult === "cancel") {
