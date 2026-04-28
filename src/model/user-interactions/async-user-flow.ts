@@ -145,7 +145,7 @@ export type AttemptOutcome<NubT> = {
   nub: NubT;
 };
 
-type AsyncUserFlowSliceFuncs<
+type AsyncUserFlowSliceSpec<
   AppModelT extends object,
   RunArgsT,
   RunStateT,
@@ -163,6 +163,7 @@ type AsyncUserFlowSliceFuncs<
     RunStateT,
     AttemptOutcomeNubT
   >;
+  autoSubmit?: boolean;
 };
 
 function baseAsyncUserFlowSlice<
@@ -171,20 +172,22 @@ function baseAsyncUserFlowSlice<
   RunStateT,
   AttemptOutcomeNubT,
 >(
-  funcs: AsyncUserFlowSliceFuncs<
+  flowSpec: AsyncUserFlowSliceSpec<
     AppModelT,
     RunArgsT,
     RunStateT,
     AttemptOutcomeNubT
   >
 ): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
+  const autoSubmit = flowSpec.autoSubmit ?? false;
+
   return {
     fsmState: generic({ kind: "idle" }),
     isSubmittable: computed((state) => {
       const fsmState = state.fsmState;
       return (
         fsmState.kind === "interacting" &&
-        funcs.isSubmittable(fsmState.runState)
+        flowSpec.isSubmittable(fsmState.runState)
       );
     }),
 
@@ -216,7 +219,7 @@ function baseAsyncUserFlowSlice<
         actions.setFsmState({ kind: "preparing" });
 
         const initRunState: RunStateT = await throwIfAbandoned(
-          funcs.prepare(args, storeActions, navigationGuard)
+          flowSpec.prepare(args, storeActions, navigationGuard)
         );
 
         const { promise: userSettlePromise, resolve: userSettle } =
@@ -227,6 +230,10 @@ function baseAsyncUserFlowSlice<
           runState: initRunState,
           userSettle,
         });
+
+        if (autoSubmit) {
+          userSettle("submit");
+        }
 
         const settleResult = await throwIfAbandoned(userSettlePromise);
         if (settleResult === "cancel") {
@@ -247,7 +254,7 @@ function baseAsyncUserFlowSlice<
         // The promise returned from this attempt() call can reject
         // (a "business logic" error, or by back/fwd abandonment).
         const outcome = await throwIfAbandoned(
-          funcs.attempt(submittedRunState, storeActions, navigationGuard)
+          flowSpec.attempt(submittedRunState, storeActions, navigationGuard)
         );
 
         if (outcome.needsModalNotification) {
@@ -275,8 +282,8 @@ function baseAsyncUserFlowSlice<
           }
         }
 
-        if (funcs.onCompleted != null) {
-          funcs.onCompleted(submittedRunState, outcome.nub, storeActions);
+        if (flowSpec.onCompleted != null) {
+          flowSpec.onCompleted(submittedRunState, outcome.nub, storeActions);
         }
 
         onDispose("completed");
@@ -331,11 +338,17 @@ function baseAsyncUserFlowSlice<
       mutating the flow's run-state (usually as a result of user
       actions, for example typing into an input box).
 
-    - `prepare()` — Run at the start of the flow.  Its job is to convert
-      the "run arguments" (which should be convenient for the caller of
-      `run()` to construct) into "run state" (which can transform those
-      arguments to make them more convenient for the flow logic).  The
-      flow's `prepare()` function is given arguments:
+    - `flowSpec` — Object containing the various functions and other
+      options needed to specify the flow.  See below.
+
+    The `flowSpec` argument should be an object with the following
+    properties:
+
+    - `prepare()` — Function to be run at the start of the flow.  Its
+      job is to convert the "run arguments" (which should be convenient
+      for the caller of `run()` to construct) into "run state" (which
+      can transform those arguments to make them more convenient for the
+      flow logic).  The flow's `prepare()` function is given arguments:
 
       - `runArgs` — The arguments (bundled into a single object) which
         were given to the top-level `run()` thunk.
@@ -377,6 +390,26 @@ function baseAsyncUserFlowSlice<
       the notification to the user, or to construct the "toast" which
       lets the user know, unobtrusively, that the operation succeeded,
       at least in part.
+
+    - `onCompleted()` — An optional function.  If present, it is called
+      after the flow is "completed", i.e., when the `attempt()` function
+      has succeeded and the user has acknowledged any notification
+      generated.  The `onComplete()` function is passed arguments:
+
+      - `submittedRunState` — The value of the run state when the user
+        "submitted" the flow.
+
+      - `outcomeNub` — The "nub" of the outcome of the `attempt()`
+        function.  (The concept of "nub" exists so the `attempt()`
+        function can separately specify whether a modal notification is
+        required.)
+
+      - `storeActions` — The top-level collection of app actions.
+
+    - `autoSubmit` — An optional boolean to allow simple flows where no
+      user interaction is required.  Provide `autoSubmit: true` to
+      specify that the flow should move straight from the preparation
+      stage to the attempt stage.
 */
 // TODO: If SpecificSliceT is always a collection of Actions, rename
 // type param to sth like SpecificActions.
@@ -388,7 +421,7 @@ export function asyncUserFlowSlice<
   AttemptOutcomeNubT,
 >(
   specificSlice: SpecificSliceT,
-  funcs: AsyncUserFlowSliceFuncs<
+  flowSpec: AsyncUserFlowSliceSpec<
     AppModelT,
     RunArgsT,
     RunStateT,
@@ -396,7 +429,7 @@ export function asyncUserFlowSlice<
   >
 ): SpecificSliceT &
   AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
-  const asyncFlowModelSlice = baseAsyncUserFlowSlice(funcs);
+  const asyncFlowModelSlice = baseAsyncUserFlowSlice(flowSpec);
   return Object.assign({}, specificSlice, asyncFlowModelSlice);
 }
 
