@@ -1,5 +1,4 @@
 import { action, Action, generic, Generic, thunk, Thunk } from "easy-peasy";
-import { urlWithinApp } from "../env-utils";
 import { fetchParsedJsonValue } from "../utils";
 
 type ContentFetchState<ContentT> =
