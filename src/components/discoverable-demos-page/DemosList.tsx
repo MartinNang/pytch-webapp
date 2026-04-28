@@ -117,12 +117,13 @@ const DemosSearch: React.FC<EmptyProps> = () => {
   const programKindSelector = useDemoListState(
     (s) => s.searchFilters.programKindSelector
   );
-  const searchForDemos = useDemoListActions((a) => a.searchForDemos);
   const sortBy = useDemoListState((s) => s.sortBy);
-  const setSortBy = useDemoListActions((a) => a.setSortBy);
+
   const setProgramKindSelector = useDemoListActions(
     (a) => a.searchFilters.setProgramKindSelector
   );
+  const setSortBy = useDemoListActions((a) => a.setSortBy);
+  const searchForDemos = useDemoListActions((a) => a.searchForDemos);
 
   const handleChangeSortBy: ChangeEventHandler<HTMLSelectElement> = (evt) => {
     setSortBy(evt.target.value as SortBy);
