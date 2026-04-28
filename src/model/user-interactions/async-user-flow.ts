@@ -405,6 +405,11 @@ function baseAsyncUserFlowSlice<
         required.)
 
       - `storeActions` — The top-level collection of app actions.
+
+    - `autoSubmit` — An optional boolean to allow simple flows where no
+      user interaction is required.  Provide `autoSubmit: true` to
+      specify that the flow should move straight from the preparation
+      stage to the attempt stage.
 */
 // TODO: If SpecificSliceT is always a collection of Actions, rename
 // type param to sth like SpecificActions.
