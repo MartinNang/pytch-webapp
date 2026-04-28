@@ -161,8 +161,13 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("pytchHomeFromIDE", () => {
-  cy.get('button *[aria-label="Home"]').click();
+  cy.get('a *[aria-label="Home"]').click();
   assertOnHomepage();
+});
+
+Cypress.Commands.add("pytchTutorialsFromHome", () => {
+  cy.get("a.dropdown-toggle").contains("Explore").click();
+  cy.get("a.dropdown-item").contains("Tutorials").click();
 });
 
 Cypress.Commands.add("pytchSwitchProject", (name: string) => {
@@ -193,7 +198,8 @@ const createTutorialProject = (
   }
 
   cy.contains("My projects").click();
-  cy.contains("Tutorials").click();
+  cy.pytchTutorialsFromHome();
+
   cy.get(`.TutorialCard[data-slug="${tutorialSlug}"]`).within(() => {
     cy.contains(buttonContent).click();
   });
