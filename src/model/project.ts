@@ -12,7 +12,8 @@ import {
   LinkedContentKind,
   LinkedContentOfKind,
   dereferenceLinkedSpecimen,
-  dereferenceLinkedNoContent, dereferenceLinkedDemo,
+  dereferenceLinkedNoContent,
+  dereferenceLinkedDemo,
 } from "./linked-content";
 import {
   Action,
@@ -48,12 +49,12 @@ import {
 import { IPytchAppModel } from ".";
 import { assetServer } from "../skulpt-connection/asset-server";
 import {
-    assertNever,
-    delaySeconds,
-    failIfNull,
-    parsedHtmlBody,
-    propSetterAction,
-    valueCell,
+  assertNever,
+  delaySeconds,
+  failIfNull,
+  parsedHtmlBody,
+  propSetterAction,
+  valueCell,
 } from "../utils";
 import { codeJustBeforeWipChapter, tutorialContentFromHTML } from "./tutorial";
 
@@ -995,10 +996,7 @@ export const activeProject: IActiveProject = {
               linkedContentRef
             );
           case "demo":
-            return dereferenceLinkedDemo(
-                projectProgramKind,
-                linkedContentRef
-            );
+            return dereferenceLinkedDemo(projectProgramKind, linkedContentRef);
           default:
             return assertNever(linkedContentRef);
         }

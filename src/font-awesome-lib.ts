@@ -40,9 +40,9 @@ import {
   faWindowMinimize,
   faKeyboard,
   faLanguage,
-    faShare,
-    faLayerGroup,
-    faSearch
+  faShare,
+  faLayerGroup,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faTimesCircle, faEnvelope } from "@fortawesome/free-regular-svg-icons";
@@ -90,7 +90,7 @@ library.add(
   faKeyboard,
   faLanguage,
   faTimesCircle,
-    faShare,
-    faLayerGroup,
-    faSearch
+  faShare,
+  faLayerGroup,
+  faSearch
 );
