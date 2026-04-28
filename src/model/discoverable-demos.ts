@@ -165,6 +165,15 @@ export type DemosContent = {
   searchResults: DemoCatalogue;
 };
 
+export type IDemosSearchFilters = {
+  searchTerm: string;
+  demoKindSelector: DemoKindSelector;
+  programKindSelector: PytchProgramKindSelector;
+  setSearchTerm: Action<IDemosSearchFilters, string>;
+  setDemoKindSelector: Action<IDemosSearchFilters, DemoKindSelector>;
+  setProgramKindSelector: Action<IDemosSearchFilters, PytchProgramKindSelector>;
+};
+
 export type IDiscoverableDemos = {
   fetchedDemos: ExternalJsonSlice<DemosContent>;
   searchFilters: IDemosSearchFilters;
@@ -173,15 +182,6 @@ export type IDiscoverableDemos = {
   setSortBy: Action<IDiscoverableDemos, SortBy>;
   recommendedIndex: number;
   setRecommendedIndex: Action<IDiscoverableDemos, number>;
-};
-
-export type IDemosSearchFilters = {
-  searchTerm: string;
-  demoKindSelector: DemoKindSelector;
-  programKindSelector: PytchProgramKindSelector;
-  setSearchTerm: Action<IDemosSearchFilters, string>;
-  setDemoKindSelector: Action<IDemosSearchFilters, DemoKindSelector>;
-  setProgramKindSelector: Action<IDemosSearchFilters, PytchProgramKindSelector>;
 };
 
 const groupDemosIntoSections = (
