@@ -218,7 +218,7 @@ export function useLinkedContentLoadingStateSummary() {
 }
 
 export async function dereferenceLinkedDemo(
-  programKind: PytchProgramKind,
+  _programKind: PytchProgramKind,
   ref: LinkedDemoRef
 ): Promise<LinkedDemo> {
   const demo = await demoDescriptorFromUuid(ref.uuid);

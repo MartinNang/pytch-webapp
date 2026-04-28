@@ -26,22 +26,22 @@ export const DemoSidebar = () => {
   const chaptersRef = useRef<Array<HTMLLIElement | null>>([]);
   const navCaretRef = useRef<HTMLButtonElement | null>(null);
 
-  chaptersRef.current = chaptersRef.current.slice(
-    0,
-    linkedDemo.demo.headings?.length
-  );
+  const nChapters = linkedDemo.demo.headings.length;
+  chaptersRef.current = chaptersRef.current.slice(0, nChapters);
 
   useEffect(() => {
-    if (linkedDemo.demo.headings.length > 1) {
+    if (nChapters > 1) {
       setIsNavigationExpanded(true);
     } else setIsNavigationExpanded(false);
 
-    // reset to prevent new demo from starting at a non-existing chapter on load
+    // reset to prevent new demo from starting at a non-existing chapter
+    // on load
     setActiveChapter(0);
   }, []);
 
-  // the following useEffect methods are needed to return focus to the previously used button after scrolling
-  // to the active chapter in the chapter navigation
+  // the following useEffect methods are needed to return focus to the
+  // previously used button after scrolling to the active chapter in the
+  // chapter navigation
   useEffect(() => {
     navCaretRef.current?.focus();
   }, [isNavigationExpanded]);

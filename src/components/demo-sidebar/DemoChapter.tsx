@@ -73,7 +73,7 @@ export const DemoChapter = () => {
     }
 
     function handleNextChapterClicked() {
-      if (headings?.length) {
+      if (headings.length) {
         let newActiveChapter = activeChapter + 1;
         if (newActiveChapter >= headings.length) newActiveChapter = 0;
         setActiveChapter(newActiveChapter);
@@ -165,7 +165,7 @@ export const DemoChapter = () => {
               </div>
             </h2>
           </div>
-          {headings?.length > 1 ? (
+          {headings.length > 1 ? (
             <div className={"w-auto chapter-navigation"}>
               <DemoChapterNavigation />
             </div>

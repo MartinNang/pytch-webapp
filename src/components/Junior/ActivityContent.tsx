@@ -1,10 +1,7 @@
 import React from "react";
 import { EmptyProps, assertNever } from "../../utils";
 import { useJrEditState } from "./hooks";
-import {
-  MaybeContent,
-  MaybeContent as MaybeLessonContent,
-} from "./lesson/MaybeContent";
+import { MaybeContent as MaybeLessonContent } from "./lesson/MaybeContent";
 import { WidthMonitor } from "./WidthMonitor";
 import { HelpSidebar } from "../HelpSidebar";
 import { Tutorial } from "../Tutorial";
@@ -35,7 +32,7 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
           <>
             <WidthMonitor nonStageWd={980} />
             <div className={"bg-white h-100"}>
-              <MaybeContent />
+              <MaybeLessonContent />
             </div>
           </>
         );

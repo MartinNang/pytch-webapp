@@ -187,7 +187,7 @@ export const RecommendedDemos = () => {
           <Row className={"pt-5 justify-content-between mb-3"}>
             <h2 className={"w-auto m-0"}>Recommended</h2>
             <p className={"w-auto m-0 mt-auto"}>
-              {recommendedIndex + 1}/{recommendedDemos?.length}
+              {recommendedIndex + 1}/{recommendedDemos.length}
             </p>
           </Row>
           <Carousel
@@ -202,7 +202,7 @@ export const RecommendedDemos = () => {
             interval={null}
             ref={carouselRef}
           >
-            {recommendedDemos?.map((recommendedDemo) => (
+            {recommendedDemos.map((recommendedDemo) => (
               <Carousel.Item key={recommendedDemo.uuid}>
                 <DemoCard demo={recommendedDemo} />
               </Carousel.Item>
