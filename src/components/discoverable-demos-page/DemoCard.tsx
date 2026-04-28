@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Card, Row, Col } from "react-bootstrap";
 import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
 import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
