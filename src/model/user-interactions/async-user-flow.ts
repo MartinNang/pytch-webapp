@@ -338,11 +338,17 @@ function baseAsyncUserFlowSlice<
       mutating the flow's run-state (usually as a result of user
       actions, for example typing into an input box).
 
-    - `prepare()` — Run at the start of the flow.  Its job is to convert
-      the "run arguments" (which should be convenient for the caller of
-      `run()` to construct) into "run state" (which can transform those
-      arguments to make them more convenient for the flow logic).  The
-      flow's `prepare()` function is given arguments:
+    - `flowSpec` — Object containing the various functions and other
+      options needed to specify the flow.  See below.
+
+    The `flowSpec` argument should be an object with the following
+    properties:
+
+    - `prepare()` — Function to be run at the start of the flow.  Its
+      job is to convert the "run arguments" (which should be convenient
+      for the caller of `run()` to construct) into "run state" (which
+      can transform those arguments to make them more convenient for the
+      flow logic).  The flow's `prepare()` function is given arguments:
 
       - `runArgs` — The arguments (bundled into a single object) which
         were given to the top-level `run()` thunk.
@@ -384,6 +390,21 @@ function baseAsyncUserFlowSlice<
       the notification to the user, or to construct the "toast" which
       lets the user know, unobtrusively, that the operation succeeded,
       at least in part.
+
+    - `onCompleted()` — An optional function.  If present, it is called
+      after the flow is "completed", i.e., when the `attempt()` function
+      has succeeded and the user has acknowledged any notification
+      generated.  The `onComplete()` function is passed arguments:
+
+      - `submittedRunState` — The value of the run state when the user
+        "submitted" the flow.
+
+      - `outcomeNub` — The "nub" of the outcome of the `attempt()`
+        function.  (The concept of "nub" exists so the `attempt()`
+        function can separately specify whether a modal notification is
+        required.)
+
+      - `storeActions` — The top-level collection of app actions.
 */
 // TODO: If SpecificSliceT is always a collection of Actions, rename
 // type param to sth like SpecificActions.
