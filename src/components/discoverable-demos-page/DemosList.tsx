@@ -50,7 +50,7 @@ const DemosSearchField: React.FC<EmptyProps> = () => {
   const searchTermRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    searchTermRef?.current?.focus();
+    searchTermRef.current?.focus();
   }, [searchFilters.searchTerm]);
 
   const handleChangeDemoKind: ChangeEventHandler<HTMLSelectElement> = (evt) => {

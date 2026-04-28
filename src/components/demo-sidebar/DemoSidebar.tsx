@@ -28,7 +28,7 @@ export const DemoSidebar = () => {
 
   chaptersRef.current = chaptersRef.current.slice(
     0,
-    linkedDemo.demo.headings?.length
+    linkedDemo.demo.headings.length
   );
 
   useEffect(() => {

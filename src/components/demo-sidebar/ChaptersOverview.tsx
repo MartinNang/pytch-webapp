@@ -104,7 +104,7 @@ export const ChaptersOverview = ({
         <Col xs={1} className={"p-0 m-0"}>
           <div className={"tree"}>
             <div className={"stem"} />
-            {headings?.map((_, index) => {
+            {headings.map((_, index) => {
               return <div key={`${demoUuid}/${index}`} className={"branch"} />;
             })}
           </div>
@@ -115,7 +115,7 @@ export const ChaptersOverview = ({
             tabIndex={-1}
             onKeyDown={handleChaptersListOnKeyDown}
           >
-            {headings?.map((heading: string, index: number) => {
+            {headings.map((heading: string, index: number) => {
               return (
                 <ChapterHeading
                   key={`${demoUuid}/${index}`}

@@ -54,7 +54,7 @@ export const DemoHeader = ({
               headings.length
             }`}
           >
-            {activeChapter + 1}/{headings?.length}
+            {activeChapter + 1}/{headings.length}
           </span>
         </div>
       );
