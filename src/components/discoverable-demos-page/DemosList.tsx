@@ -16,11 +16,12 @@ import {
   SortBy,
   kSortByValues,
 } from "../../model/discoverable-demos";
-import { useStoreActions, useStoreState } from "../../store";
 import { kPytchProgramKindValues } from "../../model/pytch-program";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
 import { CreateProjectFromDemoModal } from "./CreateProjectFromDemoModal";
+import { useDemoListActions, useDemoListState } from "./hooks";
+import { useRunFlow } from "../../model";
 
 /** TODO The data files for the demos need to live not in this repo.  There
  * needs to be some machinery to support a reasonable workflow for
@@ -36,18 +37,14 @@ const DemosHeader: React.FC<EmptyProps> = () => {
 };
 
 const DemosSearchField: React.FC<EmptyProps> = () => {
-  const searchFilters = useStoreState(
-    (state) => state.discoverableDemos.searchFilters
+  const searchFilters = useDemoListState((s) => s.searchFilters);
+  const setDemoKindSelector = useDemoListActions(
+    (a) => a.searchFilters.setDemoKindSelector
   );
-  const setDemoKindSelector = useStoreActions(
-    (actions) => actions.discoverableDemos.searchFilters.setDemoKindSelector
-  );
-  const searchForDemos = useStoreActions(
-    (actions) => actions.discoverableDemos.searchForDemos
-  );
-  const setSearchTerm = useStoreActions(
-    (actions) => actions.discoverableDemos.searchFilters.setSearchTerm
 
+  const searchForDemos = useDemoListActions((a) => a.searchForDemos);
+  const setSearchTerm = useDemoListActions(
+    (a) => a.searchFilters.setSearchTerm
   );
 
   const searchTermRef = useRef<HTMLInputElement>(null);
@@ -117,18 +114,12 @@ const DemosSearchField: React.FC<EmptyProps> = () => {
 };
 
 const DemosSearch: React.FC<EmptyProps> = () => {
-  const searchFilters = useStoreState(
-    (state) => state.discoverableDemos.searchFilters
-  );
-  const searchForDemos = useStoreActions(
-    (actions) => actions.discoverableDemos.searchForDemos
-  );
-  const sortBy = useStoreState((state) => state.discoverableDemos.sortBy);
-  const setSortBy = useStoreActions(
-    (actions) => actions.discoverableDemos.setSortBy
-  );
-  const setProgramKindSelector = useStoreActions(
-    (actions) => actions.discoverableDemos.searchFilters.setProgramKindSelector
+  const searchFilters = useDemoListState((s) => s.searchFilters);
+  const searchForDemos = useDemoListActions((a) => a.searchForDemos);
+  const sortBy = useDemoListState((s) => s.sortBy);
+  const setSortBy = useDemoListActions((a) => a.setSortBy);
+  const setProgramKindSelector = useDemoListActions(
+    (a) => a.searchFilters.setProgramKindSelector
   );
 
   const handleChangeSortBy: ChangeEventHandler<HTMLSelectElement> = (evt) => {
@@ -196,8 +187,8 @@ const DemosSearch: React.FC<EmptyProps> = () => {
 };
 
 const DemosResults: React.FC<EmptyProps> = () => {
-  const contentFetchState = useStoreState(
-    (state) => state.discoverableDemos.fetchedDemos.contentFetchState
+  const contentFetchState = useDemoListState(
+    (s) => s.fetchedDemos.contentFetchState
   );
 
   const [activePage, setActivePage] = useState(1);
@@ -272,15 +263,13 @@ const DemosContent: React.FC<EmptyProps> = () => {
 export const DemosList: React.FC<EmptyProps> = () => {
   const focusContext = createFocusContext("my-projects-list");
 
-  const maybeLoadContent = useStoreActions(
-    (actions) => actions.discoverableDemos.fetchedDemos.maybeLoadContent
+  const maybeLoadContent = useDemoListActions(
+    (a) => a.fetchedDemos.maybeLoadContent
   );
 
   const paneRef = React.useRef<HTMLDivElement>(null);
 
-  const createProject = useStoreActions(
-    (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
-  );
+  const createProject = useRunFlow((f) => f.createProjectFromDemoFlow);
 
   useEffect(() => {
     maybeLoadContent();
