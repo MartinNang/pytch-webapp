@@ -145,7 +145,7 @@ export type AttemptOutcome<NubT> = {
   nub: NubT;
 };
 
-type AsyncUserFlowSliceFuncs<
+type AsyncUserFlowSliceSpec<
   AppModelT extends object,
   RunArgsT,
   RunStateT,
@@ -172,14 +172,14 @@ function baseAsyncUserFlowSlice<
   RunStateT,
   AttemptOutcomeNubT,
 >(
-  funcs: AsyncUserFlowSliceFuncs<
+  flowSpec: AsyncUserFlowSliceSpec<
     AppModelT,
     RunArgsT,
     RunStateT,
     AttemptOutcomeNubT
   >
 ): AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
-  const autoSubmit = funcs.autoSubmit ?? false;
+  const autoSubmit = flowSpec.autoSubmit ?? false;
 
   return {
     fsmState: generic({ kind: "idle" }),
@@ -187,7 +187,7 @@ function baseAsyncUserFlowSlice<
       const fsmState = state.fsmState;
       return (
         fsmState.kind === "interacting" &&
-        funcs.isSubmittable(fsmState.runState)
+        flowSpec.isSubmittable(fsmState.runState)
       );
     }),
 
@@ -219,7 +219,7 @@ function baseAsyncUserFlowSlice<
         actions.setFsmState({ kind: "preparing" });
 
         const initRunState: RunStateT = await throwIfAbandoned(
-          funcs.prepare(args, storeActions, navigationGuard)
+          flowSpec.prepare(args, storeActions, navigationGuard)
         );
 
         const { promise: userSettlePromise, resolve: userSettle } =
@@ -254,7 +254,7 @@ function baseAsyncUserFlowSlice<
         // The promise returned from this attempt() call can reject
         // (a "business logic" error, or by back/fwd abandonment).
         const outcome = await throwIfAbandoned(
-          funcs.attempt(submittedRunState, storeActions, navigationGuard)
+          flowSpec.attempt(submittedRunState, storeActions, navigationGuard)
         );
 
         if (outcome.needsModalNotification) {
@@ -282,8 +282,8 @@ function baseAsyncUserFlowSlice<
           }
         }
 
-        if (funcs.onCompleted != null) {
-          funcs.onCompleted(submittedRunState, outcome.nub, storeActions);
+        if (flowSpec.onCompleted != null) {
+          flowSpec.onCompleted(submittedRunState, outcome.nub, storeActions);
         }
 
         onDispose("completed");
@@ -395,7 +395,7 @@ export function asyncUserFlowSlice<
   AttemptOutcomeNubT,
 >(
   specificSlice: SpecificSliceT,
-  funcs: AsyncUserFlowSliceFuncs<
+  flowSpec: AsyncUserFlowSliceSpec<
     AppModelT,
     RunArgsT,
     RunStateT,
@@ -403,7 +403,7 @@ export function asyncUserFlowSlice<
   >
 ): SpecificSliceT &
   AsyncUserFlowSlice<AppModelT, RunArgsT, RunStateT, AttemptOutcomeNubT> {
-  const asyncFlowModelSlice = baseAsyncUserFlowSlice(funcs);
+  const asyncFlowModelSlice = baseAsyncUserFlowSlice(flowSpec);
   return Object.assign({}, specificSlice, asyncFlowModelSlice);
 }
 
