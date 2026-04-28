@@ -30,7 +30,7 @@ export default defineConfig([
       // Allow suitably-named args to be unused.
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { args: "all", argsIgnorePattern: "^_" },
       ],
     },
   },

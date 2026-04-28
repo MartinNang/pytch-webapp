@@ -19,7 +19,7 @@
 ace.define(
   "ace/theme/pytch-css",
   ["require", "exports", "module"],
-  function (require, exports, module) {
+  function (_require, _exports, module) {
     module.exports = `.ace-pytch {
   background-color: white;
   color: black;
