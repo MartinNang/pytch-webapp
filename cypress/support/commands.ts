@@ -165,6 +165,11 @@ Cypress.Commands.add("pytchHomeFromIDE", () => {
   assertOnHomepage();
 });
 
+Cypress.Commands.add("pytchTutorialsFromHome", () => {
+  cy.get("a.dropdown-toggle").contains("Explore").click();
+  cy.get("a.dropdown-item").contains("Tutorials").click();
+});
+
 Cypress.Commands.add("pytchSwitchProject", (name: string) => {
   cy.pytchHomeFromIDE();
   cy.contains("My projects").click();

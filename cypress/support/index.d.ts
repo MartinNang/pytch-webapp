@@ -44,6 +44,10 @@ declare global {
        * home page. */
       pytchHomeFromIDE(): void;
 
+      /** Assuming we are currently at the app's home page, go to the
+       * tutorials list. */
+      pytchTutorialsFromHome(): void;
+
       /** Assuming we are currently working in the IDE, switch to the
        * project with the given name. */
       pytchSwitchProject(name: string): Chainable<Element>;
