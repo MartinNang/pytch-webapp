@@ -8,7 +8,7 @@ import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
 import { RefObject } from "react";
-import { fetchParsedJsonValue } from "../utils";
+import { fetchParsedJsonValue, propSetterAction } from "../utils";
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
@@ -206,15 +206,9 @@ export const discoverableDemos: IDiscoverableDemos = {
     searchTerm: "",
     demoKindSelector: "all",
     programKindSelector: "all",
-    setSearchTerm: action((state, newSearchTerm) => {
-      state.searchTerm = newSearchTerm;
-    }),
-    setDemoKindSelector: action((state, newDemoKindSelector) => {
-      state.demoKindSelector = newDemoKindSelector;
-    }),
-    setProgramKindSelector: action((state, newProgramKindSelector) => {
-      state.programKindSelector = newProgramKindSelector;
-    }),
+    setSearchTerm: propSetterAction("searchTerm"),
+    setDemoKindSelector: propSetterAction("demoKindSelector"),
+    setProgramKindSelector: propSetterAction("programKindSelector"),
   },
   sortBy: "lastUpdated",
   setSortBy: action((state, newSortBy) => {
