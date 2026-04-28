@@ -18,7 +18,7 @@ import { format } from "date-fns/format";
 export const RecommendedDemos = () => {
   function DemoCard({ demo }: { demo: DemoCatalogueEntry }) {
     const createProject = useStoreActions(
-      (actions) => actions.projectFromDemoFlow.createProject
+      (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
     );
 
     const isGame: boolean = demo.demoKind === "game";
@@ -132,7 +132,7 @@ export const RecommendedDemos = () => {
             <Link
               ref={linkRef}
               to={""}
-              onClick={() => createProject(demo.uuid)}
+              onClick={() => createProject({ uuid: demo.uuid })}
             >
               <h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3>
             </Link>

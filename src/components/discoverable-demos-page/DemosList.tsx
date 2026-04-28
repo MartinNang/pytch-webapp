@@ -280,7 +280,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
   }
 
   const createProject = useStoreActions(
-    (actions) => actions.projectFromDemoFlow.createProject
+    (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
   );
 
   return (
@@ -301,7 +301,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
               onActivate: (elt: HTMLElement) => {
                 const mDemoUuid = mDataAttrStringValue(elt, "demoUuid");
                 if (mDemoUuid) {
-                  createProject(mDemoUuid);
+                  createProject({ uuid: mDemoUuid });
                 } else {
                   console.warn("no demo uuid found");
                 }

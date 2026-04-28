@@ -21,7 +21,7 @@ type DemoCardProps = {
 
 export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const createProject = useStoreActions(
-    (actions) => actions.projectFromDemoFlow.createProject
+    (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
   );
 
   const [hover, setHover] = useState<boolean>(false);
@@ -157,7 +157,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         <Link
           to={""}
           onClick={(event) => {
-            createProject(demo.uuid);
+            createProject({ uuid: demo.uuid });
             focusContext.onGroupItemClick(event);
           }}
           tabIndex={-1}
