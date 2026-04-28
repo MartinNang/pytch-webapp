@@ -20,6 +20,7 @@ import { useStoreActions, useStoreState } from "../../store";
 import { kPytchProgramKindValues } from "../../model/pytch-program";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
+import { CreateProjectFromDemoModal } from "./CreateProjectFromDemoModal";
 
 /** TODO The data files for the demos need to live not in this repo.  There
  * needs to be some machinery to support a reasonable workflow for
@@ -280,11 +281,12 @@ export const DemosList: React.FC<EmptyProps> = () => {
   }
 
   const createProject = useStoreActions(
-    (actions) => actions.projectFromDemoFlow.createProject
+    (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
   );
 
   return (
     <>
+      <CreateProjectFromDemoModal />
       <FocusContext.Provider value={focusContext}>
         <NavBanner />
         <div className="DemosList" tabIndex={-1} ref={paneRef}>
@@ -301,7 +303,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
               onActivate: (elt: HTMLElement) => {
                 const mDemoUuid = mDataAttrStringValue(elt, "demoUuid");
                 if (mDemoUuid) {
-                  createProject(mDemoUuid);
+                  createProject({ uuid: mDemoUuid });
                 } else {
                   console.warn("no demo uuid found");
                 }

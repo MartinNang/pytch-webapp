@@ -80,6 +80,10 @@ import {
   startTutorialAtCheckpointFlow,
 } from "./user-interactions/start-tutorial-at-checkpoint";
 import { demoSidebar, IDemoSidebar } from "./demo-sidebar";
+import {
+  CreateProjectFromDemoFlow,
+  createProjectFromDemoFlow,
+} from "./project-from-demo-flow";
 
 export interface IStageDisplaySize {
   width: number;
@@ -299,6 +303,7 @@ export interface IUserConfirmations {
   deleteManyProjectsFlow: DeleteManyProjectsFlow;
 
   createProjectFlow: CreateProjectFlow;
+  createProjectFromDemoFlow: CreateProjectFromDemoFlow;
   startTutorialAtCheckpointFlow: StartTutorialAtCheckpointFlow;
   addAssetsFlow: AddAssetsFlow;
   addClipArtFlow: AddClipArtFlow;
@@ -324,6 +329,7 @@ export const userConfirmations: IUserConfirmations = {
   deleteManyProjectsFlow,
 
   createProjectFlow,
+  createProjectFromDemoFlow,
   startTutorialAtCheckpointFlow,
   addAssetsFlow,
   addClipArtFlow,
