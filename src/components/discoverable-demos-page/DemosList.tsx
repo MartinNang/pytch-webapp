@@ -114,7 +114,9 @@ const DemosSearchField: React.FC<EmptyProps> = () => {
 };
 
 const DemosSearch: React.FC<EmptyProps> = () => {
-  const searchFilters = useDemoListState((s) => s.searchFilters);
+  const programKindSelector = useDemoListState(
+    (s) => s.searchFilters.programKindSelector
+  );
   const searchForDemos = useDemoListActions((a) => a.searchForDemos);
   const sortBy = useDemoListState((s) => s.sortBy);
   const setSortBy = useDemoListActions((a) => a.setSortBy);
@@ -151,7 +153,7 @@ const DemosSearch: React.FC<EmptyProps> = () => {
                   <Form.Select
                     aria-label="Program type"
                     className={"border-0"}
-                    value={searchFilters.programKindSelector}
+                    value={programKindSelector}
                     onInput={handleChangeProgramKind}
                   >
                     <option value={"all"}>Program type</option>
