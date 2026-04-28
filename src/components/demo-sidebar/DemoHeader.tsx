@@ -34,7 +34,7 @@ export const DemoHeader = ({
   );
 
   const linkedDemo = useLinkedDemo();
-  const headings = linkedDemo.demo.headings;
+  const nChapters = linkedDemo.demo.headings.length;
 
   function DemoHeaderContent() {
     function DemoName() {
@@ -49,12 +49,8 @@ export const DemoHeader = ({
       return (
         <div className={classNames("chapter-pill", "rounded-pill")}>
           <FontAwesomeIcon icon={"layer-group"} />
-          <span
-            aria-label={`Chapter ${activeChapter + 1} out of ${
-              headings.length
-            }`}
-          >
-            {activeChapter + 1}/{headings.length}
+          <span aria-label={`Chapter ${activeChapter + 1} out of ${nChapters}`}>
+            {activeChapter + 1}/{nChapters}
           </span>
         </div>
       );
@@ -104,7 +100,7 @@ export const DemoHeader = ({
       );
     }
 
-    if (headings.length > 1) {
+    if (nChapters > 1) {
       return <DemoHeaderStructured />;
     } else {
       return <DemoHeaderMono />;

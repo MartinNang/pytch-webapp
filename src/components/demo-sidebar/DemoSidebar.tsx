@@ -26,13 +26,11 @@ export const DemoSidebar = () => {
   const chaptersRef = useRef<Array<HTMLLIElement | null>>([]);
   const navCaretRef = useRef<HTMLButtonElement | null>(null);
 
-  chaptersRef.current = chaptersRef.current.slice(
-    0,
-    linkedDemo.demo.headings.length
-  );
+  const nChapters = linkedDemo.demo.headings.length;
+  chaptersRef.current = chaptersRef.current.slice(0, nChapters);
 
   useEffect(() => {
-    if (linkedDemo.demo.headings.length > 1) {
+    if (nChapters > 1) {
       setIsNavigationExpanded(true);
     } else setIsNavigationExpanded(false);
 
