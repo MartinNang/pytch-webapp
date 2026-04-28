@@ -189,14 +189,14 @@ const DemosSearch: React.FC<EmptyProps> = () => {
   );
 };
 
+const kDemosPerPage = 10;
+
 const DemosResults: React.FC<EmptyProps> = () => {
   const contentFetchState = useDemoListState(
     (s) => s.fetchedDemos.contentFetchState
   );
 
   const [activePage, setActivePage] = useState(1);
-
-  const itemsPerPage = 10;
 
   switch (contentFetchState.state) {
     case "idle":
