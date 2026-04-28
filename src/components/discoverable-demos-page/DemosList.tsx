@@ -15,7 +15,7 @@ import {
   displaySortByName,
   PytchProgramKindSelector,
   SortBy,
-  kSortingOptions,
+  kSortByValues,
 } from "../../model/discoverable-demos";
 import { useStoreActions, useStoreState } from "../../store";
 import { kPytchProgramKindValues } from "../../model/pytch-program";
@@ -162,7 +162,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
                       value={sortBy}
                       ref={sortByRef}
                     >
-                      {Object.values(kSortingOptions).map((sortingOption) => (
+                      {Object.values(kSortByValues).map((sortingOption) => (
                         <option
                           key={sortingOption}
                           selected={sortingOption === discoverableDemos.sortBy}
