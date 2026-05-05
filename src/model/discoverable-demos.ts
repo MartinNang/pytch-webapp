@@ -1,7 +1,6 @@
 import { PytchProgramKind, zPytchProgramKind } from "./pytch-program";
 import { util } from "zod/v3";
 import assertNever = util.assertNever;
-import { demoUrl } from "./project-from-demo";
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 import { Action, action, FilterActionTypes } from "easy-peasy";
 import flatIcon from "../images/flat-simple.png";
@@ -9,6 +8,7 @@ import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
 import { RefObject } from "react";
 import { fetchParsedJsonValue, propSetterAction } from "../utils";
+import { envVarOrFail } from "../env-utils";
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
@@ -118,6 +118,11 @@ function cmpCatalogueEntriesByDisplayName(
 
 // TODO: Search for all occurrences of "en" (including quotes) when we
 // think about how to update for multiple languages.
+
+function demoUrl(relativeUrl: string): string {
+  const demosDataRoot = envVarOrFail("VITE_DEMO_CATALOGUE_BASE");
+  return [demosDataRoot, relativeUrl].join("/");
+}
 
 function demoResourceUrl(
   uuid: string,

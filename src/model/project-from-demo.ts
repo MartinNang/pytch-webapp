@@ -40,11 +40,6 @@ export type ProjectFromDemoFlow = {
   >;
 };
 
-export function demoUrl(relativeUrl: string): string {
-  const demosDataRoot = envVarOrFail("VITE_DEMO_CATALOGUE_BASE");
-  return [demosDataRoot, relativeUrl].join("/");
-}
-
 export let projectFromDemoFlow: ProjectFromDemoFlow = {
   state: { state: "idle" },
   setState: propSetterAction("state"),
