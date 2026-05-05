@@ -2,7 +2,7 @@ import { PytchProgramKind, zPytchProgramKind } from "./pytch-program";
 import { util } from "zod/v3";
 import assertNever = util.assertNever;
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
-import { Action, action, FilterActionTypes } from "easy-peasy";
+import { Action, action } from "easy-peasy";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
