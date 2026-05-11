@@ -441,20 +441,23 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
       const groupedFocusKey = `HelpSidebar/${ctxString}`;
 
       return (
-        <FocusGroupContainer
-          className="gfs__help__container"
-          groupedFocusKey={groupedFocusKey}
-        >
-          {helpContent.map((section) => (
-            <HelpSidebarSection
-              key={section.sectionSlug}
-              sectionSlug={section.sectionSlug}
-              sectionHeading={section.sectionHeading}
-              entries={section.entries}
-              workContext={workContext}
-            ></HelpSidebarSection>
-          ))}
-        </FocusGroupContainer>
+        <>
+          <h1 className={"pt-4 pb-3 px-3"}>Scratch/Python help</h1>
+          <FocusGroupContainer
+            className="gfs__help__container"
+            groupedFocusKey={groupedFocusKey}
+          >
+            {helpContent.map((section) => (
+              <HelpSidebarSection
+                key={section.sectionSlug}
+                sectionSlug={section.sectionSlug}
+                sectionHeading={section.sectionHeading}
+                entries={section.entries}
+                workContext={workContext}
+              ></HelpSidebarSection>
+            ))}
+          </FocusGroupContainer>
+        </>
       );
     }
     case "error":

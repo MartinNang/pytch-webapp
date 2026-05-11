@@ -51,9 +51,15 @@ import {
   faLayerGroup,
   faSearch,
   faFlag,
+  faBug,
+  faCircleXmark,
+  faBrush,
+  faVolumeHigh,
+  faQuestion,
+  faGridHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { faGoogleDrive } from "@fortawesome/free-brands-svg-icons";
+import { faGoogleDrive, faPython } from "@fortawesome/free-brands-svg-icons";
 
 import { faTimesCircle, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 
@@ -117,5 +123,12 @@ library.add(
   faClone,
   faCode,
   faDownload,
-  faGoogleDrive
+  faGoogleDrive,
+  faBug,
+  faInfoCircle,
+  faCircleXmark,
+  faBrush,
+  faVolumeHigh,
+  faGridHorizontal,
+  faPython
 );

@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { ActorKind } from "../../model/junior/structured-program";
 import { useTranslation } from "react-i18next";
 import { kBothActorKinds } from "../../model/junior/structured-program/actor";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Ensure that the "Backdrops" or "Costumes" tab is always the same
 // width.  Otherwise we get an annoying jitter as you switch between the
@@ -19,8 +20,9 @@ export const AppearancesTabTitle: React.FC<AppearancesTabTitleProps> = ({
   const content = kBothActorKinds.map((ak) => (
     <span
       key={ak}
-      className={classNames("title-option", { isActive: ak === actorKind })}
+      className={classNames("title-option me-1", { isActive: ak === actorKind })}
     >
+      <FontAwesomeIcon icon={"fa-brush"} className={"me-1"} />
       {t(`per-method.tab-title.actor-properties.appearances.${ak}`)}
     </span>
   ));

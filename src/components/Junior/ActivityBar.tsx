@@ -16,14 +16,47 @@ import { kFocusGroupItemClassName } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 
-const iconFromTabKey: Record<ActivityBarTabKey, IconName> = {
-  helpsidebar: "question-circle",
-  keynavhelp: "keyboard",
-  i18n: "language",
-  lesson: "book",
-  tutorial: "book",
-  specimen: "book",
-};
+type TabKeyUiDetails = { icon: IconName; tooltip: string; label: string };
+
+const uiDetailsFromTabKeyLut = new Map<ActivityBarTabKey, TabKeyUiDetails>([
+  [
+    "helpsidebar",
+    {
+      icon: "code",
+      tooltip: "Scratch/Python help",
+      label: "Reference",
+    },
+  ],
+  [
+    "keynavhelp",
+    {
+      icon: "keyboard",
+      tooltip: "Keyboard navigation help",
+      label: "Shortcuts",
+    },
+  ],
+  ["lesson", { icon: "book", tooltip: "Lesson content", label: "Lesson" }],
+  [
+    "tutorial",
+    { icon: "book", tooltip: "Tutorial content", label: "Tutorial" },
+  ],
+  [
+    "specimen",
+    { icon: "book", tooltip: "Lesson information", label: "Lesson" },
+  ],
+  [
+    "ideoverview",
+    { icon: "fa-grid-horizontal", tooltip: "IDE overview", label: "Overview" },
+  ],
+]);
+
+function uiDetailsFromTabKey(tab: ActivityBarTabKey): TabKeyUiDetails {
+  const mDetails = uiDetailsFromTabKeyLut.get(tab);
+  if (mDetails == null) {
+    throw new Error(`unrecognised tab-key name "${tab}"`);
+  }
+  return mDetails;
+}
 
 const tabIsActive = (
   tab: ActivityBarTabKey,
@@ -39,9 +72,9 @@ const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
   const expandAction = useJrEditActions((a) => a.expandActivityContent);
 
   const onClick = isActive ? () => collapseAction() : () => expandAction(tab);
-  const icon = iconFromTabKey[tab];
-  const classes = classNames("ActivityBarTab", { isActive }, `tab-key-${tab}`);
-  const buttonClasses = classNames("tabkey-icon", kFocusGroupItemClassName);
+  const uiDetails = uiDetailsFromTabKey(tab);
+  const classes = classNames("ActivityBarTab p-0", `tab-key-${tab}`);
+  const buttonClasses = classNames("mb-2 w-100", kFocusGroupItemClassName);
 
   return (
     <li className={classes} onClick={onClick}>
@@ -51,11 +84,28 @@ const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
         onClick={focusContext.onGroupItemClick}
         id={`pytch:activity-bar-tab:tab:${tab}`}
         role="tab"
+        aria-label={uiDetails.label}
         aria-controls={`pytch:activity-bar-tab:tabpanel:${tab}`}
         aria-selected={isActive}
         data-activity-bar-tab={tab}
       >
-        <FontAwesomeIcon icon={icon} />
+        <div className={classNames("tabkey-icon-wrapper", { isActive })}>
+          <FontAwesomeIcon
+            icon={
+              uiDetails.icon === "python"
+                ? "fa-brands fa-python"
+                : uiDetails.icon
+            }
+            className={classNames("tabkey-icon", { isActive })}
+          />
+        </div>
+        <p
+          className={classNames("pt-1 activity-bar-tab-label", {
+            isActive,
+          })}
+        >
+          {uiDetails.label}
+        </p>
       </button>
       <div className="tabkey-tooltip">{t(`activity-bar.tooltip.${tab}`)}</div>
     </li>
@@ -81,12 +131,12 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
   );
 
   const tabs: Array<ActivityBarTabKey> = hasLinkedLesson
-    ? ["helpsidebar", "lesson", "keynavhelp", "i18n"]
+    ? ["ideoverview", "helpsidebar", "lesson", "keynavhelp"]
     : hasLinkedSpecimen
-    ? ["helpsidebar", "specimen", "keynavhelp", "i18n"]
+    ? ["ideoverview", "helpsidebar", "specimen", "keynavhelp"]
     : hasLinkedTutorial
-    ? ["helpsidebar", "tutorial", "keynavhelp", "i18n"]
-    : ["helpsidebar", "keynavhelp", "i18n"];
+    ? ["ideoverview", "helpsidebar", "tutorial", "keynavhelp"]
+    : ["ideoverview", "helpsidebar", "keynavhelp"];
 
   const focusGroupExtraClass =
     activityContentState.kind === "collapsed" ? "gfs__help__container" : "";
@@ -96,8 +146,11 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
       className={focusGroupExtraClass}
       groupedFocusKey="ActivityBar"
     >
-      <div className="ActivityBar">
-        <Nav as="ul" className="activity-bar-tabs">
+      <div className="ActivityBar" role={"menubar"}>
+        <Nav
+          as="ul"
+          className="activity-bar-tabs d-flex justify-content-center"
+        >
           {tabs.map((tab) => (
             <ActivityBarTab
               key={tab}

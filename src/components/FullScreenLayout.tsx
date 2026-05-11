@@ -15,7 +15,7 @@ export const FullScreenLayout: React.FC<EmptyProps> = () => {
       data-project-id={projectId}
     >
       <main className="abs-0000">
-        <div className="FullScreenStage">
+        <div className="FullScreenStage" role={"region"}>
           <StageWithControls />
         </div>
       </main>

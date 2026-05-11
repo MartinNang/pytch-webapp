@@ -159,7 +159,7 @@ export const HatBlock: React.FC<HatBlockProps> = ({
       onDoubleClick={onChangeHatBlock}
       data-event-handler-kind={event.kind}
     >
-      <div className="bump"></div>
+      {/*<div className="bump"></div>*/}
       <div className="body">
         <HatBlockContent
           actorKind={actorKind}
@@ -202,8 +202,8 @@ export const HatBlock: React.FC<HatBlockProps> = ({
 
 export const DisplayHatBlock: React.FC<HatBlockContentProps> = (props) => {
   return (
-    <div className="HatBlock display-only">
-      <div className="bump"></div>
+      <div className="HatBlock display-only">
+      {/*<div className="bump"></div>*/}
       <div className="body">
         <HatBlockContent {...props} />
       </div>
