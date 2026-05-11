@@ -19,6 +19,7 @@ $stage-controls-height: 37.6px;
 .FullScreenLayout {
   margin: 0px;
   display: flex;
+  background-color: #ebf5f9;
 
   main {
     display: flex;
@@ -26,6 +27,10 @@ $stage-controls-height: 37.6px;
   }
   .FullScreenStage {
     margin: auto;
+
+    #pytch-canvas {
+      box-shadow: rgba(0, 130, 207, 0.3) 0px 10px 40px 0px;
+    }
   }
 }
 
@@ -113,14 +118,32 @@ $stage-controls-height: 37.6px;
   }
 
   .save-button {
+    margin-right: auto;
+    background-color: $pytch-colour-main-blue !important;
+    transition: background-color 0.3s cubic-bezier(.4, 0, .2, 1);
+    height: 2.25rem !important;
+    border-color: $pytch-colour-main-blue !important;
+
+    svg {
+      margin-top: -1px;
+      margin-left: -1px;
+      color: white !important;
+    }
 
     &.unsaved-changes-exist {
-      background-color: $pytch-colour-main-yellow;
-      color: black;
+      color: $pytch-colour-main-blue-darkened !important;
+      background-color: $pytch-colour-main-yellow !important;
+      border-color: $pytch-colour-main-blue-darkened !important;
 
       &:hover {
-        background-color: #f1ea8b;
+        background-color: lighten($pytch-colour-main-yellow, 10) !important;
       }
+
+      svg {
+        color: $pytch-colour-main-blue !important;
+      }
+
+      @include push-down-on-click();
     }
   }
 }
@@ -170,12 +193,12 @@ $stage-controls-height: 37.6px;
 }
 
 #pytch-canvas {
-  border: $canvas-border-width solid $pytch-colour-main-blue-darkened;
+  border: $canvas-border-width solid #30699877;
   border-radius: 2px;
   background: white;
   display: block;
   visibility: visible;
-  box-shadow: rgba(99, 99, 99, 0.05) 0px 2px 8px 0px;
+  box-shadow: rgb(0, 130, 207, 0.2) 0px 4px 16px 0px;
 
   &.resize-active {
     visibility: hidden;
@@ -297,6 +320,7 @@ $speech-bubble-max-height: 180px;
 
   .tab-content {
     border-radius: 0 0 10px 10px;
+    height: 100%;
   }
 
   .ReadOnlyOverlay {
@@ -322,6 +346,7 @@ $speech-bubble-max-height: 180px;
   flex-grow: 1;
   flex-shrink: 1;
   overflow-y: auto;
+  height: 100%;
 
   p.info-pane-placeholder {
     font-size: 1.125rem;
@@ -330,6 +355,7 @@ $speech-bubble-max-height: 180px;
 }
 
 .StandardOutputPane {
+  height: 100%;
   pre {
     margin: 2rem 3rem;
   }
@@ -420,16 +446,25 @@ $speech-bubble-max-height: 180px;
 
 .StageControlPseudoButton {
   width: 3em;
-  height: 36px;
+  height: 2.25rem;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  padding: 0 !important;
+
+  &.HomeLink svg {
+    padding: 2px 4px;
+  }
 
   svg {
     color: white;
+    width: 100%;
+    height: 100%;
+    padding: 6px 16px;
+    box-sizing: border-box;
   }
 
   &.GreenFlag {
@@ -965,9 +1000,16 @@ ul.ClipArtTagButtonCollection {
 }
 
 .btn.square-button {
-  width: 36px;
-  height: 36px;
+  height: 2.25rem;
+  width: 2.25rem;
   padding: 0;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    padding: 6px 9px;
+    box-sizing: border-box;
+  }
 }
 
 .run-stop-controls {
@@ -1038,6 +1080,10 @@ ul.ClipArtTagButtonCollection {
   }
 }
 
-.full-screen {
-  margin-right: auto;
+.full-screen, .leave-full-screen {
+  @include push-down-on-click();
+}
+
+.btn:disabled {
+  background-color: #306998;
 }

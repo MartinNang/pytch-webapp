@@ -222,6 +222,7 @@ const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
 ////////////////////////////////////////////////////////////////////////
 type MenuProps = {
   toggle?: React.ReactNode;
+  ariaLabel?: string;
 };
 
 /** Menu of choices relevant to the element which has a captive context
@@ -229,6 +230,7 @@ type MenuProps = {
  * `CaptiveContextMenu.Container`. */
 const DropdownMenu: React.FC<PropsWithChildren<MenuProps>> = ({
   toggle,
+  ariaLabel,
   children,
 }) => {
   const ctx = useNonNullContext(Context);
@@ -251,8 +253,13 @@ const DropdownMenu: React.FC<PropsWithChildren<MenuProps>> = ({
       onClick={ctx.toggleShow}
       onKeyDown={onKeydown}
       data-captive-context-menu-container-id={ctx.containerId}
+      aria-label={ariaLabel}
     >
-      <Dropdown.Toggle as="div" className={"captive-dropdown-toggle"}>
+      <Dropdown.Toggle
+        as="div"
+        className={"captive-dropdown-toggle"}
+        title={ariaLabel}
+      >
         {toggle || "⋮"}
       </Dropdown.Toggle>
       <Dropdown.Menu align="end">{children}</Dropdown.Menu>

@@ -51,11 +51,11 @@ const GreenFlag = () => {
   return (
     <div className="tooltipped-elt">
       <Button
+        title={"Run project"}
         className="StageControlPseudoButton GreenFlag"
         onClick={handleClick}
-        aria-label={"Run project"}
       >
-        <FontAwesomeIcon icon="flag" aria-hidden={true} />
+        <FontAwesomeIcon icon="flag" aria-label={"Run project"} />
       </Button>
       <StaticTooltip visible={tooltipIsVisible}>
         <p>{t("tooltip.green-flag")}</p>
@@ -71,11 +71,11 @@ export const RedStop = () => {
   };
   return (
     <Button
+      title={"Stop project"}
       className="StageControlPseudoButton RedStop"
       onClick={redStop}
-      aria-label={"Stop project"}
     >
-      <FontAwesomeIcon icon="stop" aria-hidden={true} />
+      <FontAwesomeIcon icon="stop" aria-label={"Stop project"} />
     </Button>
   );
 };
@@ -217,11 +217,15 @@ export const StageControls: React.FC<EmptyProps> = () => {
 
   const fullScreenButton = (
     <Button
+      title={"Enter fullscreen"}
       className="full-screen square-button"
       onClick={() => setIsFullScreen(true)}
-      aria-label={"expand"}
     >
-      <FontAwesomeIcon className="fa-lg" icon="expand" aria-hidden={true} />
+      <FontAwesomeIcon
+        className="fa-lg"
+        icon="expand"
+        aria-label={"Enter fullscreen"}
+      />
     </Button>
   );
 
@@ -237,11 +241,16 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <RedStop />
       </div>
       <Button
+        title={"Leave fullscreen"}
         className="leave-full-screen"
         variant={"secondary"}
         onClick={() => setIsFullScreen(false)}
       >
-        <FontAwesomeIcon className="fa-lg" icon="compress" aria-hidden={true} />
+        <FontAwesomeIcon
+          className="fa-lg"
+          icon="compress"
+          aria-label={"Leave fullscreen"}
+        />
       </Button>
     </section>
   ) : (
@@ -255,12 +264,19 @@ export const StageControls: React.FC<EmptyProps> = () => {
       </div>
       {fullScreenButton}
       <Button
-        className={`save-button ${codeStateVsStorage} square-button`}
+        title={"Save project"}
+        className={`save-button d-flex align-items-center ${codeStateVsStorage}`}
         onClick={handleSave}
-        aria-label={"Save project"}
+        disabled={codeStateVsStorage === "no-changes-since-last-save"}
       >
-        <FontAwesomeIcon className="fa-lg" icon="floppy-disk" />
-        <span>{t("project-action.save")}</span>
+        <FontAwesomeIcon
+          className="fa-lg"
+          icon="floppy-disk"
+          aria-label={t("project-action.save")}
+        />
+        <span className={"mx-1"}>
+          {codeStateVsStorage === "unsaved-changes-exist" ? "Save" : "Saved"}
+        </span>
       </Button>
       {fullScreenButton}
       <Link
@@ -271,15 +287,30 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" aria-hidden={true} />
         <span className={"ps-1"}>Home</span>
       </Link>
-      <DropdownButton align="end" title="⋮" className={"moreOptionsDropdown"}>
+      <DropdownButton
+        align="end"
+        title={
+          <FontAwesomeIcon
+            icon="ellipsis-vertical"
+            aria-hidden={true}
+            aria-label={"More project options"}
+            title={"More project options"}
+          />
+        }
+        className={"moreOptionsDropdown p-0"}
+      >
         <GoToMyProjectsDropdownItem />
         <Dropdown.Item onClick={onScreenshot}>
-          <FontAwesomeIcon icon="camera" className={"me-2"} />
+          <FontAwesomeIcon
+              icon="camera"
+              className={"me-2"}
+              aria-hidden={true}
+          />
             {t("project-action.screenshot")}
         </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item onClick={onCreateCopy}>
-          <FontAwesomeIcon icon="clone" className={"me-2"} />
+          <FontAwesomeIcon icon="clone" className={"me-2"} aria-hidden={true} />
             {t("project-action.make-copy")}
         </Dropdown.Item>
         <Dropdown.Item onClick={onDownload}>

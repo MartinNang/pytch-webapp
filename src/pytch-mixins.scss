@@ -82,3 +82,10 @@
   grid-template-columns: 1fr;
   grid-template-rows: $top $bottom;
 }
+
+@mixin push-down-on-click() {
+  &:active {
+    position: relative;
+    top: 2px;
+  }
+}

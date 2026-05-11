@@ -137,6 +137,9 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   return (
     <CaptiveContextMenu.DropdownMenu
       toggle={<FontAwesomeIcon icon={"caret-down"} />}
+      ariaLabel={`Open ${
+        kind === "stage" ? "the stage" : "this sprite's"
+      } menu`}
     >
       <CaptiveContextMenu.DropdownItem {...onInvokeProps("code")}>
         {t("actor-action.go-to-code")}
@@ -213,6 +216,7 @@ export const ActorsList = () => {
     <section
       className="Junior-ActorsList-container compact-tablist-container"
       aria-label={t("per-method.pane-label.actors")}
+      role={"region"}
     >
       <SingleTab title={t("per-method.tab-title.actors")}>
         <div className="abs-0000">

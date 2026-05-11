@@ -47,7 +47,7 @@ export const NavBanner = () => {
 
   const burgerIcon: IconProp = menuIsExpanded ? "xmark" : "bars";
   const burgerClass = classNames(
-    "burger-menu",
+    "bg-transparent border-0 burger-menu",
     menuIsExpanded ? "is-expanded" : "is-collapsed"
   );
 
@@ -64,9 +64,9 @@ export const NavBanner = () => {
             />
           </Link>
         </div>
-        <div className={burgerClass} onClick={toggleMenu} ref={menuRef}>
+        <button className={burgerClass} onClick={toggleMenu} ref={menuRef}>
           <FontAwesomeIcon icon={burgerIcon} />
-        </div>
+        </button>
         <ul className={ulClass}>
           <li>
             <a href={pytchResearchSiteUrl}>

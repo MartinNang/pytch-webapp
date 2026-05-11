@@ -146,7 +146,7 @@ const KeyNavHelpSidebarContent: React.FC<{ content: Content }> = ({
 
   return (
     <Container className="help-text">
-      <h1>{t("key-nav-help.title")}</h1>
+      <h1 className={"pt-4 pb-3 px-3"}>{t("key-nav-help.title")}</h1>
       <p>{t("key-nav-help.intro")}</p>
       {relevantSections.map((section, idx) => (
         // eslint-disable-next-line @eslint-react/no-array-index-key

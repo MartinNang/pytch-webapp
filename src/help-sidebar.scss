@@ -287,4 +287,15 @@ $block-category-backgrounds: (
       background-color: $pytch-colour-main-yellow;
     }
   }
+  h1 {
+    color: $pytch-colour-main-yellow;
+    background-color: $pytch-colour-main-blue;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .focus-group__container {
+    padding: 0 0.5rem;
+  }
 }
