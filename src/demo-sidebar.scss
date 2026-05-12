@@ -47,6 +47,12 @@ $chapter-navigation-link-height: 3rem;
 
         p {
           margin: 0;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          white-space: break-spaces;
+          overflow: hidden;
         }
       }
     }
