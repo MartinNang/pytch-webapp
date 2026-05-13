@@ -101,8 +101,8 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
             controlsList="nofullscreen"
             ref={videoRef}
             tabIndex={-1}
+            src={demo.featuredVideoUrl}
           >
-            <source src={demo.featuredVideoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         ) : null}
@@ -166,7 +166,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         >
           <h3>{demo.displayName}</h3>
         </Link>
-        <p>{demo.summaryMarkdown}</p>
+        <p className={"demo-description"}>{demo.summaryMarkdown}</p>
 
         <Row className={"share-row"}>
           <Col xs={12} sm={12} md={6} className={"align-items-end d-flex"}>

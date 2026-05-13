@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
 import { useStoreActions, useStoreState } from "../../store";
-import flatIcon from "../../images/flat-simple.png";
-import permethodIcon from "../../images/per-method-simple.png";
 import { Link } from "react-router-dom";
 import {
   Demo,
@@ -50,7 +48,7 @@ export const RecommendedDemos = () => {
               controls={false}
               autoPlay={true}
               muted={true}
-              className={classNames("h-100 w-100 object-fit-cover", {
+              className={classNames("h-100 w-100", {
                 showVideo,
               })}
               onMouseOver={() => {
@@ -67,7 +65,7 @@ export const RecommendedDemos = () => {
           ) : null}
           <Card.Img
             variant={"top"}
-            className={classNames("h-100 object-fit-cover p-1", { showImage })}
+            className={classNames("h-100 p-1", { showImage })}
             src={imageSrc}
           />
         </>
@@ -103,12 +101,17 @@ export const RecommendedDemos = () => {
         onFocus={handleFocusCard}
         onBlur={handleBlurCard}
       >
-        <Col xs={12} sm={5} md={4}>
-          <Card.Header className={"p-0 me-1 w-100 h-100"}>
+        <Col
+          xs={12}
+          sm={6}
+          md={6}
+          className={"d-flex justify-content-center align-items-center"}
+        >
+          <Card.Header className={"p-0 w-100 h-100"}>
             <RecommendedDemoThumbnail />
           </Card.Header>
         </Col>
-        <Col xs={12} sm={7} md={8}>
+        <Col xs={12} sm={6} md={6}>
           <Card.Body className={"p-3 px-4 d-flex flex-column"}>
             <Row className={"pill-row p-0 m-0 mb-3"}>
               <Button className={"pill-icon flat-icon"}>

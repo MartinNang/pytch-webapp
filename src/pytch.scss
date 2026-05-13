@@ -488,11 +488,15 @@ button.awaiting-action {
           border-radius: 30px;
           overflow: clip;
           transition: transform cubic-bezier(.25, .8, .25, 1) 400ms, border-radius cubic-bezier(.25, .8, .25, 1) 400ms;
-          aspect-ratio: 9/6;
-          object-fit: cover;
+          aspect-ratio: 4/3;
+          width: 100%;
 
           video {
             border-radius: 30px;
+            object-fit: contain;
+          }
+          img {
+            object-fit: contain;
           }
         }
 
@@ -523,9 +527,8 @@ button.awaiting-action {
           border-top-left-radius: 30px;
           border-top-right-radius: 30px;
           background-color: #EBF5F9;
-          aspect-ratio: 9/6;
+          aspect-ratio: 4/3;
           overflow: hidden;
-          object-fit: cover;
           transition: transform 0.4s cubic-bezier(.25, .8, .25, 1);
 
         &:first-child {
@@ -536,8 +539,13 @@ button.awaiting-action {
             object-fit: cover;
 
             &.card-img-top {
+              object-fit: contain;
               transition: transform 0.4s cubic-bezier(.25, .8, .25, 1);
             }
+          }
+          video {
+            object-fit: contain;
+            width: 100%;
           }
         }
 
@@ -550,17 +558,18 @@ button.awaiting-action {
         h3 {
           display: -webkit-box;
           -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
           overflow: hidden;
           text-overflow: ellipsis;
           font-size: 1.35rem;
         }
 
         p {
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          display: block;
+          position: relative;
+          z-index: 10;
+          &.demo-description {
+            overflow-y: auto;
+          }
         }
       }
 
@@ -595,6 +604,15 @@ button.awaiting-action {
           z-index: 1;
         }
       }
+    }
+
+    .demo-description {
+      max-height: 10rem;
+      z-index: 1;
+      display: block;
+      overflow-y: auto;
+      position: relative;
+      scrollbar-width: auto;
     }
   }
 
@@ -655,12 +673,13 @@ button.awaiting-action {
       transition: transform 0.4s cubic-bezier(.25, .8, .25, 1), border-radius 0.4s cubic-bezier(.25, .8, .25, 1), box-shadow 200ms ease-in-out;
 
       .demo-description {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        overflow: hidden;
-        text-overflow: ellipsis;
         min-height: 3rem;
+        max-height: 10rem;
+        z-index: 1;
+        display: block;
+        overflow-y: auto;
+        position: relative;
+        scrollbar-width: auto;
       }
 
       .pill-row.row {
@@ -687,16 +706,23 @@ button.awaiting-action {
           border: none;
           border-radius: 30px;
           background-color: transparent;
-          aspect-ratio: 9/6;
-          width: 45%;
+          aspect-ratio: 4/3;
           overflow: hidden;
           transition: border-radius 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 
           img {
             border-radius: 30px;
-            object-fit: cover;
+            object-fit: contain !important;
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
           }
+
+          video {
+            object-fit: contain;
+          }
+        }
+
+        .card-body {
+          height: 100%;
         }
 
         outline: none !important;
