@@ -650,11 +650,6 @@ button.awaiting-action {
     width: 100%;
     justify-content: center;
 
-    .carousel-control-next:focus,
-    .carousel-control-prev:focus {
-      outline: 2px solid;
-    }
-
     .carousel-control-next:active,
     .carousel-control-prev:active {
       outline: none;
