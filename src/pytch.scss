@@ -480,7 +480,6 @@ button.awaiting-action {
           border-bottom-right-radius ease-in-out 400ms,
           padding ease-in-out 400ms,
           transform ease-in-out 400ms;
-          padding: 0.25rem;
           overflow: clip;
         }
 
@@ -502,8 +501,11 @@ button.awaiting-action {
 
         &:hover, &:focus {
           .thumbnail {
-            transform: scale(1.04);
             border-radius: 0;
+
+            img {
+              transform: scale(1.04);
+            }
 
             video {
               border-radius: 0;
@@ -513,8 +515,7 @@ button.awaiting-action {
           .thumbnail-wrapper {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
-            padding: 0;
-            transform: scale(1.03);
+            padding: 0 !important;
 
             @media (min-width: $width-breakpoint-sm) {
               border-top-right-radius: 0;
@@ -540,7 +541,9 @@ button.awaiting-action {
 
             &.card-img-top {
               object-fit: contain;
-              transition: transform 0.4s cubic-bezier(.25, .8, .25, 1);
+              transition:
+                      transform 0.4s cubic-bezier(.25, .8, .25, 1),
+                padding 0.4s cubic-bezier(.25, .8, .25, 1);
             }
           }
           video {
@@ -578,7 +581,7 @@ button.awaiting-action {
           transform: scale(1.03);
 
         .card-header img.card-img-top {
-          transform: scale(1.15);
+          padding: 0 !important;
           object-fit: cover;
           z-index: 0;
           position: relative;
@@ -736,9 +739,17 @@ button.awaiting-action {
           outline: none;
         }
 
+        .card-header-wrapper {
+          transition: padding 0.4s cubic-bezier(.25, .8, .25, 1);
+        }
+
         &:hover, &:has(a:focus) {
           transform: scale(1.03);
           box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
+
+          .card-header-wrapper {
+            padding: 0 !important;
+          }
 
           .card-header {
             border-bottom-left-radius: 0;
@@ -752,8 +763,15 @@ button.awaiting-action {
               }
             }
 
+            img {
+              padding: 0 !important;
+            }
+
             img:not(.loading) {
               transform: scale(1.15);
+            }
+
+            video {
             }
           }
 
@@ -930,4 +948,9 @@ button.awaiting-action {
 
 .tab-pane.active {
   height: 100%;
+}
+
+.thumbnail-bg {
+  background-color: darken(#ebf5f9, 10);
+  overflow: hidden;
 }

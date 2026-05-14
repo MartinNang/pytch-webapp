@@ -48,7 +48,7 @@ export const RecommendedDemos = () => {
               controls={false}
               autoPlay={true}
               muted={true}
-              className={classNames("h-100 w-100", {
+              className={classNames("h-100 w-100 thumbnail-bg", {
                 showVideo,
               })}
               onMouseOver={() => {
@@ -65,7 +65,7 @@ export const RecommendedDemos = () => {
           ) : null}
           <Card.Img
             variant={"top"}
-            className={classNames("h-100 p-1", { showImage })}
+            className={classNames("h-100 thumbnail-bg", { showImage })}
             src={imageSrc}
           />
         </>
@@ -105,7 +105,9 @@ export const RecommendedDemos = () => {
           xs={12}
           sm={6}
           md={6}
-          className={"d-flex justify-content-center align-items-center"}
+          className={
+            "card-header-wrapper d-flex justify-content-center align-items-center p-1"
+          }
         >
           <Card.Header className={"p-0 w-100 h-100"}>
             <RecommendedDemoThumbnail />

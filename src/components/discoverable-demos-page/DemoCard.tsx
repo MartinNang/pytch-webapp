@@ -93,7 +93,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
             controls={false}
             autoPlay={true}
             muted={true}
-            className={classNames("h-100 w-100 object-fit-cover", {
+            className={classNames("h-100 w-100 thumbnail-bg", {
               showVideo,
             })}
             onMouseOver={() => setHover(true)}
@@ -108,7 +108,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         ) : null}
         <Card.Img
           variant={"top"}
-          className={classNames("h-100", { showImage })}
+          className={classNames("h-100 thumbnail-bg", { showImage })}
           src={imageSrc}
         />
       </>
@@ -149,7 +149,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
             <p>{displayDemoKindName(demo.demoKind)}</p>
           </Button>
         </Row>
-        <div className={"thumbnail-wrapper"}>
+        <div className={"thumbnail-wrapper p-1"}>
           <div className={"thumbnail"}>
             <DemoThumbnailContent />
           </div>
