@@ -74,7 +74,6 @@ const NavQueueWrapper: React.FC<EmptyProps> = () => {
 
 function AppWithI18nReady() {
   const basepath = envVarOrFail("BASE_URL");
-  console.log(`basepath: "${basepath}"`);
 
   const bootRandomChapterAccessInTutorials = useStoreActions(
     (actions) =>
@@ -163,8 +162,6 @@ export const App: React.FC<EmptyProps> = () => {
   useActionAsEffect(
     (actions) => () => actions.i18nContextState.boot(kTransDefaultComponents)
   );
-
-  console.log("AppI18nWrapper", i18nStateKind);
 
   switch (i18nStateKind) {
     case "not-yet-booted":
