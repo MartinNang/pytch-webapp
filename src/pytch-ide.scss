@@ -492,6 +492,8 @@ $speech-bubble-max-height: 180px;
   }
 }
 
+.AppLoadingPlaceholder,
+.I18nBootErrorModal,
 .GenericWorkingModal {
   .spinner-container {
     margin: 3rem 0px;
