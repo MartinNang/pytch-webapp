@@ -55,7 +55,14 @@ export let i18nContextState: I18nContextState = {
       i18next.use(Backend).use(LanguageDetector).use(initReactI18next);
       await i18next.init({
         backend: { loadPath: pathWithinApp("/locales/{{lng}}/{{ns}}.json") },
-        ns: ["common", "assets", "ide", "notable-changes", "tutorials", "vm"],
+        ns: [
+          "common",
+          "assets",
+          "ide",
+          "notable-changes",
+          "tutorials",
+          "vm",
+        ],
         defaultNS: "common",
         fallbackLng: "en",
         debug: true,
