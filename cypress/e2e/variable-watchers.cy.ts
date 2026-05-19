@@ -140,7 +140,7 @@ context("Watch variables", () => {
       label: "no such global",
       objectCode: "None",
       attrName: "score",
-      errorIntroRegexp: /owned by the global project/,
+      errorIntroRegexp: /global variable/,
       errorDetailRegexp: /has no attribute.*score/,
     },
     {
@@ -179,7 +179,7 @@ context("Watch variables", () => {
       cy.pytchShouldShowErrorContext("has stopped");
 
       cy.get(".ErrorReportAlert")
-        .contains("While trying to show the value of the variable")
+        .contains(/While trying to show the value of the (global )?variable/)
         .contains(spec.errorIntroRegexp);
 
       cy.pytchShouldShowErrorCard(spec.errorDetailRegexp, "user-space");

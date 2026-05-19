@@ -1,21 +1,21 @@
+import { useTranslation } from "react-i18next";
 import { useFlowState } from "../../model";
 import { GenericConfirmActionModal } from "./GenericConfirmActionModal";
 import { asyncFlowModal } from "./utils";
 
 export const DeleteManyProjectsModal = () => {
+  const { t } = useTranslation("projects");
   const { fsmState } = useFlowState((f) => f.deleteManyProjectsFlow);
   return asyncFlowModal(fsmState, (activeFsmState) => {
     const { ids } = activeFsmState.runState;
     const nProjects = ids.length;
-    const plural = nProjects > 1;
-    const noun = plural ? "projects" : "project";
     return (
       <GenericConfirmActionModal
         activeFsmState={activeFsmState}
-        headerContent={<p>Delete {noun}?</p>}
+        headerContent={<p>{t("delete-many.header", { count: nProjects })}</p>}
         bodyContent={
           <p>
-            Are you sure you want to delete {nProjects} {noun}?
+            {t("delete-many.confirm", { count: nProjects })}
           </p>
         }
       />

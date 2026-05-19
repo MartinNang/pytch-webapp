@@ -17,10 +17,8 @@ export {
   type ImageAssetPresentationData,
   type SoundAssetPresentationData,
   type AssetPresentationData,
-  type AssetOperationContextKey,
   type AssetOperationContext,
-  unknownAssetOperationContext,
-  assetOperationContextFromKey,
+  AssetOperationContextOps,
 } from "./core";
 
 export type AssetPresentationCreateOpts = Partial<{

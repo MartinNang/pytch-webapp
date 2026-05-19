@@ -152,7 +152,7 @@ context("Create/modify/delete event handlers", () => {
     // and then close hat-block chooser:
     settleModalDialog("OK");
 
-    assertHatBlockLabels(["when green flag clicked", 'when "x" key pressed']);
+    assertHatBlockLabels(["when green flag clicked", "when x key pressed"]);
 
     usingPytchJrProgram((program, actions) => {
       const snakeId = program.actors[1].id;
@@ -272,7 +272,7 @@ context("Create/modify/delete event handlers", () => {
     soleEventHandlerCodeShouldEqual("# Hello world");
 
     dragHatBlockByIdx(1);
-    expHatBlockLabels.push('when "b" key pressed');
+    expHatBlockLabels.push("when b key pressed");
     assertHatBlockLabels(expHatBlockLabels.slice());
 
     dragHatBlockByIdx(0);
@@ -288,7 +288,7 @@ context("Create/modify/delete event handlers", () => {
 
     assertHatBlockLabels([
       "when green flag clicked",
-      'when I receive "goforit"',
+      "when I receive “goforit”",
     ]);
   });
 
@@ -305,7 +305,7 @@ context("Create/modify/delete event handlers", () => {
 
     assertHatBlockLabels([
       "when green flag clicked",
-      'when I receive "message-1"',
+      "when I receive “message-1”",
     ]);
 
     const assertMessageInputValue = (expValue: string) =>
@@ -329,8 +329,8 @@ context("Create/modify/delete event handlers", () => {
 
     assertHatBlockLabels([
       "when green flag clicked",
-      'when I receive "message-1"',
-      'when I receive "hello-world"',
+      "when I receive “message-1”",
+      "when I receive “hello-world”",
     ]);
   });
 });

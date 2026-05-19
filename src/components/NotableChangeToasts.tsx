@@ -9,6 +9,7 @@ import {
   notableChangeDescription,
 } from "../model/notable-changes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 type NotableChangeToastProps = {
   keyedChange: KeyedNotableChange;
@@ -16,10 +17,11 @@ type NotableChangeToastProps = {
 const NotableChangeToast: React.FC<NotableChangeToastProps> = ({
   keyedChange,
 }) => {
+  const { i18n } = useTranslation();
   const deactivateAction = useDeactivateChangeAction();
 
   const change = keyedChange.change;
-  const description = notableChangeDescription(change);
+  const description = notableChangeDescription(i18n, change);
 
   const deactivate = () => deactivateAction(keyedChange.changeId);
   const dismissIfEscape: KeyboardEventHandler = (evt) => {
@@ -34,7 +36,11 @@ const NotableChangeToast: React.FC<NotableChangeToastProps> = ({
         <FontAwesomeIcon className="fa-xl me-2" icon="check-square" />
         <strong className="me-auto">{description.header}</strong>
       </Toast.Header>
-      <Toast.Body>{description.body}</Toast.Body>
+      <Toast.Body>
+        {description.body.map((fragment, idx) => (
+          <p key={idx}>{fragment}</p>
+        ))}
+      </Toast.Body>
     </Toast>
   );
 };

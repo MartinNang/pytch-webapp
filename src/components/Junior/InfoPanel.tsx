@@ -8,16 +8,18 @@ import { ErrorReportList } from "./ErrorReportList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Button } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+
+const useIdeTranslation = () => useTranslation("ide");
 
 const StandardOutput = () => {
   // TODO: Remove duplication between this and non-jr component.
   const text = useStoreState((state) => state.standardOutputPane.text);
+  const { t } = useIdeTranslation();
 
   const maybePlaceholder =
     text === "" ? (
-      <p className="info-pane-placeholder">
-        Anything your program prints will appear here.
-      </p>
+      <p className="info-pane-placeholder">{t("info.stdout.placeholder")}</p>
     ) : null;
 
   return (
@@ -29,15 +31,14 @@ const StandardOutput = () => {
 };
 
 const Errors = () => {
+  const { t } = useIdeTranslation();
   const errorList = useStoreState((state) => state.errorReportList.errors);
 
   const nErrors = errorList.length;
 
   const content =
     nErrors === 0 ? (
-      <p className="info-pane-placeholder">
-        Any errors your project encounters will appear here.
-      </p>
+      <p className="info-pane-placeholder">{t("info.errors.placeholder")}</p>
     ) : (
       <ErrorReportList />
     );
@@ -47,6 +48,7 @@ const Errors = () => {
 
 type InfoDisclosureProps = { tabContentId: string };
 const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
+  const { t } = useIdeTranslation();
   const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
   const toggleState = () => toggleStateAction();
 
@@ -57,18 +59,19 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
         size="sm"
         className="disclosure-button expand-button m-1"
         onClick={toggleState}
-        aria-label="Show output and errors"
+        aria-label={t("info.expand-button.aria-label")}
         aria-expanded={false}
         aria-controls={tabContentId}
       >
         <FontAwesomeIcon className="me-2" icon="angle-right" />
-        Output and errors
+        {t("info.expand-button.label")}
       </Button>
     </div>
   );
 };
 
 export const InfoPanel = () => {
+  const { t } = useIdeTranslation();
   const activeTab = useJrEditState((s) => s.infoPanelActiveTab);
   const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
   const setActiveTab = useJrEditActions((a) => a.expandAndSetActive);
@@ -83,8 +86,6 @@ export const InfoPanel = () => {
     "compact-tablist-container",
     { isCollapsed }
   );
-
-  const ariaLabel = "Output and errors";
 
   const tabPanelClasses = classNames(
     "Junior-InfoPanel",
@@ -105,7 +106,11 @@ export const InfoPanel = () => {
 
   const Tab = TabWithTypedKey<TabKey>;
   return (
-    <section className={classes} aria-label={ariaLabel} ref={maybeFocusButton}>
+    <section
+      className={classes}
+      aria-label={t("info.aria-label")}
+      ref={maybeFocusButton}
+    >
       <Tabs
         id={tabContentId}
         className={tabPanelClasses}
@@ -113,10 +118,10 @@ export const InfoPanel = () => {
         activeKey={activeTab}
         onSelect={(k) => k && setActiveTab(k as TabKey)}
       >
-        <Tab eventKey="output" title="Output">
+        <Tab eventKey="output" title={t("info.stdout.tab-title")}>
           <StandardOutput />
         </Tab>
-        <Tab eventKey="errors" title="Errors">
+        <Tab eventKey="errors" title={t("info.errors.tab-title")}>
           <Errors />
         </Tab>
       </Tabs>
@@ -127,7 +132,7 @@ export const InfoPanel = () => {
           variant="outline-secondary"
           className="disclosure-button collapse-button"
           onClick={toggleState}
-          aria-label="Hide output and errors"
+          aria-label={t("info.collapse-button.aria-label")}
           aria-expanded={true}
           aria-controls={tabContentId}
         >

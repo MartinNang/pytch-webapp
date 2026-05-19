@@ -1,8 +1,6 @@
 import React from "react";
-import {
-  ActorIdentifierOps,
-  LearnerTaskCommitChangeHatBlock,
-} from "../../../../model/junior/jr-tutorial";
+import { useTranslation } from "react-i18next";
+import { LearnerTaskCommitChangeHatBlock } from "../../../../model/junior/jr-tutorial";
 import { DisplayHatBlock } from "../../HatBlock";
 import { DisplayScript } from "./ScriptDiff";
 
@@ -24,22 +22,27 @@ export const ChangeHatBlock: React.FC<LearnerTaskCommitChangeHatBlock> = ({
   oldEvent,
   newEvent,
 }) => {
-  const actorNounPhrase = ActorIdentifierOps.nounPhrase(path.actor);
+  const { t } = useTranslation("tutorials");
   const actorKind = path.actor.kind;
+  const spriteName = path.actor.kind === "sprite" ? path.actor.name : undefined;
 
   return (
     <div className="JrCommit Commit-ChangeHatBlock">
-      <p>Find and select {actorNounPhrase}, and then find this script:</p>
+      <p>
+        {t(`commit.change-hat-block.find-script.${actorKind}`, {
+          replace: { spriteName },
+        })}
+      </p>
       <DisplayScript
         actorKind={actorKind}
         event={oldEvent}
         codeText={codeText}
       />
-      <p>Double-click on the hat block and change it to:</p>
+      <p>{t("commit.change-hat-block.change-to")}</p>
       <DisplayHatBlock
         actorKind={actorKind}
         event={newEvent}
-        variant="in-editor"
+        variant="fully-specified"
       />
     </div>
   );

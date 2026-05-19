@@ -10,12 +10,17 @@ import { NavBanner } from "./NavBanner";
 import { TutorialSummaryDisplay } from "./TutorialSummaryDisplay";
 import { useParams } from "react-router-dom";
 import { Link } from "./LinkWithinApp";
+import { Spinner } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-const SingleTutorialError = () => (
-  <div className="loading-error">
-    <p>Sorry, there was a problem finding the suggested tutorial.</p>
-  </div>
-);
+const SingleTutorialError = () => {
+  const { t } = useTranslation("tutorials");
+  return (
+    <div className="loading-error">
+      <p>{t("single.error")}</p>
+    </div>
+  );
+};
 
 interface SingleTutorialContentProps {
   targetSlug: string;
@@ -34,7 +39,9 @@ const SingleTutorialContent: React.FC<SingleTutorialContentProps> = (props) => {
     case SyncState.SyncingFromBackEnd:
       return (
         <div className="loading-placeholder">
-          <p>Loading...</p>
+          <div className="text-center py-5">
+            <Spinner animation="border" />
+          </div>
         </div>
       );
 
@@ -67,6 +74,7 @@ type SingleTutorialProps = {
 };
 
 export const SingleTutorial: React.FC<SingleTutorialProps> = ({ kind }) => {
+  const { t } = useTranslation("tutorials");
   const params = useParams();
 
   const loadSummaries = useStoreActions(
@@ -93,7 +101,7 @@ export const SingleTutorial: React.FC<SingleTutorialProps> = ({ kind }) => {
     <>
       <NavBanner />
       <div className="TutorialList single-tutorial">
-        <h1>This tutorial was suggested for you:</h1>
+        <h1>{t("single.title")}</h1>
         <SingleTutorialContent
           availableSummaries={available}
           targetSlug={params.slug}
@@ -102,7 +110,9 @@ export const SingleTutorial: React.FC<SingleTutorialProps> = ({ kind }) => {
         />
         <p className="button-wrapper">
           <Link to="/tutorials/">
-            <Button variant="outline-primary">See all tutorials</Button>
+            <Button variant="outline-primary">
+              {t("single.button.see-all")}
+            </Button>
           </Link>
         </p>
       </div>

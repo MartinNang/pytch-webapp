@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -24,6 +25,8 @@ const WhetherExampleOption = RadioButtonOption<WhetherExampleTag>;
 const EditorKindOption = RadioButtonOption<PytchProgramKind>;
 
 export const CreateProjectModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.createProjectFlow);
 
   const { setEditorKind, setWhetherExample, setName } = useFlowActions(
@@ -54,13 +57,13 @@ export const CreateProjectModal = () => {
             <EditorKindOption
               thisOption="per-method"
               activeOption={editorKind}
-              label="Edit as sprites and scripts"
+              label={t("create.kind.per-method")}
               setActive={setEditorKind}
             />
             <EditorKindOption
               thisOption="flat"
               activeOption={editorKind}
-              label="Edit as one big program"
+              label={t("create.kind.flat")}
               setActive={setEditorKind}
             />
           </div>
@@ -80,7 +83,7 @@ export const CreateProjectModal = () => {
         size="lg"
       >
         <Modal.Header>
-          <Modal.Title>Create a new project</Modal.Title>
+          <Modal.Title>{t("create.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -91,7 +94,7 @@ export const CreateProjectModal = () => {
                 value={name}
                 onChange={handleChange}
                 onKeyDown={handleKeyPress}
-                placeholder="Name for your new project"
+                placeholder={t("create.name-placeholder")}
                 tabIndex={-1}
                 ref={inputRef}
               />
@@ -102,13 +105,13 @@ export const CreateProjectModal = () => {
                 <WhetherExampleOption
                   thisOption="without-example"
                   activeOption={whetherExample}
-                  label="Without example code"
+                  label={t("create.example-code.no")}
                   setActive={setWhetherExample}
                 />
                 <WhetherExampleOption
                   thisOption="with-example"
                   activeOption={whetherExample}
-                  label="With example code"
+                  label={t("create.example-code.yes")}
                   setActive={setWhetherExample}
                 />
               </div>
@@ -122,14 +125,14 @@ export const CreateProjectModal = () => {
             onClick={settle.cancel}
             disabled={!isInteractable}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isSubmittable}
             variant="primary"
             onClick={settle.submit}
           >
-            Create project
+            {t("create.button.create-project")}
           </Button>
         </Modal.Footer>
       </Modal>

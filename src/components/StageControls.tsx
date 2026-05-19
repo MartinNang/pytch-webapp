@@ -1,4 +1,5 @@
 import React, { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import { useStoreActions, useStoreState } from "../store";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -9,6 +10,8 @@ import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content
 import { pathWithinApp } from "../env-utils";
 import { useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
+import { uniqueUserInputFragment } from "../model/compound-text-input";
+import { useResolveStringSpec } from "./hooks/resolve-string-spec";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
@@ -35,6 +38,7 @@ const StaticTooltip: React.FC<PropsWithChildren<{ visible: boolean }>> = ({
 };
 
 const GreenFlag = () => {
+  const { t } = useTranslation("ide");
   const buttonTourProgressStage = useStoreState(
     (state) => state.ideLayout.buttonTourProgressStage
   );
@@ -53,7 +57,7 @@ const GreenFlag = () => {
         <FontAwesomeIcon icon="play" />
       </Button>
       <StaticTooltip visible={tooltipIsVisible}>
-        <p>Click the green flag to run the project</p>
+        <p>{t("tooltip.green-flag")}</p>
       </StaticTooltip>
     </div>
   );
@@ -72,6 +76,8 @@ export const RedStop = () => {
 };
 
 const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
+  const resolveStringSpec = useResolveStringSpec();
+  const { t } = useTranslation("projects");
   const linkedContentLoadingState = useStoreState(
     (state) => state.activeProject.linkedContentLoadingState
   );
@@ -80,7 +86,11 @@ const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
     (actions) => actions.googleDriveImportExport.exportProject
   );
   const onExport = () => {
-    launchExportProjectOperation({ project, linkedContentLoadingState });
+    launchExportProjectOperation({
+      project,
+      linkedContentLoadingState,
+      resolveStringSpec,
+    });
   };
 
   const googleDriveStatus = useStoreState(
@@ -90,17 +100,24 @@ const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
   switch (googleDriveStatus.kind) {
     case "not-yet-started":
     case "pending":
-      return <Dropdown.Item disabled>Export to Google Drive</Dropdown.Item>;
+      return (
+        <Dropdown.Item disabled>{t("export-to-google-drive")}</Dropdown.Item>
+      );
     case "succeeded":
       return (
-        <Dropdown.Item onClick={onExport}>Export to Google Drive</Dropdown.Item>
+        <Dropdown.Item onClick={onExport}>
+          {t("export-to-google-drive")}
+        </Dropdown.Item>
       );
     case "failed":
-      return <Dropdown.Item disabled>Google Drive unavailable</Dropdown.Item>;
+      return (
+        <Dropdown.Item disabled>{t("google-drive-unavailable")}</Dropdown.Item>
+      );
   }
 };
 
 const LaunchCoordsChooserDropdownItem: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("ide");
   const setCoordsChooserState = useStoreActions(
     (actions) => actions.ideLayout.coordsChooser.setStateKind
   );
@@ -108,18 +125,24 @@ const LaunchCoordsChooserDropdownItem: React.FC<EmptyProps> = () => {
 
   return (
     <Dropdown.Item onClick={launchCoordsChooser}>
-      Show coordinates
+      {t("project-action.show-coords")}
     </Dropdown.Item>
   );
 };
 
 const GoToMyProjectsDropdownItem: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("projects");
   const navigate = useNavigate();
   const goToMyProjects = () => navigate(pathWithinApp("/my-projects/"));
-  return <Dropdown.Item onClick={goToMyProjects}>My projects</Dropdown.Item>;
+  return (
+    <Dropdown.Item onClick={goToMyProjects}>{t("page-heading")}</Dropdown.Item>
+  );
 };
 
 export const StageControls: React.FC<EmptyProps> = () => {
+  const resolveStringSpec = useResolveStringSpec();
+  const { t } = useTranslation("ide");
+  const { t: tProjects } = useTranslation("projects");
   const navigate = useNavigate();
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
@@ -144,7 +167,10 @@ export const StageControls: React.FC<EmptyProps> = () => {
 
   const runDownloadZipfiles = useRunFlow((f) => f.downloadZipfileFlow);
   const formatSpecifier = filenameFormatSpecifier(linkedContentLoadingState);
-  const onDownload = () => runDownloadZipfiles({ project, formatSpecifier });
+  const uiFragment = uniqueUserInputFragment(formatSpecifier);
+  const uiFragmentInitialValue = resolveStringSpec(uiFragment.initialValue);
+  const onDownload = () =>
+    runDownloadZipfiles({ project, formatSpecifier, uiFragmentInitialValue });
 
   const initiateButtonTour = useStoreActions(
     (actions) => actions.ideLayout.initiateButtonTour
@@ -152,9 +178,12 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onShowTooltips = () => initiateButtonTour();
 
   const runSaveProjectAs = useRunFlow((f) => f.saveProjectAsFlow);
+  const initialNameOfCopy = tProjects("copy.initial-name", {
+    replace: { sourceName: project.name },
+  });
   const copyArgs = {
     sourceProjectId: project.id,
-    sourceName: project.name,
+    initialNameOfCopy,
     sourceLinkedContentRef: project.linkedContentRef,
   };
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
@@ -165,12 +194,13 @@ export const StageControls: React.FC<EmptyProps> = () => {
     </Button>
   );
 
-  const ariaLabel = "Controls";
-
   const goHome = () => navigate(pathWithinApp("/"));
 
   return isFullScreen ? (
-    <section className="StageControls" aria-label={ariaLabel}>
+    <section
+      className="StageControls"
+      aria-label={t("stage-controls.aria-label")}
+    >
       <div className="run-stop-controls">
         <GreenFlag />
         <RedStop />
@@ -184,27 +214,38 @@ export const StageControls: React.FC<EmptyProps> = () => {
       </Button>
     </section>
   ) : (
-    <section className="StageControls" aria-label={ariaLabel}>
+    <section
+      className="StageControls"
+      aria-label={t("stage-controls.aria-label")}
+    >
       <GreenFlag />
       <RedStop />
       <Button
         className={`save-button ${codeStateVsStorage}`}
         onClick={handleSave}
       >
-        <span>Save</span>
+        <span>{t("project-action.save")}</span>
       </Button>
       {fullScreenButton}
       <Button onClick={goHome}>
-        <FontAwesomeIcon aria-label="Home" icon="home" />
+        <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" />
       </Button>
       <DropdownButton align="end" title="⋮">
         <GoToMyProjectsDropdownItem />
-        <Dropdown.Item onClick={onScreenshot}>Screenshot</Dropdown.Item>
-        <Dropdown.Item onClick={onCreateCopy}>Make a copy...</Dropdown.Item>
-        <Dropdown.Item onClick={onDownload}>Download as zipfile</Dropdown.Item>
+        <Dropdown.Item onClick={onScreenshot}>
+          {t("project-action.screenshot")}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={onCreateCopy}>
+          {t("project-action.make-copy")}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={onDownload}>
+          {t("project-action.download-zip")}
+        </Dropdown.Item>
         <ExportToDriveDropdownItem />
         <LaunchCoordsChooserDropdownItem />
-        <Dropdown.Item onClick={onShowTooltips}>Show tooltips</Dropdown.Item>
+        <Dropdown.Item onClick={onShowTooltips}>
+          {t("project-action.show-tooltips")}
+        </Dropdown.Item>
       </DropdownButton>
     </section>
   );

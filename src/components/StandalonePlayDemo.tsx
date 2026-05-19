@@ -1,4 +1,5 @@
 import React, { CSSProperties, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
 import { EmptyProps, OnlyChildrenProps, assertNever } from "../utils";
@@ -68,12 +69,15 @@ const useStageDimensionsStyle = ({
 // Sub-components.
 
 const MadeWithPytchButton: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("tutorials");
   const url = envVarOrDefault("BASE_URL", "https://pytch.org/");
   return (
     <div className="MadeWithPytchButton">
       <p>
         <a href={url} target="_blank" rel="noreferrer">
-          <span className="pseudo-link">Made with Pytch</span>
+          <span className="pseudo-link">
+            {t("standalone-play-demo.made-with-pytch")}
+          </span>
         </a>
       </p>
     </div>
@@ -106,6 +110,7 @@ const SizedSpinner: React.FC<EmptyProps> = () => {
 };
 
 const DemoContent: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("tutorials");
   const state = useSPDState((s) => s.coreState);
 
   switch (state.kind) {
@@ -115,13 +120,13 @@ const DemoContent: React.FC<EmptyProps> = () => {
     case "boot-failed":
       return (
         <ErrorNotice>
-          <p>Sorry, this Pytch program could not be loaded.</p>
+          <p>{t("standalone-play-demo.error.boot-failed")}</p>
         </ErrorNotice>
       );
     case "build-failed":
       return (
         <ErrorNotice>
-          <p>Sorry, this Pytch program could not be started.</p>
+          <p>{t("standalone-play-demo.error.build-failed")}</p>
         </ErrorNotice>
       );
     case "ready":
@@ -135,11 +140,8 @@ const DemoContent: React.FC<EmptyProps> = () => {
     case "runtime-error":
       return (
         <ErrorNotice>
-          <p>Sorry, this Pytch program encountered an error.</p>
-          <p>
-            You can try re-running the program by clicking the green button
-            above the stage.
-          </p>
+          <p>{t("standalone-play-demo.error.runtime-error")}</p>
+          <p>{t("standalone-play-demo.error.runtime-error-hint")}</p>
         </ErrorNotice>
       );
     default:

@@ -33,7 +33,7 @@ context("Flat code editing", () => {
     realPress("Tab");
     assertFocus("add-flat-asset-button");
     realPress("Enter");
-    assertModalWithTitle("Choose some images");
+    assertModalWithTitle("Add file/s");
 
     // This is brittle and depends on the exact contents and ordering of
     // the media library.  We're selecting the "blocks(2)" and "Boing
@@ -81,12 +81,14 @@ context("Flat code editing", () => {
     const assertRenameModal = () => {
       assertModalWithTitle("Rename “python-logo.png”");
     };
+
     it("cxl rename", () => {
       chooseCcMenuItem(2);
       assertRenameModal();
       settleModalDialog("Cancel");
       assertFocus("flat-asset", 0);
     });
+
     it("do rename", () => {
       chooseCcMenuItem(2);
       assertRenameModal();
@@ -98,10 +100,9 @@ context("Flat code editing", () => {
     });
 
     const assertDeleteModal = () => {
-      assertModalWithTitle(
-        "Delete the image “python-logo.png” from your project?"
-      );
+      assertModalWithTitle("Delete image “python-logo.png”?");
     };
+
     it("cxl delete", () => {
       chooseCcMenuItem(3);
       assertDeleteModal();
@@ -109,6 +110,7 @@ context("Flat code editing", () => {
       assertFocus("flat-asset", 0);
       cy.pytchShouldShowAssets(["python-logo.png"]);
     });
+
     it("do delete", () => {
       chooseCcMenuItem(3);
       assertDeleteModal();

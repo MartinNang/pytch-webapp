@@ -20,8 +20,12 @@ import {
   groupedFocusKeyFromFilterState,
   initialFilterStateFromFilterTag,
 } from "../../model/user-interactions/clipart-gallery-select";
+import { AssetOperationContext } from "../../model/asset";
+import { useTranslation } from "react-i18next";
+import { AssetSource } from "../../model/asset/core";
 
 export const AppearancesList = () => {
+  const { t } = useTranslation("assets");
   const focusContext = useFocusContext("per-method");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
@@ -31,6 +35,8 @@ export const AppearancesList = () => {
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
+
+  const tButtonLabel = (src: AssetSource) => t(`add-button.${src}`);
 
   const actorAppearances = AssetMetaDataOps.filterByActorMimeType(
     assets,
@@ -47,9 +53,12 @@ export const AppearancesList = () => {
   }
 
   const assetNamePrefix = `${activeActorId}/`;
-  const operationContextKey = `${activeActorKind}/image` as const;
+  const operationContext: AssetOperationContext = {
+    scope: activeActorKind,
+    assetKind: "image",
+  };
   const addFromDevice = () =>
-    runAddAssets({ projectId, operationContextKey, assetNamePrefix });
+    runAddAssets({ projectId, operationContext, assetNamePrefix });
 
   const addFromMediaLibrary = () => {
     const initialFilterState = initialFilterStateFromFilterTag(filterTag);
@@ -59,7 +68,7 @@ export const AppearancesList = () => {
 
     runAddClipArt({
       projectId,
-      operationContextKey,
+      operationContext,
       assetNamePrefix,
       filterTag,
     });
@@ -79,20 +88,19 @@ export const AppearancesList = () => {
         actorKind={activeActorKind}
         assetKind="image"
         assets={actorAppearances}
-        buttonsPlural={true}
       />
       <AddSomethingButtonStrip>
         <AddSomethingButton
           key={`${addWhat}-lib`}
           className={kFocusGroupFallbackClassName}
           what={addWhat}
-          label="Add from media library"
+          label={tButtonLabel("media-library")}
           onClick={addFromMediaLibrary}
         />
         <AddSomethingButton
           key={`${addWhat}-dev`}
           what={addWhat}
-          label="Add from this device"
+          label={tButtonLabel("this-device")}
           onClick={addFromDevice}
         />
       </AddSomethingButtonStrip>

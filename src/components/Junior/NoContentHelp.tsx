@@ -1,23 +1,20 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
+import { useTranslation } from "react-i18next";
+import { ScopedResourceKind } from "../../model/resource";
 
 type NoContentHelpProps = {
-  actorKind: string;
-  contentKind: string;
-  buttonsPlural: boolean;
+  scopedResourceKind: ScopedResourceKind;
 };
 export const NoContentHelp: React.FC<NoContentHelpProps> = ({
-  actorKind,
-  contentKind,
-  buttonsPlural,
+  scopedResourceKind,
 }) => {
-  const buttonOrButtons = buttonsPlural ? "buttons" : "button";
+  const { t } = useTranslation("ide");
+  const content = t(`no-content-help.${scopedResourceKind}`);
+
   return (
     <Card className="NoContentHelp" body>
-      <p>
-        Your {actorKind} has no {contentKind} yet. Use the {buttonOrButtons}{" "}
-        below to add one!
-      </p>
+      <p>{content}</p>
     </Card>
   );
 };

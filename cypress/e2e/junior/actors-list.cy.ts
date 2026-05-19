@@ -128,7 +128,7 @@ context("Work with list of actors", () => {
     assertForbiddenBecause("already a Sprite");
 
     inputNewName("Stage");
-    assertForbiddenBecause('a Sprite called "Stage"');
+    assertForbiddenBecause("a Sprite called “Stage”");
 
     inputNewName("hello-world");
     assertForbiddenBecause("it does not follow the rules");

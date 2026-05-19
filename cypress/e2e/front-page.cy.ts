@@ -185,7 +185,7 @@ context("Front page", () => {
     it("opens and closes", () => {
       cy.get(".video-container").click();
       cy.get(".OverviewVideoModal").should("be.visible");
-      cy.get("button").contains("Close").click();
+      cy.get("button").contains("OK").click();
       cy.get(".OverviewVideoModal").should("not.exist");
     });
   });

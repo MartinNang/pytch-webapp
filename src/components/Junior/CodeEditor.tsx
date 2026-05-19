@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useStoreState, useStoreActions } from "../../store";
 import classNames from "classnames";
 
@@ -27,6 +28,7 @@ import { kFocusGroupFallbackClassName } from "../../model/junior/grouped-focus";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 
 const AddHandlerButton: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("ide");
   const activeActorId = useJrEditState((s) => s.activeActor);
   const activeActorKind = useActiveActorKind();
   const codingDragInProgress = useJrEditState((s) => s.scriptDragInProgress);
@@ -46,7 +48,7 @@ const AddHandlerButton: React.FC<EmptyProps> = () => {
       className={classes}
       buttonClassName={kFocusGroupFallbackClassName}
       what="script"
-      label="Add script"
+      label={t("scripts.action.add")}
       onClick={launchAdd}
     />
   );
@@ -101,11 +103,7 @@ const ScriptsEditor = () => {
   const nHandlers = handlerIds.length;
 
   const maybeNoContentHelp = nHandlers === 0 && (
-    <NoContentHelp
-      actorKind={kind}
-      contentKind="scripts"
-      buttonsPlural={false}
-    />
+    <NoContentHelp scopedResourceKind={`${kind}.script`} />
   );
 
   // TODO: Get a list of which handlers have raised errors.  Give them a

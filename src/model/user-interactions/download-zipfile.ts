@@ -2,11 +2,7 @@ import { Action } from "easy-peasy";
 import { delaySeconds, PYTCH_CYPRESS } from "../../utils";
 import { saveAs } from "file-saver";
 import { zipfileDataFromProject } from "../../storage/zipfile";
-import {
-  applyFormatSpecifier,
-  FormatSpecifier,
-  uniqueUserInputFragment,
-} from "../compound-text-input";
+import { applyFormatSpecifier, FormatSpecifier } from "../compound-text-input";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
@@ -21,6 +17,7 @@ import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 type DownloadZipfileRunArgs = {
   project: StoredProjectContent;
   formatSpecifier: FormatSpecifier;
+  uiFragmentInitialValue: string;
 };
 
 type DownloadZipfileRunState = {
@@ -52,9 +49,6 @@ async function prepare(
     actions.activeProject.requestSyncToStorage()
   );
 
-  const uiFragment = uniqueUserInputFragment(args.formatSpecifier);
-  const uiFragmentValue = uiFragment.initialValue;
-
   // Avoid flash of the "Working" spinner.
   await navigationGuard.throwIfAbandoned(delaySeconds(1.0));
 
@@ -65,7 +59,7 @@ async function prepare(
   return {
     formatSpecifier: args.formatSpecifier,
     fileContents,
-    uiFragmentValue,
+    uiFragmentValue: args.uiFragmentInitialValue,
   };
 }
 

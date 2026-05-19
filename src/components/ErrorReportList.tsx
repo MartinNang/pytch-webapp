@@ -1,25 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { createContext, createElement, useContext } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useStoreState } from "../store";
 import Alert from "react-bootstrap/Alert";
 import { IErrorReport } from "../model/ui";
 import { getFlatAceController } from "../skulpt-connection/code-editor";
 import { EmptyProps, failIfNull } from "../utils";
 import { Button } from "react-bootstrap";
+import {
+  zAttributeWatcherErrorKey,
+  zBuildErrorKey,
+  zOneFrameErrorKey,
+  zRenderErrorKey,
+} from "../skulpt-connection/error-kinds";
 
 type UserCodeErrorLocationProps = {
   lineNo: number;
   colNo: number | null;
-  isFirst: boolean;
 };
 export type UserCodeErrorLocationComponent =
   React.FC<UserCodeErrorLocationProps>;
 const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
   lineNo,
   colNo,
-  isFirst,
 }) => {
+  const { t } = useTranslation("vm");
+
   const gotoLine = () => {
     console.log("go to line", lineNo, colNo);
     const controller = failIfNull(
@@ -33,12 +40,12 @@ const UserCodeErrorLocation: UserCodeErrorLocationComponent = ({
     }
   };
 
-  const lineText = isFirst ? "Line" : "line";
-  const colText = colNo != null ? `(position ${colNo})` : "";
+  const keySuffix = colNo == null ? "no-col" : "with-col";
+  const key = `error.location.user-code.${keySuffix}` as const;
 
   return (
     <Button className="go-to-line" onClick={gotoLine}>
-      {lineText} {lineNo} {colText} of your code
+      {t(key, { replace: { lineNo, colNo } })}
     </Button>
   );
 };
@@ -51,12 +58,18 @@ export type SchedulerStepErrorIntroComponent =
 const SchedulerStepErrorIntro: SchedulerStepErrorIntroComponent = ({
   errorContext,
 }) => {
+  const keySuffix = zOneFrameErrorKey.parse(errorContext.target_class_kind);
   return (
     <p>
-      A {errorContext.target_class_kind} of class{" "}
-      <code>{errorContext.target_class_name}</code> was running the method{" "}
-      <code>{errorContext.callable_name}()</code> in response to the event{" "}
-      <code>{errorContext.event_label}</code>, and encountered this error:
+      <Trans
+        ns="vm"
+        i18nKey={`error.intro.one-frame.${keySuffix}`}
+        values={{
+          className: errorContext.target_class_name,
+          methodName: errorContext.callable_name,
+          eventLabel: errorContext.event_label,
+        }}
+      />
     </p>
   );
 };
@@ -75,23 +88,18 @@ type InternalCodeErrorLocationProps = {
   filename: string;
   lineNo: number;
   colNo: number | null;
-  isFirst: boolean;
 };
 const InternalCodeErrorLocation: React.FC<InternalCodeErrorLocationProps> = ({
   filename,
   lineNo,
   colNo,
-  isFirst,
 }) => {
-  const lineText = isFirst ? "Line" : "line";
-  const colText = colNo != null ? `(position ${colNo})` : "";
+  const keySuffix = colNo == null ? "no-col" : "with-col";
+  const key = `error.location.internal.${keySuffix}` as const;
 
   return (
     <span>
-      {lineText} {lineNo} {colText} of{" "}
-      <span>
-        <code>{filename}</code> (which is internal Pytch code)
-      </span>
+      <Trans ns="vm" i18nKey={key} values={{ lineNo, colNo, filename }} />
     </span>
   );
 };
@@ -100,14 +108,12 @@ type ErrorLocationProps = {
   lineNo: number;
   colNo?: number;
   filename: string;
-  isFirst: boolean;
   isUserCode: boolean;
 };
 const ErrorLocation: React.FC<ErrorLocationProps> = ({
   lineNo,
   colNo,
   filename,
-  isFirst,
   isUserCode,
 }) => {
   const userCodeErrorLocationComponent =
@@ -117,14 +123,12 @@ const ErrorLocation: React.FC<ErrorLocationProps> = ({
     createElement(userCodeErrorLocationComponent, {
       lineNo,
       colNo: colNo ?? null,
-      isFirst,
     })
   ) : (
     <InternalCodeErrorLocation
       filename={filename}
       lineNo={lineNo}
       colNo={colNo ?? null}
-      isFirst={isFirst}
     />
   );
 };
@@ -143,17 +147,23 @@ const simpleExceptionString = (err: any) => {
 
 const frameSummary = (frame: any, index: number) => {
   const isUserCode = frame.filename === "<stdin>.py";
+  const keySuffix = index === 0 ? "0" : index === 1 ? "1" : "other";
 
-  const leadIn = index === 0 ? "" : index === 1 ? "called " : "which called ";
   return (
     <li className="stack-trace-frame-summary" key={index}>
-      {leadIn}
-      <ErrorLocation
-        lineNo={frame.lineno}
-        colNo={frame.colno}
-        filename={frame.filename}
-        isFirst={index === 0}
-        isUserCode={isUserCode}
+      <Trans
+        ns="vm"
+        i18nKey={`error.traceback.frame.${keySuffix}`}
+        components={{
+          location: (
+            <ErrorLocation
+              lineNo={frame.lineno}
+              colNo={frame.colno}
+              filename={frame.filename}
+              isUserCode={isUserCode}
+            />
+          ),
+        }}
       />
     </li>
   );
@@ -198,69 +208,53 @@ const runtimeContextTraceback = (pytchError: any) => {
 };
 
 const buildErrorIntro = (errorContext: any) => {
-  switch (errorContext.phase) {
-    case "import":
-      return <p>While building your code, Pytch encountered this error:</p>;
-    case "create-project":
-      return (
-        <p>
-          While creating the <code>Project</code> object, Pytch encountered this
-          error:
-        </p>
-      );
-    case "register-actor":
-      return (
-        <p>
-          While setting up the {errorContext.phaseDetail.kind} called{" "}
-          <code>{errorContext.phaseDetail.className}</code>, Pytch encountered
-          this error:
-        </p>
-      );
-    default:
-      return (
-        <p>
-          At an unknown point of the build process, Pytch encountered this
-          error:
-        </p>
-      );
-  }
-};
+  const phase = errorContext.phase;
+  const keySuffix = zBuildErrorKey.parse(
+    phase === "register-actor"
+      ? `register-actor.${errorContext.phaseDetail.kind}`
+      : phase === "import" || phase === "create-project"
+      ? phase
+      : "unknown"
+  );
 
-const renderErrorIntro = (errorContext: any) => {
   return (
     <p>
-      While trying to draw a {errorContext.target_class_kind} of class “
-      <code>{errorContext.target_class_name}</code>”, Pytch encountered this
-      error:
+      <Trans
+        ns="vm"
+        i18nKey={`error.intro.build.${keySuffix}`}
+        values={{ className: errorContext.phaseDetail?.className }}
+      />
     </p>
   );
 };
 
-const attributeWatchOwner = (errorContext: any) => {
-  const kind = errorContext.owner_kind;
-  switch (kind) {
-    case "Sprite":
-    case "Stage":
-      return (
-        <>
-          a {kind} of class <code>{errorContext.owner_name}</code>
-        </>
-      );
-    case "global":
-      return "the global project";
-    case "unknown":
-    default:
-      return "an unknown owner";
-  }
+const renderErrorIntro = (errorContext: any) => {
+  const keySuffix = zRenderErrorKey.parse(errorContext.target_class_kind);
+  return (
+    <p>
+      <Trans
+        ns="vm"
+        i18nKey={`error.intro.render.${keySuffix}`}
+        values={{ className: errorContext.target_class_name }}
+      />
+    </p>
+  );
 };
 
 const attributeWatchErrorIntro = (errorContext: any) => {
-  const owningObject = attributeWatchOwner(errorContext);
+  const keySuffix = zAttributeWatcherErrorKey.parse(
+    errorContext.owner_kind ?? "unknown"
+  );
   return (
     <p>
-      While trying to show the value of the variable{" "}
-      <code>{errorContext.attribute_name}</code> owned by {owningObject}, Pytch
-      encountered this error:
+      <Trans
+        ns="vm"
+        i18nKey={`error.intro.attribute-watcher.${keySuffix}`}
+        values={{
+          attributeName: errorContext.attribute_name,
+          ownerName: errorContext.owner_name,
+        }}
+      />
     </p>
   );
 };
@@ -269,6 +263,7 @@ type ErrorIntroProps = {
   errorContext: any;
 };
 const ErrorIntro: React.FC<ErrorIntroProps> = ({ errorContext }) => {
+  const { t } = useTranslation("vm");
   const schedulerStepErrorIntroComponent =
     useContext(componentsContext).schedulerStepErrorIntro;
 
@@ -282,7 +277,7 @@ const ErrorIntro: React.FC<ErrorIntroProps> = ({ errorContext }) => {
     case "attribute-watcher":
       return attributeWatchErrorIntro(errorContext);
     default:
-      return <p>In an unknown context, Pytch encountered this error:</p>;
+      return <p>{t("error.intro.unknown")}</p>;
   }
 };
 
@@ -290,6 +285,7 @@ type ErrorReportProps = {
   errorReport: IErrorReport;
 };
 const ErrorReport: React.FC<ErrorReportProps> = ({ errorReport }) => {
+  const { t } = useTranslation("vm");
   const pytchError = errorReport.pytchError;
   const msg = simpleExceptionString(pytchError);
 
@@ -314,20 +310,21 @@ const ErrorReport: React.FC<ErrorReportProps> = ({ errorReport }) => {
         </blockquote>
         {tracebackItems == null ? (
           isBuildError ? null : (
-            <p>
-              Unfortunately there is no more information about what caused this
-              error. If you don’t think you were doing anything unusual, please
-              contact the Pytch team and ask for help. We suggest you save your
-              project then re-load Pytch.
-            </p>
+            <p>{t("error.traceback.no-info")}</p>
           )
         ) : tracebackItems.length === 0 ? (
-          <p>There is no more information about this error.</p>
+          <p>{t("error.traceback.no-more-info")}</p>
         ) : (
           <>
-            <p>This is how the error happened:</p>
+            <p>{t("error.traceback.how-it-happened")}</p>
             <ol className="error-traceback">{tracebackItems}</ol>
-            <p>{tracebackItems.length > 1 ? "which " : ""}raised the error.</p>
+            <p>
+              {t(
+                tracebackItems.length > 1
+                  ? "error.traceback.which-raised-error"
+                  : "error.traceback.raised-error"
+              )}
+            </p>
           </>
         )}
       </Alert>
@@ -354,18 +351,13 @@ const contextFromErrors = (errors: Array<IErrorReport>) => {
 };
 
 export const ErrorReportList: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("vm");
   const errors = useStoreState((state) => state.errorReportList.errors);
   const context = contextFromErrors(errors);
 
-  const introText =
-    context === "build"
-      ? "Your project could not be started because:"
-      : "Your project has stopped because:";
-  const intro = <p className="error-pane-intro">{introText}</p>;
-
   return (
     <div className="ErrorReportPane">
-      {intro}
+      <p className="error-pane-intro">{t(`error.pane-intro.${context}`)}</p>
       <ol className="ErrorReportList">
         {errors.map((errorReport, index) => (
           <ErrorReport key={index} errorReport={errorReport} />

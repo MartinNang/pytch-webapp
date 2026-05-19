@@ -1,11 +1,7 @@
 import { Action } from "easy-peasy";
 import { IPytchAppModel, PytchAppModelActions } from "..";
 
-import {
-  AssetOperationContext,
-  assetOperationContextFromKey,
-  AssetOperationContextKey,
-} from "../asset";
+import { AssetOperationContext } from "../asset";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
@@ -13,9 +9,10 @@ import {
   setRunStateProp,
 } from "./async-user-flow";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
+import { mkRawSpec, RawOrI18nStringSpec } from "../i18n/core-types";
 
 type RenameAssetRunArgs = {
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   fixedPrefix: string;
   oldNameSuffix: string;
 };
@@ -28,9 +25,27 @@ type RenameAssetRunState = {
   fixedSuffix: string;
 };
 
+function renameAssetErrorSpecFromError(
+  runState: RenameAssetRunState,
+  error: Error
+): RawOrI18nStringSpec {
+  if (error.name === "PytchDuplicateAssetNameError") {
+    const { scope, assetKind } = runState.operationContext;
+    const keyPart = `rename.${scope}.${assetKind}.dup-error`;
+    const oldBasename = `${runState.oldStem}${runState.fixedSuffix}`;
+    const newBasename = `${runState.newStem}${runState.fixedSuffix}`;
+    return {
+      kind: "i18n",
+      spec: { ns: "assets", keyPart, params: { oldBasename, newBasename } },
+    };
+  } else {
+    return mkRawSpec(error.message);
+  }
+}
+
 export type RenameAssetOutcomeNub =
   | { kind: "success" }
-  | { kind: "error"; message: string };
+  | { kind: "error"; messageSpec: RawOrI18nStringSpec };
 
 type RenameAssetBase = AsyncUserFlowSlice<
   IPytchAppModel,
@@ -67,12 +82,9 @@ const filenameParts = (name: string): FilenameParts => {
 };
 
 async function prepare(args: RenameAssetRunArgs): Promise<RenameAssetRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
   const { stem, extension } = filenameParts(args.oldNameSuffix);
   return {
-    operationContext,
+    operationContext: args.operationContext,
     fixedPrefix: args.fixedPrefix,
     oldStem: stem,
     newStem: stem,
@@ -117,9 +129,10 @@ async function attempt(
       throw error;
     }
 
+    const messageSpec = renameAssetErrorSpecFromError(runState, error as Error);
     return {
       needsModalNotification: true,
-      nub: { kind: "error", message: (error as Error).toString() },
+      nub: { kind: "error", messageSpec },
     };
   }
 }

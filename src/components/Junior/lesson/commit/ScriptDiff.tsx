@@ -1,4 +1,5 @@
 import React, { HTMLProps, KeyboardEventHandler, useId, useState } from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import {
   DiffViewKind,
@@ -65,7 +66,10 @@ const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
   setViewKind,
   tabSetIdNub,
 }) => {
-  const viewOption = (thisViewKind: DiffViewKind, label: string) => {
+  const { t } = useTranslation("tutorials");
+
+  const viewOption = (thisViewKind: DiffViewKind) => {
+    const label = t(`script-diff.view-kind.${thisViewKind}`);
     const isActive = viewKind === thisViewKind;
     const classes = classNames("DiffViewKindOption", { isActive });
     const switchTabViaKey = switchTabViaKeyFun(setViewKind);
@@ -93,15 +97,16 @@ const DiffViewKindSelector: React.FC<DiffViewKindSelectorProps> = ({
 
   return (
     <ul className="DiffViewKindSelector">
-      {viewOption("bare-old", "What should my code look like now?")}
-      {viewOption("old-diff", "Where should I change my code?")}
-      {viewOption("new-diff", "What should my code look like afterwards?")}
+      {viewOption("bare-old")}
+      {viewOption("old-diff")}
+      {viewOption("new-diff")}
     </ul>
   );
 };
 
 type ScriptDiffViewLineProps = { line: ScriptDiffLine };
 const ScriptDiffViewLine: React.FC<ScriptDiffViewLineProps> = ({ line }) => {
+  const { t } = useTranslation("tutorials");
   switch (line.kind) {
     case "context":
     case "change":
@@ -119,17 +124,22 @@ const ScriptDiffViewLine: React.FC<ScriptDiffViewLineProps> = ({ line }) => {
       );
     case "add-padding":
     case "change-padding":
-    case "del-padding":
+    case "del-padding": {
+      const helpContent =
+        line.helpTextKeyNub === ""
+          ? ""
+          : t(`script-diff.code-help.${line.helpTextKeyNub}` as const);
       return (
         <div className={line.kind}>
           <pre className="lineno" />
           <div>
             <pre>
-              <code>{line.helpText}</code>
+              <code>{helpContent}</code>
             </pre>
           </div>
         </div>
       );
+    }
     default:
       return assertNever(line);
   }
@@ -153,6 +163,7 @@ const ScriptDiffView: React.FC<ScriptDiffViewProps> = ({
   tabSetIdNub,
   lines,
 }) => {
+  const { t } = useTranslation("tutorials");
   const isActive = activeViewKind === thisViewKind;
   const classes = classNames("ScriptDiffView", { isActive });
 
@@ -166,7 +177,7 @@ const ScriptDiffView: React.FC<ScriptDiffViewProps> = ({
   const content = isEmptyPureOld ? (
     <div className="global-placeholder">
       <pre>
-        <code>[This script has no code yet.]</code>
+        <code>{t("script-diff.empty-placeholder")}</code>
       </pre>
     </div>
   ) : (
@@ -242,7 +253,7 @@ export const ScriptDiff: React.FC<ScriptDiffProps> = (props) => {
       <DisplayHatBlock
         actorKind={props.actorKind}
         event={props.event}
-        variant="in-editor"
+        variant="fully-specified"
       />
       <ScriptCodeDiff richDiff={diff} />
     </div>
@@ -272,7 +283,7 @@ export const DisplayScript: React.FC<DisplayScriptProps> = ({
       <DisplayHatBlock
         actorKind={actorKind}
         event={event}
-        variant="in-editor"
+        variant="fully-specified"
       />
       <div className="code-representations">
         <ScriptDiffView {...viewProps} />

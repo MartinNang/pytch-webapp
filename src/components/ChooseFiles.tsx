@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { failIfNull } from "../utils";
+import { useTranslation } from "react-i18next";
 
 export const ChooseFiles: React.FC<{
   titleText: string;
@@ -16,6 +17,7 @@ export const ChooseFiles: React.FC<{
   tryProcess: (files: FileList) => void;
   dismiss: () => void;
 }> = (props) => {
+  const { t } = useTranslation("common");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isAwaiting = props.status === "interacting";
@@ -70,7 +72,7 @@ export const ChooseFiles: React.FC<{
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={() => props.dismiss()}>
-          Cancel
+          {t("button.cancel")}
         </Button>
         <Button
           disabled={!atLeastOneFileChosen}

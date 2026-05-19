@@ -1,5 +1,4 @@
 import React from "react";
-import classNames from "classnames";
 
 import Dropdown from "react-bootstrap/Dropdown";
 
@@ -7,7 +6,6 @@ import { useStoreActions } from "../../store";
 
 import {
   ActorKind,
-  ActorKindOps,
   EventDescriptor,
   HandlerUpsertionOperation,
   Uuid,
@@ -22,9 +20,10 @@ import {
 } from "./hooks";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { useFocusContext } from "../hooks/focus-steering";
+import { Trans, useTranslation } from "react-i18next";
 
 /** See docstring for `HatBlockContent`. */
-type DisplayVariant = "kind-chosen" | "fully-specified" | "in-editor";
+type DisplayVariant = "kind-chosen" | "fully-specified";
 
 type HatBlockContentProps = {
   actorKind: ActorKind;
@@ -32,78 +31,63 @@ type HatBlockContentProps = {
   variant: DisplayVariant;
 };
 
+const HatContentNub: React.FC<HatBlockContentProps> = ({
+  actorKind,
+  event,
+  variant,
+}) => {
+  switch (event.kind) {
+    case "green-flag":
+      return <Trans i18nKey="hat-block-content.green-flag" ns="ide" />;
+    case "clicked":
+      return (
+        <Trans i18nKey={`hat-block-content.clicked.${actorKind}`} ns="ide" />
+      );
+    case "start-as-clone":
+      return <Trans i18nKey="hat-block-content.start-as-clone" ns="ide" />;
+    case "key-pressed": {
+      const browserKey = variant === "kind-chosen" ? " " : event.keyName;
+      const keyName = descriptorFromBrowserKeyName(browserKey).displayName;
+      return (
+        <Trans
+          i18nKey="hat-block-content.key-pressed"
+          ns="ide"
+          components={{
+            key: <span className="key-content">{keyName}</span>,
+          }}
+        />
+      );
+    }
+    case "message-received": {
+      const message = variant === "kind-chosen" ? "\u00a0" : event.message;
+      return (
+        <Trans
+          i18nKey="hat-block-content.message-received"
+          ns="ide"
+          components={{
+            msg: <span className="message-content">{message}</span>,
+          }}
+        />
+      );
+    }
+    default:
+      return assertNever(event);
+  }
+};
+
 /** Render the text contents of a hat-block for the given `event` within
  * an actor of the given `actorKind`.  The `variant` is one of:
  *
  * * `kind-chosen` — the appearance when in the "choose a hat block"
  *   dialog, before the user has supplied the argument (if any, i.e.,
- *   for key-pressed and message-received)
- * * `fully-specified` — the appearance when in the "choose a hat block"
- *   dialog, _after_ the user has supplied the argument, if any
- * * `in-editor` — the appearance as in the code editor
+ *   for key-pressed and message-received); a placeholder value is shown
+ * * `fully-specified` — the event's actual arg value is shown
  * */
-const HatBlockContent: React.FC<HatBlockContentProps> = ({
-  actorKind,
-  event,
-  variant,
-}) => {
-  const text = (() => {
-    switch (event.kind) {
-      case "green-flag":
-        return "when green flag clicked";
-      case "clicked": {
-        const targetLabel = ActorKindOps.names(actorKind).whenClickedNounPhrase;
-        return `when ${targetLabel} clicked`;
-      }
-      case "start-as-clone":
-        return "when I start as a clone";
-      case "key-pressed": {
-        const keyDescriptor = descriptorFromBrowserKeyName(event.keyName);
-        const keyDisplayName = keyDescriptor.displayName;
-        const argContent = (() => {
-          switch (variant) {
-            case "kind-chosen":
-              // When launching "add script", starting key is space:
-              return <span className="key-content">space</span>;
-            case "fully-specified":
-              return <span className="key-content">{keyDisplayName}</span>;
-            case "in-editor":
-              // TODO: Should this be the same as "fully-specified"?
-              return `"${keyDisplayName}"`;
-          }
-        })();
-        return <span>when {argContent} key pressed</span>;
-      }
-      case "message-received": {
-        const message = event.message;
-        const argContent = (() => {
-          switch (variant) {
-            case "kind-chosen":
-              return (
-                <span>
-                  “<span className="message-placeholder">&nbsp;</span>”
-                </span>
-              );
-            case "fully-specified":
-              return (
-                <span>
-                  “<span className="message-content">{message}</span>”
-                </span>
-              );
-            case "in-editor":
-              // TODO: Should this be the same as "fully-specified"?
-              return `"${message}"`;
-          }
-        })();
-        return <span>when I receive {argContent}</span>;
-      }
-      default:
-        return assertNever(event);
-    }
-  })();
-
-  return <span className="content">{text}</span>;
-};
+const HatBlockContent: React.FC<HatBlockContentProps> = (props) => (
+  <span className="content">
+    <HatContentNub {...props} />
+  </span>
+);
 
 type HatBlockProps = {
   actorId: Uuid;
@@ -121,6 +105,8 @@ export const HatBlock: React.FC<HatBlockProps> = ({
   nextHandlerId,
   event,
 }) => {
+  const { t } = useTranslation("ide");
+  const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("per-method");
   const activeActorKind = useActiveActorKind();
 
@@ -177,33 +163,33 @@ export const HatBlock: React.FC<HatBlockProps> = ({
         <HatBlockContent
           actorKind={actorKind}
           event={event}
-          variant="in-editor"
+          variant="fully-specified"
         />
         <CaptiveContextMenu.DropdownMenu>
           <CaptiveContextMenu.DropdownItem onInvoke={onChangeHatBlock}>
-            Change hat block
+            {t("script.action.change-hat-block")}
           </CaptiveContextMenu.DropdownItem>
           <CaptiveContextMenu.DropdownItem
             disabled={prevHandlerId == null}
             onInvoke={swapWithPrev}
           >
-            Move script up
+            {t("script.action.move-earlier")}
           </CaptiveContextMenu.DropdownItem>
           <CaptiveContextMenu.DropdownItem
             disabled={nextHandlerId == null}
             onInvoke={swapWithNext}
           >
-            Move script down
+            {t("script.action.move-later")}
           </CaptiveContextMenu.DropdownItem>
           <CaptiveContextMenu.DropdownItem onInvoke={onDuplicate}>
-            Duplicate script
+            {t("script.action.duplicate")}
           </CaptiveContextMenu.DropdownItem>
           <Dropdown.Divider />
           <CaptiveContextMenu.DropdownItem
             className="danger"
             onInvoke={onDelete}
           >
-            DELETE
+            {tCommon("action.delete")}
           </CaptiveContextMenu.DropdownItem>
         </CaptiveContextMenu.DropdownMenu>
       </div>
@@ -212,9 +198,8 @@ export const HatBlock: React.FC<HatBlockProps> = ({
 };
 
 export const DisplayHatBlock: React.FC<HatBlockContentProps> = (props) => {
-  const classes = classNames("HatBlock", "display-only", props.variant);
   return (
-    <div className={classes}>
+    <div className="HatBlock display-only">
       <div className="bump"></div>
       <div className="body">
         <HatBlockContent {...props} />

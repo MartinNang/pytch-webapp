@@ -126,118 +126,39 @@ export type AssetPresentationData =
   | ImageAssetPresentationData
   | SoundAssetPresentationData;
 
+export type AssetSource = "media-library" | "this-device";
+
 export type AssetOperationScope = "flat" | ActorKind;
 
-export type AssetOperationContextKey =
-  | `${AssetOperationScope}/${AssetMimeType}`
-  | "flat/any";
+// The second disjunct is for when we're adding assets (of either kind,
+// or even mixed) to a "flat" project.
+export type AssetOperationContext =
+  | { scope: AssetOperationScope; assetKind: AssetMimeType }
+  | { scope: "flat"; assetKind: "any" };
 
-export type AssetOperationContext = {
-  scope: string;
-  assetDefinite: string;
-  assetIndefinite: string;
-  assetSingularTitle: string;
-  assetPlural: string;
-  assetListCanBeEmpty: boolean;
-  fileAccept?: string;
-};
+type AssetOperationContextKey =
+  | `${AssetOperationScope}.${AssetMimeType}`
+  | "flat.any";
 
-const contextLUT = new Map<AssetOperationContextKey, AssetOperationContext>([
-  [
-    "flat/image",
-    {
-      scope: "your project",
-      assetDefinite: "the image",
-      assetIndefinite: "an image",
-      assetSingularTitle: "Image",
-      assetPlural: "images",
-      assetListCanBeEmpty: true,
-      fileAccept: "image/*",
-    },
-  ],
-  [
-    "flat/audio",
-    {
-      scope: "your project",
-      assetDefinite: "the sound",
-      assetIndefinite: "a sound",
-      assetSingularTitle: "Sound",
-      assetPlural: "sounds",
-      assetListCanBeEmpty: true,
-      fileAccept: "audio/*",
-    },
-  ],
-  [
-    "flat/any",
-    {
-      scope: "your project",
-      assetDefinite: "the image or sound",
-      assetIndefinite: "an image or sound",
-      assetSingularTitle: "Image or sound",
-      assetPlural: "images or sounds",
-      assetListCanBeEmpty: true,
-    },
-  ],
-  [
-    "sprite/image",
-    {
-      scope: "this sprite",
-      assetDefinite: "the Costume",
-      assetIndefinite: "a Costume",
-      assetSingularTitle: "Costume",
-      assetPlural: "Costumes",
-      assetListCanBeEmpty: true,
-      fileAccept: "image/*",
-    },
-  ],
-  [
-    "sprite/audio",
-    {
-      scope: "this sprite",
-      assetDefinite: "the Sound",
-      assetIndefinite: "a Sound",
-      assetSingularTitle: "Sound",
-      assetPlural: "Sounds",
-      assetListCanBeEmpty: true,
-      fileAccept: "audio/*",
-    },
-  ],
-  [
-    "stage/image",
-    {
-      scope: "the stage",
-      assetDefinite: "the Backdrop",
-      assetIndefinite: "a Backdrop",
-      assetSingularTitle: "Backdrop",
-      assetPlural: "Backdrops",
-      assetListCanBeEmpty: false,
-      fileAccept: "image/*",
-    },
-  ],
-  [
-    "stage/audio",
-    {
-      scope: "the stage",
-      assetDefinite: "the Sound",
-      assetIndefinite: "a Sound",
-      assetSingularTitle: "Sound",
-      assetPlural: "Sounds",
-      assetListCanBeEmpty: true,
-      fileAccept: "audio/*",
-    },
-  ],
-]);
+export function assetOperationContextKey(context: AssetOperationContext) {
+  // Type inference doesn't manage to work this out:
+  return `${context.scope}.${context.assetKind}` as AssetOperationContextKey;
+}
 
-// User should never see this:
-export const unknownAssetOperationContext: AssetOperationContext = {
-  scope: "the owner",
-  assetDefinite: "the asset",
-  assetIndefinite: "an asset",
-  assetSingularTitle: "Asset",
-  assetPlural: "assets",
-  assetListCanBeEmpty: true,
-};
+export type GeneralisedAssetKind = AssetOperationContext["assetKind"];
 
-export const assetOperationContextFromKey = (
-  key: AssetOperationContextKey
-): AssetOperationContext => contextLUT.get(key) ?? unknownAssetOperationContext;
+export class AssetOperationContextOps {
+  static fileAccept(ctx: AssetOperationContext): string | undefined {
+    switch (ctx.assetKind) {
+      case "image":
+      case "audio":
+        return `${ctx.assetKind}/*`;
+      case "any":
+        return undefined;
+    }
+  }
+
+  static listCanBeEmpty(ctx: AssetOperationContext): boolean {
+    return !(ctx.scope === "stage" && ctx.assetKind === "image");
+  }
+}

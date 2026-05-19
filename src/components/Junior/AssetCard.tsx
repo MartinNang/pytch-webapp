@@ -1,4 +1,5 @@
 import React, { KeyboardEventHandler } from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { AssetPresentation } from "../../model/asset";
 import { PytchProgramKind, PytchProgramOps } from "../../model/pytch-program";
@@ -19,7 +20,7 @@ import { ProjectId } from "../../model/project-core";
 import { useRunFlow } from "../../model";
 import { AssetMimeType } from "../../model/junior/structured-program/asset";
 import {
-  AssetOperationContextKey,
+  AssetOperationContext,
   AssetOperationScope,
 } from "../../model/asset/core";
 import { assertNever, copyTextToClipboard } from "../../utils";
@@ -52,15 +53,16 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
   assetKind,
   fullPathname,
 }) => {
+  const { t } = useTranslation("common");
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
   const runRenameAsset = useRunFlow((f) => f.renameAssetFlow);
 
-  const operationContextKey = `${operationScope}/${assetKind}` as const;
+  const operationContext = { scope: operationScope, assetKind };
   const nameAffixes = PytchProgramOps.assetPathAffixes(fullPathname);
   const launchRename = () =>
     runRenameAsset({
-      operationContextKey,
+      operationContext,
       fixedPrefix: nameAffixes.prefix,
       oldNameSuffix: nameAffixes.suffix,
       onDispose: focusContext.onDisposeManipulateAsset,
@@ -68,7 +70,7 @@ const RenameDropdownItem: React.FC<RenameDropdownItemProps> = ({
 
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={launchRename}>
-      Rename
+      {t("action.rename")}
     </CaptiveContextMenu.DropdownItem>
   );
 };
@@ -83,7 +85,10 @@ function useOnDeleteFun(
   const focusContext = useFocusContext(pageKind);
   const runDeleteAsset = useRunFlow((f) => f.deleteAssetFlow);
 
-  const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
+  const operationContext: AssetOperationContext = {
+    scope: operationScope,
+    assetKind,
+  };
   const displayName = PytchProgramOps.assetPathAffixes(fullPathname).suffix;
 
   return () => {
@@ -93,7 +98,7 @@ function useOnDeleteFun(
     }
 
     runDeleteAsset({
-      operationContextKey,
+      operationContext,
       name: fullPathname,
       displayName,
       onDispose: focusContext.onDisposeManipulateAsset,
@@ -113,6 +118,7 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
   fullPathname,
   isAllowed,
 }) => {
+  const { t } = useTranslation("common");
   const onDelete = useOnDeleteFun(
     isAllowed,
     operationScope,
@@ -126,7 +132,7 @@ const DeleteDropdownItem: React.FC<DeleteDropdownItemProps> = ({
       onInvoke={onDelete}
       disabled={!isAllowed}
     >
-      DELETE
+      {t("action.delete")}
     </CaptiveContextMenu.DropdownItem>
   );
 };
@@ -143,6 +149,7 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
   projectId,
   presentation,
 }) => {
+  const { t } = useTranslation("assets");
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
   const runCropScaleImage = useRunFlow((f) => f.cropScaleImageFlow);
@@ -159,12 +166,15 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
 
   const fullSource = presentation.presentation.fullSourceImage;
 
-  const operationContextKey: AssetOperationContextKey = `${operationScope}/${assetKind}`;
+  const operationContext: AssetOperationContext = {
+    scope: operationScope,
+    assetKind,
+  };
   const onClick = () => {
     runCropScaleImage({
       projectId,
       assetName: presentation.name,
-      operationContextKey,
+      operationContext,
       existingCrop: transform,
       originalSize: { width: fullSource.width, height: fullSource.height },
       sourceURL: new URL(fullSource.src),
@@ -175,7 +185,7 @@ const CropScaleDropdownItem: React.FC<CropScaleDropdownItemProps> = ({
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={onClick}>
       <span className="with-icon">
-        <span>Crop/scale</span>
+        <span>{t("action.crop-scale")}</span>
         <FontAwesomeIcon icon="crop" />
       </span>
     </CaptiveContextMenu.DropdownItem>
@@ -190,6 +200,7 @@ const CopyAssetNameDropdownItem: React.FC<CopyAssetNameDropdownItemProps> = ({
   operationScope,
   assetName,
 }) => {
+  const { t } = useTranslation("assets");
   const pageKind = pageKindFromOperationScope(operationScope);
   const focusContext = useFocusContext(pageKind);
 
@@ -201,7 +212,7 @@ const CopyAssetNameDropdownItem: React.FC<CopyAssetNameDropdownItemProps> = ({
   return (
     <CaptiveContextMenu.DropdownItem onInvoke={onCopyName}>
       <span className="with-icon">
-        <span>Copy name</span>
+        <span>{t("action.copy-name")}</span>
         <FontAwesomeIcon icon="copy" />
       </span>
     </CaptiveContextMenu.DropdownItem>
@@ -220,6 +231,7 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
   deleteIsAllowed,
   swapFuns,
 }) => {
+  const { t } = useTranslation("assets");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const fullPathname = presentation.assetInProject.name;
   const displayName = PytchProgramOps.assetPathAffixes(fullPathname).suffix;
@@ -235,13 +247,13 @@ const AssetCardDropdown: React.FC<AssetCardDropdownProps> = ({
           onInvoke={swapFuns.swapWithPrev != null ? swapFuns.swapWithPrev : nop}
           disabled={swapFuns.swapWithPrev == null}
         >
-          Move one place earlier
+          {t("action.move-earlier")}
         </CaptiveContextMenu.DropdownItem>
         <CaptiveContextMenu.DropdownItem
           onInvoke={swapFuns.swapWithNext != null ? swapFuns.swapWithNext : nop}
           disabled={swapFuns.swapWithNext == null}
         >
-          Move one place later
+          {t("action.move-later")}
         </CaptiveContextMenu.DropdownItem>
       </>
     );

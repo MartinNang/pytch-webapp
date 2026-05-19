@@ -1,26 +1,29 @@
 import React from "react";
 import classNames from "classnames";
+import { ActorKind } from "../../model/junior/structured-program";
+import { useTranslation } from "react-i18next";
+import { kBothActorKinds } from "../../model/junior/structured-program/actor";
 
 // Ensure that the "Backdrops" or "Costumes" tab is always the same
 // width.  Otherwise we get an annoying jitter as you switch between the
 // stage and a sprite.
 
-// TODO: Is there a way to compute this?
-const allDisplayTitleValues = ["Costumes", "Backdrops"];
-// And then use a tighter type for "value" here?
 type AppearancesTabTitleProps = {
-  value: string;
+  actorKind: ActorKind;
 };
 export const AppearancesTabTitle: React.FC<AppearancesTabTitleProps> = ({
-  value,
+  actorKind,
 }) => {
-  const content = allDisplayTitleValues.map((title) => (
+  const { t } = useTranslation("ide");
+
+  const content = kBothActorKinds.map((ak) => (
     <span
-      key={title}
-      className={classNames("title-option", { isActive: title === value })}
+      key={ak}
+      className={classNames("title-option", { isActive: ak === actorKind })}
     >
-      {title}
+      {t(`per-method.tab-title.actor-properties.appearances.${ak}`)}
     </span>
   ));
+
   return <div className="AppearancesTabTitle">{content}</div>;
 };

@@ -7,25 +7,56 @@ import React, {
 import { Form } from "react-bootstrap";
 import classNames from "classnames";
 import "./TwoStateSwitch.scss";
+import { Trans, useTranslation } from "react-i18next";
+import { I18nStringSpec } from "../model/i18n/core-types";
+import { i18nTranslationOptions } from "../model/i18n/utils";
 
-export type TwoStateSwitchTexts = {
+type TwoStateSwitchTexts = {
   question: React.JSX.Element;
   trueStatus: React.JSX.Element;
   falseStatus: React.JSX.Element;
 };
 
+export type TwoStateSwitchI18nSpec = I18nStringSpec & {
+  keyPart:
+    | "copy.switch.none"
+    | "copy.switch.jr-tutorial"
+    | "copy.switch.specimen"
+    | "add.media-library.switch";
+};
+
+const useRenderedSpec = (spec: TwoStateSwitchI18nSpec): TwoStateSwitchTexts => {
+  const { i18n } = useTranslation(spec.ns);
+
+  const keyBase = spec.keyPart;
+  const params = i18nTranslationOptions(i18n, spec);
+
+  return {
+    question: (
+      <Trans i18nKey={`${keyBase}.question`} ns={spec.ns} values={params} />
+    ),
+    trueStatus: (
+      <Trans i18nKey={`${keyBase}.true-status`} ns={spec.ns} values={params} />
+    ),
+    falseStatus: (
+      <Trans i18nKey={`${keyBase}.false-status`} ns={spec.ns} values={params} />
+    ),
+  };
+};
+
 type TwoStateSwitchProps = {
-  texts: TwoStateSwitchTexts;
+  i18nSpec: TwoStateSwitchI18nSpec;
   boolState: boolean;
   setBoolState: (newState: boolean) => void;
   className?: string;
 };
 export const TwoStateSwitch: React.FC<TwoStateSwitchProps> = ({
-  texts,
+  i18nSpec,
   boolState,
   setBoolState,
   className,
 }) => {
+  const renderedSpec = useRenderedSpec(i18nSpec);
   const formLabelId = `tss__${useId()}`;
 
   // Bit of trial and error to get this set of functions working.  The
@@ -45,8 +76,8 @@ export const TwoStateSwitch: React.FC<TwoStateSwitchProps> = ({
 
   const labelContent = (
     <span className="current-state-label" onClick={onLabelClick}>
-      <span className="when-true">{texts.trueStatus}</span>
-      <span className="when-false">{texts.falseStatus}</span>
+      <span className="when-true">{renderedSpec.trueStatus}</span>
+      <span className="when-false">{renderedSpec.falseStatus}</span>
     </span>
   );
 
@@ -72,7 +103,7 @@ export const TwoStateSwitch: React.FC<TwoStateSwitchProps> = ({
         tabIndex={0}
         onKeyDown={onLabelKeyDown}
       >
-        <span className="pe-5 fw-bold">{texts.question}</span>
+        <span className="pe-5 fw-bold">{renderedSpec.question}</span>
         <Form.Check
           type="switch"
           tabIndex={-1}

@@ -1,9 +1,11 @@
+import { i18n } from "i18next";
 import { arraysEqFun, assertNever } from "../utils";
 import {
   AssetChanged,
   assetChangedDescription,
   AssetsAdded,
   assetsAddedDescription,
+  NotableChangeSummarySpec,
   PerMethodScriptChanged,
   perMethodScriptChangedDescription,
   PerMethodSpriteChanged,
@@ -17,6 +19,8 @@ import {
   ProjectsDeleted,
   projectsDeletedDescription,
 } from "./junior/change-events";
+import { I18nStringSpec } from "./i18n/core-types";
+import { i18nTranslationOptions } from "./i18n/utils";
 
 export type NotableChange =
   | PerMethodScriptChanged
@@ -35,34 +39,72 @@ export type NotableChangeOfKind<KindT extends NotableChangeKind> =
 
 ////////////////////////////////////////////////////////////////////////
 
-export type NotableChangeDescription = {
+// These are fully interpolated human-facing strings.
+export type NotableChangeSummary = {
   header: string;
-  body: string;
+  body: Array<string>;
 };
 
+////////////////////////////////////////////////////////////////////////
+
+function humanStringFromParts(
+  i18n: i18n,
+  keyPrefix: string,
+  spec: I18nStringSpec,
+  keySuffix: "header" | "body"
+): string {
+  const innerPart = spec.keyPart == null ? "" : `.${spec.keyPart}`;
+  const baseKey = `${keyPrefix}${innerPart}`;
+  const keyStem = `${baseKey}.${keySuffix}`;
+  const tOptions = i18nTranslationOptions(i18n, spec);
+  return i18n.t(keyStem, tOptions);
+}
+
+function changeSummaryFromSpec(
+  i18n: i18n,
+  keyPrefix: string,
+  spec: NotableChangeSummarySpec
+): NotableChangeSummary {
+  const header = humanStringFromParts(i18n, keyPrefix, spec.header, "header");
+
+  const bodyParts = spec.bodyParts.map((spec) =>
+    humanStringFromParts(i18n, keyPrefix, spec, "body")
+  );
+
+  return {
+    header,
+    body: bodyParts,
+  };
+}
+
 export function notableChangeDescription(
+  i18n: i18n,
   change: NotableChange
-): NotableChangeDescription {
-  switch (change.kind) {
-    case "script-changed":
-      return perMethodScriptChangedDescription(change);
-    case "sprite-changed":
-      return perMethodSpriteChangedDescription(change);
-    case "asset-changed":
-      return assetChangedDescription(change);
-    case "assets-added":
-      return assetsAddedDescription(change);
-    case "zipfiles-uploaded":
-      return zipfilesUploadedDescription(change);
-    case "project-download-action-completed":
-      return projectDownloadActionCompletedDescription(change);
-    case "projects-deleted":
-      return projectsDeletedDescription(change);
-    case "project-renamed":
-      return projectRenamedDescription(change);
-    default:
-      return assertNever(change);
-  }
+): NotableChangeSummary {
+  const spec = (() => {
+    switch (change.kind) {
+      case "script-changed":
+        return perMethodScriptChangedDescription(change);
+      case "sprite-changed":
+        return perMethodSpriteChangedDescription(change);
+      case "asset-changed":
+        return assetChangedDescription(change);
+      case "assets-added":
+        return assetsAddedDescription(change);
+      case "zipfiles-uploaded":
+        return zipfilesUploadedDescription(change);
+      case "project-download-action-completed":
+        return projectDownloadActionCompletedDescription(change);
+      case "projects-deleted":
+        return projectsDeletedDescription(change);
+      case "project-renamed":
+        return projectRenamedDescription(change);
+      default:
+        return assertNever(change);
+    }
+  })();
+
+  return changeSummaryFromSpec(i18n, change.kind, spec);
 }
 
 // Currently the `change` within a KeyedNotableChange is immutable, so

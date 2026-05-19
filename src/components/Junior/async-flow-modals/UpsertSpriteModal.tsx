@@ -11,8 +11,11 @@ import {
   settleFunctions,
 } from "../../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "../../async-flow-modals/utils";
+import { Trans, useTranslation } from "react-i18next";
 
 export const UpsertSpriteModal = () => {
+  const { t } = useTranslation("flows");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useJrEditState((s) => s.upsertSpriteFlow);
   const { setName } = useJrEditActions((a) => a.upsertSpriteFlow);
 
@@ -36,32 +39,31 @@ export const UpsertSpriteModal = () => {
         case "valid":
           // Even though this won't be shown, we need some content for the
           // <P> to have non-zero height:
-          return <p>OK</p>;
-        case "invalid":
-          return (
-            <p>That name cannot be used, because {nameValidity.reason}.</p>
-          );
+          return <p>&nbsp;</p>;
+        case "invalid": {
+          const keySuffix = nameValidity.reasonKey;
+          const fullKey = `upsert-sprite.invalid-name.${keySuffix}` as const;
+          return <p>{t(fullKey, { replace: { name } })}</p>;
+        }
         default:
           return assertNever(nameValidity);
       }
     })();
 
-    const content = (() => {
+    const title = (() => {
       switch (upsertionAction.kind) {
         case "insert":
-          return {
-            title: <span>Create new sprite</span>,
-            messageWhenSuccess: "Created!",
-          };
+          return <span>{t("upsert-sprite.title.insert")}</span>;
         case "update":
-          return {
-            title: (
-              <span>
-                Rename <em>{upsertionAction.previousName}</em>
-              </span>
-            ),
-            messageWhenSuccess: "Renamed!",
-          };
+          return (
+            <span>
+              <Trans
+                ns="flows"
+                i18nKey="upsert-sprite.title.update"
+                values={{ previousName: upsertionAction.previousName }}
+              />
+            </span>
+          );
         default:
           return assertNever(upsertionAction);
       }
@@ -81,7 +83,7 @@ export const UpsertSpriteModal = () => {
         centered
       >
         <Modal.Header closeButton={isInteractable(activeFsmState)}>
-          <Modal.Title>{content.title}</Modal.Title>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -107,14 +109,14 @@ export const UpsertSpriteModal = () => {
             variant="secondary"
             onClick={settle.cancel}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isSubmittable}
             variant="primary"
             onClick={settle.submit}
           >
-            OK
+            {tCommon("button.ok")}
           </Button>
         </Modal.Footer>
       </Modal>

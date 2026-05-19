@@ -2,11 +2,7 @@ import { Action } from "easy-peasy";
 import { simpleReadArrayBuffer } from "../../utils";
 import { addAssetToProject } from "../../database/indexed-db";
 import { IPytchAppModel, PytchAppModelActions } from "..";
-import {
-  AssetOperationContext,
-  AssetOperationContextKey,
-  assetOperationContextFromKey,
-} from "../asset";
+import { AssetOperationContext } from "../asset";
 import {
   AsyncUserFlowSlice,
   asyncUserFlowSlice,
@@ -16,26 +12,29 @@ import {
 import { ProjectId } from "../project-core";
 import { NavigationAbandonmentGuard } from "../../navigation-abandonment-guard";
 import { AssetSourceKind } from "../junior/structured-program/asset";
+import { mkRawSpec, RawOrI18nStringSpec } from "../i18n/core-types";
+import { FileProcessingFailure } from "./process-files";
 
-export function addAssetErrorMessageFromError(
+export function addAssetErrorSpecFromError(
   operationContext: AssetOperationContext,
   fileBasename: string,
   error: Error
-) {
+): RawOrI18nStringSpec {
   if (error.name === "PytchDuplicateAssetNameError") {
-    return (
-      `Cannot add "${fileBasename}" to ${operationContext.scope}` +
-      ` because it already contains ${operationContext.assetIndefinite}` +
-      " of that name."
-    );
+    const { scope, assetKind } = operationContext;
+    const keyPart = `add.${scope}.${assetKind}.dup-error`;
+    return {
+      kind: "i18n",
+      spec: { ns: "assets", keyPart, params: { fileBasename } },
+    };
   } else {
-    return error.message;
+    return mkRawSpec(error.message);
   }
 }
 
 type AddAssetsRunArgs = {
   projectId: ProjectId;
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   assetNamePrefix: string;
 };
 
@@ -47,12 +46,11 @@ type AddAssetsRunState = {
 };
 
 export type AddAssetSuccess = { displayName: string };
-export type AddAssetFailure = { displayName: string; reason: string };
 
 export type AddAssetsOutcomeNub = {
   sourceKind: AssetSourceKind;
   successes: Array<AddAssetSuccess>;
-  failures: Array<AddAssetFailure>;
+  failures: Array<FileProcessingFailure>;
 };
 
 type AddAssetsBase = AsyncUserFlowSlice<
@@ -71,12 +69,9 @@ type AddAssetsActions = {
 export type AddAssetsFlow = AddAssetsBase & AddAssetsActions;
 
 async function prepare(args: AddAssetsRunArgs): Promise<AddAssetsRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
   return {
     projectId: args.projectId,
-    operationContext,
+    operationContext: args.operationContext,
     assetNamePrefix: args.assetNamePrefix,
     chosenFiles: null,
   };
@@ -93,7 +88,7 @@ async function attempt(
 ): Promise<AttemptOutcome<AddAssetsOutcomeNub>> {
   const { projectId, assetNamePrefix, operationContext } = runState;
   let successes: Array<AddAssetSuccess> = [];
-  let failures: Array<AddAssetFailure> = [];
+  let failures: Array<FileProcessingFailure> = [];
 
   for (const file of runState.chosenFiles ?? []) {
     try {
@@ -110,12 +105,12 @@ async function attempt(
         throw error;
       }
 
-      const reason = addAssetErrorMessageFromError(
+      const reason = addAssetErrorSpecFromError(
         operationContext,
         file.name,
         error as Error
       );
-      failures.push({ displayName: file.name, reason });
+      failures.push({ filename: file.name, reason });
     }
   }
 

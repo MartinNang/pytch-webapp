@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { EmptyProps } from "../../utils";
 import { Button, Modal } from "react-bootstrap";
 import { CodeDiffHunk } from "../../model/code-diff";
@@ -67,14 +68,15 @@ const SideBySideDiffContribution: React.FC<SideBySideDiffContributionProps> = ({
 
 type SideBySideDiffProps = { changes: Array<CodeDiffHunk> };
 const SideBySideDiff: React.FC<SideBySideDiffProps> = ({ changes }) => {
+  const { t } = useTranslation("tutorials");
   return (
     <div className="table-container">
       <table className="code-diff side-by-side">
         <tbody>
           <tr>
-            <th>Original code</th>
+            <th>{t("code-diff.header.original")}</th>
             <th />
-            <th>Your code</th>
+            <th>{t("code-diff.header.yours")}</th>
           </tr>
         </tbody>
         {changes.map((ch, i) => (
@@ -88,6 +90,8 @@ const SideBySideDiff: React.FC<SideBySideDiffProps> = ({ changes }) => {
 export const ViewCodeDiffModal: React.FC<EmptyProps> = () => {
   // TODO: Allow side-by-side or unified diff.
 
+  const { t } = useTranslation("tutorials");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.viewCodeDiffFlow);
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
@@ -101,13 +105,13 @@ export const ViewCodeDiffModal: React.FC<EmptyProps> = () => {
         size="xl"
       >
         <Modal.Header>
-          <Modal.Title>Compare your code against original</Modal.Title>
+          <Modal.Title>{t("code-diff.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <SideBySideDiff changes={hunks} />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={settle.cancel}>Close</Button>
+          <Button onClick={settle.cancel}>{tCommon("button.ok")}</Button>
         </Modal.Footer>
       </Modal>
     );

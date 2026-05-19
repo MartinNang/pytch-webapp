@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   JrTutorialChapter,
+  JrTutorialChapterTitle,
   LinkedJrTutorial,
 } from "../../../model/junior/jr-tutorial";
 import { EmptyProps, assertNever } from "../../../utils";
@@ -12,7 +14,7 @@ import { useStoreState } from "../../../store";
 // This is more fiddly, but just using a <RawElement> inside the <UL>
 // for the ToC leads to poor DOM structure (UL/LI/DIV/H2/text), which
 // (reasonably enough) renders poorly on Safari.
-type ToCEntryProps = { key: React.Key; titleElt: HTMLElement };
+type ToCEntryProps = { key: React.Key; title: JrTutorialChapterTitle };
 const ToCEntry: React.FC<ToCEntryProps> = (props) => {
   const liRef = React.useRef<HTMLLIElement>(null);
 
@@ -20,7 +22,11 @@ const ToCEntry: React.FC<ToCEntryProps> = (props) => {
     let liElt = liRef.current;
     if (liElt == null) return;
 
-    props.titleElt.childNodes.forEach((node) => {
+    if (props.title.kind !== "html") {
+      throw new Error('expecting "html" title in ToC');
+    }
+
+    props.title.elt.childNodes.forEach((node) => {
       liElt.appendChild(node.cloneNode(true));
     });
 
@@ -33,6 +39,7 @@ const ToCEntry: React.FC<ToCEntryProps> = (props) => {
 };
 
 const LessonTableOfContents: React.FC<{ key: React.Key }> = () => {
+  const { t } = useTranslation("tutorials");
   const chapters = useMappedLinkedJrTutorial(
     (tutorial) => tutorial.content.chapters
   );
@@ -42,10 +49,10 @@ const LessonTableOfContents: React.FC<{ key: React.Key }> = () => {
 
   return (
     <div className="LessonTableOfContents">
-      <h1 className="title">Summary of this project’s steps:</h1>
+      <h1 className="title">{t("chapter.toc-title")}</h1>
       <ol className="toc-contents">
         {realChapters.map((chapter, idx) => (
-          <ToCEntry key={idx} titleElt={chapter.titleElt} />
+          <ToCEntry key={idx} title={chapter.title} />
         ))}
       </ol>
     </div>
@@ -101,6 +108,7 @@ function taskInteractionKind(
 }
 
 export const Chapter: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("tutorials");
   const lastRenderedChapter = useRef<number>(-1);
 
   const state = useMappedLinkedJrTutorial(mapTutorial, eqState);
@@ -164,7 +172,7 @@ export const Chapter: React.FC<EmptyProps> = () => {
     const key = `${state.chapterIndex}/hint`;
     body.push(
       <div key={key} className="hint-do-task-to-see-more">
-        (You’ll see the next step once you’ve marked this task as done.)
+        {t("chapter.hint-do-task")}
       </div>
     );
   }

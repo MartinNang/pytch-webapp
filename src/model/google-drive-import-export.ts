@@ -30,10 +30,12 @@ import {
   uniqueUserInputFragment,
 } from "./compound-text-input";
 import { NavigationAbandonmentGuard } from "../navigation-abandonment-guard";
+import { RawOrI18nStringSpec, mkRawSpec } from "./i18n/core-types";
 
 type ExportProjectDescriptor = {
   project: StoredProjectContent;
   linkedContentLoadingState: LinkedContentLoadingState;
+  resolveStringSpec: (spec: RawOrI18nStringSpec) => string;
 };
 
 type ApiBootStatus =
@@ -50,20 +52,39 @@ type AuthenticationState =
   | { kind: "pending"; abortController: AbortController }
   | { kind: "succeeded"; info: AuthenticationInfo };
 
-type TaskOutcome = {
-  message?: string;
-  successes: Array<string>;
-  failures: Array<string>;
+type SuccessfulFileImport = {
+  filename: string;
+  projectId: ProjectId;
 };
+
+export type TransferKind = "export" | "import";
+
+export type SuccessfulOperation =
+  | { kind: TransferKind & "export"; filename: string }
+  | { kind: TransferKind & "import"; filename: string };
+
+export type TaskOutcome =
+  | { kind: "cancelled" }
+  | { kind: "no-files-selected" }
+  | { kind: "error"; message: string }
+  | {
+      kind: "completed";
+      successes: Array<SuccessfulOperation>;
+      failures: Array<FileProcessingFailure>;
+    };
 
 type TaskState =
   | { kind: "idle" }
-  | { kind: "pending"; user: GoogleUserInfo; summary: string }
+  | {
+      kind: "pending";
+      user: GoogleUserInfo;
+      transferKind: TransferKind;
+    }
   | { kind: "pending-already-modal" }
   | {
       kind: "done";
       user: GoogleUserInfo;
-      summary: string;
+      transferKind: TransferKind;
       outcome: TaskOutcome;
       dismissNotification: () => void;
     };
@@ -74,7 +95,7 @@ type GoogleDriveTask = (
 ) => Promise<TaskOutcome>;
 
 type TaskDescriptor = {
-  summary: string;
+  transferKind: TransferKind;
   run: GoogleDriveTask;
 };
 
@@ -92,6 +113,11 @@ type ChooseFilenameActiveState = {
 
 type ChooseFilenameState = { kind: "idle" } | ChooseFilenameActiveState;
 
+type OutcomeArgs = {
+  formatSpecifier: FormatSpecifier;
+  initialUserInput: string;
+};
+
 type ChooseFilenameFlow = {
   state: ChooseFilenameState;
   setState: Action<ChooseFilenameFlow, ChooseFilenameState>;
@@ -106,7 +132,7 @@ type ChooseFilenameFlow = {
 
   outcome: Thunk<
     ChooseFilenameFlow,
-    FormatSpecifier,
+    OutcomeArgs,
     void,
     IPytchAppModel,
     Promise<ChooseFilenameOutcome>
@@ -169,14 +195,13 @@ let chooseFilenameFlow: ChooseFilenameFlow = {
     actions._resolve({ kind: "cancelled" });
   }),
 
-  outcome: thunk((actions, formatSpecifier, helpers) => {
+  outcome: thunk((actions, args, helpers) => {
     ensureFlowState("outcome", helpers.getState(), "idle");
-    const userInput = uniqueUserInputFragment(formatSpecifier).initialValue;
     return new Promise<ChooseFilenameOutcome>((resolve) => {
       actions.setState({
         kind: "active",
-        formatSpecifier,
-        userInput,
+        formatSpecifier: args.formatSpecifier,
+        userInput: args.initialUserInput,
         justLaunched: true,
         resolve,
       });
@@ -217,11 +242,6 @@ export type GoogleDriveIntegration = {
 
   exportProject: Thunk<GoogleDriveIntegration, ExportProjectDescriptor>;
   importProjects: Thunk<GoogleDriveIntegration, void, void, IPytchAppModel>;
-};
-
-type SuccessfulFileImport = {
-  filename: string;
-  projectId: ProjectId;
 };
 
 async function tryImportAsyncFile(
@@ -332,7 +352,7 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
 
   doTask: thunk(async (actions, task) => {
     const api = actions.requireBooted();
-    const summary = task.summary;
+    const transferKind = task.transferKind;
 
     const navGuard = new NavigationAbandonmentGuard();
 
@@ -345,7 +365,7 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
       // a business-logic error.
       const { tokenInfo, user } = await actions.ensureAuthenticated();
 
-      actions.setTaskState({ kind: "pending", user, summary });
+      actions.setTaskState({ kind: "pending", user, transferKind });
 
       // run() also has its own navigation-guard logic; it can succeed,
       // throw an "abandoned by navigation" error, or throw a
@@ -355,7 +375,7 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
       actions.setTaskState({
         kind: "done",
         user,
-        summary,
+        transferKind,
         outcome,
         dismissNotification,
       });
@@ -377,12 +397,12 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
         //
         actions.setAuthState({ kind: "idle" });
 
-        const outcome = { successes: [], failures: [errMessage] };
+        const outcome: TaskOutcome = { kind: "error", message: errMessage };
         const user = unknownGoogleUserInfo;
         actions.setTaskState({
           kind: "done",
           user,
-          summary,
+          transferKind,
           outcome,
           dismissNotification,
         });
@@ -406,20 +426,24 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
     // Any errors thrown from run() will be caught by doTask().
     const run: GoogleDriveTask = async (api, tokenInfo) => {
       const navGuard = new NavigationAbandonmentGuard();
+
       const formatSpecifier = filenameFormatSpecifier(
         descriptor.linkedContentLoadingState
       );
 
+      const uiFragment = uniqueUserInputFragment(formatSpecifier);
+      const initialUserInput = descriptor.resolveStringSpec(
+        uiFragment.initialValue
+      );
+
       try {
+        const outcomeArgs = { formatSpecifier, initialUserInput };
         const chooseFilenameOutcome = await navGuard.throwIfAbandoned(
-          actions.chooseFilenameFlow.outcome(formatSpecifier)
+          actions.chooseFilenameFlow.outcome(outcomeArgs)
         );
+
         if (chooseFilenameOutcome.kind === "cancelled") {
-          const cancelledOutcome: TaskOutcome = {
-            successes: [],
-            failures: ["User cancelled export"],
-          };
-          return cancelledOutcome;
+          return { kind: "cancelled" };
         }
 
         const rawFilename = chooseFilenameOutcome.filename;
@@ -438,17 +462,17 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
 
         await navGuard.throwIfAbandoned(api.exportFile(tokenInfo, file));
 
-        const successOutcome: TaskOutcome = {
-          successes: [`Project exported to "${filename}"`],
+        return {
+          kind: "completed",
+          successes: [{ kind: "export", filename }],
           failures: [],
         };
-        return successOutcome;
       } finally {
         navGuard.exit();
       }
     };
 
-    actions.doTask({ summary: "Export to Google Drive", run });
+    actions.doTask({ transferKind: "export", run });
   }),
 
   importProjects: thunk(async (actions, _voidPayload, helpers) => {
@@ -494,25 +518,28 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
             if (navGuard.wasAbandoned(error)) {
               throw error;
             }
-            failures.push({ filename: filename.get(), reason: error.message });
+            failures.push({
+              filename: filename.get(),
+              reason: mkRawSpec(error.message),
+            });
           }
         }
 
-        const message = files.length === 0 ? "No files selected." : undefined;
-        const taskSuccesses = successes.map(
-          (success) => `Imported "${success.filename}"`
-        );
-        const taskFailures = failures.map(
-          (failure) => `"${failure.filename}" — ${failure.reason}`
-        );
+        if (files.length === 0) {
+          return { kind: "no-files-selected" };
+        }
+
         const outcome: TaskOutcome = {
-          message,
-          successes: taskSuccesses,
-          failures: taskFailures,
+          kind: "completed",
+          successes: successes.map((s) => ({
+            kind: "import",
+            filename: s.filename,
+          })),
+          failures,
         };
 
-        const nSuccesses = taskSuccesses.length;
-        const nFailures = taskFailures.length;
+        const nSuccesses = successes.length;
+        const nFailures = failures.length;
 
         if (nSuccesses > 0) {
           allActions.projectCollection.noteDatabaseChange();
@@ -537,6 +564,6 @@ export let googleDriveIntegration: GoogleDriveIntegration = {
       }
     };
 
-    actions.doTask({ summary: "Import from Google Drive", run });
+    actions.doTask({ transferKind: "import", run });
   }),
 };

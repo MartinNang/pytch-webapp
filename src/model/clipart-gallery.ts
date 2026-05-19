@@ -2,6 +2,7 @@ import { action, Action, Thunk, thunk } from "easy-peasy";
 import { IPytchAppModel } from ".";
 import { assertNever } from "../utils";
 import { envVarOrFail } from "../env-utils";
+import { mkRawSpec, RawOrI18nStringSpec } from "./i18n/core-types";
 
 import {
   ClipArtGalleryData,
@@ -16,7 +17,7 @@ import {
 export type ClipArtGalleryState =
   | { status: "fetch-not-started" }
   | { status: "fetch-pending" }
-  | { status: "fetch-failed"; message: string }
+  | { status: "fetch-failed"; messageSpec: RawOrI18nStringSpec }
   | ({ status: "ready" } & ClipArtGalleryData);
 
 export const nSelectedItemsInGallery = (
@@ -69,6 +70,11 @@ export interface IClipArtGallery {
   >;
 }
 
+const kFetchErrorSpec: RawOrI18nStringSpec = {
+  kind: "i18n",
+  spec: { ns: "assets", keyPart: "add.media-library.fetch-error" },
+};
+
 export const clipArtGallery: IClipArtGallery = {
   state: { status: "fetch-not-started" },
   setState: action((state, innerState) => {
@@ -96,10 +102,14 @@ export const clipArtGallery: IClipArtGallery = {
       actions.setState({ status: "ready", entries, tags });
     } catch (e) {
       console.error("failed to fetch media library", e);
-      actions.setState({
-        status: "fetch-failed",
-        message: "There was an error fetching the media library.",
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const maybeErrorMessage: string | undefined = (e as any).message;
+      const messageSpec: RawOrI18nStringSpec =
+        maybeErrorMessage != null
+          ? mkRawSpec(maybeErrorMessage)
+          : kFetchErrorSpec;
+
+      actions.setState({ status: "fetch-failed", messageSpec });
     }
   }),
 

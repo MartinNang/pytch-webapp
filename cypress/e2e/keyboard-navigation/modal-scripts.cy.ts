@@ -202,7 +202,7 @@ context("Working with scripts", () => {
     realPress("Enter");
     assertFocus("script-code", 4);
     assertHatBlockLabels(
-      ScriptOps.allExtendedHandlerLabels.concat(['when I receive "hello"'])
+      ScriptOps.allExtendedHandlerLabels.concat(["when I receive “hello”"])
     );
   });
 
@@ -237,7 +237,7 @@ context("Working with scripts", () => {
     realPress("Escape");
     assertFocus("script", 4);
     assertHatBlockLabels(
-      ScriptOps.allExtendedHandlerLabels.concat(['when "z" key pressed'])
+      ScriptOps.allExtendedHandlerLabels.concat(["when z key pressed"])
     );
   });
 

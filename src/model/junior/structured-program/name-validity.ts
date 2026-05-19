@@ -6,13 +6,20 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
 
+type NameInvalidReasonKey =
+  | "is-stage"
+  | "is-empty"
+  | "not-identifier"
+  | "already-exists"
+  | "is-reserved";
+
 export type NameValidity =
   | { status: "valid" }
-  | { status: "invalid"; reason: string };
+  | { status: "invalid"; reasonKey: NameInvalidReasonKey };
 
-const invalidBecause = (reason: string): NameValidity => ({
+const invalidBecause = (reasonKey: NameInvalidReasonKey): NameValidity => ({
   status: "invalid",
-  reason,
+  reasonKey,
 });
 
 /** Assess the validity (or otherwise) of the given `candidateName` for
@@ -24,20 +31,20 @@ export const nameValidity = (
 ): NameValidity => {
   // This is a fudge but should do the job:
   if (candidateName === "Stage") {
-    return invalidBecause('you cannot have a Sprite called "Stage"');
+    return invalidBecause("is-stage");
   }
 
   if (candidateName === "") {
-    return invalidBecause("it is empty");
+    return invalidBecause("is-empty");
   }
 
   if (!Sk.token.isIdentifier(candidateName)) {
-    return invalidBecause("it does not follow the rules for names");
+    return invalidBecause("not-identifier");
   }
 
   if (existingNames.includes(candidateName)) {
     // TODO: Will this ever be used for things other than Sprites?
-    return invalidBecause(`there is already a Sprite called ${candidateName}`);
+    return invalidBecause("already-exists");
   }
 
   try {
@@ -46,7 +53,7 @@ export const nameValidity = (
     return { status: "valid" };
   } catch {
     // TODO: Are there other reasons we might find ourselves here?
-    return invalidBecause("it is a reserved name");
+    return invalidBecause("is-reserved");
   }
 };
 

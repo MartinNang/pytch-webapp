@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   LearnerTask as LearnerTaskDescriptor,
   LearnerTaskHelpStage,
@@ -25,16 +26,13 @@ export type TaskInteractivityKind = "old" | "previous" | "current" | "future";
 
 type HelpStageFragmentProps = { fragment: LearnerTaskHelpStageFragment };
 const HelpStageFragment: React.FC<HelpStageFragmentProps> = ({ fragment }) => {
+  const { t } = useTranslation("tutorials");
   const content = (() => {
     switch (fragment.kind) {
       case "error":
         return (
           <div className="error-summary">
-            <p>
-              Tutorial error. Please contact the Pytch team if you see this!
-              (Unless you are the author of a tutorial and you understand the
-              message below.)
-            </p>
+            <p>{t("learner-task.fragment-error")}</p>
             <pre className="error-message">{fragment.message}</pre>
             <div className="original-node">
               <RawElement element={fragment.element} />
@@ -90,18 +88,9 @@ const HelpStage: React.FC<HelpStageProps> = ({
 
 type CheckboxHelpProps = { interactivityKind: TaskInteractivityKind };
 const CheckboxHelp: React.FC<CheckboxHelpProps> = ({ interactivityKind }) => {
-  switch (interactivityKind) {
-    case "current":
-      return <span>Click when you’ve done this.</span>;
-    case "previous":
-      return <span>Done! (Click to rewind to this task.)</span>;
-    case "old":
-      return <span>Done!</span>;
-    case "future":
-      return <span>(This is a task preview)</span>;
-    default:
-      return assertNever(interactivityKind);
-  }
+  const { t } = useTranslation("tutorials");
+  const content = t(`learner-task.checkbox-help.${interactivityKind}`);
+  return <span>{content}</span>;
 };
 
 type TaskCheckboxButtonProps = {
@@ -130,6 +119,16 @@ const TaskCheckboxButton: React.FC<TaskCheckboxButtonProps> = ({
   );
 };
 
+// Can we reduce duplication between this type and the i18n string data?
+type HelpStageButtonLabelKeySuffix =
+  | "label.hide"
+  | "label.show-me"
+  | "label.hint"
+  | "description.hide"
+  | "description.show-solution"
+  | "description.show-first-hint"
+  | "description.show-another-hint";
+
 type HelpStageButtonProps = {
   keyPath: string;
   nStagesTotal: number;
@@ -144,6 +143,12 @@ const HelpStageButton: React.FC<HelpStageButtonProps> = ({
   hideAllHelpStages,
   showNextHelpStage,
 }) => {
+  const keyPrefix = "learner-task.help-stage-button";
+  const { t: tTutorials } = useTranslation("tutorials");
+
+  const t = (keySuffix: HelpStageButtonLabelKeySuffix) =>
+    tTutorials(`${keyPrefix}.${keySuffix}`);
+
   if (nStagesTotal === 0) {
     return false;
   }
@@ -154,11 +159,11 @@ const HelpStageButton: React.FC<HelpStageButtonProps> = ({
   const label = (() => {
     switch (nStagesStillHidden) {
       case 0:
-        return "Hide help";
+        return t("label.hide");
       case 1:
-        return "Show me";
+        return t("label.show-me");
       default:
-        return "Hint";
+        return t("label.hint");
     }
   })();
 
@@ -167,19 +172,21 @@ const HelpStageButton: React.FC<HelpStageButtonProps> = ({
       const allHelpStageIds = range(nStagesTotal)
         .map((i) => helpStageId(keyPath, i))
         .join(" ");
+
       return {
         controlsId: allHelpStageIds,
         expanded: true,
-        description: "Hide the solution and any hints for this task",
+        description: t("description.hide"),
         onClick: hideAllHelpStages,
       };
     } else {
       const description =
         nStagesStillHidden === 1
-          ? "Show the solution to this task"
+          ? t("description.show-solution")
           : nextStageIndex === 0
-          ? "Show a hint for this task"
-          : "Show another hint for this task";
+          ? t("description.show-first-hint")
+          : t("description.show-another-hint");
+
       return {
         controlsId: nextStageId,
         expanded: false,

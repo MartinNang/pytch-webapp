@@ -91,7 +91,7 @@ context("Toasts are generated (s/b/s)", () => {
   itShowsToastFor("add sprite", {
     setup: launchAdd.sprite,
     submit: () => settleModalDialog("OK"),
-    toastBodyMatch: '"Sprite1" added to',
+    toastBodyMatch: "“Sprite1” added to",
     dismissFun: kDismissEffluxionOfTime,
   });
 
@@ -101,14 +101,14 @@ context("Toasts are generated (s/b/s)", () => {
       cy.get(".modal-body input").type("{selectAll}{del}PythonLogo");
     },
     submit: () => settleModalDialog("OK"),
-    toastBodyMatch: 'Sprite renamed to "PythonLogo"',
+    toastBodyMatch: "Sprite renamed to “PythonLogo”",
     dismissFun: kDismissEscapeKey,
   });
 
   itShowsToastFor("delete sprite", {
     setup: () => launchDeleteActorByIndex(1),
     submit: () => settleModalDialog("DELETE"),
-    toastBodyMatch: '"Snake" deleted from',
+    toastBodyMatch: "“Snake” deleted from",
     dismissFun: kDismissEffluxionOfTime,
   });
 
@@ -123,7 +123,7 @@ context("Toasts are generated (s/b/s)", () => {
     assertCompletion: () => {
       assertFocus("appearance-card", 0);
     },
-    toastBodyMatch: 'Costume renamed to "two-snakes.png"',
+    toastBodyMatch: "Costume renamed to “two-snakes.png”",
     dismissFun: kDismissSpaceOnCloseButton,
   });
 
@@ -140,7 +140,7 @@ context("Toasts are generated (s/b/s)", () => {
       selectSprite("Snake");
       selectActorAspect("Costumes");
       launchAdd.assetFromThisDevice([goodPngs[0]]);
-      settleModalDialog("Add to project");
+      settleModalDialog("Add to sprite");
       launchRenameAssetByIndex(0);
       cy.get(".CompoundTextInput input").type(
         "{selectAll}{del}green-circle-64"
@@ -150,7 +150,7 @@ context("Toasts are generated (s/b/s)", () => {
     toastBodyMatch: null,
     failurePredicate: {
       selector: ".RenameAssetModal-failure",
-      reportMatch: /this sprite already contains/,
+      reportMatch: /this sprite already has/,
     },
     dismissFun: kDismissEffluxionOfTime,
   });
@@ -163,7 +163,7 @@ context("Toasts are generated (s/b/s)", () => {
       // We don't have to actually adjust it to get notification.
     },
     submit: () => settleModalDialog("OK"),
-    toastBodyMatch: 'Crop/scale for costume "python-logo.png" updated',
+    toastBodyMatch: "Crop/scale for costume “python-logo.png” updated",
     dismissFun: kDismissSpaceOnCloseButton,
   });
 
@@ -174,7 +174,7 @@ context("Toasts are generated (s/b/s)", () => {
       launchDeleteAssetByIndex(0);
     },
     submit: () => settleModalDialog("DELETE"),
-    toastBodyMatch: 'Costume "python-logo.png" deleted from',
+    toastBodyMatch: "Costume “python-logo.png” deleted from",
     dismissFun: kDismissEffluxionOfTime,
   });
 
@@ -205,7 +205,7 @@ context("Toasts are generated (s/b/s)", () => {
         selectActorAspect("Costumes");
         launchAdd.assetFromThisDevice(filePaths);
       },
-      submit: () => submitFun("Add to project"),
+      submit: () => submitFun("Add to sprite"),
       failurePredicate,
       toastBodyMatch,
       dismissFun,
@@ -222,32 +222,32 @@ context("Toasts are generated (s/b/s)", () => {
 
   itShowsToastForAddAssets(
     [1, 0],
-    'Costume "green-circle-64.png" added from this device'
+    "Image “green-circle-64.png” added from this device"
   );
 
   itShowsToastForAddAssets(
     [1, 1],
-    /"green-circle-64.png" added.*but problem with one/,
+    /“green-circle-64.png” added.*An image could not be added/,
     /problem creating image.*not-really/
   );
 
   itShowsToastForAddAssets(
     [1, 2],
-    /"green-circle-64.png" added.*but problems with 2/,
+    /“green-circle-64.png” added.*2 images could not be added/,
     /problem creating image.*not-really.*contains-an-empty/
   );
 
-  itShowsToastForAddAssets([3, 0], "3 Costumes added from this device");
+  itShowsToastForAddAssets([3, 0], "3 images added from this device");
 
   itShowsToastForAddAssets(
     [3, 1],
-    /3 Costumes added.*but problem with one/,
+    /3 images added.*An image could not be added/,
     /problem creating image.*not-really/
   );
 
   itShowsToastForAddAssets(
     [3, 2],
-    /3 Costumes added.*but problems with 2/,
+    /3 images added.*2 images could not be added/,
     /problem creating image.*not-really.*contains-an-empty/
   );
 
@@ -259,7 +259,7 @@ context("Toasts are generated (s/b/s)", () => {
       ScriptOps.selectHatBlock("start-as-clone");
     },
     submit: () => settleModalDialog("OK"),
-    toastBodyMatch: /New "start as clone".*Sprite "Snake"/,
+    toastBodyMatch: /New “start as clone”.*the sprite “Snake”/,
     dismissFun: kDismissEffluxionOfTime,
   });
 
@@ -271,7 +271,7 @@ context("Toasts are generated (s/b/s)", () => {
       ScriptOps.selectHatBlock("start-as-clone");
     },
     submit: () => settleModalDialog("OK"),
-    toastBodyMatch: /Script.*changed to "start as clone"/,
+    toastBodyMatch: /Script.*changed to “start as clone”/,
     dismissFun: kDismissEscapeKey,
   });
 
@@ -282,7 +282,7 @@ context("Toasts are generated (s/b/s)", () => {
       ScriptOps.chooseHandlerDropdownItem(0, "DELETE");
     },
     submit: () => settleModalDialog("DELETE"),
-    toastBodyMatch: /"green flag clicked" script deleted.*"Snake"/,
+    toastBodyMatch: /“green flag clicked” script deleted.*“Snake”/,
     dismissFun: kDismissEffluxionOfTime,
   });
 });

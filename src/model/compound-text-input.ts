@@ -1,9 +1,13 @@
 import { assertNever } from "../utils";
+import {
+  I18nStringSpecWithKeyPart,
+  RawOrI18nStringSpec,
+} from "./i18n/core-types";
 
 type UserInputFormatFragment = {
   kind: "user-input";
-  initialValue: string;
-  placeholder: string;
+  initialValue: RawOrI18nStringSpec;
+  placeholder: I18nStringSpecWithKeyPart;
 };
 
 export type FormatFragment =

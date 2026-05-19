@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useStoreState } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,6 +26,7 @@ import { kFocusGroupItemClassName } from "../model/junior/grouped-focus";
 import { useFocusContext } from "./hooks/focus-steering";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { useActionAsEffect } from "./hooks/use-action-as-effect";
+import { ErrorFetchingSomething } from "./ErrorFetchingSomething";
 
 interface IScratchAndPython {
   eventDescriptor?: EventDescriptor;
@@ -77,12 +79,15 @@ const AccordionAngleSignifier: React.FC<AccordionAngleSignifierProps> = (
   );
 };
 
-const AccordionTextSignifier: React.FC<EmptyProps> = () => (
-  <div className="help-item-text-signifier">
-    <span className="for-collapsed">show more...</span>
-    <span className="for-expanded">show less...</span>
-  </div>
-);
+const AccordionTextSignifier: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("ide");
+  return (
+    <div className="help-item-text-signifier">
+      <span className="for-collapsed">{t("help-sidebar.show-more")}</span>
+      <span className="for-expanded">{t("help-sidebar.show-less")}</span>
+    </div>
+  );
+};
 
 const ScratchBlockMaybeDraggable: React.FC<
   IScratchAndPython & { workContext: DevWorkContext }
@@ -385,9 +390,10 @@ const HelpSidebarSection: React.FC<HelpSidebarSectionProps> = ({
     />
   ));
 
+  const { t } = useTranslation("ide");
   const noEntries = sectionHasNoEntries(sectionSlug, entries, workContext);
   const content = noEntries ? (
-    <p className="no-help-entries-help">The Stage has no motion methods.</p>
+    <p className="no-help-entries-help">{t("help-sidebar.stage-no-motion")}</p>
   ) : (
     renderedEntries
   );
@@ -450,12 +456,7 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
     }
     case "error":
     default:
-      return (
-        <>
-          <h1>Problem</h1>
-          <p>Sorry, there was a problem fetching the help information.</p>
-        </>
-      );
+      return <ErrorFetchingSomething resourceKeySuffix="help-sidebar" />;
   }
 };
 

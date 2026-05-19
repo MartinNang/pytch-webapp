@@ -14,7 +14,9 @@ import {
   VoidOutcome,
 } from "./async-user-flow";
 
-type CreateProjectRunArgs = void;
+export type CreateProjectRunArgs = {
+  initialName: string;
+};
 
 type CreateProjectRunState = {
   name: string;
@@ -38,9 +40,11 @@ type CreateProjectActions = {
 
 export type CreateProjectFlow = CreateProjectBase & CreateProjectActions;
 
-async function prepare(_args: void): Promise<CreateProjectRunState> {
+async function prepare(
+  args: CreateProjectRunArgs
+): Promise<CreateProjectRunState> {
   return {
-    name: "Untitled project",
+    name: args.initialName,
     whetherExample: "with-example",
     editorKind: "per-method",
   };

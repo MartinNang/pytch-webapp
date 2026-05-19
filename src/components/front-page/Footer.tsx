@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "../LinkWithinApp";
 import { urlWithinApp } from "../../env-utils";
 import { DecorativeUnderscore } from "../decorations";
@@ -8,6 +9,7 @@ import "./Footer.scss";
 // a particular page within research site.
 
 export const Footer = () => {
+  const { t } = useTranslation("welcome");
   const riLogo = urlWithinApp("/assets/logos/RI-white-on-transparent.png");
   const tcdLogo = urlWithinApp("/assets/logos/TCD-white-on-transparent.png");
   const tudLogo = urlWithinApp("/assets/logos/TUD-white-on-transparent.png");
@@ -18,58 +20,68 @@ export const Footer = () => {
         <div className="sitemap">
           <div className="list-container">
             <h2 id="contact-info">
-              Contact us
+              {t("footer.contact-us.heading")}
               <DecorativeUnderscore />
             </h2>
             <ul>
               <li>
-                <a href="mailto:info@pytch.org">Email</a>
+                <a href="mailto:info@pytch.org">
+                  {t("footer.contact-us.email")}
+                </a>
               </li>
               <li>
-                <a href="https://x.com/pytchlang/">X (Twitter)</a>
+                <a href="https://x.com/pytchlang/">
+                  {t("footer.contact-us.twitter")}
+                </a>
               </li>
               <li>
                 <a href="https://bsky.app/profile/pytchlang.bsky.social">
-                  Bluesky
+                  {t("footer.contact-us.bluesky")}
                 </a>
               </li>
             </ul>
           </div>
           <div className="list-container">
             <h2>
-              About
+              {t("footer.about.heading")}
               <DecorativeUnderscore />
             </h2>
             <ul>
               <li>
-                <a href="https://pytch.scss.tcd.ie/who-we-are/">Our team</a>
+                <a href="https://pytch.scss.tcd.ie/who-we-are/">
+                  {t("footer.about.our-team")}
+                </a>
               </li>
               <li>
-                <a href="https://pytch.scss.tcd.ie/blog/">News</a>
+                <a href="https://pytch.scss.tcd.ie/blog/">
+                  {t("footer.about.news")}
+                </a>
               </li>
             </ul>
           </div>
           <div className="list-container">
             <h2>
-              For teachers
+              {t("footer.for-teachers.heading")}
               <DecorativeUnderscore />
             </h2>
             <ul>
               <li>
-                <Link to="/tutorials/">Tutorials</Link>
+                <Link to="/tutorials/">
+                  {t("footer.for-teachers.tutorials")}
+                </Link>
               </li>
               <li>
                 <a href="https://pytch.scss.tcd.ie/lesson-plans/">
-                  Lesson plans
+                  {t("footer.for-teachers.lesson-plans")}
                 </a>
               </li>
             </ul>
           </div>
         </div>
         <div className="section-images">
-          <img src={riLogo} alt="Research Ireland" />
-          <img src={tcdLogo} alt="Trinity College Dublin" />
-          <img src={tudLogo} alt="Technological University Dublin" />
+          <img src={riLogo} alt={t("footer.logo-alt.research-ireland")} />
+          <img src={tcdLogo} alt={t("footer.logo-alt.tcd")} />
+          <img src={tudLogo} alt={t("footer.logo-alt.tud")} />
         </div>
       </div>
     </footer>

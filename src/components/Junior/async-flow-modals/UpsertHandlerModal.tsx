@@ -5,13 +5,11 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import {
-  ActorKindOps,
-  EventDescriptorKind,
-} from "../../../model/junior/structured-program";
+import { EventDescriptorKind } from "../../../model/junior/structured-program";
 import { submitOnEnterKeyFun } from "../../../utils";
 import { KeyChoiceModal } from "./KeyChoiceModal";
 import { useJrEditActions, useJrEditState } from "../hooks";
@@ -114,6 +112,8 @@ const KeyEditor: React.FC<KeyEditorProps> = ({
 };
 
 export const UpsertHandlerModal = () => {
+  const { t } = useTranslation("ide");
+  const { t: tCommon } = useTranslation("common");
   const focusContext = useFocusContext("per-method");
   const prevMode = useRef<HandlerUpsertionMode | null>(null);
 
@@ -184,8 +184,6 @@ export const UpsertHandlerModal = () => {
       );
     }
 
-    const actorNounPhrase = ActorKindOps.names(actorKind).whenClickedNounPhrase;
-
     const messageInputClasses = classNames({
       isEmpty: messageIfChosen === "",
       showEmptyMessageError,
@@ -201,7 +199,9 @@ export const UpsertHandlerModal = () => {
 
     const mCloneHatBlockOption = actorKind === "sprite" && (
       <EventKindOption {...ekoProps} kind="start-as-clone">
-        <div className="content">when I start as a clone</div>
+        <div className="content">
+          <Trans i18nKey="hat-block-content.start-as-clone" ns="ide" />
+        </div>
       </EventKindOption>
     );
 
@@ -223,6 +223,31 @@ export const UpsertHandlerModal = () => {
       setChosenKind(kind);
     };
 
+    const keyChoiceComponent = (
+      <KeyEditor
+        isTabStop={chosenKind === "key-pressed"}
+        displayName={keyIfChosen.displayName}
+        onEditClick={handleEditKeyClick}
+      />
+    );
+
+    const messageInputComponent = (
+      <Form.Control
+        tabIndex={chosenKind === "message-received" ? 0 : -1}
+        className={messageInputClasses}
+        type="text"
+        placeholder={t("upsert-handler-modal.message-placeholder")}
+        readOnly={chosenKind !== "message-received"}
+        value={messageIfChosen}
+        onChange={handleMessageChange}
+        // Only select the double-clicked-on word; don't choose (as if
+        // clicking "OK") that hat-block:
+        onDoubleClick={(event) => event.stopPropagation()}
+        onFocus={focusGroupNavigationSuppression.onFocus}
+        onBlur={focusGroupNavigationSuppression.onBlur}
+      />
+    );
+
     // Disable `restoreFocus` behaviour; we use `onDispose()` to manage
     // ourselves where the focus goes after the modal dialog goes away.
     // See code in `CodeEditor` (for add=insert) and `HatBlock` (for
@@ -239,7 +264,7 @@ export const UpsertHandlerModal = () => {
         centered
       >
         <Modal.Header closeButton={isInteractable(activeFsmState)}>
-          <Modal.Title>Choose hat block</Modal.Title>
+          <Modal.Title>{t("upsert-handler-modal.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -253,21 +278,26 @@ export const UpsertHandlerModal = () => {
             >
               <ul tabIndex={-1} onKeyDown={handleKeyDown} ref={ulRef}>
                 <EventKindOption {...ekoProps} kind="green-flag">
-                  <div className="content">when green flag clicked</div>
+                  <div className="content">
+                    <Trans i18nKey="hat-block-content.green-flag" ns="ide" />
+                  </div>
                 </EventKindOption>
                 <EventKindOption {...ekoProps} kind="clicked">
-                  <div className="content">when {actorNounPhrase} clicked</div>
+                  <div className="content">
+                    <Trans
+                      i18nKey={`hat-block-content.clicked.${actorKind}`}
+                      ns="ide"
+                    />
+                  </div>
                 </EventKindOption>
                 {mCloneHatBlockOption}
                 <EventKindOption {...ekoProps} kind="key-pressed">
                   <div className="content" ref={keyPressedOptionDivRefCb}>
-                    when{" "}
-                    <KeyEditor
-                      isTabStop={chosenKind === "key-pressed"}
-                      displayName={keyIfChosen.displayName}
-                      onEditClick={handleEditKeyClick}
-                    />{" "}
-                    key pressed
+                    <Trans
+                      i18nKey="hat-block-content.key-pressed"
+                      ns="ide"
+                      components={{ key: keyChoiceComponent }}
+                    />
                   </div>
                 </EventKindOption>
                 <EventKindOption
@@ -276,26 +306,15 @@ export const UpsertHandlerModal = () => {
                   onDoubleClick={maybeAttemptUpsert}
                 >
                   <div className="content">
-                    when I receive “
-                    <Form.Control
-                      tabIndex={chosenKind === "message-received" ? 0 : -1}
-                      className={messageInputClasses}
-                      type="text"
-                      placeholder="message"
-                      readOnly={chosenKind !== "message-received"}
-                      value={messageIfChosen}
-                      onChange={handleMessageChange}
-                      // Only select the double-clicked-on word; don't
-                      // choose (as if clicking "OK") that hat-block:
-                      onDoubleClick={(event) => event.stopPropagation()}
-                      onFocus={focusGroupNavigationSuppression.onFocus}
-                      onBlur={focusGroupNavigationSuppression.onBlur}
-                    ></Form.Control>
-                    ”
+                    <Trans
+                      i18nKey="hat-block-content.message-received"
+                      ns="ide"
+                      components={{ msg: messageInputComponent }}
+                    />
                   </div>
                 </EventKindOption>
                 <li className={emptyMessageHintClasses}>
-                  Please provide a message.
+                  {t("upsert-handler-modal.empty-message-hint")}
                 </li>
               </ul>
             </FocusGroupContainer>
@@ -307,14 +326,14 @@ export const UpsertHandlerModal = () => {
             variant="secondary"
             onClick={handleClose}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isInteractable}
             variant="primary"
             onClick={maybeAttemptUpsert}
           >
-            OK
+            {tCommon("button.ok")}
           </Button>
         </Modal.Footer>
       </Modal>

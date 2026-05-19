@@ -33,6 +33,7 @@ import { fireAndForgetEvent } from "./model/anonymous-instrumentation";
 import { StandalonePlayDemo } from "./components/StandalonePlayDemo";
 import { StartTutorialAtCheckpoint } from "./components/StartTutorialAtCheckpoint";
 import { useActionAsEffect } from "./components/hooks/use-action-as-effect";
+import { InertCopyCodeButton } from "./components/Tutorial";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -151,6 +152,8 @@ function AppWithI18nReady() {
 const kTransDefaultComponents = {
   i: <i />,
   b: <strong />,
+  c: <code />,
+  flatcopycode: <InertCopyCodeButton />,
 };
 
 export const App: React.FC<EmptyProps> = () => {

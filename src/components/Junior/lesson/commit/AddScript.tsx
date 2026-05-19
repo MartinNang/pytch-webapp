@@ -1,8 +1,6 @@
 import React from "react";
-import {
-  ActorIdentifierOps,
-  LearnerTaskCommitAddScript,
-} from "../../../../model/junior/jr-tutorial";
+import { Trans, useTranslation } from "react-i18next";
+import { LearnerTaskCommitAddScript } from "../../../../model/junior/jr-tutorial";
 import { DisplayHatBlock } from "../../HatBlock";
 import { InlineAddSomethingButton } from "../../AddSomethingButton";
 import { DisplayScript } from "./ScriptDiff";
@@ -13,13 +11,17 @@ export const AddScript: React.FC<LearnerTaskCommitAddScript> = ({
   event,
   codeText,
 }) => {
-  const actorNounPhrase = ActorIdentifierOps.nounPhrase(path.actor);
-  const actorKind = path.actor.kind;
+  const { t } = useTranslation("tutorials");
+  const { t: tIde } = useTranslation("ide");
 
-  const maybeParamName = EventDescriptorKindOps.maybeArgumentName(event.kind);
-  const maybeProvideArgumentContent = maybeParamName && (
+  const actor = path.actor;
+  const actorKind = actor.kind;
+
+  const maybeProvideArgumentContent = EventDescriptorKindOps.hasArgument(
+    event.kind
+  ) && (
     <>
-      <p>Fill in the right {maybeParamName}:</p>
+      <p>{t(`commit.add-script.fill-in-argument.${event.kind}`)}</p>
       <DisplayHatBlock
         actorKind={actorKind}
         event={event}
@@ -30,33 +32,41 @@ export const AddScript: React.FC<LearnerTaskCommitAddScript> = ({
 
   const maybeAddCodeContent = codeText !== "" && (
     <>
-      <p>
-        Find your new empty script in the Code panel, and type in this code:
-      </p>
+      <p>{t("commit.add-script.type-code")}</p>
       <DisplayScript {...{ actorKind, event, codeText }} />
     </>
   );
 
+  const spriteName = actorKind === "sprite" ? actor.name : undefined;
   return (
     <div className="JrCommit Commit-AddScript">
       <p>
-        In the Stage and Sprites pane, select {actorNounPhrase}. In the coding
-        pane, select the Code tab, and use the{" "}
-        <InlineAddSomethingButton what="script" label="Add script" /> button to
-        start the process of adding a script.
+        <Trans
+          ns="tutorials"
+          i18nKey={`commit.add-script.select-and-add.${actorKind}`}
+          values={{ spriteName }}
+          components={{
+            addButton: (
+              <InlineAddSomethingButton
+                what="script"
+                label={tIde("scripts.action.add")}
+              />
+            ),
+          }}
+        />
       </p>
 
-      <p>Choose this hat-block:</p>
+      <p>{t("commit.add-script.choose-hat-block")}</p>
 
       <DisplayHatBlock
-        actorKind={path.actor.kind}
+        actorKind={actorKind}
         event={event}
         variant="kind-chosen"
       />
 
       {maybeProvideArgumentContent}
 
-      <p>Click the OK button to add an empty script with this hat-block.</p>
+      <p>{t("commit.add-script.click-ok")}</p>
 
       {maybeAddCodeContent}
     </div>

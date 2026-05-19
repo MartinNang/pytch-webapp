@@ -65,9 +65,10 @@ type PrettyCodeLine<RichLineT> = {
 
 type PaddingKind = "add-padding" | "change-padding" | "del-padding";
 
+type HelpTextKeyNub = "add" | "delete" | "";
 type PrettyPaddingLine = {
   kind: PaddingKind;
-  helpText: string; // Can be empty
+  helpTextKeyNub: HelpTextKeyNub;
 };
 
 /** One line making up a pretty-printed display of a code diff.  Either
@@ -118,7 +119,11 @@ class ViewBuilder<RichLineT> {
    * output, assigning them the given `kind`.  The line closest to the
    * middle of the new lines has the given `helpText`.  For non-positive
    * `nLines`, do nothing. */
-  pushPadding(kind: PaddingKind, nLines: number, helpText: string) {
+  pushPadding(
+    kind: PaddingKind,
+    nLines: number,
+    helpTextKeyNub: HelpTextKeyNub
+  ) {
     // Allow calls where no padding is required:
     if (nLines <= 0) return;
 
@@ -126,7 +131,7 @@ class ViewBuilder<RichLineT> {
     for (let i = 0; i !== nLines; ++i) {
       this.viewLines.push({
         kind,
-        helpText: i === helpTextIndex ? helpText : "",
+        helpTextKeyNub: i === helpTextIndex ? helpTextKeyNub : "",
       });
     }
   }
@@ -222,7 +227,7 @@ export class EnrichedDiff<RichLineT> {
         }
         case "add": {
           const nPad = hunk.bLines.length;
-          builder.pushPadding("add-padding", nPad, "[Add some code here]");
+          builder.pushPadding("add-padding", nPad, "add");
           break;
         }
         default:
@@ -244,7 +249,7 @@ export class EnrichedDiff<RichLineT> {
       switch (hunk.kind) {
         case "del": {
           const nPad = hunk.aLines.length;
-          builder.pushPadding("del-padding", nPad, "[Code was deleted here]");
+          builder.pushPadding("del-padding", nPad, "delete");
           break;
         }
         case "context":

@@ -1,5 +1,6 @@
 import { AsyncFile, GoogleDriveApi, GoogleDriveBootApi } from "./shared";
 import { ValueCell, assertNever, delaySeconds } from "../../utils";
+import { mkRawSpec } from "../../model/i18n/core-types";
 
 type CallBehaviour = {
   boot: "ok" | "fail" | "stall";
@@ -67,8 +68,8 @@ function mockApi(spec: MockApiBehaviour): GoogleDriveApi {
     switch (behaviour) {
       case "ok":
         return {
-          displayName: "J. Random User",
-          emailAddress: "j.random.user@example.com",
+          displayName: mkRawSpec("J. Random User"),
+          emailAddress: mkRawSpec("j.random.user@example.com"),
         };
       case "fail":
         throw new Error("Could not get user information");

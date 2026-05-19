@@ -357,7 +357,7 @@ context("Compare user code to original", () => {
   it("can launch and dismiss modal", () => {
     cy.visit(kFlatLessonUrl);
     cy.get("button").contains("Compare to original").click();
-    cy.get(".ViewCodeDiffModal").find("button").contains("Close").click();
+    cy.get(".ViewCodeDiffModal").find("button").contains("OK").click();
     cy.get(".ViewCodeDiffModal").should("not.exist");
   });
 });

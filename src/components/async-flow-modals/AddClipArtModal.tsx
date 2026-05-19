@@ -22,15 +22,16 @@ import { useFlowActions, useFlowState } from "../../model";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 import { useFocusContext } from "../hooks/focus-steering";
-import { FileProcessingFailure } from "../../model/user-interactions/process-files";
-import { FileProcessingFailures } from "../FileProcessingFailures";
 import { useActionAsEffect } from "../hooks/use-action-as-effect";
 import {
   AddClipArtFlow,
   AddClipArtRunState,
   groupedFocusKeyFromFilterState,
 } from "../../model/user-interactions/clipart-gallery-select";
-import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { TwoStateSwitch } from "../TwoStateSwitch";
+import { useTranslation } from "react-i18next";
+import { AddAssetFailuresList } from "./AddAssetFailuresList";
+import { ErrorMessageDisplay } from "../ErrorMessageDisplay";
 
 const kMaxImageWidthOrHeight = 100;
 
@@ -114,16 +115,10 @@ const MaybeTagFilterSwitch: React.FC<MaybeTagFilterSwitchProps> = ({
     setFilterActive(!showAll);
   };
 
-  const texts: TwoStateSwitchTexts = {
-    question: <span>Show all images?</span>,
-    trueStatus: <span>Showing all images</span>,
-    falseStatus: <span>Showing just images recommended for this tutorial</span>,
-  };
-
   return (
     <TwoStateSwitch
       className="all-vs-tutorial-switch"
-      texts={texts}
+      i18nSpec={{ keyPart: "add.media-library.switch", ns: "assets" }}
       boolState={!filterState.active}
       setBoolState={setFilterActiveNegated}
     />
@@ -210,15 +205,14 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 
   switch (gallery.status) {
     case "fetch-failed":
-      return (
-        <>
-          <p>Sorry, something went wrong fetching the media library.</p>
-          <p>{gallery.message}</p>
-        </>
-      );
+      return <ErrorMessageDisplay errorSpec={gallery.messageSpec} />;
     case "fetch-not-started":
     case "fetch-pending":
-      return <p>loading...</p>;
+      return (
+        <div className="text-center my-5">
+          <Spinner animation="border" />
+        </div>
+      );
     case "ready":
       return <ClipArtGalleryPanelReady {...{ gallery, ...selectionProps }} />;
     default:
@@ -227,6 +221,8 @@ const ClipArtGalleryPanel: React.FC<SelectionProps> = (selectionProps) => {
 };
 
 export const AddClipArtModal = () => {
+  const { t } = useTranslation("assets");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.addClipArtFlow);
   const { selectItemById, deselectItemById } = useFlowActions(
     (f) => f.addClipArtFlow
@@ -237,22 +233,13 @@ export const AddClipArtModal = () => {
   useActionAsEffect((actions) => actions.clipArtGallery.startFetchIfRequired);
 
   return asyncFlowModal(fsmState, (activeState) => {
-    const operationContext = activeState.runState.operationContext;
-    const assetPlural = operationContext.assetPlural;
-
     switch (activeState.kind) {
       case "awaiting-ack-of-notification": {
-        const fileFailures: Array<FileProcessingFailure> =
-          activeState.outcomeNub.failures.map((failure) => ({
-            filename: failure.displayName,
-            reason: failure.reason,
-          }));
-        const titleText = `Problem adding ${assetPlural}`;
+        // Currently the media library only contains images.
         return (
-          <FileProcessingFailures
-            titleText={titleText}
-            introText="Sorry, there was a problem adding files to your project:"
-            failures={fileFailures}
+          <AddAssetFailuresList
+            assetKind="image"
+            failures={activeState.outcomeNub.failures}
             dismiss={activeState.userAck}
           />
         );
@@ -260,20 +247,23 @@ export const AddClipArtModal = () => {
 
       case "attempting":
       case "interacting": {
-        const { selectedIds, filterState } = activeState.runState;
+        const { selectedIds, filterState, operationContext } =
+          activeState.runState;
+        const { scope, assetKind } = operationContext;
+        const keyStem = `add.${assetKind}` as const;
 
         const settle = settleFunctions(isSubmittable, activeState);
 
         const nSelected = nSelectedItemsInGallery(galleryState, selectedIds);
-        const noneSelected = nSelected === 0;
+
+        const buttonKey =
+          `add.media-library.${scope}.interacting.button` as const;
 
         const buttonContent =
           activeState.kind === "attempting" ? (
             <Spinner size="sm" />
-          ) : noneSelected ? (
-            <span>Add to project</span>
           ) : (
-            <span>Add {nSelected} to project</span>
+            t(buttonKey, { count: nSelected })
           );
 
         const selectionProps: SelectionProps = {
@@ -289,7 +279,7 @@ export const AddClipArtModal = () => {
               className="clipart-header"
               closeButton={isInteractable(activeState)}
             >
-              <Modal.Title>Choose some images</Modal.Title>
+              <Modal.Title>{t(`${keyStem}.interacting.title`)}</Modal.Title>
               <MaybeTagFilterSwitch filterState={filterState} />
             </Modal.Header>
             <Modal.Body className="clipart-body">
@@ -297,11 +287,11 @@ export const AddClipArtModal = () => {
             </Modal.Body>
             <Modal.Footer className="clipart-footer">
               <div className="licence-info">
-                <p>For copyright and licensing information, see help pages.</p>
+                <p>{t("add.media-library.copyright-info")}</p>
               </div>
               <div className="buttons">
                 <Button variant="secondary" onClick={settle.cancel}>
-                  Cancel
+                  {tCommon("button.cancel")}
                 </Button>
                 <Button
                   className="maybe-submit"

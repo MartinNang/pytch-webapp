@@ -78,7 +78,7 @@ context("Asset-card ccmenu", () => {
   // more behaviour here.
 
   function assertDeleteAssetModal(assetName: string) {
-    assertModalWithTitle(`Delete the Costume “${assetName}” from this sprite?`);
+    assertModalWithTitle(`Delete costume “${assetName}”?`);
   }
 
   it("delete all via kbd", () => {

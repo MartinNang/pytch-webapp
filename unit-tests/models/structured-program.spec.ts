@@ -140,14 +140,6 @@ describe("Structured programs", () => {
     const startAsClone: EventDescriptor = { kind: "start-as-clone" };
     const clicked: EventDescriptor = { kind: "clicked" };
 
-    it("event-kind arity", () => {
-      assert.equal(KindOps.arity("green-flag"), 0);
-      assert.equal(KindOps.arity("key-pressed"), 1);
-      assert.equal(KindOps.arity("message-received"), 1);
-      assert.equal(KindOps.arity("start-as-clone"), 0);
-      assert.equal(KindOps.arity("clicked"), 0);
-    });
-
     it("decorator", () => {
       assert.equal(
         DescrOps.decorator(greenFlag),
@@ -226,14 +218,6 @@ describe("Structured programs", () => {
       assert.equal(sprite.kind, "sprite");
       assert.equal(sprite.handlers.length, 0);
       assert.equal(sprite.name, "Banana");
-    });
-
-    it("display description", () => {
-      const stage = Ops.newEmptyStage();
-      assert.equal(Ops.displayDescription(stage), "Stage");
-
-      const sprite = Ops.newEmptySprite("Banana");
-      assert.equal(Ops.displayDescription(sprite), 'Sprite "Banana"');
     });
 
     describe("nubs", () => {

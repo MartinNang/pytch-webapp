@@ -1,10 +1,11 @@
 import React, { ClipboardEventHandler, useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useStoreState, useStoreActions } from "../store";
 import RawElement from "./RawElement";
 import Button from "react-bootstrap/Button";
 import {
-  assertNever,
   copyTextToClipboard,
+  EmptyProps,
   failIfNull,
   isDivOfClass,
 } from "../utils";
@@ -24,52 +25,6 @@ import {
 } from "./Junior/lesson/ChapterNavigationButtons";
 import { focusChapterContent } from "./Junior/lesson/hooks";
 
-type NavigationDirection = "prev" | "next";
-
-interface TutorialNavigationProps {
-  kind: NavigationDirection;
-  toChapterIndex: number;
-}
-
-const navigationIntro = (kind: NavigationDirection, toChapterIndex: number) => {
-  switch (kind) {
-    case "prev":
-      return "Back";
-    case "next":
-      return toChapterIndex === 1 ? "Get started" : "Next";
-    default:
-      return assertNever(kind);
-  }
-};
-
-const TutorialNavigation = ({
-  kind,
-  toChapterIndex,
-}: TutorialNavigationProps) => {
-  const maybeChapters = useStoreState(
-    (state) => state.activeProject.project?.trackedTutorial?.content.chapters
-  );
-
-  const chapters = failIfNull(
-    maybeChapters,
-    "no chapters to create navigation element"
-  );
-
-  const navigateToChapter = useStoreActions(
-    (actions) => actions.activeProject.setActiveTutorialChapter
-  );
-
-  const navigateToTargetChapter = () => navigateToChapter(toChapterIndex);
-
-  const toChapterTitle = chapters[toChapterIndex].title;
-  const navClass = `navigation-button navigation-${kind}`;
-  return (
-    <span className={navClass} onClick={navigateToTargetChapter}>
-      {navigationIntro(kind, toChapterIndex)}: {toChapterTitle}
-    </span>
-  );
-};
-
 interface TutorialElementProps {
   element: HTMLElement;
 }
@@ -80,7 +35,8 @@ const TutorialElement = ({ element }: TutorialElementProps) => {
   }
 
   if (isDivOfClass(element, "run-finished-project")) {
-    return <TutorialTryWholeProjectElement />;
+    console.warn("Should not see run-finished-project DIV");
+    return false;
   }
 
   if (
@@ -92,48 +48,6 @@ const TutorialElement = ({ element }: TutorialElementProps) => {
     return <RawElement className="scratchblocks" element={sbSvg} />;
   }
   return <RawElement element={element} />;
-};
-
-// TODO: Remove this feature?  The preferred method for a user to try
-// the finished version of a tutorial is to use the "demo" button in the
-// tutorial's card.
-const TutorialTryWholeProjectElement = () => {
-  const maybeTutorial = useStoreState(
-    (state) => state.activeProject.project?.trackedTutorial?.content
-  );
-  const setCodeTextAndBuild = useStoreActions(
-    (actions) => actions.activeProject.setCodeTextAndBuild
-  );
-
-  const tutorial = failIfNull(
-    maybeTutorial,
-    "need active tutorial to construct TRY IT button"
-  );
-
-  const tryProject = () => {
-    setCodeTextAndBuild({
-      codeText: tutorial.completeCode,
-      focusDestination: "running-project",
-    });
-  };
-
-  // Does the tutorial have at least one chapter beyond the front
-  // matter?  (It would be very surprising if not, but check.)
-  const hasNextChapter = tutorial.chapters.length > 1;
-
-  return (
-    <div className="navigation-buttons">
-      <span
-        onClick={tryProject}
-        className="navigation-button navigation-run-project"
-      >
-        Try the finished project!
-      </span>
-      {hasNextChapter ? (
-        <TutorialNavigation kind="next" toChapterIndex={1} />
-      ) : null}
-    </div>
-  );
 };
 
 interface TutorialPatchElementProps {
@@ -295,7 +209,34 @@ const nAddHunks = (tables: Array<HTMLTableElement>): number => {
     .reduce((a, x) => a + x, 0);
 };
 
+export const InertCopyCodeButton: React.FC<EmptyProps> = () => {
+  return <span className="add-code-icon">+</span>;
+};
+
+type CopyHintProps = { nAdds: number };
+const CopyHint: React.FC<CopyHintProps> = ({ nAdds }) => {
+  if (nAdds === 0) {
+    return false;
+  } else {
+    const keySuffix = nAdds === 1 ? "single" : "multi";
+    const i18nKey = `flat-tutorial.patch.copy-hint.${keySuffix}` as const;
+
+    return (
+      <div className="copy-hint">
+        <p>
+          <Trans
+            ns="tutorials"
+            i18nKey={i18nKey}
+            components={{ addCodeIcon: <InertCopyCodeButton /> }}
+          />
+        </p>
+      </div>
+    );
+  }
+};
+
 const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
+  const { t } = useTranslation("tutorials");
   const runCodeDiffHelp = useRunFlow((f) => f.codeDiffHelpFlow);
 
   let divCopy = div.cloneNode(true) as HTMLDivElement;
@@ -348,35 +289,17 @@ const TutorialPatchElement = ({ div }: TutorialPatchElementProps) => {
   };
 
   const nAdds = nAddHunks(tableElts);
-  const mHintDiv =
-    nAdds === 0 ? (
-      false
-    ) : nAdds === 1 ? (
-      <div className="copy-hint">
-        <p>
-          Hint: Click on the <span className="add-code-icon">+</span> button to
-          copy the new code.
-        </p>
-      </div>
-    ) : (
-      <div className="copy-hint">
-        <p>
-          Hint: Click on a <span className="add-code-icon">+</span> button to
-          copy that chunk of new code.
-        </p>
-      </div>
-    );
 
   return (
     <div className="patch-container" onCopy={convertDotsToSpaces}>
       <div className="header">
-        <h1 className="decoration">Change the code like this:</h1>
+        <h1 className="decoration">{t("flat-tutorial.patch.heading")}</h1>
         <Button onClick={() => runCodeDiffHelp({ samples })}>
           <FontAwesomeIcon icon="question-circle" />
         </Button>
       </div>
       <div className="patch-contents">{contentDivs}</div>
-      {mHintDiv}
+      <CopyHint nAdds={nAdds} />
     </div>
   );
 };
@@ -448,7 +371,7 @@ const TutorialChapter = () => {
   );
 };
 
-const ActiveTutorial = () => {
+export const Tutorial: React.FC<EmptyProps> = () => {
   //
   // TODO: Review the nested structure and simplify if possible.  Also
   // change class names to reflect fact that they no longer apply to
@@ -487,22 +410,3 @@ const ActiveTutorial = () => {
     </div>
   );
 };
-
-const Tutorial = () => {
-  const loadState = useStoreState(
-    (state) => state.activeProject.syncState.loadState
-  );
-
-  switch (loadState) {
-    case "failed":
-      return <div>Error loading tutorial.</div>;
-    case "pending":
-      return <div>Loading...</div>;
-    case "succeeded":
-      return <ActiveTutorial />;
-    default:
-      return assertNever(loadState);
-  }
-};
-
-export default Tutorial;

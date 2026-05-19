@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans } from "react-i18next";
 import { EmptyProps } from "../../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ContactInvitation.scss";
@@ -12,8 +13,13 @@ export const ContactInvitation: React.FC<EmptyProps> = () => {
         </a>
       </p>
       <p className="content-text">
-        Please email us at <a href="mailto:info@pytch.org">info@pytch.org</a>{" "}
-        with any feedback or suggestions.
+        <Trans
+          ns="welcome"
+          i18nKey="contact-invitation"
+          components={{
+            emailLink: <a href="mailto:info@pytch.org">info@pytch.org</a>,
+          }}
+        />
       </p>
     </div>
   );

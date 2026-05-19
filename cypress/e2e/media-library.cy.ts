@@ -7,9 +7,9 @@ import {
 } from "./junior/utils";
 import { kExpNMediaLibEntries } from "./utils";
 
-const launchChooseClipArt = () => {
+const launchChooseClipArt = (ownerKindName: string) => {
   launchAdd.assetFromMediaLibrary();
-  cy.contains("Add to project").should("be.disabled");
+  cy.contains(`Add to ${ownerKindName}`).should("be.disabled");
 };
 
 context("Add clipart from library, handling errors", () => {
@@ -22,7 +22,7 @@ context("Add clipart from library, handling errors", () => {
     clipArtNames: Array<string>,
     expAddN: number
   ) => {
-    launchChooseClipArt();
+    launchChooseClipArt("project");
     clipArtNames.forEach((clipArtName) =>
       cy.get(".clipart-card").contains(clipArtName).click()
     );
@@ -48,7 +48,7 @@ context("Add clipart from library, handling errors", () => {
   });
 
   it("can dismiss with keyboard", () => {
-    launchChooseClipArt();
+    launchChooseClipArt("project");
     cy.get(".modal").type("{esc}");
     cy.get(".modal").should("not.exist");
   });
@@ -79,9 +79,9 @@ context("Add clipart from library, handling errors", () => {
   it("rejects adding same clipart twice", () => {
     attemptChooseClipArt(["apple.png"], 1);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There was a problem adding an image");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     cy.get("button").contains("OK").click();
     cy.pytchShouldShowAssets(startTestAssets);
@@ -90,9 +90,9 @@ context("Add clipart from library, handling errors", () => {
   it("handles one failure and one success", () => {
     attemptChooseClipArt(["apple.png", "orange.png"], 2);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There was a problem adding an image");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     // TODO: Test for toast.
 
@@ -104,10 +104,10 @@ context("Add clipart from library, handling errors", () => {
     chooseClipArt(["orange.png"], 1);
     attemptChooseClipArt(["orange.png", "apple.png", "bird.png"], 3);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains('Cannot add "orange.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There were problems adding some images");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("Cannot add “orange.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     // TODO: Test for toast.
 
@@ -118,9 +118,9 @@ context("Add clipart from library, handling errors", () => {
   it("handles one failure and two successes", () => {
     attemptChooseClipArt(["apple.png", "orange.png", "bird.png"], 3);
 
-    assertErrorContains("Sorry, there was a problem adding files");
-    assertErrorContains('Cannot add "apple.png" to your project');
-    assertErrorContains("it already contains an image or sound of that name");
+    assertErrorContains("There was a problem adding an image");
+    assertErrorContains("Cannot add “apple.png” to your project");
+    assertErrorContains("it already has a file with that name");
 
     // TODO: Test for toast.
 
@@ -147,6 +147,7 @@ context("All/just-tut switch", () => {
   [
     {
       label: "per-method",
+      ownerKindName: "stage",
       prepare: () => {
         cy.pytchBasicJrProject();
         selectActorAspect("Backdrops");
@@ -154,12 +155,13 @@ context("All/just-tut switch", () => {
     },
     {
       label: "flat",
+      ownerKindName: "project",
       prepare: cy.pytchExactlyOneProject,
     },
   ].forEach((spec) =>
     it(`shows no switch if not linked (${spec.label})`, () => {
       spec.prepare();
-      launchChooseClipArt();
+      launchChooseClipArt(spec.ownerKindName);
       assertMediaLibSwitchState("absent");
       assertNEntries(kExpNMediaLibEntries);
     })
@@ -168,12 +170,14 @@ context("All/just-tut switch", () => {
   [
     {
       label: "per-method",
+      ownerKindName: "stage",
       tutorialSlug: "script-by-script-boing",
       expNEntries: 5,
       preLaunch: () => selectActorAspect("Backdrops"),
     },
     {
       label: "flat",
+      ownerKindName: "project",
       tutorialSlug: "boing",
       expNEntries: 3,
       preLaunch: () => void 0,
@@ -182,7 +186,7 @@ context("All/just-tut switch", () => {
     it(`shows all/just-tutorial assets (${spec.label})`, () => {
       cy.pytchProjectFollowingTutorial(spec.tutorialSlug);
       spec.preLaunch();
-      launchChooseClipArt();
+      launchChooseClipArt(spec.ownerKindName);
 
       assertMediaLibSwitchState("just-this-tutorial");
       assertNEntries(spec.expNEntries);
@@ -204,7 +208,7 @@ context("Layout on short screens", () => {
       cy.viewport(1600, viewportHeight);
       cy.pytchProjectFollowingTutorial();
       cy.contains("Images and sounds").click();
-      launchChooseClipArt();
+      launchChooseClipArt("project");
       cy.get(".all-vs-tutorial-switch").click();
       assertNEntries(kExpNMediaLibEntries);
 

@@ -1,9 +1,5 @@
 import { IPytchAppModel, PytchAppModelActions } from "..";
-import {
-  AssetOperationContext,
-  assetOperationContextFromKey,
-  AssetOperationContextKey,
-} from "../asset";
+import { AssetOperationContext } from "../asset";
 import {
   AsyncUserFlowSlice,
   VoidOutcome,
@@ -13,7 +9,7 @@ import {
 } from "./async-user-flow";
 
 type DeleteAssetRunArgs = {
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   name: string;
   displayName: string;
 };
@@ -30,9 +26,7 @@ export type DeleteAssetFlow = AsyncUserFlowSlice<
 >;
 
 async function prepare(args: DeleteAssetRunArgs): Promise<DeleteAssetRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
+  const operationContext = args.operationContext;
   return {
     operationContext,
     name: args.name,
@@ -45,7 +39,6 @@ async function attempt(
   actions: PytchAppModelActions
 ): Promise<VoidOutcome> {
   const deleteDescriptor = {
-    operationContext: runState.operationContext,
     name: runState.name,
     displayName: runState.displayName,
   };

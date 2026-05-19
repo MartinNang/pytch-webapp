@@ -1,9 +1,5 @@
-import {
-  assertNever,
-  ensureDivOfClass,
-  isDivOfClass,
-  parsedHtmlBody,
-} from "../../utils";
+import { ensureDivOfClass, isDivOfClass, parsedHtmlBody } from "../../utils";
+import { I18nResources } from "../i18n/core-types";
 import { PytchProgramKind } from "../pytch-program";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import { EventDescriptor } from "./structured-program";
@@ -13,19 +9,6 @@ import * as z from "zod/mini";
 // Use full word "Identifier" so as not to make people think it's a
 // short numeric id, or a Uuid, or anything like that.
 type ActorIdentifier = { kind: "stage" } | { kind: "sprite"; name: string };
-
-export class ActorIdentifierOps {
-  static nounPhrase(actorIdentifier: ActorIdentifier): string {
-    switch (actorIdentifier.kind) {
-      case "stage":
-        return "the stage";
-      case "sprite":
-        return `the “${actorIdentifier.name}” sprite`;
-      default:
-        return assertNever(actorIdentifier);
-    }
-  }
-}
 
 type ScriptPath = {
   actor: ActorIdentifier;
@@ -102,9 +85,13 @@ export type JrTutorialChapterChunk =
   | { kind: "element"; element: HTMLElement }
   | { kind: "learner-task"; task: LearnerTask };
 
+export type JrTutorialChapterTitle =
+  | { kind: "html"; elt: HTMLElement }
+  | { kind: "i18nKey"; key: keyof I18nResources["tutorials"] };
+
 export type JrTutorialChapter = {
   index: number;
-  titleElt: HTMLElement;
+  title: JrTutorialChapterTitle;
   includeInProgressTrail: boolean;
   chunks: Array<JrTutorialChapterChunk>;
 };
@@ -280,6 +267,11 @@ function learnerTaskFromDiv(taskIdx: number, div: HTMLElement): LearnerTask {
   return { index: taskIdx, intro, helpStages };
 }
 
+const kChapterZeroTitle: JrTutorialChapterTitle = {
+  kind: "i18nKey",
+  key: "progress-trail.summary.title",
+};
+
 export function jrTutorialContentFromHTML(
   slug: string,
   tutorialHtml: string,
@@ -296,13 +288,13 @@ export function jrTutorialContentFromHTML(
   tutorialDiv.childNodes.forEach((chapterNode, index) => {
     const chapterDiv = chapterNode as HTMLDivElement;
 
-    let titleElt: HTMLElement;
-    if (index === 0) {
-      titleElt = document.createElement("H2");
-      titleElt.innerText = "Summary and contents";
-    } else {
-      titleElt = chapterDiv.childNodes.item(0).cloneNode(true) as HTMLElement;
-    }
+    const title: JrTutorialChapterTitle =
+      index === 0
+        ? kChapterZeroTitle
+        : {
+            kind: "html",
+            elt: chapterDiv.childNodes.item(0).cloneNode(true) as HTMLElement,
+          };
 
     let nTasksThisChapter = 0;
     let chunks: Array<JrTutorialChapterChunk> = [];
@@ -325,7 +317,7 @@ export function jrTutorialContentFromHTML(
     const includeInProgressTrail =
       chapterDiv.dataset.excludeFromProgressTrail !== "true";
 
-    chapters.push({ index, titleElt, includeInProgressTrail, chunks });
+    chapters.push({ index, title, includeInProgressTrail, chunks });
   });
 
   let nTasksTotal = 0;
@@ -344,7 +336,7 @@ export function jrTutorialContentFromHTML(
   };
 }
 
-export async function jrTutorialContentFromName(
+async function jrTutorialContentFromName(
   name: string
 ): Promise<JrTutorialContent> {
   const relativeUrl = `${name}/tutorial.html`;

@@ -1,4 +1,5 @@
 import React, { CSSProperties, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { EmptyProps } from "../../utils";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -14,6 +15,7 @@ const OverviewVideoModal: React.FC<OverviewVideoModalProps> = ({
   isShown,
   dismiss,
 }) => {
+  const { t } = useTranslation("common");
   const blobsRoot = envVarOrFail("VITE_STATIC_BLOBS_BASE");
   const videoUrl = `${blobsRoot}/assets/welcome/Overview.mp4`;
 
@@ -33,7 +35,7 @@ const OverviewVideoModal: React.FC<OverviewVideoModalProps> = ({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={dismiss}>
-          Close
+          {t("button.ok")}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -41,6 +43,7 @@ const OverviewVideoModal: React.FC<OverviewVideoModalProps> = ({
 };
 
 export const Header: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("welcome");
   const [modalShown, setModalShown] = useState(false);
 
   // Supply background-image here to ensure correct behaviour if app
@@ -56,7 +59,7 @@ export const Header: React.FC<EmptyProps> = () => {
         <section className="content-text">
           <h2 className="header">Pytch</h2>
           <h3 className="header">
-            A bridge from <strong>Scratch</strong> to <strong>Python</strong>
+            <Trans ns="welcome" i18nKey="header.subheading" />
           </h3>
         </section>
 
@@ -64,7 +67,7 @@ export const Header: React.FC<EmptyProps> = () => {
           <div
             className="video-container"
             onClick={() => setModalShown(true)}
-            aria-label="Video overview of Pytch"
+            aria-label={t("header.video.aria-label")}
           >
             <svg
               fill="#fff"
@@ -75,7 +78,7 @@ export const Header: React.FC<EmptyProps> = () => {
               viewBox="0 0 60 60"
             >
               <g>
-                <title>Click here for an overview of Pytch!</title>
+                <title>{t("header.video.play-help")}</title>
                 <path
                   d="M45.563,29.174l-22-15c-0.307-0.208-0.703-0.231-1.031-0.058C22.205,14.289,22,14.629,22,15v30
               c0,0.371,0.205,0.711,0.533,0.884C22.679,45.962,22.84,46,23,46c0.197,0,0.394-0.059,0.563-0.174l22-15

@@ -2,32 +2,28 @@ import React from "react";
 import { asyncFlowModal } from "./utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { ChooseFiles } from "../ChooseFiles";
-import { FileProcessingFailures } from "../FileProcessingFailures";
 import { settleFunctions } from "../../model/user-interactions/async-user-flow";
 import { assertNever } from "../../utils";
-import { FileProcessingFailure } from "../../model/user-interactions/process-files";
+import { AssetOperationContextOps } from "../../model/asset/core";
+import { useTranslation } from "react-i18next";
+import { AddAssetFailuresList } from "./AddAssetFailuresList";
 
 export const AddAssetsModal = () => {
+  const { t } = useTranslation("assets");
+
   const { fsmState, isSubmittable } = useFlowState((f) => f.addAssetsFlow);
   const setChosenFiles = useFlowActions((f) => f.addAssetsFlow.setChosenFiles);
 
   return asyncFlowModal(fsmState, (activeState) => {
     const { operationContext, chosenFiles } = activeState.runState;
-    const assetPlural = operationContext.assetPlural;
+    const { scope, assetKind } = operationContext;
 
     switch (activeState.kind) {
       case "awaiting-ack-of-notification": {
-        const fileFailures: Array<FileProcessingFailure> =
-          activeState.outcomeNub.failures.map((failure) => ({
-            filename: failure.displayName,
-            reason: failure.reason,
-          }));
-        const titleText = `Problem adding ${assetPlural}`;
         return (
-          <FileProcessingFailures
-            titleText={titleText}
-            introText="Sorry, there was a problem adding files to your project:"
-            failures={fileFailures}
+          <AddAssetFailuresList
+            assetKind={assetKind}
+            failures={activeState.outcomeNub.failures}
             dismiss={activeState.userAck}
           />
         );
@@ -35,13 +31,19 @@ export const AddAssetsModal = () => {
 
       case "interacting":
       case "attempting": {
+        const keyStem = `add.${assetKind}` as const;
         const settle = settleFunctions(isSubmittable, activeState);
+
+        const titleText = t(`${keyStem}.interacting.title`);
+        const introText = t(`${keyStem}.interacting.intro`);
+        const buttonText = t(`add.this-device.${scope}.interacting.button`);
+
         return (
           <ChooseFiles
-            titleText={`Add ${assetPlural}`}
-            introText={`Choose ${assetPlural} to add to your project.`}
-            fileAccept={operationContext.fileAccept}
-            actionButtonText="Add to project"
+            titleText={titleText}
+            introText={introText}
+            fileAccept={AssetOperationContextOps.fileAccept(operationContext)}
+            actionButtonText={buttonText}
             status={activeState.kind}
             chosenFiles={chosenFiles}
             setChosenFiles={setChosenFiles}

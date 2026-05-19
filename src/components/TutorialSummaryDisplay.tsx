@@ -10,6 +10,8 @@ import LoadingOverlay from "./LoadingOverlay";
 import { PytchProgramKind } from "../model/pytch-program";
 import { EditorKindThumbnail } from "./EditorKindThumbnail";
 import { useRunFlow } from "../model";
+import { Spinner } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 interface TutorialSummaryDisplayProps {
   tutorial: ITutorialSummary;
@@ -20,6 +22,8 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
   tutorial,
   kind,
 }) => {
+  const { t } = useTranslation("tutorials");
+
   const createProjectFromTutorial = useStoreActions(
     (actions) => actions.tutorialCollection.createProjectFromTutorial
   );
@@ -79,10 +83,15 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
 
   const kindBadge = <EditorKindThumbnail programKind={programKind} size="sm" />;
 
+  const tButton = (
+    kind: "demo" | "tutorial" | "share",
+    usage: "label" | "title"
+  ) => t(`list.button.${kind}.${usage}`);
+
   return (
     <li>
       <LoadingOverlay show={loadingThisTutorial}>
-        <p>Creating project for tutorial...</p>
+        <Spinner animation="border" />
       </LoadingOverlay>
       <Card data-slug={tutorial.slug} className="TutorialCard">
         <Card.Header>
@@ -97,30 +106,30 @@ export const TutorialSummaryDisplay: React.FC<TutorialSummaryDisplayProps> = ({
           <div className="button-bar">
             {showDemoButton && (
               <Button
-                title="Try this project"
+                title={tButton("demo", "title")}
                 disabled={loadingSomeTutorial}
                 variant="outline-primary"
                 onClick={launchDemo}
               >
-                Demo
+                {tButton("demo", "label")}
               </Button>
             )}
             <Button
-              title="Learn how to make this project"
+              title={tButton("tutorial", "title")}
               disabled={loadingSomeTutorial}
               variant="outline-primary"
               onClick={launchTutorial}
             >
-              Tutorial
+              {tButton("tutorial", "label")}
             </Button>
             {showShareButton && (
               <Button
-                title="Share this project"
+                title={tButton("share", "title")}
                 disabled={loadingSomeTutorial}
                 variant="outline-primary"
                 onClick={launchShare}
               >
-                Share
+                {tButton("share", "label")}
               </Button>
             )}
           </div>

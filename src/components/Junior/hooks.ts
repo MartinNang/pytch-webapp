@@ -30,6 +30,7 @@ import { kHandlerHatBlockOptions } from "../../model/junior/upsert-hat-block";
 import { ReorderDirection } from "../../model/junior/grouped-focus";
 import { AssetPresentation } from "../../model/asset";
 import { ProjectId } from "../../model/project-core";
+import { useTranslation } from "react-i18next";
 
 type JrEditStateMapper<R> = (state: State<EditState>) => R;
 type JrEditActionsMapper<R> = (actions: Actions<EditState>) => R;
@@ -380,6 +381,7 @@ export const useLaunchUpsertHatBlockFlow = (
   actorKind: ActorKind,
   operation: HandlerUpsertionOperation
 ) => {
+  const { t } = useTranslation("ide");
   const focusContext = useFocusContext("per-method");
   const launchUpsertAction = useJrEditActions((a) => a.upsertHatBlockFlow.run);
 
@@ -419,7 +421,14 @@ export const useLaunchUpsertHatBlockFlow = (
       }
     })();
 
-    launchUpsertAction({ operation, actorKind, onDispose });
+    const newWhenIReceiveMessage = t("hat-block-content.new-message-received");
+
+    launchUpsertAction({
+      operation,
+      actorKind,
+      newWhenIReceiveMessage,
+      onDispose,
+    });
   };
 };
 

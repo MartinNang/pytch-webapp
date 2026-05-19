@@ -1,6 +1,6 @@
 import React from "react";
 import { useStoreState } from "../store";
-import { AssetPresentation } from "../model/asset";
+import { AssetOperationContext, AssetPresentation } from "../model/asset";
 import { useRunFlow } from "../model";
 import { NoContentHelp } from "./Junior/NoContentHelp";
 import { SingleTab } from "./SingleTab";
@@ -18,6 +18,7 @@ import {
   initialFilterStateFromFilterTag,
 } from "../model/user-interactions/clipart-gallery-select";
 import { useFocusContext } from "./hooks/focus-steering";
+import { useTranslation } from "react-i18next";
 
 type AssetCardProps = {
   asset: AssetPresentation;
@@ -39,6 +40,9 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
 };
 
 export const ProjectAssetList = () => {
+  const { t } = useTranslation("ide");
+  const { t: tAssets } = useTranslation("assets");
+
   const focusContext = useFocusContext("flat");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const loadState = useStoreState(
@@ -48,9 +52,12 @@ export const ProjectAssetList = () => {
   const filterTag = useMediaLibFilterTag();
 
   const runAddAssets = useRunFlow((f) => f.addAssetsFlow);
-  const operationContextKey = "flat/any" as const;
+  const operationContext: AssetOperationContext = {
+    scope: "flat",
+    assetKind: "any",
+  };
   const launchUploadModal = () =>
-    runAddAssets({ projectId, operationContextKey, assetNamePrefix: "" });
+    runAddAssets({ projectId, operationContext, assetNamePrefix: "" });
 
   const runAddClipArt = useRunFlow((f) => f.addClipArtFlow);
 
@@ -62,36 +69,28 @@ export const ProjectAssetList = () => {
 
     runAddClipArt({
       projectId,
-      operationContextKey,
+      operationContext,
       assetNamePrefix: "",
       filterTag,
     });
   };
 
-  switch (loadState) {
-    case "pending":
-      return <div>Assets loading....</div>;
-    case "failed":
-      // TODO: Handle more usefully
-      return <div>Assets failed to load, oh no</div>;
-    case "succeeded":
-      break; // Handle normal case below.
-    default:
-      throw new Error(`unknown loadState "${loadState}"`);
-  }
+  // Control flow in <IDE> component should only be rendering
+  // <IDELayout> and hence us if load has succeeded.
+  if (loadState !== "succeeded")
+    throw new Error(
+      'ProjectAssetList: expecting load-state "succeeded"' +
+        ` but got "${loadState}"`
+    );
 
   const maybeNoContentHelp = assets.length === 0 && (
-    <NoContentHelp
-      actorKind="project"
-      contentKind="images or sounds"
-      buttonsPlural={true}
-    />
+    <NoContentHelp scopedResourceKind="flat.flat-asset" />
   );
 
   // TODO: Should we split this into two tabs: Images, Sounds?
   return (
     <div className="AssetCardPane-container compact-tablist-container">
-      <SingleTab title="Images and sounds">
+      <SingleTab title={t("pane-title.flat.assets")}>
         <div className="abs-0000">
           <FocusGroupContainer
             className="AssetCardPane gfs__flatassets__container"
@@ -108,13 +107,13 @@ export const ProjectAssetList = () => {
                 key="flat-lib"
                 className={kFocusGroupFallbackClassName}
                 what="flat-asset"
-                label="Add from media library"
+                label={tAssets("add-button.media-library")}
                 onClick={launchClipArtModal}
               />
               <AddSomethingButton
                 key="flat-dev"
                 what="flat-asset"
-                label="Add from this device"
+                label={tAssets("add-button.this-device")}
                 onClick={launchUploadModal}
               />
             </AddSomethingButtonStrip>

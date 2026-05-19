@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -11,49 +12,25 @@ import { asyncFlowModal } from "../async-flow-modals/utils";
 import { useFlowActions, useFlowState } from "../../model";
 import { SaveProjectAsRunState } from "../../model/user-interactions/save-project-as";
 import { LinkedContentRef } from "../../model/linked-content-core";
-import { TwoStateSwitch, TwoStateSwitchTexts } from "../TwoStateSwitch";
+import { TwoStateSwitch, TwoStateSwitchI18nSpec } from "../TwoStateSwitch";
 
-function textsForKeepLink(ref: LinkedContentRef): TwoStateSwitchTexts {
-  switch (ref.kind) {
-    case "none": {
-      // Should not see this, but just in case:
-      const textSpan = (
-        <span>(This project is not connected to anything.)</span>
-      );
-      return {
-        question: textSpan,
-        trueStatus: textSpan,
-        falseStatus: textSpan,
-      };
+function specForKeepLink(ref: LinkedContentRef): TwoStateSwitchI18nSpec {
+  const params = (() => {
+    switch (ref.kind) {
+      case "none":
+        // Should not see this.
+        return undefined;
+      case "jr-tutorial":
+        return { tutorialName: ref.name };
+      case "specimen":
+        // Would be nice to know which one, but we don't have that info.
+        return undefined;
+      default:
+        return assertNever(ref);
     }
-    case "jr-tutorial":
-      return {
-        question: (
-          <span>
-            Make copy follow tutorial <i>{ref.name}</i>?
-          </span>
-        ),
-        trueStatus: <span>Copy will follow tutorial.</span>,
-        falseStatus: (
-          <span>
-            Copy will <b>not</b> follow tutorial.
-          </span>
-        ),
-      };
-    case "specimen":
-      // Would be nice to know which one, but we don't have that info.
-      return {
-        question: <span>Make copy be linked to lesson?</span>,
-        trueStatus: <span>Copy will be linked to lesson.</span>,
-        falseStatus: (
-          <span>
-            Copy will <b>not</b> be linked to lesson.
-          </span>
-        ),
-      };
-    default:
-      return assertNever(ref);
-  }
+  })();
+
+  return { keyPart: `copy.switch.${ref.kind}`, params, ns: "projects" };
 }
 
 const MaybeKeepContentLinkSwitch: React.FC<{
@@ -70,7 +47,7 @@ const MaybeKeepContentLinkSwitch: React.FC<{
   return (
     <TwoStateSwitch
       className="keep-content-link-switch"
-      texts={textsForKeepLink(runState.sourceLinkedContentRef)}
+      i18nSpec={specForKeepLink(runState.sourceLinkedContentRef)}
       boolState={runState.copyKeepsContentLink}
       setBoolState={setKeepLink}
     />
@@ -78,6 +55,8 @@ const MaybeKeepContentLinkSwitch: React.FC<{
 };
 
 export const CopyProjectModal = () => {
+  const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.saveProjectAsFlow);
   const { setNameOfCopy } = useFlowActions((f) => f.saveProjectAsFlow);
   const focusRequired = useRef<boolean>(true);
@@ -111,7 +90,7 @@ export const CopyProjectModal = () => {
         centered
       >
         <Modal.Header>
-          <Modal.Title>Copy project</Modal.Title>
+          <Modal.Title>{t("copy.title")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <MaybeKeepContentLinkSwitch runState={activeFsmState.runState} />
@@ -123,7 +102,7 @@ export const CopyProjectModal = () => {
                 value={nameOfCopy}
                 onChange={handleChange}
                 onKeyDown={handleKeyPress}
-                placeholder="Name for copy of project"
+                placeholder={t("copy.name-placeholder")}
                 ref={maybeFocusTextInput}
               />
             </Form.Group>
@@ -135,14 +114,14 @@ export const CopyProjectModal = () => {
             onClick={settle.cancel}
             disabled={!isInteractable}
           >
-            Cancel
+            {tCommon("button.cancel")}
           </Button>
           <Button
             disabled={!isSubmittable}
             variant="primary"
             onClick={settle.submit}
           >
-            Make a copy
+            {t("copy.button.make-copy")}
           </Button>
         </Modal.Footer>
       </Modal>

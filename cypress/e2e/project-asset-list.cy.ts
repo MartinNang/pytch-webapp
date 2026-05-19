@@ -53,15 +53,15 @@ context("Management of project assets", () => {
     it("rejects adding same image twice", () => {
       launchAdd.assetFromThisDevice(["green-circle-64.png"]);
       clickAdd();
-      cy.contains("Sorry, there was a problem");
-      cy.contains("already contains an image or sound");
+      cy.contains("There was a problem");
+      cy.contains("already has a file");
       cy.get(".modal-header button").click();
     });
 
     it("rejects unhandled asset mime-type", () => {
       launchAdd.assetFromThisDevice(["contains-an-empty-file.zip"]);
       clickAdd();
-      cy.contains("Sorry, there was a problem");
+      cy.contains("There was a problem");
       cy.contains("not a valid file type");
       cy.get(".modal-header button").click();
     });
@@ -69,7 +69,7 @@ context("Management of project assets", () => {
     it("rejects corrupt PNG file", () => {
       launchAdd.assetFromThisDevice(["not-really-a-png.png"]);
       clickAdd();
-      cy.contains("Sorry, there was a problem");
+      cy.contains("There was a problem");
       cy.contains("problem creating image");
       cy.get(".modal-header button").click();
     });
@@ -80,10 +80,10 @@ context("Management of project assets", () => {
         "green-circle-64.png",
       ]);
       clickAdd();
-      cy.contains("Sorry, there was a problem");
+      cy.contains("There were problems");
       cy.get(".modal-content li").should("have.length", 2);
       cy.contains("not a valid file type");
-      cy.contains("already contains an image or sound");
+      cy.contains("already has a file");
     });
   });
 
@@ -114,7 +114,7 @@ context("Management of project assets", () => {
       "green-circle-64.png",
       "purple-circle-64.png",
     ]);
-    cy.contains("Sorry, there was a problem");
+    cy.contains("There was a problem");
     cy.contains("not a valid file type");
     cy.get(".modal-header button").click();
     cy.get(".modal-content").should("not.exist");
@@ -197,7 +197,7 @@ context("Management of project assets", () => {
     cy.get("input[type=text]").clear().type("green-circle-64");
 
     cy.get("button").contains("Rename").click();
-    cy.contains("already contains");
+    cy.contains("already has an image");
     cy.get("button").contains("OK").click();
 
     cy.pytchClickAssetDropdownItem("rectangle", "Rename");

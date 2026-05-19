@@ -4,7 +4,7 @@ import { useJrEditState } from "./hooks";
 import { MaybeContent as MaybeLessonContent } from "./lesson/MaybeContent";
 import { WidthMonitor } from "./WidthMonitor";
 import { HelpSidebar } from "../HelpSidebar";
-import Tutorial from "../Tutorial";
+import { Tutorial } from "../Tutorial";
 import { KeyNavHelpSidebar } from "./KeyNavHelpSidebar";
 
 export const ActivityContent: React.FC<EmptyProps> = () => {

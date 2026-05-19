@@ -11,11 +11,7 @@ export const kBothActorKinds: Array<ActorKind> = ["sprite", "stage"];
 
 export type ActorKindNames = {
   subclass: string;
-  whenClickedNounPhrase: string;
   displayTitle: string;
-  appearanceDisplay: string;
-  appearancesDisplay: string;
-  appearancesDisplayTitle: string;
   appearancesAttribute: string;
 };
 
@@ -30,21 +26,13 @@ export class ActorKindOps {
       case "sprite":
         return {
           subclass: "Sprite",
-          whenClickedNounPhrase: "this sprite",
           displayTitle: "Sprite",
-          appearanceDisplay: "costume",
-          appearancesDisplay: "costumes",
-          appearancesDisplayTitle: "Costumes",
           appearancesAttribute: "Costumes",
         };
       case "stage":
         return {
           subclass: "Stage",
-          whenClickedNounPhrase: "stage",
           displayTitle: "Stage",
-          appearanceDisplay: "backdrop",
-          appearancesDisplay: "backdrops",
-          appearancesDisplayTitle: "Backdrops",
           appearancesAttribute: "Backdrops",
         };
       default:
@@ -60,8 +48,6 @@ export const zActor = z.strictObject({
   handlers: z.array(zEventHandler),
 });
 export type Actor = z.infer<typeof zActor>;
-
-type ActorKindAndName = Pick<Actor, "kind" | "name">;
 
 export type HandlerInActorContext = {
   actor: Actor;
@@ -91,19 +77,6 @@ export class ActorOps {
       name,
       handlers: [],
     };
-  }
-
-  /** Return a description, suitable for putting after "the" or "The",
-   * for the given `actor`.  (Only the `kind` and `name` are used.)  */
-  static displayDescription(actor: ActorKindAndName): string {
-    switch (actor.kind) {
-      case "sprite":
-        return `Sprite "${actor.name}"`;
-      case "stage":
-        return "Stage";
-      default:
-        return assertNever(actor.kind);
-    }
   }
 
   /** Create and return a new `Actor` with a random `id` whose `kind`,

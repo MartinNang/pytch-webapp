@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ChooseFiles } from "../ChooseFiles";
 import { FileProcessingFailures } from "../FileProcessingFailures";
 import { asyncFlowModal } from "./utils";
@@ -8,6 +9,7 @@ import { assertNever } from "../../utils";
 import { FileProcessingFailure } from "../../model/user-interactions/process-files";
 
 export const UploadZipfilesModal = () => {
+  const { t } = useTranslation("projects");
   const { fsmState, isSubmittable } = useFlowState((f) => f.uploadZipfilesFlow);
   const { setChosenFiles } = useFlowActions((f) => f.uploadZipfilesFlow);
 
@@ -21,8 +23,8 @@ export const UploadZipfilesModal = () => {
           }));
         return (
           <FileProcessingFailures
-            titleText="Problem uploading project zipfiles"
-            introText="Sorry, there was a problem uploading the projects:"
+            titleText={t("upload-zipfiles.failure-title")}
+            introText={t("upload-zipfiles.failure-intro")}
             failures={fileFailures}
             dismiss={activeFsmState.userAck}
           />
@@ -35,9 +37,9 @@ export const UploadZipfilesModal = () => {
         const settle = settleFunctions(isSubmittable, activeFsmState);
         return (
           <ChooseFiles
-            titleText="Upload project zipfiles"
-            introText="Choose zipfiles to upload as new projects."
-            actionButtonText="Upload"
+            titleText={t("upload-zipfiles.title")}
+            introText={t("upload-zipfiles.intro")}
+            actionButtonText={t("upload-zipfiles.button.upload")}
             status={activeFsmState.kind}
             chosenFiles={chosenFiles}
             setChosenFiles={setChosenFiles}

@@ -3,18 +3,14 @@ import { IPytchAppModel, PytchAppModelActions } from "..";
 import { ClipArtGalleryEntryId } from "../clipart-gallery-core";
 import { ProjectId } from "../project-core";
 import { addRemoteAssetToProject } from "../../database/indexed-db";
+import { AssetOperationContext } from "../asset";
 import {
-  AssetOperationContext,
-  assetOperationContextFromKey,
-  AssetOperationContextKey,
-} from "../asset";
-import {
-  addAssetErrorMessageFromError,
+  addAssetErrorSpecFromError,
   AddAssetSuccess,
-  AddAssetFailure,
   AddAssetsOutcomeNub,
   onAddAssetsCompleted,
 } from "./add-assets";
+import { FileProcessingFailure } from "./process-files";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,
@@ -26,7 +22,7 @@ import { assertNever } from "../../utils";
 
 type AddClipArtRunArgs = {
   projectId: ProjectId;
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   assetNamePrefix: string;
   filterTag: string | null;
 };
@@ -61,10 +57,6 @@ type AddClipArtActions = {
 export type AddClipArtFlow = AddClipArtBase & AddClipArtActions;
 
 async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
-
   // TODO: Preserve this from one run to the next?
   const filterState: AddClipArtFilterState = initialFilterStateFromFilterTag(
     args.filterTag
@@ -72,7 +64,7 @@ async function prepare(args: AddClipArtRunArgs): Promise<AddClipArtRunState> {
 
   return {
     projectId: args.projectId,
-    operationContext,
+    operationContext: args.operationContext,
     assetNamePrefix: args.assetNamePrefix,
     filterState,
     selectedIds: [],
@@ -89,7 +81,7 @@ async function attempt(
   navGuard: NavigationAbandonmentGuard
 ): Promise<AttemptOutcome<AddAssetsOutcomeNub>> {
   let successes: Array<AddAssetSuccess> = [];
-  let failures: Array<AddAssetFailure> = [];
+  let failures: Array<FileProcessingFailure> = [];
 
   const entries = actions.clipArtGallery.selectedEntries(runState.selectedIds);
 
@@ -109,13 +101,13 @@ async function attempt(
           throw error;
         }
 
-        const reason = addAssetErrorMessageFromError(
+        const reason = addAssetErrorSpecFromError(
           runState.operationContext,
           item.name,
           error as Error
         );
 
-        failures.push({ displayName: item.name, reason });
+        failures.push({ filename: item.name, reason });
       }
     }
   }

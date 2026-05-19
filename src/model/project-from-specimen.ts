@@ -31,7 +31,7 @@ type ProjectFromSpecimenState =
     }
   | { state: "creating-new" }
   | { state: "redirecting" }
-  | { state: "failed"; message: string };
+  | { state: "failed" };
 
 export type ProjectFromSpecimenFlow = {
   state: ProjectFromSpecimenState;
@@ -56,7 +56,7 @@ export type ProjectFromSpecimenFlow = {
     void
   >;
 
-  fail: Action<ProjectFromSpecimenFlow, string>;
+  fail: Action<ProjectFromSpecimenFlow>;
 };
 
 export let projectFromSpecimenFlow: ProjectFromSpecimenFlow = {
@@ -141,7 +141,7 @@ export let projectFromSpecimenFlow: ProjectFromSpecimenFlow = {
       }
     } catch (e) {
       console.error("projectFromSpecimenFlow.boot():", e);
-      actions.fail("Sorry, something went wrong fetching the lesson.");
+      actions.fail();
     }
   }),
 
@@ -198,7 +198,7 @@ export let projectFromSpecimenFlow: ProjectFromSpecimenFlow = {
     });
   }),
 
-  fail: action((state, message) => {
-    state.state = { state: "failed", message };
+  fail: action((state) => {
+    state.state = { state: "failed" };
   }),
 };

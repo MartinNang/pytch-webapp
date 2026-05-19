@@ -1,9 +1,6 @@
 import React from "react";
-import {
-  ActorIdentifierOps,
-  LearnerTaskCommitAddMedialibAppearancesEntry,
-} from "../../../../model/junior/jr-tutorial";
-import { ActorKindOps } from "../../../../model/junior/structured-program";
+import { Trans, useTranslation } from "react-i18next";
+import { LearnerTaskCommitAddMedialibAppearancesEntry } from "../../../../model/junior/jr-tutorial";
 import { InlineAddSomethingButton } from "../../AddSomethingButton";
 
 // TODO: Include thumbnail of required costume?
@@ -11,30 +8,43 @@ import { InlineAddSomethingButton } from "../../AddSomethingButton";
 export const AddMedialibAppearancesEntry: React.FC<
   LearnerTaskCommitAddMedialibAppearancesEntry
 > = ({ actor, displayIdentifier, nItems }) => {
-  const actorKindNames = ActorKindOps.names(actor.kind);
-  const actorNounPhrase = ActorIdentifierOps.nounPhrase(actor);
-  const entryNoun = nItems === 1 ? "image" : "images";
+  const { t } = useTranslation("tutorials");
+  const { t: tAssets } = useTranslation("assets");
+
+  const actorKind = actor.kind;
+  const spriteName = actor.kind === "sprite" ? actor.name : undefined;
+
+  const addButtonComponent = (
+    <InlineAddSomethingButton
+      what={`${actorKind}-asset`}
+      label={tAssets("add-button.media-library")}
+    />
+  );
 
   return (
     <div className="JrCommit Commit-AddMedialibAppearancesEntry">
       <p>
-        In the <i>Stage and Sprites</i> pane, select {actorNounPhrase}.
+        <Trans
+          ns="tutorials"
+          i18nKey={`commit.add-medialib-appearances-entry.select-actor.${actorKind}`}
+          values={{ spriteName }}
+        />
       </p>
       <p>
-        In the coding pane, select the {actorKindNames.appearancesDisplayTitle}{" "}
-        tab.
+        {t(`commit.add-medialib-appearances-entry.select-tab.${actorKind}`)}
       </p>
       <p>
-        Click the{" "}
-        <InlineAddSomethingButton
-          what={`${actor.kind}-asset`}
-          label="Add from media library"
-        />{" "}
-        button.
+        <Trans
+          ns="tutorials"
+          i18nKey="commit.add-medialib-appearances-entry.click-add-button"
+          components={{ addButton: addButtonComponent }}
+        />
       </p>
       <p>
-        Find the “<strong>{displayIdentifier}</strong>” {entryNoun}, and click
-        the “Add {nItems} to project” button.
+        {t("commit.add-medialib-appearances-entry.find-and-click", {
+          count: nItems,
+          replace: { nItems, displayIdentifier },
+        })}
       </p>
     </div>
   );

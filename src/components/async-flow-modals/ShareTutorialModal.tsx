@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import {
@@ -12,6 +13,8 @@ import { settleFunctions } from "../../model/user-interactions/async-user-flow";
 import { useFlowState } from "../../model";
 
 export const ShareTutorialModal = () => {
+  const { t } = useTranslation("tutorials");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.shareTutorialFlow);
 
   return asyncFlowModal(fsmState, (activeFsmState) => {
@@ -29,25 +32,28 @@ export const ShareTutorialModal = () => {
       >
         <Modal.Header>
           <Modal.Title>
-            Share project “<strong>{info.displayName}</strong>”
+            <Trans
+              i18nKey="share.title"
+              ns="tutorials"
+              values={{ displayName: info.displayName }}
+            />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            Copy the link to share the project only with the{" "}
-            <strong>tutorial</strong> button:
+            <Trans i18nKey="share.tutorial-only" ns="tutorials" />
           </p>
 
           <div className="CopyLinkDiv">
             <Button
-              title="Copy link to tutorial only"
+              title={t("share.button.copy-tutorial-only.title")}
               className="copy-button"
               variant="outline-success"
               onClick={() => {
                 copyTextToClipboard(sharingUrlFromSlug(info.slug));
               }}
             >
-              Copy
+              {t("share.button.copy")}
               <FontAwesomeIcon
                 style={{ marginLeft: "10px" }}
                 className="fa-lg"
@@ -57,19 +63,18 @@ export const ShareTutorialModal = () => {
             <label>{sharingUrlFromSlug(info.slug)}</label>
           </div>
           <p>
-            Copy the link to share the project with the{" "}
-            <strong>tutorial and demo</strong> buttons:
+            <Trans i18nKey="share.tutorial-and-demo" ns="tutorials" />
           </p>
           <div className="CopyLinkDiv">
             <Button
-              title="Copy link to tutorial and demo"
+              title={t("share.button.copy-tutorial-demo.title")}
               className="copy-button"
               variant="outline-success"
               onClick={() => {
                 copyTextToClipboard(sharingUrlFromSlugForDemo(info.slug));
               }}
             >
-              Copy
+              {t("share.button.copy")}
               <FontAwesomeIcon
                 style={{ marginLeft: "10px" }}
                 className="fa-lg"
@@ -81,7 +86,7 @@ export const ShareTutorialModal = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={settle.cancel}>
-            OK
+            {tCommon("button.ok")}
           </Button>
         </Modal.Footer>
       </Modal>

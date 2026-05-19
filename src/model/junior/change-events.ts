@@ -1,19 +1,36 @@
-import { assertNever } from "../../utils";
 import { AssetOperationContext } from "../asset";
-import { NotableChangeDescription } from "../notable-changes";
 import { AddAssetsOutcomeNub } from "../user-interactions/add-assets";
-import {
-  ActorKind,
-  ActorOps,
-  AssetMetaDataOps,
-  EventDescriptorKind,
-  EventDescriptorKindOps,
-  Uuid,
-} from "./structured-program";
+import { ActorKind, EventDescriptorKind, Uuid } from "./structured-program";
 import {
   HandlerUpsertionActionKind,
   SpriteUpsertionActionKind,
 } from "./structured-program/program";
+import { I18nStringSpec } from "../i18n/core-types";
+
+export type NotableChangeSummarySpec = {
+  header: I18nStringSpec;
+  bodyParts: I18nStringSpec[];
+};
+
+////////////////////////////////////////////////////////////////////////
+
+const kEmptySpec: I18nStringSpec = {
+  keyPart: null,
+  ns: "notable-changes",
+};
+
+function mkI18nSpec(
+  keyPart: I18nStringSpec["keyPart"],
+  params?: I18nStringSpec["params"],
+  indirectParams?: I18nStringSpec["indirectParams"]
+): I18nStringSpec {
+  return {
+    keyPart,
+    params,
+    indirectParams,
+    ns: "notable-changes",
+  };
+}
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -33,48 +50,21 @@ export type PerMethodScriptChanged = {
 
 export function perMethodScriptChangedDescription(
   change: PerMethodScriptChanged
-): NotableChangeDescription {
-  const eventKindDescription = EventDescriptorKindOps.displayDescription(
-    change.handlerEventKind
-  );
-  const displayName = ActorOps.displayDescription({
-    kind: change.actorKind,
-    name: change.actorName,
-  });
+): NotableChangeSummarySpec {
+  const eventKind = {
+    ns: "vm" as const,
+    key: `event-kind.${change.actorKind}.${change.handlerEventKind}`,
+  };
 
-  switch (change.scriptChangedKind) {
-    case "insert": {
-      return {
-        header: "Script added",
-        body:
-          `New "${eventKindDescription}" script` +
-          ` added to the ${displayName}.`,
-      };
-    }
-    case "update": {
-      return {
-        header: "Script hat block changed",
-        body:
-          `Script in the ${displayName}` +
-          ` changed to "${eventKindDescription}".`,
-      };
-    }
-    case "duplicate": {
-      return {
-        header: "Script duplicated",
-        body:
-          `"${eventKindDescription}" script` +
-          ` duplicated in the ${displayName}.`,
-      };
-    }
-    case "delete":
-      return {
-        header: "Script deleted",
-        body: `"${eventKindDescription}" script deleted from the ${displayName}.`,
-      };
-    default:
-      return assertNever(change.scriptChangedKind);
-  }
+  const header = mkI18nSpec(change.scriptChangedKind);
+
+  const body = mkI18nSpec(
+    `${change.actorKind}.${change.scriptChangedKind}`,
+    { actorName: change.actorName },
+    { eventKind }
+  );
+
+  return { header, bodyParts: [body] };
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -90,39 +80,17 @@ export type PerMethodSpriteChanged = {
 
 export function perMethodSpriteChangedDescription(
   change: PerMethodSpriteChanged
-): NotableChangeDescription {
-  const displayName = ActorOps.displayDescription({
-    kind: "sprite",
-    name: change.spriteName,
-  });
-
-  switch (change.spriteChangedKind) {
-    case "insert": {
-      return {
-        header: "Sprite added",
-        body: `${displayName} added to project`,
-      };
-    }
-    case "update": {
-      return {
-        header: "Sprite renamed",
-        body: `Sprite renamed to "${change.spriteName}"`,
-      };
-    }
-    case "delete": {
-      return {
-        header: "Sprite deleted",
-        body: `${displayName} deleted from project`,
-      };
-    }
-    default:
-      return assertNever(change.spriteChangedKind);
-  }
+): NotableChangeSummarySpec {
+  const params = { spriteName: change.spriteName };
+  const spec = mkI18nSpec(change.spriteChangedKind, params);
+  return { header: spec, bodyParts: [spec] };
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 export type AssetChanged = {
+  // TODO: Would be useful to have actorName here (where applicable,
+  // i.e., when not "flat").
   kind: "asset-changed";
   assetChangedKind: "update-transform" | "update" | "delete";
   operationContext: AssetOperationContext;
@@ -131,38 +99,19 @@ export type AssetChanged = {
 
 export function assetChangedDescription(
   change: AssetChanged
-): NotableChangeDescription {
-  const assetSingular = change.operationContext.assetSingularTitle;
+): NotableChangeSummarySpec {
+  const assetKind = change.operationContext.assetKind;
+  const scope = change.operationContext.scope;
 
-  switch (change.assetChangedKind) {
-    case "update-transform": {
-      return {
-        header: `${assetSingular} crop/scale updated`,
-        body:
-          `Crop/scale for ${assetSingular.toLowerCase()}` +
-          ` "${change.assetDisplayName}" updated` +
-          ` in ${change.operationContext.scope}`,
-      };
-    }
-    case "update": {
-      return {
-        header: `${assetSingular} renamed`,
-        body:
-          `${assetSingular} renamed to "${change.assetDisplayName}"` +
-          ` in ${change.operationContext.scope}`,
-      };
-    }
-    case "delete": {
-      return {
-        header: `${assetSingular} deleted`,
-        body:
-          `${assetSingular} "${change.assetDisplayName}"` +
-          ` deleted from ${change.operationContext.scope}`,
-      };
-    }
-    default:
-      return assertNever(change.assetChangedKind);
-  }
+  const header = mkI18nSpec(`${assetKind}.${change.assetChangedKind}`);
+
+  const bodyParams = { assetDisplayName: change.assetDisplayName };
+  const body = mkI18nSpec(
+    `${scope}.${assetKind}.${change.assetChangedKind}`,
+    bodyParams
+  );
+
+  return { header, bodyParts: [body] };
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -174,38 +123,36 @@ export type AssetsAdded = {
 
 export function assetsAddedDescription(
   change: AssetsAdded
-): NotableChangeDescription {
-  const assetSingular = change.operationContext.assetSingularTitle;
-  const assetPlural = change.operationContext.assetPlural;
+): NotableChangeSummarySpec {
+  const assetKind = change.operationContext.assetKind;
+
   const nSuccesses = change.successes.length;
   const nFailures = change.failures.length;
 
-  const failuresSummarySuffix =
-    nFailures > 1
-      ? ` (but problems with ${nFailures} other ${assetPlural})`
-      : nFailures === 1
-      ? ` (but problem with one other ${assetSingular.toLowerCase()})`
-      : "";
+  const header: I18nStringSpec =
+    nSuccesses === 0
+      ? mkI18nSpec(`${assetKind}.only-failure`, { count: nFailures })
+      : mkI18nSpec(`${assetKind}.some-success`, { count: nSuccesses });
 
-  const sourceDisplayName = AssetMetaDataOps.assetSourceDisplayName(
-    change.sourceKind
-  );
+  const bodyKeyPrefix = `${assetKind}.${change.sourceKind}`;
+  let bodyParts: I18nStringSpec[] = [];
 
-  if (nSuccesses === 1) {
-    return {
-      header: `${assetSingular} added`,
-      body:
-        `${assetSingular} "${change.successes[0].displayName}"` +
-        ` added from ${sourceDisplayName}${failuresSummarySuffix}`,
-    };
-  } else {
-    return {
-      header: `${nSuccesses} ${assetPlural} added`,
-      body:
-        `${nSuccesses} ${assetPlural} added` +
-        ` from ${sourceDisplayName}${failuresSummarySuffix}`,
-    };
+  if (nSuccesses > 0) {
+    bodyParts.push(
+      mkI18nSpec(`${bodyKeyPrefix}.success`, {
+        count: nSuccesses,
+        firstSuccessDisplayName: change.successes[0].displayName,
+      })
+    );
   }
+
+  if (nFailures > 0) {
+    bodyParts.push(
+      mkI18nSpec(`${bodyKeyPrefix}.failure`, { count: nFailures })
+    );
+  }
+
+  return { header, bodyParts };
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -218,30 +165,26 @@ export type ZipfilesUploaded = {
 
 export function zipfilesUploadedDescription(
   change: ZipfilesUploaded
-): NotableChangeDescription {
+): NotableChangeSummarySpec {
   const nCreated = change.nCreated;
   const nFailed = change.nFailed;
 
-  const failuresSummarySuffix =
-    nFailed > 1
-      ? ` (but problems with ${nFailed} other zipfiles)`
-      : nFailed === 1
-      ? ` (but problem with one other zipfile)`
-      : "";
+  const header: I18nStringSpec =
+    nCreated === 0
+      ? mkI18nSpec("only-failure", { count: nFailed })
+      : mkI18nSpec("some-success", { count: nCreated });
 
-  if (nCreated === 1) {
-    return {
-      header: `Project uploaded`,
-      body: `Project created from zipfile${failuresSummarySuffix}`,
-    };
-  } else {
-    return {
-      header: `${nCreated} projects uploaded`,
-      body:
-        `${nCreated} projects created` +
-        ` from zipfiles${failuresSummarySuffix}`,
-    };
+  let bodyParts: I18nStringSpec[] = [];
+
+  if (nCreated > 0) {
+    bodyParts.push(mkI18nSpec("success", { count: nCreated }));
   }
+
+  if (nFailed > 0) {
+    bodyParts.push(mkI18nSpec("failure", { count: nFailed }));
+  }
+
+  return { header, bodyParts };
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -256,13 +199,8 @@ export type ProjectDownloadActionCompleted = {
 
 export function projectDownloadActionCompletedDescription(
   _change: ProjectDownloadActionCompleted
-): NotableChangeDescription {
-  // This has to be very uninformative, sorry; see comment attached
-  // to type definition for `ProjectDownloadActionCompleted`.
-  return {
-    header: "Download action completed",
-    body: "Project download action completed",
-  };
+): NotableChangeSummarySpec {
+  return { header: kEmptySpec, bodyParts: [kEmptySpec] };
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -274,15 +212,9 @@ export type ProjectsDeleted = {
 
 export function projectsDeletedDescription(
   change: ProjectsDeleted
-): NotableChangeDescription {
-  const nDeleted = change.nDeleted;
-  const noun = nDeleted === 1 ? "Project" : "Projects";
-  const nounPhrase = nDeleted === 1 ? "Project" : `${nDeleted} projects`;
-
-  return {
-    header: `${noun} deleted`,
-    body: `${nounPhrase} deleted from My Projects`,
-  };
+): NotableChangeSummarySpec {
+  const spec = mkI18nSpec(null, { count: change.nDeleted });
+  return { header: spec, bodyParts: [spec] };
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -294,9 +226,6 @@ export type ProjectRenamed = {
 
 export function projectRenamedDescription(
   _change: ProjectRenamed
-): NotableChangeDescription {
-  return {
-    header: "Project renamed",
-    body: "Project renamed",
-  };
+): NotableChangeSummarySpec {
+  return { header: kEmptySpec, bodyParts: [kEmptySpec] };
 }

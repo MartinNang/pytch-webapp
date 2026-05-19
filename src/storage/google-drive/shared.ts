@@ -1,3 +1,5 @@
+import { RawOrI18nStringSpec } from "../../model/i18n/core-types";
+
 export type TokenInfo = {
   token: string;
   expiration: Date;
@@ -10,8 +12,8 @@ export type AsyncFile = {
 };
 
 export type GoogleUserInfo = {
-  displayName: string;
-  emailAddress: string;
+  displayName: RawOrI18nStringSpec;
+  emailAddress: RawOrI18nStringSpec;
 };
 
 export type AuthenticationInfo = {
@@ -56,6 +58,18 @@ export interface GoogleDriveBootApi {
 }
 
 export const unknownGoogleUserInfo: GoogleUserInfo = {
-  displayName: "unknown user",
-  emailAddress: "unknown email address",
+  displayName: {
+    kind: "i18n",
+    spec: {
+      ns: "projects",
+      keyPart: "google-export.placeholder-user.display-name",
+    },
+  },
+  emailAddress: {
+    kind: "i18n",
+    spec: {
+      ns: "projects",
+      keyPart: "google-export.placeholder-user.email-address",
+    },
+  },
 };

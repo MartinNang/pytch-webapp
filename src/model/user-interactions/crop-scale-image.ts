@@ -4,9 +4,7 @@ import {
   ImageCropSourceDescriptor,
   ImageCropDescriptor,
   ImageDimensions,
-  AssetOperationContextKey,
   AssetOperationContext,
-  assetOperationContextFromKey,
 } from "../asset";
 import { IPytchAppModel, PytchAppModelActions } from "..";
 import {
@@ -21,7 +19,7 @@ import {
 import { PytchProgramOps } from "../pytch-program";
 
 type CropScaleImageRunArgs = AssetLocator & {
-  operationContextKey: AssetOperationContextKey;
+  operationContext: AssetOperationContext;
   existingCrop: ImageCropDescriptor;
   sourceURL: URL;
   originalSize: ImageDimensions;
@@ -55,10 +53,6 @@ export type CropScaleImageFlow = CropScaleImageBase & CropScaleImageActions;
 async function prepare(
   args: CropScaleImageRunArgs
 ): Promise<CropScaleImageRunState> {
-  const operationContext = assetOperationContextFromKey(
-    args.operationContextKey
-  );
-
   const existingCropIsIdentity = eqCropSources(args.existingCrop, identityCrop);
   const initialDisplayCrop = existingCropIsIdentity
     ? zeroCrop
@@ -70,7 +64,7 @@ async function prepare(
     existingCrop: args.existingCrop,
     sourceURL: args.sourceURL,
     originalSize: args.originalSize,
-    operationContext,
+    operationContext: args.operationContext,
     displayedNewCrop: initialDisplayCrop,
     newScale: args.existingCrop.scale,
   };

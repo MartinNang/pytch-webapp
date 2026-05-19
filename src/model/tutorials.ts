@@ -57,6 +57,10 @@ type SThunk<PayloadT = void, ReturnT = void> = Thunk<
   IPytchAppModel,
   ReturnT
 >;
+type ASThunk<PayloadT = void, ReturnT = void> = SThunk<
+  PayloadT,
+  Promise<ReturnT>
+>;
 
 export interface ITutorialCollection {
   syncState: SyncState;
@@ -69,13 +73,10 @@ export interface ITutorialCollection {
   setSlugCreating: SAction<string>;
   clearSlugCreating: SAction;
   setAllowRandomChapterAccess: SAction<boolean>;
-  loadSummaries: SThunk<void, Promise<void>>;
+  loadSummaries: ASThunk;
 
-  createProjectFromTutorial: SThunk<
-    CreateProjectFromTutorialArgs,
-    Promise<void>
-  >;
-  createDemoFromTutorial: SThunk<string, Promise<void>>;
+  createProjectFromTutorial: ASThunk<CreateProjectFromTutorialArgs>;
+  createDemoFromTutorial: ASThunk<string>;
 
   bootAllowRandomChapterAccessFromQuery: SThunk;
 }

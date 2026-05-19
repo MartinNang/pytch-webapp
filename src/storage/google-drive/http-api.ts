@@ -1,3 +1,4 @@
+import { mkRawSpec } from "../../model/i18n/core-types";
 import {
   kGetFileUrlBase,
   kGetUserInfo,
@@ -94,5 +95,8 @@ export const getAbout = async (token: string): Promise<GoogleUserInfo> => {
   const aboutObj = await response.json();
   const user = aboutObj.user;
 
-  return { displayName: user.displayName, emailAddress: user.emailAddress };
+  return {
+    displayName: mkRawSpec(user.displayName),
+    emailAddress: mkRawSpec(user.emailAddress),
+  };
 };

@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { useLinkedJrTutorial } from "./hooks";
 import {
+  assertNever,
   EmptyProps,
   failIfNull,
   mDataAttrIntValue,
@@ -156,6 +158,7 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
   setChapterIndex,
   cloneChapterTitleElt,
 }) => {
+  const { t } = useTranslation("tutorials");
   const focusContext = useFocusContext();
 
   const maxJumpableChapterIndex =
@@ -210,7 +213,9 @@ const ProgressNodeHoverTargets: React.FC<ProgressNodeHoverTargetsProps> = ({
         data-chapter-index={`${d.index}`}
         className={classes}
         onClick={onClick}
-        aria-label={`Chapter ${d.index}`}
+        aria-label={t("progress-trail.chapter-aria-label", {
+          replace: { index: d.index },
+        })}
       >
         {tooltip}
       </div>
@@ -336,6 +341,7 @@ const GenericProgressTrail: React.FC<GenericProgressTrailProps> = ({
 };
 
 const ProgressTrail_PerMethod: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("tutorials");
   const linkedTutorial = useLinkedJrTutorial();
   const allowRandomChapterAccess = useStoreState(
     (state) => state.tutorialCollection.allowRandomChapterAccess
@@ -362,7 +368,18 @@ const ProgressTrail_PerMethod: React.FC<EmptyProps> = () => {
   }
 
   function cloneChapterTitleElt(idx: number) {
-    return chapters[idx].titleElt.cloneNode(true) as HTMLElement;
+    const title = chapters[idx].title;
+    switch (title.kind) {
+      case "html":
+        return title.elt.cloneNode(true) as HTMLElement;
+      case "i18nKey": {
+        let headingElt = document.createElement("H2");
+        headingElt.innerText = t(title.key);
+        return headingElt;
+      }
+      default:
+        return assertNever(title);
+    }
   }
 
   function canJumpHereFromIndex(idx: number) {

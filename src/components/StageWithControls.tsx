@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useStoreActions, useStoreState } from "../store";
 import { StageControls } from "./StageControls";
 import Stage from "./Stage";
@@ -32,6 +33,7 @@ export const StageWithControls: React.FC<EmptyProps> = () => {
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
   );
+  const { t } = useTranslation("ide");
   const { resizeFullScreen } = useStoreActions((actions) => actions.ideLayout);
   useEffect(() => {
     const handleResize = () => isFullScreen && resizeFullScreen();
@@ -39,7 +41,7 @@ export const StageWithControls: React.FC<EmptyProps> = () => {
     return () => window.removeEventListener("resize", handleResize);
   });
 
-  const ariaLabel = "Project stage";
+  const ariaLabel = t("stage-with-controls.aria-label");
 
   return (
     <div className="StageWithControls">

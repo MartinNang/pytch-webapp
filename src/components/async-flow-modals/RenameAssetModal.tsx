@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { CompoundTextInput } from "../CompoundTextInput";
@@ -10,8 +11,12 @@ import {
 } from "../../model/user-interactions/async-user-flow";
 import { asyncFlowModal } from "./utils";
 import { useFlowActions, useFlowState } from "../../model";
+import { useResolveStringSpec } from "../hooks/resolve-string-spec";
 
 export const RenameAssetModal = () => {
+  const resolveStringSpec = useResolveStringSpec();
+  const { t } = useTranslation("assets");
+  const { t: tCommon } = useTranslation("common");
   const { fsmState, isSubmittable } = useFlowState((f) => f.renameAssetFlow);
   const { setNewStem } = useFlowActions((f) => f.renameAssetFlow);
 
@@ -28,6 +33,9 @@ export const RenameAssetModal = () => {
           throw new Error("should not be notifying if successful");
         }
 
+        const messageContent = resolveStringSpec(
+          activeFsmState.outcomeNub.messageSpec
+        );
         const dismiss = activeFsmState.userAck;
 
         return (
@@ -39,12 +47,14 @@ export const RenameAssetModal = () => {
             centered
           >
             <Modal.Header closeButton={true}>
-              <Modal.Title>Rename of “{oldBasename}” failed</Modal.Title>
+              <Modal.Title>
+                {t("rename.failure-title", { replace: { oldBasename } })}
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p>{activeFsmState.outcomeNub.message}</p>
+              <p>{messageContent}</p>
               <div className="d-flex justify-content-end">
-                <Button onClick={dismiss}>OK</Button>
+                <Button onClick={dismiss}>{tCommon("button.ok")}</Button>
               </div>
             </Modal.Body>
           </Modal>
@@ -58,8 +68,8 @@ export const RenameAssetModal = () => {
         const formatSpecifier: FormatSpecifier = [
           {
             kind: "user-input",
-            placeholder: "new filename",
-            initialValue: oldStem,
+            placeholder: { ns: "assets", keyPart: "rename.placeholder" },
+            initialValue: { kind: "raw", text: oldStem },
           },
           { kind: "literal", value: fixedSuffix },
         ];
@@ -67,7 +77,9 @@ export const RenameAssetModal = () => {
         return (
           <Modal show={true} onHide={settle.cancel} animation={false} centered>
             <Modal.Header closeButton={isInteractable(activeFsmState)}>
-              <Modal.Title>Rename “{oldBasename}”</Modal.Title>
+              <Modal.Title>
+                {t("rename.title", { replace: { oldBasename } })}
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <CompoundTextInput
@@ -83,14 +95,14 @@ export const RenameAssetModal = () => {
                 variant="secondary"
                 onClick={settle.cancel}
               >
-                Cancel
+                {tCommon("button.cancel")}
               </Button>
               <Button
                 disabled={!isSubmittable}
                 variant="primary"
                 onClick={settle.submit}
               >
-                Rename
+                {t("rename.button.rename")}
               </Button>
             </Modal.Footer>
           </Modal>

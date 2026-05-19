@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { EmptyProps } from "../../utils";
 import { welcomeAssetUrl } from "./utils";
 import { DecorativeUnderscore } from "../decorations";
@@ -29,6 +30,7 @@ const LaptopScreenshot: React.FC<LaptopScreenshotProps> = ({
 };
 
 export const LearnPython: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("welcome");
   const logoUrl = welcomeAssetUrl("pytch-colour-logo-960-320.png");
   const flatPreview = welcomeAssetUrl("flat-mock-up.png");
   const scriptByScriptPreview = welcomeAssetUrl("script-by-script-mock-up.png");
@@ -37,19 +39,17 @@ export const LearnPython: React.FC<EmptyProps> = () => {
     <div className="LearnPython">
       <div className="content">
         <h2>
-          Learn Python
-          <br />
-          with Pytch
+          <Trans
+            ns="welcome"
+            i18nKey="learn-python.heading"
+            components={{ br: <br /> }}
+          />
           <DecorativeUnderscore />
         </h2>
 
         <div className="content-text">
           <div className="feature-summary">
-            <p>
-              The online Pytch system provides an integrated development
-              environment where students can write their code, run their
-              programs, and choose resources from our media library.
-            </p>
+            <p>{t("learn-python.description")}</p>
 
             <div className="logo-container">
               <img src={logoUrl} alt="" />
@@ -57,13 +57,13 @@ export const LearnPython: React.FC<EmptyProps> = () => {
           </div>
 
           <h3>
-            Two ways of writing code
+            {t("learn-python.two-ways.heading")}
             <DecorativeUnderscore />
           </h3>
 
           <div className="laptop-screenshots">
             <div className="annotated-screenshot narrow">
-              <h4>Script by script</h4>
+              <h4>{t("learn-python.script-by-script.heading")}</h4>
               <LaptopScreenshot
                 imageUrl={scriptByScriptPreview}
                 tutorialSlug="script-by-script-catch-apple"
@@ -71,7 +71,7 @@ export const LearnPython: React.FC<EmptyProps> = () => {
             </div>
 
             <div className="annotated-screenshot narrow">
-              <h4>One big program</h4>
+              <h4>{t("learn-python.one-big-program.heading")}</h4>
               <LaptopScreenshot
                 imageUrl={flatPreview}
                 tutorialSlug="catch-apple"
