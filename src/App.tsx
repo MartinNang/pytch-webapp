@@ -34,6 +34,8 @@ import { StandalonePlayDemo } from "./components/StandalonePlayDemo";
 import { StartTutorialAtCheckpoint } from "./components/StartTutorialAtCheckpoint";
 import { useActionAsEffect } from "./components/hooks/use-action-as-effect";
 import { InertCopyCodeButton } from "./components/Tutorial";
+import { AppLoadingPlaceholder } from "./components/AppLoadingPlaceholder";
+import { I18nBootErrorModal } from "./components/I18nBootErrorModal";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -167,13 +169,11 @@ export const App: React.FC<EmptyProps> = () => {
   switch (i18nStateKind) {
     case "not-yet-booted":
     case "pending":
-      // TODO: Proper handling
-      return <p>Loading i18n stuff...</p>;
+      return <AppLoadingPlaceholder />;
     case "ready":
       return <AppWithI18nReady />;
     case "failed":
-      // TODO: Proper handling
-      return <p>OH NO!</p>;
+      return <I18nBootErrorModal />;
     default:
       return assertNever(i18nStateKind);
   }
