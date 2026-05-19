@@ -75,7 +75,7 @@ export let i18nContextState: I18nContextState = {
         ],
         defaultNS,
         fallbackLng: "en",
-        debug: true,
+        debug: false,
         interpolation: { escapeValue: false },
         react: {
           transSupportBasicHtmlNodes: false,
