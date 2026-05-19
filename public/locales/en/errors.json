@@ -1,3 +1,6 @@
 {
+  "fetch-failure.title": "Problem fetching information",
+  "fetch-failure.intro": "Sorry, there was a problem fetching the following information.  Please contact the Pytch team if the problem persists.",
+
   "$RUBBISH$": ""
 }
