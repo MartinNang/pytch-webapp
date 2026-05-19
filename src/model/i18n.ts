@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { propSetterAction } from "../utils";
+import { pathWithinApp } from "../env-utils";
 
 // "Slice action" / "slice async thunk" types, forward-referencing the
 // model slice type I18nContextState.
@@ -53,6 +54,7 @@ export let i18nContextState: I18nContextState = {
     await withStateUpdates(actions, async () => {
       i18next.use(Backend).use(LanguageDetector).use(initReactI18next);
       await i18next.init({
+        backend: { loadPath: pathWithinApp("/locales/{{lng}}/{{ns}}.json") },
         fallbackLng: "en",
         debug: true,
         interpolation: { escapeValue: false },
