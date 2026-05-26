@@ -6,6 +6,7 @@ import { Content } from "./Content";
 import { ContentLoadingSpinner } from "./ContentLoadingSpinner";
 import { SpecimenInformation } from "./SpecimenInformation";
 import { ErrorMessageDisplay } from "../../ErrorMessageDisplay";
+import { DemoSidebar } from "../../demo-sidebar/DemoSidebar";
 import { mkRawSpec } from "../../../model/i18n/core-types";
 
 export const MaybeContent: React.FC<EmptyProps> = () => {
@@ -23,6 +24,8 @@ export const MaybeContent: React.FC<EmptyProps> = () => {
           return <Content />;
         case "specimen":
           return <SpecimenInformation />;
+        case "demo":
+          return <DemoSidebar />;
         default:
           return assertNever(contentKind);
       }
@@ -43,6 +46,7 @@ export const MaybeContent: React.FC<EmptyProps> = () => {
           return null;
         case "jr-tutorial":
         case "specimen":
+        case "demo":
           return <ContentLoadingSpinner />;
         default:
           return assertNever(contentKind);

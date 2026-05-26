@@ -1,0 +1,410 @@
+@import "./pytch-variables.scss";
+
+$chapter-navigation-link-height: 3rem;
+
+.DemoSidebar {
+  overflow: auto;
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+  height: 100%;
+
+  .content {
+    height: 100%;
+
+    .inner-content {
+      height: 100%;
+
+      & > .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  .demo-header {
+    h1 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    padding: 0;
+    color: #FFF792;
+    line-break: anywhere;
+  }
+
+  .chapters-overview {
+    background-color: #99E1DF;
+
+    .chapters-navigation {
+      color: white;
+      width: 100%;
+      margin: 0;
+
+      button {
+        display: inline-block;
+        background-color: $pytch-colour-accent-cyan;
+
+        p {
+          margin: 0;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          white-space: break-spaces;
+          overflow: hidden;
+        }
+      }
+    }
+
+    .tree {
+      position: relative;
+      margin-left: 25px;
+      margin-top: -0.15rem;
+
+      .branch {
+        height: 2rem;
+        border: 0.2rem solid $pytch-colour-main-blue-darkened;
+        margin-bottom: 1rem;
+        border-bottom-left-radius: 8px;
+        border-right: none;
+        border-top: none;
+        width: 1rem;
+      }
+
+      /* two items */
+      &:has(.branch:first-child:nth-last-child(2)),
+      &:has(.branch:first-child:nth-last-child(2) ~ .branch) {
+        height: 6.5rem;
+
+        &:before {
+          inline-size: 3 * $chapter-navigation-link-height;
+        }
+      }
+
+      .stem {
+        height: calc(100% - 0.5rem);
+        border-left: 0.2rem solid $pytch-colour-main-blue-darkened;
+        position: absolute;
+      }
+    }
+
+    .nav-tree {
+      max-height: $chapter-navigation-link-height * 3;
+      overflow: auto;
+    }
+
+    ul.chapters-list {
+      list-style: none;
+      overflow-y: auto;
+      overflow-x: clip;
+      scroll-snap-type: y proximity;
+
+      /* two items */
+      &:has(li:first-child:nth-last-child(2)),
+      &:has(li:first-child:nth-last-child(2) ~ li) {
+        height: 6.5rem;
+
+        &:before {
+          inline-size: 3 * $chapter-navigation-link-height;
+        }
+      }
+
+      &:before {
+        border-left: 3px solid #265378;
+        inline-size: 200px;
+        writing-mode: vertical-lr;
+        position: absolute;
+        margin-left: -35px;
+      }
+
+      li {
+        position: relative;
+        scroll-snap-align: start;
+        margin-left: -2px;
+        top: 0;
+        width: 100%;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0.5rem;
+
+          &:before {
+            margin-top: 10px;
+          }
+        }
+
+        button {
+          transition: background-color 0.1s cubic-bezier(.25, .8, .25, 1),
+          transform 0.1s cubic-bezier(.25, .8, .25, 1);
+          background-color: transparent;
+          color: black;
+          margin-left: 2rem;
+          margin-right: 2rem;
+          width: calc(100% - 3rem);
+          text-align: start;
+          border: none;
+
+          &.active {
+            background-color: $pytch-colour-accent-cyan;
+            color: white;
+          }
+
+          &:hover {
+            border: none;
+
+            &:not(.active, .loading) {
+              background-color: rgb(193, 238, 237);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .demo-chapter {
+    height: 100%;
+    background-color: $pytch-colour-tint-mint;
+    min-height: 0;
+
+    .chapter-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      transition: border-top-left-radius 1s cubic-bezier(.25, .8, .25, 1),
+      border-top-right-radius 1s cubic-bezier(.25, .8, .25, 1),
+      box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+      background-color: rgb(249, 252, 253);
+      box-shadow: none;
+
+      &.isNavigationExpanded {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 3px 8px;
+      }
+
+      .chapter-heading {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin: 0;
+        width: 100%;
+
+        h2 {
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
+
+        p {
+          margin: 0;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      h2 {
+        font-size: 1.15rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+      }
+
+      h4 {
+        font-size: 1.05rem;
+      }
+
+      h5 {
+        font-size: 1.03rem;
+      }
+
+      h6 {
+        font-size: 1.02rem;
+      }
+
+      a {
+        color: black;
+        text-decoration: underline !important;
+      }
+
+      .chapter-navigation {
+
+        .btn.btn-primary {
+          height: 36px;
+          border-radius: 10px;
+          background-color: $pytch-colour-main-blue;
+          border-color: $pytch-colour-main-blue;
+
+          &:hover {
+            background-color: $pytch-colour-main-blue-darkened;
+          }
+        }
+      }
+
+      .chapter-markdown-wrapper {
+        min-height: 0;
+
+        .chapter-markdown {
+          line-break: auto;
+          overflow-x: clip;
+          overflow-y: scroll;
+          transition: max-height 0.1s cubic-bezier(.25, .8, .25, 1);
+          height: 100%;
+
+          img {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .demo-header {
+    justify-content: space-between;
+    align-items: center;
+    background-color: $pytch-colour-main-blue;
+    width: auto;
+
+    .chapter-pill {
+      padding: 7px 15px;
+      color: black;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &.placeholder {
+        width: 45px;
+        height: 25px;
+      }
+
+      span {
+        font-size: 0.8rem;
+        padding-left: 2px;
+      }
+    }
+
+    #nav-caret {
+      border: none;
+      transition: transform 0.3s cubic-bezier(.25, .8, .25, 1),
+      color 0.3s cubic-bezier(.25, .8, .25, 1);
+      color: white;
+      background-color: transparent;
+
+      &.isNavigationExpanded {
+        transform: rotateZ(180deg);
+      }
+
+      &:hover {
+        color: $pytch-colour-main-yellow;
+      }
+    }
+  }
+
+  .demo-sub-header {
+    background-color: $pytch-colour-main-blue-darkened;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & .col {
+      padding: 0;
+      margin: 0;
+      color: white;
+      font-size: 0.9rem;
+    }
+  }
+
+  .demo-footer {
+    background-color: $pytch-colour-main-blue-darkened;
+    color: white;
+
+    & > div {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      width: auto;
+    }
+
+    p {
+      font-size: 0.8rem;
+      margin-bottom: 0;
+    }
+
+    button.share-button {
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      border: none;
+
+      &:hover {
+        background-color: lightgray;
+      }
+    }
+  }
+
+  .linked-projects .card {
+    border-radius: 20px;
+    background-color: #D3D5FF;
+    border: none;
+    max-height: 150px;
+    transition: transform 0.1s cubic-bezier(.25, .8, .25, 1);
+
+    &:hover {
+      transform: scale(1.03);
+    }
+
+    .card-header {
+      height: 100%;
+      background-color: transparent;
+      border: none;
+    }
+
+    .card-body {
+      .tutorial-pill {
+        background-color: $pytch-colour-accent-flame;
+        font-size: 0.9rem;
+        width: auto;
+        border-radius: 20px;
+        color: white;
+      }
+    }
+
+    h3 {
+      font-size: 1.1rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .chapter-navigation-link {
+    top: -3 * $chapter-navigation-link-height;
+
+    p {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .loading {
+    cursor: progress;
+  }
+}

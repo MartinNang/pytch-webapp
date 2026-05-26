@@ -8,7 +8,7 @@ import { useJrEditActions, useJrEditState } from "./hooks";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-common-types";
-import { useHasLinkedLesson, useHasLinkedSpecimen } from "./lesson/hooks";
+import { useHasLinkedDemo, useHasLinkedLesson, useHasLinkedSpecimen } from "./lesson/hooks";
 import { EmptyProps } from "../../utils";
 import { useStoreState } from "../../store";
 import { Nav } from "react-bootstrap";
@@ -23,6 +23,7 @@ const iconFromTabKey: Record<ActivityBarTabKey, IconName> = {
   lesson: "book",
   tutorial: "book",
   specimen: "book",
+  demo: "play",
 };
 
 const tabIsActive = (
@@ -79,6 +80,7 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
   const hasLinkedTutorial = useStoreState(
     (state) => state.activeProject.project?.trackedTutorial != null
   );
+  const hasLinkedDemo = useHasLinkedDemo();
 
   const tabs: Array<ActivityBarTabKey> = hasLinkedLesson
     ? ["helpsidebar", "lesson", "keynavhelp", "i18n"]
@@ -86,6 +88,8 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
     ? ["helpsidebar", "specimen", "keynavhelp", "i18n"]
     : hasLinkedTutorial
     ? ["helpsidebar", "tutorial", "keynavhelp", "i18n"]
+    : hasLinkedDemo
+    ? ["helpsidebar", "demo", "keynavhelp", "i18n"]
     : ["helpsidebar", "keynavhelp", "i18n"];
 
   const focusGroupExtraClass =

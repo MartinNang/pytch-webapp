@@ -66,6 +66,7 @@
   &.activity-content-expanded-specimen main,
   &.activity-content-expanded-keynavhelp main,
   &.activity-content-expanded-i18n main,
+  &.activity-content-expanded-demo main,
   &.activity-content-expanded-helpsidebar main {
     @include grid-hstack-three(
       $activity-bar-width + $help-sidebar-content-width,
