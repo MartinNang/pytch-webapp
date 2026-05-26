@@ -88,6 +88,9 @@ export const NavBanner = () => {
               <NavDropdown.Item as={Link} to={"/tutorials/"}>
                 Tutorials
               </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={"/demos/"}>
+                Demos
+              </NavDropdown.Item>
             </NavDropdown>
           </li>
           <li>
