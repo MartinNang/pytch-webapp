@@ -13,7 +13,7 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  SpecimenContentHash, DemoContentHash,
+  SpecimenContentHash, DemoContentHash, LinkedDemoRef,
 } from "./linked-content-core";
 import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
@@ -217,3 +217,16 @@ function eqLCLSS(
 export function useLinkedContentLoadingStateSummary() {
   return useStoreState(mapLCLSS, eqLCLSS);
 }
+
+export async function dereferenceLinkedDemo(
+    programKind: PytchProgramKind,
+    ref: LinkedDemoRef
+): Promise<LinkedDemo> {
+  const contentHash = ref.slug;
+  const relativePath = `demos/${contentHash}`;
+
+  const demo = await demoDescriptorFromRelativePath(relativePath, ref.slug);
+
+  return { kind: "demo", demo };
+}
+
