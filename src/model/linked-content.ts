@@ -100,6 +100,15 @@ export async function lessonDescriptorFromRelativePath(
   return { specimenContentHash, project };
 }
 
+export async function fetchDemo(slug: string) {
+  let response = await fetch("/data/demos/demos.json");
+  if (!response.ok) {
+    throw new Error(`Could not find demos.json`);
+  }
+  let demos = await response.json();
+  return demos.find((d: { slug: string }) => d.slug === slug);
+}
+
 export async function dereferenceLinkedSpecimen(
   programKind: PytchProgramKind,
   ref: LinkedSpecimenRef
