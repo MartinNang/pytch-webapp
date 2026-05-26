@@ -13,13 +13,23 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  SpecimenContentHash,
+  SpecimenContentHash, DemoContentHash,
 } from "./linked-content-core";
 import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
+  project: StandaloneProjectDescriptor;
+};
+
+export type DemoDescriptor = {
+  demoContentHash: DemoContentHash;
+  headings: string[];
+  chapters: string[];
+  displayName: string;
+  summaryMarkdown: string;
+  lastUpdated: string;
   project: StandaloneProjectDescriptor;
 };
 
