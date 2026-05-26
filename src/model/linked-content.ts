@@ -64,6 +64,8 @@ export function linkedContentIsReferent(
         content.kind === "specimen" &&
         content.lesson.specimenContentHash === ref.specimenContentHash
       );
+    case "demo":
+      return false;
     default:
       return assertNever(ref);
   }
