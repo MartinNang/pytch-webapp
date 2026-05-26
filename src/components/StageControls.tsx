@@ -242,7 +242,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
           aria-hidden={true}
         />
       </Link>
-      <DropdownButton align="end" title="⋮">
+      <DropdownButton align="end" title="⋮" className={"moreOptionsDropdown"}>
         <GoToMyProjectsDropdownItem />
         <Dropdown.Item onClick={onScreenshot}>
           {t("project-action.screenshot")}
