@@ -16,6 +16,7 @@ import "./pytch-ide.scss";
 import "./pytch-jr-ide.scss";
 import "./pytch-jr-lesson.scss";
 import "./help-sidebar.scss";
+import "./demo-sidebar.scss";
 import "./font-awesome-lib";
 
 import { AllModals } from "./components/AllModals";
@@ -36,6 +37,7 @@ import { useActionAsEffect } from "./components/hooks/use-action-as-effect";
 import { InertCopyCodeButton } from "./components/Tutorial";
 import { AppLoadingPlaceholder } from "./components/AppLoadingPlaceholder";
 import { I18nBootErrorModal } from "./components/I18nBootErrorModal";
+import { DemosList } from "./components/discoverable-demos-page/DemosList";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -100,6 +102,10 @@ function AppWithI18nReady() {
         {
           path: "tutorials/",
           element: <TutorialList />,
+        },
+        {
+          path: "demos/",
+          element: <DemosList />,
         },
         {
           path: "ide/:projectIdString",
