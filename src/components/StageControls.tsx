@@ -53,8 +53,9 @@ const GreenFlag = () => {
       <Button
         className="StageControlPseudoButton GreenFlag"
         onClick={handleClick}
+        aria-label={"Run project"}
       >
-        <FontAwesomeIcon icon="play" />
+        <FontAwesomeIcon icon="play" aria-hidden={true} />
       </Button>
       <StaticTooltip visible={tooltipIsVisible}>
         <p>{t("tooltip.green-flag")}</p>
@@ -69,8 +70,12 @@ export const RedStop = () => {
     focusStage();
   };
   return (
-    <Button className="StageControlPseudoButton RedStop" onClick={redStop}>
-      <FontAwesomeIcon icon="stop" />
+    <Button
+      className="StageControlPseudoButton RedStop"
+      onClick={redStop}
+      aria-label={"Stop project"}
+    >
+      <FontAwesomeIcon icon="stop" aria-hidden={true} />
     </Button>
   );
 };
@@ -189,8 +194,12 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
 
   const fullScreenButton = (
-    <Button className="full-screen" onClick={() => setIsFullScreen(true)}>
-      <FontAwesomeIcon className="fa-lg" icon="expand" />
+    <Button
+      className="full-screen square-button"
+      onClick={() => setIsFullScreen(true)}
+      aria-label={"expand"}
+    >
+      <FontAwesomeIcon className="fa-lg" icon="expand" aria-hidden={true} />
     </Button>
   );
 
@@ -223,6 +232,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
       <Button
         className={`save-button ${codeStateVsStorage}`}
         onClick={handleSave}
+        aria-label={"Save project"}
       >
         <span>{t("project-action.save")}</span>
       </Button>
