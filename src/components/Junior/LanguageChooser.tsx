@@ -4,6 +4,7 @@ import { EmptyProps } from "../../utils";
 import { useI18nResolvedLanguage } from "./hooks";
 import { supportedLanguages } from "../../model/i18n";
 import { useTranslation } from "react-i18next";
+import "./LanguageChooser.scss";
 
 export const LanguageChooser: React.FC<EmptyProps> = () => {
   const { t } = useTranslation("ide");
@@ -21,6 +22,7 @@ export const LanguageChooser: React.FC<EmptyProps> = () => {
         <ListGroup>
           {supportedLanguages.map((lngDescr) => (
             <ListGroup.Item
+              as="button"
               key={lngDescr.lngCode}
               active={lngDescr.lngCode === resolvedLanguage}
               onClick={setLanguageFun(lngDescr.lngCode)}
