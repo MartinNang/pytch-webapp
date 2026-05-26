@@ -64,6 +64,8 @@ export function filenameFormatSpecifier(
             { kind: "literal", value: literalFragment },
           ];
         }
+        case "demo":
+          return unlinkedSpecifier;
         default:
           return assertNever(content);
       }
