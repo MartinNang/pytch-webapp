@@ -10,7 +10,6 @@ import { mkRawSpec } from "../../../model/i18n/core-types";
 
 export const MaybeContent: React.FC<EmptyProps> = () => {
   const linkedContentState = useLinkedContentLoadingStateSummary();
-
   switch (linkedContentState.kind) {
     case "idle":
       return null;

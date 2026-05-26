@@ -1,4 +1,4 @@
-import { assertNever, fetchArrayBuffer } from "../utils";
+import {assertNever, fetchArrayBuffer} from "../utils";
 import {
   projectDescriptor as projectDescriptorFromData,
   StandaloneProjectDescriptor,
@@ -15,7 +15,7 @@ import {
   LinkedSpecimenRef,
   SpecimenContentHash,
 } from "./linked-content-core";
-import { PytchProgramKind } from "./pytch-program";
+import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
 
 export type LessonDescriptor = {
