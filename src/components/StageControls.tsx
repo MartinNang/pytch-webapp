@@ -225,6 +225,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
     >
       <GreenFlag />
       <RedStop />
+      {fullScreenButton}
       <Button
         className={`save-button ${codeStateVsStorage}`}
         onClick={handleSave}
@@ -232,7 +233,6 @@ export const StageControls: React.FC<EmptyProps> = () => {
       >
         <span>{t("project-action.save")}</span>
       </Button>
-      {fullScreenButton}
       <Button onClick={goHome}>
         <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" />
       </Button>
