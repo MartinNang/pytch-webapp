@@ -350,6 +350,8 @@ export function projectSummary(
       case "specimen":
         // TODO: Would be nice to tell them which one.
         return [`Following a lesson.`];
+      case "demo":
+        return [`Viewing demo "${linkedContentRef.slug}".`]
       default:
         return assertNever(linkedContentRef);
     }
