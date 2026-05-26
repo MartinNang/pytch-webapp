@@ -1,0 +1,14 @@
+@import "../../pytch-variables.scss";
+
+.LanguageChooser {
+  .list-group {
+    width: fit-content;
+  }
+  .list-group-item {
+    padding: 0.5rem 2rem;
+    &.active {
+      background-color: $pytch-colour-main-blue;
+      border-color: $pytch-colour-main-blue-darkened;
+    }
+  }
+}
