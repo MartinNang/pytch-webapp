@@ -10,6 +10,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import pytchLogo from "../images/pytch.png";
 import { ExternalLinkIndicator } from "./decorations";
+import { NavDropdown } from "react-bootstrap";
 
 export const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
@@ -83,7 +84,14 @@ export const NavBanner = () => {
             <a href={withinSite("/doc/index.html")}>Help</a>
           </li>
           <li>
-            <Link to="/tutorials/">Tutorials</Link>
+            <NavDropdown title="Explore" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to={"/tutorials/"}>
+                Tutorials
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={"/demos/"}>
+                Demos
+              </NavDropdown.Item>
+            </NavDropdown>
           </li>
           <li>
             <Link to="/my-projects/">My projects</Link>
