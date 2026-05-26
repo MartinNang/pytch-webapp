@@ -2,6 +2,7 @@ import { useStoreState } from "../../../store";
 import { LinkedJrTutorial } from "../../../model/junior/jr-tutorial";
 import {
   LinkedContentKind,
+  LinkedDemo,
   LinkedSpecimen,
 } from "../../../model/linked-content";
 
@@ -62,6 +63,23 @@ export function useMappedLinkedSpecimen<Result>(
 
 export const useLinkedSpecimen = (): LinkedSpecimen =>
   useMappedLinkedSpecimen((specimen) => specimen);
+
+export function useMappedLinkedDemo<Result>(
+  mapContent: (specimen: LinkedDemo) => Result,
+  eqResult?: (prev: Result, next: Result) => boolean
+) {
+  return useStoreState((state) => {
+    const contentState = state.activeProject.linkedContentLoadingState;
+
+    if (contentState.kind !== "succeeded")
+      throw new Error("linked demo has not been loaded");
+
+    if (contentState.content.kind !== "demo")
+      throw new Error("linked content is wrong kind");
+
+    return mapContent(contentState.content);
+  }, eqResult);
+}
 
 // Not exactly a hook, but similar in spirit.
 export function focusChapterContent() {
