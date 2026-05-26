@@ -87,6 +87,9 @@ export function useMappedLinkedDemo<Result>(
   }, eqResult);
 }
 
+export const useLinkedDemo = (): LinkedDemo =>
+  useMappedLinkedDemo((demo) => demo);
+
 // Not exactly a hook, but similar in spirit.
 export function focusChapterContent() {
   const contentElts = document.getElementsByClassName("Junior-LessonContent");
