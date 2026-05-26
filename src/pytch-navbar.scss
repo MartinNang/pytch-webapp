@@ -1,7 +1,5 @@
 @import "./pytch-variables.scss";
 
-$navbar-single-row-height: 70px;
-
 @mixin white-hover-yellow() {
   color: white;
   &:hover {
