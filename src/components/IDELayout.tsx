@@ -60,6 +60,7 @@ export const IDELayout: React.FC<EmptyProps> = () => {
           case "expanded-specimen":
           case "expanded-lesson":
           case "expanded-tutorial":
+          case "expanded-demo":
             return 1;
           case "expanded-keynavhelp":
           case "expanded-i18n":
