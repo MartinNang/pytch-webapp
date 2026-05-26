@@ -27,7 +27,8 @@ export type ActivityBarTabKey =
   | "keynavhelp"
   | "lesson"
   | "specimen"
-  | "tutorial";
+  | "tutorial"
+  | "demo";
 
 export type ActivityContentState =
   | { kind: "collapsed" }
