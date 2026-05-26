@@ -245,6 +245,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <Dropdown.Item onClick={onScreenshot}>
           {t("project-action.screenshot")}
         </Dropdown.Item>
+        <Dropdown.Divider />
         <Dropdown.Item onClick={onCreateCopy}>
           {t("project-action.make-copy")}
         </Dropdown.Item>
@@ -252,6 +253,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
           {t("project-action.download-zip")}
         </Dropdown.Item>
         <ExportToDriveDropdownItem />
+        <Dropdown.Divider />
         <LaunchCoordsChooserDropdownItem />
         <Dropdown.Item onClick={onShowTooltips}>
           {t("project-action.show-tooltips")}
