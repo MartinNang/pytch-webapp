@@ -225,6 +225,9 @@ export const editState: EditState = {
           case "specimen":
             actions.expandActivityContent("specimen");
             break;
+          case "demo":
+            actions.expandActivityContent("demo");
+            break;
           default:
             assertNever(linkedContentKind);
         }
