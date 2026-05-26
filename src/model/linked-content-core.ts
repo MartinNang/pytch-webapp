@@ -27,6 +27,7 @@ export const zLinkedContentRef = z.union([
   zLinkedNoContentRef,
   zLinkedJrTutorialRef,
   zLinkedSpecimenRef,
+  zLinkedDemoRef,
 ]);
 
 export type LinkedContentRef = z.infer<typeof zLinkedContentRef>;
