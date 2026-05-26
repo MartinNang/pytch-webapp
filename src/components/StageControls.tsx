@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EmptyProps } from "../utils";
 import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content";
 import { pathWithinApp } from "../env-utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
 import { uniqueUserInputFragment } from "../model/compound-text-input";
 import { useResolveStringSpec } from "./hooks/resolve-string-spec";
@@ -203,8 +203,6 @@ export const StageControls: React.FC<EmptyProps> = () => {
     </Button>
   );
 
-  const goHome = () => navigate(pathWithinApp("/"));
-
   return isFullScreen ? (
     <section
       className="StageControls"
@@ -233,9 +231,17 @@ export const StageControls: React.FC<EmptyProps> = () => {
       >
         <span>{t("project-action.save")}</span>
       </Button>
-      <Button onClick={goHome}>
-        <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" />
-      </Button>
+      <Link
+        to={"/"}
+        className={"StageControlPseudoButton HomeLink btn btn-primary"}
+        aria-label={t("home-button.aria-label")}
+      >
+        <FontAwesomeIcon
+          aria-label={t("home-button.aria-label")}
+          icon="home"
+          aria-hidden={true}
+        />
+      </Link>
       <DropdownButton align="end" title="⋮">
         <GoToMyProjectsDropdownItem />
         <Dropdown.Item onClick={onScreenshot}>
