@@ -21,6 +21,8 @@ export const useHasLinkedLesson = () =>
 
 export const useHasLinkedSpecimen = () => useHasLinkedContentOfKind("specimen");
 
+export const useHasLinkedDemo = () => useHasLinkedContentOfKind("demo");
+
 export function useMappedLinkedJrTutorial<Result>(
   mapContent: (tutorial: LinkedJrTutorial) => Result,
   eqResult?: (prev: Result, next: Result) => boolean
