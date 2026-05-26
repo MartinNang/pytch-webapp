@@ -4,6 +4,7 @@ import { ProjectId } from "./project-core";
 import * as z from "zod/mini";
 
 export type SpecimenContentHash = string;
+export type DemoContentHash = string;
 
 const zLinkedNoContentRef = z.object({
   kind: z.literal("none"),
