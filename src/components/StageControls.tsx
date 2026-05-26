@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EmptyProps } from "../utils";
 import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content";
 import { pathWithinApp } from "../env-utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
 import { uniqueUserInputFragment } from "../model/compound-text-input";
 import { useResolveStringSpec } from "./hooks/resolve-string-spec";
@@ -53,8 +53,9 @@ const GreenFlag = () => {
       <Button
         className="StageControlPseudoButton GreenFlag"
         onClick={handleClick}
+        aria-label={"Run project"}
       >
-        <FontAwesomeIcon icon="play" />
+        <FontAwesomeIcon icon="play" aria-hidden={true} />
       </Button>
       <StaticTooltip visible={tooltipIsVisible}>
         <p>{t("tooltip.green-flag")}</p>
@@ -69,8 +70,12 @@ export const RedStop = () => {
     focusStage();
   };
   return (
-    <Button className="StageControlPseudoButton RedStop" onClick={redStop}>
-      <FontAwesomeIcon icon="stop" />
+    <Button
+      className="StageControlPseudoButton RedStop"
+      onClick={redStop}
+      aria-label={"Stop project"}
+    >
+      <FontAwesomeIcon icon="stop" aria-hidden={true} />
     </Button>
   );
 };
@@ -189,29 +194,27 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const onCreateCopy = () => runSaveProjectAs(copyArgs);
 
   const fullScreenButton = (
-    <Button className="full-screen" onClick={() => setIsFullScreen(true)}>
-      <FontAwesomeIcon className="fa-lg" icon="expand" />
+    <Button
+      className="full-screen square-button"
+      onClick={() => setIsFullScreen(true)}
+      aria-label={"expand"}
+    >
+      <FontAwesomeIcon className="fa-lg" icon="expand" aria-hidden={true} />
     </Button>
   );
-
-  const goHome = () => navigate(pathWithinApp("/"));
 
   return isFullScreen ? (
     <section
       className="StageControls"
       aria-label={t("stage-controls.aria-label")}
     >
-      <div className="run-stop-controls">
-        <GreenFlag />
-        <RedStop />
-      </div>
+      <GreenFlag />
+      <RedStop />
       <Button
         className="leave-full-screen"
         variant={"secondary"}
         onClick={() => setIsFullScreen(false)}
-      >
-        <FontAwesomeIcon className="fa-lg" icon="compress" />
-      </Button>
+      ></Button>
     </section>
   ) : (
     <section
@@ -220,21 +223,31 @@ export const StageControls: React.FC<EmptyProps> = () => {
     >
       <GreenFlag />
       <RedStop />
+      {fullScreenButton}
       <Button
-        className={`save-button ${codeStateVsStorage}`}
+        className={`save-button ${codeStateVsStorage} square-button`}
         onClick={handleSave}
+        aria-label={"Save project"}
       >
         <span>{t("project-action.save")}</span>
       </Button>
-      {fullScreenButton}
-      <Button onClick={goHome}>
-        <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" />
-      </Button>
-      <DropdownButton align="end" title="⋮">
+      <Link
+        to={"/"}
+        className={"StageControlPseudoButton HomeLink btn btn-primary"}
+        aria-label={t("home-button.aria-label")}
+      >
+        <FontAwesomeIcon
+          aria-label={t("home-button.aria-label")}
+          icon="home"
+          aria-hidden={true}
+        />
+      </Link>
+      <DropdownButton align="end" title="⋮" className={"moreOptionsDropdown"}>
         <GoToMyProjectsDropdownItem />
         <Dropdown.Item onClick={onScreenshot}>
           {t("project-action.screenshot")}
         </Dropdown.Item>
+        <Dropdown.Divider />
         <Dropdown.Item onClick={onCreateCopy}>
           {t("project-action.make-copy")}
         </Dropdown.Item>
@@ -242,6 +255,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
           {t("project-action.download-zip")}
         </Dropdown.Item>
         <ExportToDriveDropdownItem />
+        <Dropdown.Divider />
         <LaunchCoordsChooserDropdownItem />
         <Dropdown.Item onClick={onShowTooltips}>
           {t("project-action.show-tooltips")}
