@@ -12,7 +12,7 @@ import {
   LinkedContentKind,
   LinkedContentOfKind,
   dereferenceLinkedSpecimen,
-  dereferenceLinkedNoContent,
+  dereferenceLinkedNoContent, dereferenceLinkedDemo,
 } from "./linked-content";
 import {
   Action,
@@ -993,6 +993,11 @@ export const activeProject: IActiveProject = {
             return dereferenceLinkedSpecimen(
               projectProgramKind,
               linkedContentRef
+            );
+          case "demo":
+            return dereferenceLinkedDemo(
+                projectProgramKind,
+                linkedContentRef
             );
           default:
             return assertNever(linkedContentRef);
