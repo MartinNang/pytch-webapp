@@ -20,12 +20,14 @@ export const NavBanner = () => {
     if (menuDiv == null) return;
 
     let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
-      const mMenuDisplay = menuDiv.computedStyleMap().get("display");
-      if (mMenuDisplay == null) return;
+      if (window["computedStyleMap"] === "function") {
+        const mMenuDisplay = menuDiv.computedStyleMap().get("display");
+        if (mMenuDisplay == null) return;
 
-      const menuDisplay = mMenuDisplay as CSSKeywordValue;
-      if (menuIsExpanded && menuDisplay.value === "none") {
-        setMenuIsExpanded(false);
+        const menuDisplay = mMenuDisplay as CSSKeywordValue;
+        if (menuIsExpanded && menuDisplay.value === "none") {
+          setMenuIsExpanded(false);
+        }
       }
     });
 
