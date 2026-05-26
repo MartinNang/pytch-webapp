@@ -13,7 +13,7 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  SpecimenContentHash,
+  SpecimenContentHash, DemoContentHash,
 } from "./linked-content-core";
 import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
@@ -23,13 +23,25 @@ export type LessonDescriptor = {
   project: StandaloneProjectDescriptor;
 };
 
+export type DemoDescriptor = {
+  demoContentHash: DemoContentHash;
+  headings: string[];
+  chapters: string[];
+  displayName: string;
+  summaryMarkdown: string;
+  lastUpdated: string;
+  project: StandaloneProjectDescriptor;
+};
+
 type LinkedNoContent = { kind: "none" };
 
 const kLinkedNoContent: LinkedNoContent = { kind: "none" };
 
 export type LinkedSpecimen = { kind: "specimen"; lesson: LessonDescriptor };
 
-export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen;
+export type LinkedDemo = { kind: "demo"; demo:  DemoDescriptor};
+
+export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen | LinkedDemo;
 
 export type LinkedContentKind = LinkedContent["kind"];
 
