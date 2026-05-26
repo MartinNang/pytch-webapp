@@ -77,6 +77,14 @@ $navbar-single-row-height: 70px;
         color: inherit;
         cursor: pointer;
         @include white-hover-yellow();
+
+        &.dropdown-item {
+          color: black;
+
+          &:active {
+            color: white;
+          }
+        }
       }
 
       @media screen and (min-width: $width-breakpoint-lg) {
