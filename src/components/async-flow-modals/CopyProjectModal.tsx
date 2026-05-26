@@ -23,6 +23,7 @@ function specForKeepLink(ref: LinkedContentRef): TwoStateSwitchI18nSpec {
       case "jr-tutorial":
         return { tutorialName: ref.name };
       case "specimen":
+      case "demo":
         // Would be nice to know which one, but we don't have that info.
         return undefined;
       default:

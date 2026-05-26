@@ -62,6 +62,8 @@ export function eqLinkedContentRefs(
         ref2.kind === "specimen" &&
         ref1.specimenContentHash === ref2.specimenContentHash
       );
+    case "demo":
+      return ref2.kind === "demo";
     default:
       return assertNever(ref1);
   }

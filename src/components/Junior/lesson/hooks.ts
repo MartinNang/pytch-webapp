@@ -2,6 +2,7 @@ import { useStoreState } from "../../../store";
 import { LinkedJrTutorial } from "../../../model/junior/jr-tutorial";
 import {
   LinkedContentKind,
+  LinkedDemo,
   LinkedSpecimen,
 } from "../../../model/linked-content";
 
@@ -20,6 +21,8 @@ export const useHasLinkedLesson = () =>
   useHasLinkedContentOfKind("jr-tutorial");
 
 export const useHasLinkedSpecimen = () => useHasLinkedContentOfKind("specimen");
+
+export const useHasLinkedDemo = () => useHasLinkedContentOfKind("demo");
 
 export function useMappedLinkedJrTutorial<Result>(
   mapContent: (tutorial: LinkedJrTutorial) => Result,
@@ -60,6 +63,32 @@ export function useMappedLinkedSpecimen<Result>(
 
 export const useLinkedSpecimen = (): LinkedSpecimen =>
   useMappedLinkedSpecimen((specimen) => specimen);
+
+/** TODO It should be possible to make this work the same way as
+ * useMappedLinkedSpecimen(), i.e., throw an error if the linked content
+ * is not successfully loaded and of the correct kind.  In fact then we
+ * could pull out a common function, since the logic will be identical,
+ * and only the kind string and content type differ. */
+
+export function useMappedLinkedDemo<Result>(
+  mapContent: (specimen: LinkedDemo) => Result,
+  eqResult?: (prev: Result, next: Result) => boolean
+) {
+  return useStoreState((state) => {
+    const contentState = state.activeProject.linkedContentLoadingState;
+
+    if (contentState.kind !== "succeeded")
+      throw new Error("linked demo has not been loaded");
+
+    if (contentState.content.kind !== "demo")
+      throw new Error("linked content is wrong kind");
+
+    return mapContent(contentState.content);
+  }, eqResult);
+}
+
+export const useLinkedDemo = (): LinkedDemo =>
+  useMappedLinkedDemo((demo) => demo);
 
 // Not exactly a hook, but similar in spirit.
 export function focusChapterContent() {

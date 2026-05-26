@@ -13,10 +13,12 @@ import {
   LinkedContentRef,
   LinkedNoContentRef,
   LinkedSpecimenRef,
-  SpecimenContentHash, DemoContentHash,
+  SpecimenContentHash, DemoContentHash, LinkedDemoRef,
 } from "./linked-content-core";
 import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
+import { demoUrl } from "./project-from-demo";
+import {parseMarkdown} from "./demo-sidebar";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -64,6 +66,8 @@ export function linkedContentIsReferent(
         content.kind === "specimen" &&
         content.lesson.specimenContentHash === ref.specimenContentHash
       );
+    case "demo":
+      return false;
     default:
       return assertNever(ref);
   }
@@ -96,6 +100,43 @@ export async function lessonDescriptorFromRelativePath(
   );
 
   return { specimenContentHash, project };
+}
+
+
+async function fetchDemoChaptersFromMd(url: string): Promise<string | undefined> {
+  let res = await fetch(url);
+    return res.text();
+}
+
+export async function fetchDemo(slug: string) {
+  let response = await fetch("/data/demos/demos.json");
+  if (!response.ok) {
+    throw new Error(`Could not find demos.json`);
+  }
+  let demos = await response.json();
+  return demos.find((d: { slug: string }) => d.slug === slug);
+}
+
+async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
+  console.log('relative path', relativePath);
+  const mdUrl = demoUrl(`${slug}/description.md`);
+
+  const chaptersContent = await fetchDemoChaptersFromMd(mdUrl);
+  let demoChapters = null;
+  if (chaptersContent) {
+    demoChapters = parseMarkdown(chaptersContent);
+  }
+  const demo = await fetchDemo(slug);
+
+  return {
+    displayName: demo.displayName,
+    lastUpdated: demo.lastUpdated,
+    project: demo.project,
+    summaryMarkdown: demo.summaryMarkdown,
+    demoContentHash: slug,
+    headings: demoChapters?.headings || [],
+    chapters: demoChapters?.content || []
+  };
 }
 
 export async function dereferenceLinkedSpecimen(
@@ -176,3 +217,16 @@ function eqLCLSS(
 export function useLinkedContentLoadingStateSummary() {
   return useStoreState(mapLCLSS, eqLCLSS);
 }
+
+export async function dereferenceLinkedDemo(
+    programKind: PytchProgramKind,
+    ref: LinkedDemoRef
+): Promise<LinkedDemo> {
+  const contentHash = ref.slug;
+  const relativePath = `demos/${contentHash}`;
+
+  const demo = await demoDescriptorFromRelativePath(relativePath, ref.slug);
+
+  return { kind: "demo", demo };
+}
+
