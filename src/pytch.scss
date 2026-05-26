@@ -384,3 +384,8 @@ button.awaiting-action {
   margin-right: 1.25rem;
   box-shadow: 0px 0px 6px 4px $box-shadow-color;
 }
+
+.thumbnail-bg {
+  background-color: darken(#ebf5f9, 10);
+  overflow: hidden;
+}
