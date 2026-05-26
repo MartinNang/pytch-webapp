@@ -41,7 +41,7 @@ export type LinkedSpecimen = { kind: "specimen"; lesson: LessonDescriptor };
 
 export type LinkedDemo = { kind: "demo"; demo:  DemoDescriptor};
 
-export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen;
+export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen | LinkedDemo;
 
 export type LinkedContentKind = LinkedContent["kind"];
 
