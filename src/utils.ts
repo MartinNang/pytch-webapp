@@ -347,3 +347,13 @@ export function mDataAttrIntValue(elt: HTMLElement, attrName: string) {
   }
   return mIntValue;
 }
+
+export function mDataAttrStringValue(elt: HTMLElement, attrName: string) {
+  const mStrValue = elt.dataset[attrName];
+  if (mStrValue == null) {
+    console.warn(`Bad data attr for "${attrName}": "${mStrValue}"`);
+    return null;
+  }
+  return mStrValue;
+}
+
