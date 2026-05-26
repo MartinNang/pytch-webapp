@@ -210,17 +210,13 @@ export const StageControls: React.FC<EmptyProps> = () => {
       className="StageControls"
       aria-label={t("stage-controls.aria-label")}
     >
-      <div className="run-stop-controls">
-        <GreenFlag />
-        <RedStop />
-      </div>
+      <GreenFlag />
+      <RedStop />
       <Button
         className="leave-full-screen"
         variant={"secondary"}
         onClick={() => setIsFullScreen(false)}
-      >
-        <FontAwesomeIcon className="fa-lg" icon="compress" />
-      </Button>
+      ></Button>
     </section>
   ) : (
     <section
