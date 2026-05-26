@@ -17,6 +17,8 @@ import {
 } from "./linked-content-core";
 import {PytchProgramKind} from "./pytch-program";
 import { LinkedContentLoadingState } from "./project";
+import { demoUrl } from "./project-from-demo";
+import {parseMarkdown} from "./demo-sidebar";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
@@ -113,6 +115,28 @@ export async function fetchDemo(slug: string) {
   }
   let demos = await response.json();
   return demos.find((d: { slug: string }) => d.slug === slug);
+}
+
+async function demoDescriptorFromRelativePath(relativePath: string, slug: string): Promise<DemoDescriptor> {
+  console.log('relative path', relativePath);
+  const mdUrl = demoUrl(`${slug}/description.md`);
+
+  const chaptersContent = await fetchDemoChaptersFromMd(mdUrl);
+  let demoChapters = null;
+  if (chaptersContent) {
+    demoChapters = parseMarkdown(chaptersContent);
+  }
+  const demo = await fetchDemo(slug);
+
+  return {
+    displayName: demo.displayName,
+    lastUpdated: demo.lastUpdated,
+    project: demo.project,
+    summaryMarkdown: demo.summaryMarkdown,
+    demoContentHash: slug,
+    headings: demoChapters?.headings || [],
+    chapters: demoChapters?.content || []
+  };
 }
 
 export async function dereferenceLinkedSpecimen(
