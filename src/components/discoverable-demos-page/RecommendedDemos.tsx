@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import { Button, Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
 import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
@@ -15,6 +15,54 @@ import { CarouselRef } from "react-bootstrap/Carousel";
 import { assertNever } from "../../utils";
 import { format } from "date-fns/format";
 
+type DemoThumbnailProps = {
+  hover: boolean;
+  setHover: (hover: boolean) => void;
+  demo: DemoCatalogueEntry;
+  videoRef: RefObject<HTMLVideoElement | null>;
+};
+const DemoThumbnail: React.FC<DemoThumbnailProps> = ({
+  hover,
+  setHover,
+  demo,
+  videoRef,
+}) => {
+  const mVideoSrc = maybeDemoThumbnailVideoUrl(demo);
+  const hasThumbnailVideo = mVideoSrc != null;
+  const showVideo = hover && hasThumbnailVideo;
+  const showImage = !showVideo;
+
+  return (
+    <>
+      {hasThumbnailVideo ? (
+        <video
+          src={mVideoSrc}
+          controls={false}
+          autoPlay={true}
+          muted={true}
+          className={classNames("h-100 w-100 thumbnail-bg", {
+            showVideo,
+          })}
+          onMouseOver={() => {
+            setHover(true);
+          }}
+          onMouseOut={() => setHover(false)}
+          controlsList="nofullscreen"
+          ref={videoRef}
+          tabIndex={-1}
+        >
+          Your browser does not support the video tag.
+        </video>
+      ) : null}
+      <Card.Img
+        variant={"top"}
+        className={classNames("h-100 thumbnail-bg", { showImage })}
+        src={demoThumbnailImageUrl(demo)}
+      />
+    </>
+  );
+};
+
 export const RecommendedDemos = () => {
   function DemoCard({ demo }: { demo: DemoCatalogueEntry }) {
     const createProject = useStoreActions(
@@ -30,44 +78,6 @@ export const RecommendedDemos = () => {
 
     const cardRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-
-    const mVideoSrc = maybeDemoThumbnailVideoUrl(demo);
-    const hasThumbnailVideo = mVideoSrc != null;
-
-    const showVideo = hover && hasThumbnailVideo;
-    const showImage = !showVideo;
-
-    function DemoThumbnail() {
-      return (
-        <>
-          {hasThumbnailVideo ? (
-            <video
-              src={mVideoSrc}
-              controls={false}
-              autoPlay={true}
-              muted={true}
-              className={classNames("h-100 w-100 thumbnail-bg", {
-                showVideo,
-              })}
-              onMouseOver={() => {
-                setHover(true);
-              }}
-              onMouseOut={() => setHover(false)}
-              controlsList="nofullscreen"
-              ref={videoRef}
-              tabIndex={-1}
-            >
-              Your browser does not support the video tag.
-            </video>
-          ) : null}
-          <Card.Img
-            variant={"top"}
-            className={classNames("h-100 thumbnail-bg", { showImage })}
-            src={demoThumbnailImageUrl(demo)}
-          />
-        </>
-      );
-    }
 
     const handleMouseOverCard = () => {
       setHover(true);
@@ -108,7 +118,12 @@ export const RecommendedDemos = () => {
           }
         >
           <Card.Header className={"p-0 w-100 h-100"}>
-            <DemoThumbnail />
+            <DemoThumbnail
+              demo={demo}
+              hover={hover}
+              setHover={setHover}
+              videoRef={videoRef}
+            />
           </Card.Header>
         </Col>
         <Col xs={12} sm={6} md={6}>
