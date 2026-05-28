@@ -83,50 +83,49 @@ const ChaptersList: React.FC<ChaptersListProps> = ({ chaptersRef }) => {
     (state) => state.ideLayout.demoSidebar.activeChapter
   );
 
-    const handleChaptersListOnKeyDown: KeyboardEventHandler = (e) => {
-      switch (e.key) {
-        case "Enter": {
-          let currentContainer = document.activeElement;
-          let activeChapterButton = currentContainer?.children.item(
-            activeChapter
-          )?.firstElementChild as HTMLElement;
-          activeChapterButton?.focus();
-          break;
-        }
+  const handleChaptersListOnKeyDown: KeyboardEventHandler = (e) => {
+    switch (e.key) {
+      case "Enter": {
+        let currentContainer = document.activeElement;
+        let activeChapterButton = currentContainer?.children.item(activeChapter)
+          ?.firstElementChild as HTMLElement;
+        activeChapterButton?.focus();
+        break;
       }
-    };
-
-    return (
-      <Row tabIndex={-1} className={"nav-tree"}>
-        <Col xs={1} className={"p-0 m-0"}>
-          <div className={"tree"}>
-            <div className={"stem"} />
-            {headings.map((_, index) => {
-              return <div key={`${demoUuid}/${index}`} className={"branch"} />;
-            })}
-          </div>
-        </Col>
-        <Col className={"p-0 m-0"}>
-          <ul
-            className={"chapters-list m-0 p-0"}
-            tabIndex={-1}
-            onKeyDown={handleChaptersListOnKeyDown}
-          >
-            {headings.map((heading: string, index: number) => {
-              return (
-                <ChapterHeading
-                  key={`${demoUuid}/${index}`}
-                  index={index}
-                  heading={heading}
-                  chaptersRef={chaptersRef}
-                />
-              );
-            })}
-          </ul>
-        </Col>
-      </Row>
-    );
+    }
   };
+
+  return (
+    <Row tabIndex={-1} className={"nav-tree"}>
+      <Col xs={1} className={"p-0 m-0"}>
+        <div className={"tree"}>
+          <div className={"stem"} />
+          {headings.map((_, index) => {
+            return <div key={`${demoUuid}/${index}`} className={"branch"} />;
+          })}
+        </div>
+      </Col>
+      <Col className={"p-0 m-0"}>
+        <ul
+          className={"chapters-list m-0 p-0"}
+          tabIndex={-1}
+          onKeyDown={handleChaptersListOnKeyDown}
+        >
+          {headings.map((heading: string, index: number) => {
+            return (
+              <ChapterHeading
+                key={`${demoUuid}/${index}`}
+                index={index}
+                heading={heading}
+                chaptersRef={chaptersRef}
+              />
+            );
+          })}
+        </ul>
+      </Col>
+    </Row>
+  );
+};
 
 export const ChaptersOverview = ({
   chaptersRef,
