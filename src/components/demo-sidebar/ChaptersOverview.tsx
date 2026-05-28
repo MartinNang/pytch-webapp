@@ -95,12 +95,16 @@ const ChaptersList: React.FC<ChaptersListProps> = ({ chaptersRef }) => {
     }
   };
 
+  // In the below, the combination of a demo-uuid and a chapter index
+  // does identify something unique, so we can hush eslint safely.
+
   return (
     <Row tabIndex={-1} className={"nav-tree"}>
       <Col xs={1} className={"p-0 m-0"}>
         <div className={"tree"}>
           <div className={"stem"} />
           {headings.map((_, index) => {
+            // eslint-disable-next-line @eslint-react/no-array-index-key
             return <div key={`${demoUuid}/${index}`} className={"branch"} />;
           })}
         </div>
@@ -114,6 +118,7 @@ const ChaptersList: React.FC<ChaptersListProps> = ({ chaptersRef }) => {
           {headings.map((heading: string, index: number) => {
             return (
               <ChapterHeading
+                // eslint-disable-next-line @eslint-react/no-array-index-key
                 key={`${demoUuid}/${index}`}
                 index={index}
                 heading={heading}
