@@ -30,9 +30,7 @@ export const DemoSidebar = () => {
   chaptersRef.current = chaptersRef.current.slice(0, nChapters);
 
   useEffect(() => {
-    if (nChapters > 1) {
-      setIsNavigationExpanded(true);
-    } else setIsNavigationExpanded(false);
+    setIsNavigationExpanded(nChapters > 1);
 
     // reset to prevent new demo from starting at a non-existing chapter
     // on load
