@@ -14,6 +14,7 @@ import classNames from "classnames";
 import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
 import { format } from "date-fns";
+import { DemoThumbnailContent } from "./DemoThumbnailContent";
 
 type DemoCardProps = {
   demo: DemoCatalogueEntry;
@@ -81,36 +82,6 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const showVideo = hover && hasThumbnailVideo;
   const showImage = !showVideo;
 
-  function DemoThumbnailContent() {
-    return (
-      <>
-        {hasThumbnailVideo ? (
-          <video
-            src={mVideoSrc}
-            controls={false}
-            autoPlay={true}
-            muted={true}
-            className={classNames("h-100 w-100 thumbnail-bg", {
-              showVideo,
-            })}
-            onMouseOver={() => setHover(true)}
-            onMouseOut={() => setHover(false)}
-            controlsList="nofullscreen"
-            ref={videoRef}
-            tabIndex={-1}
-          >
-            Your browser does not support the video tag.
-          </video>
-        ) : null}
-        <Card.Img
-          variant={"top"}
-          className={classNames("h-100 thumbnail-bg", { showImage })}
-          src={demoThumbnailImageUrl(demo)}
-        />
-      </>
-    );
-  }
-
   const absTimestamp = format(demo.lastUpdated, "PP");
 
   return (
@@ -149,7 +120,12 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         </Row>
         <div className={"thumbnail-wrapper p-1"}>
           <div className={"thumbnail"}>
-            <DemoThumbnailContent />
+            <DemoThumbnailContent
+              demo={demo}
+              hover={hover}
+              setHover={setHover}
+              videoRef={videoRef}
+            />
           </div>
         </div>
       </Card.Header>
