@@ -2,7 +2,7 @@ import { Button, Col, Collapse, Container, Row } from "react-bootstrap";
 import Markdown from "react-markdown";
 import React, { KeyboardEventHandler, RefObject } from "react";
 import { useStoreActions, useStoreState } from "../../store";
-import { useLinkedDemo, useMappedLinkedDemo } from "../Junior/lesson/hooks";
+import { useMappedLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
 
 type ChapterHeadingProps = {
