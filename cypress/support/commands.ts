@@ -161,7 +161,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("pytchHomeFromIDE", () => {
-  cy.get('button *[aria-label="Home"]').click();
+  cy.get('a *[aria-label="Home"]').click();
   assertOnHomepage();
 });
 
