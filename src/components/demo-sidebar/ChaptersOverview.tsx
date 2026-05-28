@@ -47,7 +47,6 @@ const ChapterHeading: React.FC<ChapterHeadingProps> = ({
 
   return (
     <li
-      key={index}
       ref={(el) => {
         if (active) {
           el?.scrollIntoView({
@@ -60,7 +59,6 @@ const ChapterHeading: React.FC<ChapterHeadingProps> = ({
       className={"py-0 ps-0 pe-3 rounded-3"}
     >
       <Button
-        key={index}
         tabIndex={index === 0 ? 0 : -1}
         className={classNames("py-2 px-3 rounded-3 mt-2", { active })}
         onClick={() => {
