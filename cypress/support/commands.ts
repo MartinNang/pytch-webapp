@@ -198,7 +198,8 @@ const createTutorialProject = (
   }
 
   cy.contains("My projects").click();
-  cy.contains("Tutorials").click();
+  cy.pytchTutorialsFromHome();
+
   cy.get(`.TutorialCard[data-slug="${tutorialSlug}"]`).within(() => {
     cy.contains(buttonContent).click();
   });
