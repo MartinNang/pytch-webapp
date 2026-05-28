@@ -56,17 +56,14 @@ export const DemoSidebar = () => {
       </Row>
   );
 
-  function DemoFooter() {
     const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
-
-    return (
+  const demoFooter = (
       <Row className={"demo-footer py-3 px-3"}>
         <div>
           <p>Published on {absTimestamp}</p>
         </div>
       </Row>
-    );
-  }
+  );
 
   return (
     <div className="DemoSidebar" tabIndex={-1}>
@@ -77,7 +74,7 @@ export const DemoSidebar = () => {
             {demoSubheader}
             <ChaptersOverview chaptersRef={chaptersRef} />
             <DemoChapter />
-            <DemoFooter />
+            {demoFooter}
           </Container>
         </div>
       </div>
