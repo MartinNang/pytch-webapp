@@ -10,15 +10,13 @@ import React, {
 import { useStoreActions, useStoreState } from "../../store";
 import { useLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
+import { EmptyProps } from "../../utils";
 
-export const DemoChapter = () => {
+const DemoChapterNavigation: React.FC<EmptyProps> = () => {
+  const linkedDemo = useLinkedDemo();
   const activeChapter = useStoreState(
     (state) => state.ideLayout.demoSidebar.activeChapter
   );
-  const isNavigationExpanded = useStoreState(
-    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
-  );
-
   const setActiveChapter = useStoreActions(
     (actions) => actions.ideLayout.demoSidebar.setActiveChapter
   );
@@ -37,11 +35,8 @@ export const DemoChapter = () => {
     navNextChapterRef.current?.focus();
   }, [rightButtonPressed]);
 
-  const linkedDemo = useLinkedDemo();
   const headings = linkedDemo.demo.headings;
-  const chapters = linkedDemo.demo.chapters;
 
-  function DemoChapterNavigation() {
     function handlePrevChapterClicked() {
       if (headings.length) {
         let newActiveChapter = activeChapter - 1;
@@ -134,6 +129,18 @@ export const DemoChapter = () => {
       </>
     );
   }
+
+export const DemoChapter = () => {
+  const activeChapter = useStoreState(
+    (state) => state.ideLayout.demoSidebar.activeChapter
+  );
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
+
+  const linkedDemo = useLinkedDemo();
+  const headings = linkedDemo.demo.headings;
+  const chapters = linkedDemo.demo.chapters;
 
   return (
     <Row className={"demo-chapter"}>
