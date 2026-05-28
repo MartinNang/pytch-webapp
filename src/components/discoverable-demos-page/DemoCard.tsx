@@ -4,10 +4,8 @@ import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
 import {
   DemoCatalogueEntry,
-  demoThumbnailImageUrl,
   displayDemoKindName,
   getProgramKindIcon,
-  maybeDemoThumbnailVideoUrl,
   resetVideo,
 } from "../../model/discoverable-demos";
 import classNames from "classnames";
@@ -76,11 +74,6 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
   const isSnippet: boolean = demo.demoKind === "snippet";
 
   const focusContext = useFocusContext();
-  const mVideoSrc = maybeDemoThumbnailVideoUrl(demo);
-  const hasThumbnailVideo = mVideoSrc != null;
-
-  const showVideo = hover && hasThumbnailVideo;
-  const showImage = !showVideo;
 
   const absTimestamp = format(demo.lastUpdated, "PP");
 
