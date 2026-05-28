@@ -44,8 +44,7 @@ export const DemoSidebar = () => {
     navCaretRef.current?.focus();
   }, [isNavigationExpanded]);
 
-  function DemoSubheader() {
-    return (
+  const demoSubheader = (
       <Row
         className={classNames(
           "demo-sub-header",
@@ -55,8 +54,7 @@ export const DemoSidebar = () => {
       >
         <Col>{linkedDemo.demo.summaryMarkdown}</Col>
       </Row>
-    );
-  }
+  );
 
   function DemoFooter() {
     const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
@@ -76,7 +74,7 @@ export const DemoSidebar = () => {
         <div className="inner-content">
           <Container>
             <DemoHeader chaptersRef={chaptersRef} navCaretRef={navCaretRef} />
-            <DemoSubheader />
+            {demoSubheader}
             <ChaptersOverview chaptersRef={chaptersRef} />
             <DemoChapter />
             <DemoFooter />
