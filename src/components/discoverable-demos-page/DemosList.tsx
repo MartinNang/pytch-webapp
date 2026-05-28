@@ -279,7 +279,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
 
   useEffect(() => {
     maybeLoadContent();
-  }, []);
+  }, [maybeLoadContent]);
 
   useEffect(() => {
     document.title = "Pytch: Demos";
