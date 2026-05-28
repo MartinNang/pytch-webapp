@@ -36,80 +36,62 @@ export const DemoHeader = ({
   const linkedDemo = useLinkedDemo();
   const nChapters = linkedDemo.demo.headings.length;
 
-  function DemoHeaderContent() {
-    function DemoName() {
-      return (
-        <div className={classNames("px-0", "py-1", "m-0", "ps-2", "w-auto")}>
-          <h1>{linkedDemo.demo.displayName}</h1>
-        </div>
-      );
-    }
+  const demoName = (
+    <div className={classNames("px-0", "py-1", "m-0", "ps-2", "w-auto")}>
+      <h1>{linkedDemo.demo.displayName}</h1>
+    </div>
+  );
 
-    function DemoChapterCount() {
-      return (
-        <div className={classNames("chapter-pill", "rounded-pill")}>
-          <FontAwesomeIcon icon={"layer-group"} />
-          <span aria-label={`Chapter ${activeChapter + 1} out of ${nChapters}`}>
-            {activeChapter + 1}/{nChapters}
-          </span>
-        </div>
-      );
-    }
+  const demoChapterCount = (
+    <div className={classNames("chapter-pill", "rounded-pill")}>
+      <FontAwesomeIcon icon={"layer-group"} />
+      <span aria-label={`Chapter ${activeChapter + 1} out of ${nChapters}`}>
+        {activeChapter + 1}/{nChapters}
+      </span>
+    </div>
+  );
 
-    function DemoChapterNavButton() {
-      return (
-        <Button
-          aria-label={"Expand or collapse chapters navigation menu"}
-          className={classNames("w-auto", "caret", "p-0", "ms-2", {
-            isNavigationExpanded,
-          })}
-          key={"nav-caret"}
-          id={"nav-caret"}
-          ref={navCaretRef}
-          onClick={() => {
-            setIsNavigationExpanded(!isNavigationExpanded);
-            navCaretRef.current?.focus();
-          }}
-          onFocus={() => {
-            chaptersRef.current[activeChapter]?.scrollIntoView({
-              behavior: "smooth",
-            });
-          }}
-        >
-          <FontAwesomeIcon
-            icon={"caret-down"}
-            className={classNames("nav-caret", { isNavigationExpanded })}
-          />
-        </Button>
-      );
-    }
+  const demoChapterNavButton = (
+    <Button
+      aria-label={"Expand or collapse chapters navigation menu"}
+      className={classNames("w-auto", "caret", "p-0", "ms-2", {
+        isNavigationExpanded,
+      })}
+      key={"nav-caret"}
+      id={"nav-caret"}
+      ref={navCaretRef}
+      onClick={() => {
+        setIsNavigationExpanded(!isNavigationExpanded);
+        navCaretRef.current?.focus();
+      }}
+      onFocus={() => {
+        chaptersRef.current[activeChapter]?.scrollIntoView({
+          behavior: "smooth",
+        });
+      }}
+    >
+      <FontAwesomeIcon
+        icon={"caret-down"}
+        className={classNames("nav-caret", { isNavigationExpanded })}
+      />
+    </Button>
+  );
 
-    function DemoHeaderMono() {
-      return <DemoName />;
-    }
+  const demoHeaderMono = demoName;
 
-    function DemoHeaderStructured() {
-      return (
-        <>
-          <DemoName />
-          <div className={classNames("w-auto", "d-flex")}>
-            <DemoChapterCount />
-            <DemoChapterNavButton />
-          </div>
-        </>
-      );
-    }
-
-    if (nChapters > 1) {
-      return <DemoHeaderStructured />;
-    } else {
-      return <DemoHeaderMono />;
-    }
-  }
+  const demoHeaderStructured = (
+    <>
+      {demoName}
+      <div className={classNames("w-auto", "d-flex")}>
+        {demoChapterCount}
+        {demoChapterNavButton}
+      </div>
+    </>
+  );
 
   return (
     <Row className={classNames("demo-header", "p-3")}>
-      <DemoHeaderContent />
+      {nChapters > 1 ? demoHeaderStructured : demoHeaderMono}
     </Row>
   );
 };

@@ -30,14 +30,12 @@ export const DemoSidebar = () => {
   chaptersRef.current = chaptersRef.current.slice(0, nChapters);
 
   useEffect(() => {
-    if (nChapters > 1) {
-      setIsNavigationExpanded(true);
-    } else setIsNavigationExpanded(false);
+    setIsNavigationExpanded(nChapters > 1);
 
     // reset to prevent new demo from starting at a non-existing chapter
     // on load
     setActiveChapter(0);
-  }, []);
+  }, [nChapters, setIsNavigationExpanded, setActiveChapter]);
 
   // the following useEffect methods are needed to return focus to the
   // previously used button after scrolling to the active chapter in the
@@ -46,31 +44,26 @@ export const DemoSidebar = () => {
     navCaretRef.current?.focus();
   }, [isNavigationExpanded]);
 
-  function DemoSubheader() {
-    return (
-      <Row
-        className={classNames(
-          "demo-sub-header",
-          "px-4",
-          linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
-        )}
-      >
-        <Col>{linkedDemo.demo.summaryMarkdown}</Col>
-      </Row>
-    );
-  }
+  const demoSubheader = (
+    <Row
+      className={classNames(
+        "demo-sub-header",
+        "px-4",
+        linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
+      )}
+    >
+      <Col>{linkedDemo.demo.summaryMarkdown}</Col>
+    </Row>
+  );
 
-  function DemoFooter() {
-    const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
-
-    return (
-      <Row className={"demo-footer py-3 px-3"}>
-        <div>
-          <p>Published on {absTimestamp}</p>
-        </div>
-      </Row>
-    );
-  }
+  const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
+  const demoFooter = (
+    <Row className={"demo-footer py-3 px-3"}>
+      <div>
+        <p>Published on {absTimestamp}</p>
+      </div>
+    </Row>
+  );
 
   return (
     <div className="DemoSidebar" tabIndex={-1}>
@@ -78,10 +71,10 @@ export const DemoSidebar = () => {
         <div className="inner-content">
           <Container>
             <DemoHeader chaptersRef={chaptersRef} navCaretRef={navCaretRef} />
-            <DemoSubheader />
+            {demoSubheader}
             <ChaptersOverview chaptersRef={chaptersRef} />
             <DemoChapter />
-            <DemoFooter />
+            {demoFooter}
           </Container>
         </div>
       </div>

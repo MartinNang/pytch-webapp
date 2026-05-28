@@ -279,7 +279,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
 
   useEffect(() => {
     maybeLoadContent();
-  }, []);
+  }, [maybeLoadContent]);
 
   useEffect(() => {
     document.title = "Pytch: Demos";
@@ -288,7 +288,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
   return (
     <>
       <CreateProjectFromDemoModal />
-      <FocusContext.Provider value={focusContext}>
+      <FocusContext value={focusContext}>
         <NavBanner />
         <div className="DemosList" tabIndex={-1} ref={paneRef}>
           <DemosHeader />
@@ -314,7 +314,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
             <DemosContent />
           </FocusGroupContainer>
         </div>
-      </FocusContext.Provider>
+      </FocusContext>
     </>
   );
 };

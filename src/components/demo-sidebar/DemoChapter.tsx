@@ -10,15 +10,13 @@ import React, {
 import { useStoreActions, useStoreState } from "../../store";
 import { useLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
+import { EmptyProps } from "../../utils";
 
-export const DemoChapter = () => {
+const DemoChapterNavigation: React.FC<EmptyProps> = () => {
+  const linkedDemo = useLinkedDemo();
   const activeChapter = useStoreState(
     (state) => state.ideLayout.demoSidebar.activeChapter
   );
-  const isNavigationExpanded = useStoreState(
-    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
-  );
-
   const setActiveChapter = useStoreActions(
     (actions) => actions.ideLayout.demoSidebar.setActiveChapter
   );
@@ -37,103 +35,112 @@ export const DemoChapter = () => {
     navNextChapterRef.current?.focus();
   }, [rightButtonPressed]);
 
+  const headings = linkedDemo.demo.headings;
+
+  function handlePrevChapterClicked() {
+    if (headings.length) {
+      let newActiveChapter = activeChapter - 1;
+      if (newActiveChapter < 0) newActiveChapter = headings.length - 1;
+      setActiveChapter(newActiveChapter);
+      setLeftButtonPressed(!leftButtonPressed);
+    } else return 0;
+  }
+
+  const handlePrevChapterKeyDown: KeyboardEventHandler = (e) => {
+    switch (e.key) {
+      case "ArrowDown":
+      case "ArrowRight": {
+        e.preventDefault();
+        handleFocusOnNextChapter();
+        break;
+      }
+      case "ArrowLeft":
+      case "ArrowUp":
+        e.preventDefault();
+        break;
+    }
+  };
+
+  function handleFocusOnPrevChapter() {
+    let currentButton = document.activeElement;
+    let prevButton = currentButton?.previousElementSibling as HTMLElement;
+    prevButton?.focus();
+  }
+
+  function handleNextChapterClicked() {
+    if (headings.length) {
+      let newActiveChapter = activeChapter + 1;
+      if (newActiveChapter >= headings.length) newActiveChapter = 0;
+      setActiveChapter(newActiveChapter);
+      setRightButtonPressed(!rightButtonPressed);
+    } else return 0;
+  }
+
+  const handleNextChapterKeyDown: KeyboardEventHandler = (e) => {
+    switch (e.key) {
+      case "ArrowUp":
+      case "ArrowLeft": {
+        e.preventDefault();
+        handleFocusOnPrevChapter();
+        break;
+      }
+      case "ArrowDown":
+      case "ArrowRight":
+        e.preventDefault();
+        break;
+    }
+  };
+
+  function handleFocusOnNextChapter() {
+    let currentButton = document.activeElement;
+    let nextButton = currentButton?.nextElementSibling as HTMLElement;
+    nextButton?.focus();
+  }
+
+  return (
+    <>
+      <Button
+        key={"prev-chapter"}
+        ref={navPrevChapterRef}
+        aria-label={"Previous chapter"}
+        variant={"primary"}
+        className={"prev-chapter"}
+        onClick={handlePrevChapterClicked}
+        onKeyDown={handlePrevChapterKeyDown}
+      >
+        <FontAwesomeIcon
+          icon={"angle-right"}
+          color={"white"}
+          flip={"horizontal"}
+        />
+      </Button>
+      <Button
+        key={"next-chapter"}
+        aria-label={"Next chapter"}
+        tabIndex={-1}
+        ref={navNextChapterRef}
+        variant={"primary"}
+        className={"ms-1 next-chapter"}
+        onClick={handleNextChapterClicked}
+        onKeyDown={handleNextChapterKeyDown}
+      >
+        <FontAwesomeIcon icon={"angle-right"} color={"white"} />
+      </Button>
+    </>
+  );
+};
+
+export const DemoChapter = () => {
+  const activeChapter = useStoreState(
+    (state) => state.ideLayout.demoSidebar.activeChapter
+  );
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
+
   const linkedDemo = useLinkedDemo();
   const headings = linkedDemo.demo.headings;
   const chapters = linkedDemo.demo.chapters;
-
-  function DemoChapterNavigation() {
-    function handlePrevChapterClicked() {
-      if (headings.length) {
-        let newActiveChapter = activeChapter - 1;
-        if (newActiveChapter < 0) newActiveChapter = headings.length - 1;
-        setActiveChapter(newActiveChapter);
-        setLeftButtonPressed(!leftButtonPressed);
-      } else return 0;
-    }
-
-    const handlePrevChapterKeyDown: KeyboardEventHandler = (e) => {
-      switch (e.key) {
-        case "ArrowDown":
-        case "ArrowRight": {
-          e.preventDefault();
-          handleFocusOnNextChapter();
-          break;
-        }
-        case "ArrowLeft":
-        case "ArrowUp":
-          e.preventDefault();
-          break;
-      }
-    };
-
-    function handleFocusOnPrevChapter() {
-      let currentButton = document.activeElement;
-      let prevButton = currentButton?.previousElementSibling as HTMLElement;
-      prevButton?.focus();
-    }
-
-    function handleNextChapterClicked() {
-      if (headings.length) {
-        let newActiveChapter = activeChapter + 1;
-        if (newActiveChapter >= headings.length) newActiveChapter = 0;
-        setActiveChapter(newActiveChapter);
-        setRightButtonPressed(!rightButtonPressed);
-      } else return 0;
-    }
-
-    const handleNextChapterKeyDown: KeyboardEventHandler = (e) => {
-      switch (e.key) {
-        case "ArrowUp":
-        case "ArrowLeft": {
-          e.preventDefault();
-          handleFocusOnPrevChapter();
-          break;
-        }
-        case "ArrowDown":
-        case "ArrowRight":
-          e.preventDefault();
-          break;
-      }
-    };
-
-    function handleFocusOnNextChapter() {
-      let currentButton = document.activeElement;
-      let nextButton = currentButton?.nextElementSibling as HTMLElement;
-      nextButton?.focus();
-    }
-
-    return (
-      <>
-        <Button
-          key={"prev-chapter"}
-          ref={navPrevChapterRef}
-          aria-label={"Previous chapter"}
-          variant={"primary"}
-          className={"prev-chapter"}
-          onClick={handlePrevChapterClicked}
-          onKeyDown={handlePrevChapterKeyDown}
-        >
-          <FontAwesomeIcon
-            icon={"angle-right"}
-            color={"white"}
-            flip={"horizontal"}
-          />
-        </Button>
-        <Button
-          key={"next-chapter"}
-          aria-label={"Next chapter"}
-          tabIndex={-1}
-          ref={navNextChapterRef}
-          variant={"primary"}
-          className={"ms-1 next-chapter"}
-          onClick={handleNextChapterClicked}
-          onKeyDown={handleNextChapterKeyDown}
-        >
-          <FontAwesomeIcon icon={"angle-right"} color={"white"} />
-        </Button>
-      </>
-    );
-  }
 
   return (
     <Row className={"demo-chapter"}>

@@ -4,150 +4,117 @@ import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
 import {
   DemoCatalogueEntry,
-  demoThumbnailImageUrl,
   displayDemoKindName,
   getProgramKindIcon,
-  maybeDemoThumbnailVideoUrl,
   resetVideo,
 } from "../../model/discoverable-demos";
 import classNames from "classnames";
 import { CarouselRef } from "react-bootstrap/Carousel";
 import { assertNever } from "../../utils";
 import { format } from "date-fns/format";
+import { DemoThumbnailContent } from "./DemoThumbnailContent";
+
+type DemoCardProps = { demo: DemoCatalogueEntry };
+const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
+  const createProject = useStoreActions(
+    (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
+  );
+
+  const isGame: boolean = demo.demoKind === "game";
+  const isSnippet: boolean = demo.demoKind === "snippet";
+
+  const linkRef = useRef<HTMLAnchorElement>(null);
+
+  const [hover, setHover] = useState<boolean>(false);
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleMouseOverCard = () => {
+    setHover(true);
+    resetVideo(videoRef);
+  };
+
+  const handleMouseOutCard = () => {
+    setHover(false);
+  };
+
+  const handleFocusCard = () => {
+    setHover(true);
+    resetVideo(videoRef);
+  };
+
+  const handleBlurCard = () => {
+    setHover(false);
+  };
+
+  const programKindIcon = getProgramKindIcon(demo.programKind);
+  const absTimestamp = format(demo.lastUpdated, "PP");
+
+  return (
+    <Card
+      className={"recommended-card flex-sm-row card"}
+      ref={cardRef}
+      onMouseOver={handleMouseOverCard}
+      onMouseOut={handleMouseOutCard}
+      onFocus={handleFocusCard}
+      onBlur={handleBlurCard}
+    >
+      <Col
+        xs={12}
+        sm={6}
+        md={6}
+        className={
+          "card-header-wrapper d-flex justify-content-center align-items-center p-1"
+        }
+      >
+        <Card.Header className={"p-0 w-100 h-100"}>
+          <DemoThumbnailContent
+            demo={demo}
+            hover={hover}
+            setHover={setHover}
+            videoRef={videoRef}
+          />
+        </Card.Header>
+      </Col>
+      <Col xs={12} sm={6} md={6}>
+        <Card.Body className={"p-3 px-4 d-flex flex-column"}>
+          <Row className={"pill-row p-0 m-0 mb-3"}>
+            <Button className={"pill-icon flat-icon"}>
+              <img src={programKindIcon.src} alt={programKindIcon.alt} />
+            </Button>
+
+            <div
+              className={classNames(
+                "ms-auto",
+                "pill-demo-kind",
+                { isGame },
+                { isSnippet }
+              )}
+            >
+              <p>{displayDemoKindName(demo.demoKind)}</p>
+            </div>
+          </Row>
+          <Link
+            ref={linkRef}
+            to={""}
+            onClick={() => createProject({ uuid: demo.uuid })}
+          >
+            <h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3>
+          </Link>
+          <p className={"demo-description"}>{demo.summaryMarkdown}</p>
+          <Row className={"footer-row"}>
+            <Col xs={12} sm={6} className={"align-items-end d-flex"}>
+              <p className={"m-0"}>{absTimestamp}</p>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Col>
+    </Card>
+  );
+};
 
 export const RecommendedDemos = () => {
-  function DemoCard({ demo }: { demo: DemoCatalogueEntry }) {
-    const createProject = useStoreActions(
-      (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
-    );
-
-    const isGame: boolean = demo.demoKind === "game";
-    const isSnippet: boolean = demo.demoKind === "snippet";
-
-    const linkRef = useRef<HTMLAnchorElement>(null);
-
-    const [hover, setHover] = useState<boolean>(false);
-
-    const cardRef = useRef<HTMLDivElement>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
-
-    const mVideoSrc = maybeDemoThumbnailVideoUrl(demo);
-    const hasThumbnailVideo = mVideoSrc != null;
-
-    const showVideo = hover && hasThumbnailVideo;
-    const showImage = !showVideo;
-
-    function DemoThumbnail() {
-      return (
-        <>
-          {hasThumbnailVideo ? (
-            <video
-              src={mVideoSrc}
-              controls={false}
-              autoPlay={true}
-              muted={true}
-              className={classNames("h-100 w-100 thumbnail-bg", {
-                showVideo,
-              })}
-              onMouseOver={() => {
-                setHover(true);
-              }}
-              onMouseOut={() => setHover(false)}
-              controlsList="nofullscreen"
-              ref={videoRef}
-              tabIndex={-1}
-            >
-              Your browser does not support the video tag.
-            </video>
-          ) : null}
-          <Card.Img
-            variant={"top"}
-            className={classNames("h-100 thumbnail-bg", { showImage })}
-            src={demoThumbnailImageUrl(demo)}
-          />
-        </>
-      );
-    }
-
-    const handleMouseOverCard = () => {
-      setHover(true);
-      resetVideo(videoRef);
-    };
-
-    const handleMouseOutCard = () => {
-      setHover(false);
-    };
-
-    const handleFocusCard = () => {
-      setHover(true);
-      resetVideo(videoRef);
-    };
-
-    const handleBlurCard = () => {
-      setHover(false);
-    };
-
-    const programKindIcon = getProgramKindIcon(demo.programKind);
-    const absTimestamp = format(demo.lastUpdated, "PP");
-
-    return (
-      <Card
-        className={"recommended-card flex-sm-row card"}
-        ref={cardRef}
-        onMouseOver={handleMouseOverCard}
-        onMouseOut={handleMouseOutCard}
-        onFocus={handleFocusCard}
-        onBlur={handleBlurCard}
-      >
-        <Col
-          xs={12}
-          sm={6}
-          md={6}
-          className={
-            "card-header-wrapper d-flex justify-content-center align-items-center p-1"
-          }
-        >
-          <Card.Header className={"p-0 w-100 h-100"}>
-            <DemoThumbnail />
-          </Card.Header>
-        </Col>
-        <Col xs={12} sm={6} md={6}>
-          <Card.Body className={"p-3 px-4 d-flex flex-column"}>
-            <Row className={"pill-row p-0 m-0 mb-3"}>
-              <Button className={"pill-icon flat-icon"}>
-                <img src={programKindIcon.src} alt={programKindIcon.alt} />
-              </Button>
-
-              <div
-                className={classNames(
-                  "ms-auto",
-                  "pill-demo-kind",
-                  { isGame },
-                  { isSnippet }
-                )}
-              >
-                <p>{displayDemoKindName(demo.demoKind)}</p>
-              </div>
-            </Row>
-            <Link
-              ref={linkRef}
-              to={""}
-              onClick={() => createProject({ uuid: demo.uuid })}
-            >
-              <h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3>
-            </Link>
-            <p className={"demo-description"}>{demo.summaryMarkdown}</p>
-            <Row className={"footer-row"}>
-              <Col xs={12} sm={6} className={"align-items-end d-flex"}>
-                <p className={"m-0"}>{absTimestamp}</p>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Col>
-      </Card>
-    );
-  }
-
   const recommendedIndex = useStoreState(
     (state) => state.discoverableDemos.recommendedIndex
   );
