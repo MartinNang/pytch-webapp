@@ -35,7 +35,7 @@ export const DemoSidebar = () => {
     // reset to prevent new demo from starting at a non-existing chapter
     // on load
     setActiveChapter(0);
-  }, []);
+  }, [nChapters, setIsNavigationExpanded, setActiveChapter]);
 
   // the following useEffect methods are needed to return focus to the
   // previously used button after scrolling to the active chapter in the
