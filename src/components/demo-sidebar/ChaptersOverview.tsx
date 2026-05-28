@@ -23,57 +23,57 @@ const ChapterHeading: React.FC<ChapterHeadingProps> = ({
     (actions) => actions.ideLayout.demoSidebar.setActiveChapter
   );
 
-      const handleChapterHeadingOnKeyDown: KeyboardEventHandler = (e) => {
-        let currentButton = document.activeElement;
-        switch (e.key) {
-          case "ArrowUp":
-          case "ArrowLeft": {
-            let previousButton = currentButton?.parentElement
-              ?.previousElementSibling?.firstElementChild as HTMLElement;
-            previousButton.focus();
-            break;
-          }
-          case "ArrowDown":
-          case "ArrowRight": {
-            let nextButton = currentButton?.parentElement?.nextElementSibling
-              ?.firstElementChild as HTMLElement;
-            nextButton.focus();
-            break;
-          }
+  const handleChapterHeadingOnKeyDown: KeyboardEventHandler = (e) => {
+    let currentButton = document.activeElement;
+    switch (e.key) {
+      case "ArrowUp":
+      case "ArrowLeft": {
+        let previousButton = currentButton?.parentElement
+          ?.previousElementSibling?.firstElementChild as HTMLElement;
+        previousButton.focus();
+        break;
+      }
+      case "ArrowDown":
+      case "ArrowRight": {
+        let nextButton = currentButton?.parentElement?.nextElementSibling
+          ?.firstElementChild as HTMLElement;
+        nextButton.focus();
+        break;
+      }
+    }
+  };
+
+  const active = index === activeChapter;
+
+  return (
+    <li
+      key={index}
+      ref={(el) => {
+        if (active) {
+          el?.scrollIntoView({
+            block: "center",
+            //FIXME: smooth scroll snaps to top of parent before scrolling;
+            // this becomes more noticable with higher chapter counts
+          });
         }
-      };
-
-      const active = index === activeChapter;
-
-      return (
-        <li
-          key={index}
-          ref={(el) => {
-            if (active) {
-              el?.scrollIntoView({
-                block: "center",
-                //FIXME: smooth scroll snaps to top of parent before scrolling;
-                // this becomes more noticable with higher chapter counts
-              });
-            }
-          }}
-          className={"py-0 ps-0 pe-3 rounded-3"}
-        >
-          <Button
-            key={index}
-            tabIndex={index === 0 ? 0 : -1}
-            className={classNames("py-2 px-3 rounded-3 mt-2", { active })}
-            onClick={() => {
-              setActiveChapter(index);
-              chaptersRef.current[index]?.focus(); // FIXME
-            }}
-            onKeyDown={handleChapterHeadingOnKeyDown}
-          >
-            <Markdown>{heading}</Markdown>
-          </Button>
-        </li>
-      );
-    };
+      }}
+      className={"py-0 ps-0 pe-3 rounded-3"}
+    >
+      <Button
+        key={index}
+        tabIndex={index === 0 ? 0 : -1}
+        className={classNames("py-2 px-3 rounded-3 mt-2", { active })}
+        onClick={() => {
+          setActiveChapter(index);
+          chaptersRef.current[index]?.focus(); // FIXME
+        }}
+        onKeyDown={handleChapterHeadingOnKeyDown}
+      >
+        <Markdown>{heading}</Markdown>
+      </Button>
+    </li>
+  );
+};
 
 export const ChaptersOverview = ({
   chaptersRef,
