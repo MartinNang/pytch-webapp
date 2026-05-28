@@ -5,48 +5,24 @@ import { useStoreActions, useStoreState } from "../../store";
 import { useLinkedDemo, useMappedLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
 
-export const ChaptersOverview = ({
-  chaptersRef,
-}: {
+type ChapterHeadingProps = {
+  index: number;
+  heading: string;
   chaptersRef: RefObject<(HTMLLIElement | null)[]>;
-}) => {
-  const demoUuid = useMappedLinkedDemo((demo) => demo.demo.uuid);
-  const isNavigationExpanded = useStoreState(
-    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
-  );
+};
 
+const ChapterHeading: React.FC<ChapterHeadingProps> = ({
+  index,
+  heading,
+  chaptersRef,
+}) => {
   const activeChapter = useStoreState(
     (state) => state.ideLayout.demoSidebar.activeChapter
   );
-
   const setActiveChapter = useStoreActions(
     (actions) => actions.ideLayout.demoSidebar.setActiveChapter
   );
 
-  const linkedDemo = useLinkedDemo();
-  const headings = linkedDemo.demo.headings;
-
-  function ChaptersList() {
-    const handleChaptersListOnKeyDown: KeyboardEventHandler = (e) => {
-      switch (e.key) {
-        case "Enter": {
-          let currentContainer = document.activeElement;
-          let activeChapterButton = currentContainer?.children.item(
-            activeChapter
-          )?.firstElementChild as HTMLElement;
-          activeChapterButton?.focus();
-          break;
-        }
-      }
-    };
-
-    function ChapterHeading({
-      index,
-      heading,
-    }: {
-      index: number;
-      heading: string;
-    }) {
       const handleChapterHeadingOnKeyDown: KeyboardEventHandler = (e) => {
         let currentButton = document.activeElement;
         switch (e.key) {
@@ -97,7 +73,38 @@ export const ChaptersOverview = ({
           </Button>
         </li>
       );
-    }
+    };
+
+export const ChaptersOverview = ({
+  chaptersRef,
+}: {
+  chaptersRef: RefObject<(HTMLLIElement | null)[]>;
+}) => {
+  const demoUuid = useMappedLinkedDemo((demo) => demo.demo.uuid);
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
+
+  const activeChapter = useStoreState(
+    (state) => state.ideLayout.demoSidebar.activeChapter
+  );
+
+  const linkedDemo = useLinkedDemo();
+  const headings = linkedDemo.demo.headings;
+
+  function ChaptersList() {
+    const handleChaptersListOnKeyDown: KeyboardEventHandler = (e) => {
+      switch (e.key) {
+        case "Enter": {
+          let currentContainer = document.activeElement;
+          let activeChapterButton = currentContainer?.children.item(
+            activeChapter
+          )?.firstElementChild as HTMLElement;
+          activeChapterButton?.focus();
+          break;
+        }
+      }
+    };
 
     return (
       <Row tabIndex={-1} className={"nav-tree"}>
@@ -121,6 +128,7 @@ export const ChaptersOverview = ({
                   key={`${demoUuid}/${index}`}
                   index={index}
                   heading={heading}
+                  chaptersRef={chaptersRef}
                 />
               );
             })}
