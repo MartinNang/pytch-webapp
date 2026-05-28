@@ -75,24 +75,14 @@ const ChapterHeading: React.FC<ChapterHeadingProps> = ({
   );
 };
 
-export const ChaptersOverview = ({
-  chaptersRef,
-}: {
-  chaptersRef: RefObject<(HTMLLIElement | null)[]>;
-}) => {
+type ChaptersListProps = { chaptersRef: RefObject<(HTMLLIElement | null)[]> };
+const ChaptersList: React.FC<ChaptersListProps> = ({ chaptersRef }) => {
   const demoUuid = useMappedLinkedDemo((demo) => demo.demo.uuid);
-  const isNavigationExpanded = useStoreState(
-    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
-  );
-
+  const headings = useMappedLinkedDemo((demo) => demo.demo.headings);
   const activeChapter = useStoreState(
     (state) => state.ideLayout.demoSidebar.activeChapter
   );
 
-  const linkedDemo = useLinkedDemo();
-  const headings = linkedDemo.demo.headings;
-
-  function ChaptersList() {
     const handleChaptersListOnKeyDown: KeyboardEventHandler = (e) => {
       switch (e.key) {
         case "Enter": {
@@ -136,7 +126,16 @@ export const ChaptersOverview = ({
         </Col>
       </Row>
     );
-  }
+  };
+
+export const ChaptersOverview = ({
+  chaptersRef,
+}: {
+  chaptersRef: RefObject<(HTMLLIElement | null)[]>;
+}) => {
+  const isNavigationExpanded = useStoreState(
+    (state) => state.ideLayout.demoSidebar.isNavigationExpanded
+  );
 
   return (
     <Row className={"chapters-overview flex-row"}>
@@ -145,7 +144,7 @@ export const ChaptersOverview = ({
           <Row className={"chapters-navigation"}>
             <Collapse in={isNavigationExpanded}>
               <Col className={"ps-4"}>
-                <ChaptersList />
+                <ChaptersList chaptersRef={chaptersRef} />
               </Col>
             </Collapse>
           </Row>
