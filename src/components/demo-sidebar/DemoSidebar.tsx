@@ -45,24 +45,24 @@ export const DemoSidebar = () => {
   }, [isNavigationExpanded]);
 
   const demoSubheader = (
-      <Row
-        className={classNames(
-          "demo-sub-header",
-          "px-4",
-          linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
-        )}
-      >
-        <Col>{linkedDemo.demo.summaryMarkdown}</Col>
-      </Row>
+    <Row
+      className={classNames(
+        "demo-sub-header",
+        "px-4",
+        linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
+      )}
+    >
+      <Col>{linkedDemo.demo.summaryMarkdown}</Col>
+    </Row>
   );
 
-    const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
+  const absTimestamp = format(linkedDemo.demo.lastUpdated, "PP");
   const demoFooter = (
-      <Row className={"demo-footer py-3 px-3"}>
-        <div>
-          <p>Published on {absTimestamp}</p>
-        </div>
-      </Row>
+    <Row className={"demo-footer py-3 px-3"}>
+      <div>
+        <p>Published on {absTimestamp}</p>
+      </div>
+    </Row>
   );
 
   return (
