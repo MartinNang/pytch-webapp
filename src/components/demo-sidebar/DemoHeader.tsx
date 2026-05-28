@@ -37,56 +37,56 @@ export const DemoHeader = ({
   const nChapters = linkedDemo.demo.headings.length;
 
   const demoName = (
-        <div className={classNames("px-0", "py-1", "m-0", "ps-2", "w-auto")}>
-          <h1>{linkedDemo.demo.displayName}</h1>
-        </div>
+    <div className={classNames("px-0", "py-1", "m-0", "ps-2", "w-auto")}>
+      <h1>{linkedDemo.demo.displayName}</h1>
+    </div>
   );
 
   const demoChapterCount = (
-        <div className={classNames("chapter-pill", "rounded-pill")}>
-          <FontAwesomeIcon icon={"layer-group"} />
-          <span aria-label={`Chapter ${activeChapter + 1} out of ${nChapters}`}>
-            {activeChapter + 1}/{nChapters}
-          </span>
-        </div>
+    <div className={classNames("chapter-pill", "rounded-pill")}>
+      <FontAwesomeIcon icon={"layer-group"} />
+      <span aria-label={`Chapter ${activeChapter + 1} out of ${nChapters}`}>
+        {activeChapter + 1}/{nChapters}
+      </span>
+    </div>
   );
 
   const demoChapterNavButton = (
-        <Button
-          aria-label={"Expand or collapse chapters navigation menu"}
-          className={classNames("w-auto", "caret", "p-0", "ms-2", {
-            isNavigationExpanded,
-          })}
-          key={"nav-caret"}
-          id={"nav-caret"}
-          ref={navCaretRef}
-          onClick={() => {
-            setIsNavigationExpanded(!isNavigationExpanded);
-            navCaretRef.current?.focus();
-          }}
-          onFocus={() => {
-            chaptersRef.current[activeChapter]?.scrollIntoView({
-              behavior: "smooth",
-            });
-          }}
-        >
-          <FontAwesomeIcon
-            icon={"caret-down"}
-            className={classNames("nav-caret", { isNavigationExpanded })}
-          />
-        </Button>
+    <Button
+      aria-label={"Expand or collapse chapters navigation menu"}
+      className={classNames("w-auto", "caret", "p-0", "ms-2", {
+        isNavigationExpanded,
+      })}
+      key={"nav-caret"}
+      id={"nav-caret"}
+      ref={navCaretRef}
+      onClick={() => {
+        setIsNavigationExpanded(!isNavigationExpanded);
+        navCaretRef.current?.focus();
+      }}
+      onFocus={() => {
+        chaptersRef.current[activeChapter]?.scrollIntoView({
+          behavior: "smooth",
+        });
+      }}
+    >
+      <FontAwesomeIcon
+        icon={"caret-down"}
+        className={classNames("nav-caret", { isNavigationExpanded })}
+      />
+    </Button>
   );
 
   const demoHeaderMono = demoName;
 
   const demoHeaderStructured = (
-        <>
-          {demoName}
-          <div className={classNames("w-auto", "d-flex")}>
-            {demoChapterCount}
-            {demoChapterNavButton}
-          </div>
-        </>
+    <>
+      {demoName}
+      <div className={classNames("w-auto", "d-flex")}>
+        {demoChapterCount}
+        {demoChapterNavButton}
+      </div>
+    </>
   );
 
   return (
