@@ -7,11 +7,9 @@ import {
   FlattenResults,
   flattenProgram,
 } from "./junior/structured-program";
-import * as z from "zod/mini";
 import {
   StructuredProgram,
   StructuredProgramOps,
-  zStructuredProgram,
 } from "./junior/structured-program/program";
 import {
   zPytchProgram,
