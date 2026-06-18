@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DemoCard } from "./DemoCard";
 import { PaginationProvider } from "../PaginationProvider";
 import { RecommendedDemos } from "./RecommendedDemos";
+import { kDemoKindValues } from "../../model/discoverable-demos-schema";
 import {
-  kDemoKindValues,
   DemoKindSelector,
   displayDemoKindName,
   displayProgramKindName,
