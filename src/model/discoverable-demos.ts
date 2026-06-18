@@ -1,4 +1,11 @@
 import { PytchProgramKind, zPytchProgramKind } from "./pytch-program-types";
+import {
+  zDemoCatalogueEntry,
+  zDemoCatalogue,
+  type DemoKind,
+  type DemoCatalogueEntry,
+  type DemoCatalogue,
+} from "./discoverable-demos-schema";
 import { util } from "zod/v3";
 import assertNever = util.assertNever;
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
@@ -9,10 +16,6 @@ import * as z from "zod/mini";
 import { RefObject } from "react";
 import { fetchParsedJsonValue, propSetterAction } from "../utils";
 import { envVarOrFail } from "../env-utils";
-
-export const kDemoKindValues = ["game" as const, "snippet" as const];
-export const zDemoKind = z.literal(kDemoKindValues);
-export type DemoKind = z.infer<typeof zDemoKind>;
 
 export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
 export const zSortBy = z.literal(kSortByValues);
@@ -83,24 +86,6 @@ export function getProgramKindIcon(
       return assertNever(programKind);
   }
 }
-
-const zDemoCatalogueEntry = z.strictObject({
-  uuid: z.string(),
-  displayName: z.string(),
-  authorName: z.string(),
-  programKind: zPytchProgramKind,
-  demoKind: zDemoKind,
-  summaryMarkdown: z.string(),
-  lastUpdated: z.string(),
-  recommended: z.boolean(),
-  thumbnailImageExtension: z.string(),
-  thumbnailVideoExtension: z.union([z.null(), z.string()]),
-  latestUuid: z.string(),
-});
-export type DemoCatalogueEntry = z.infer<typeof zDemoCatalogueEntry>;
-
-export const zDemoCatalogue = z.array(zDemoCatalogueEntry);
-type DemoCatalogue = z.infer<typeof zDemoCatalogue>;
 
 function cmpCatalogueEntriesByLastUpdated(
   a: DemoCatalogueEntry,
