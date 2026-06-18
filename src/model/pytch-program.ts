@@ -7,38 +7,15 @@ import {
   FlattenResults,
   flattenProgram,
 } from "./junior/structured-program";
-import * as z from "zod/mini";
 import {
   StructuredProgram,
   StructuredProgramOps,
-  zStructuredProgram,
 } from "./junior/structured-program/program";
-
-const kPytchProgramKindValue_Flat = "flat" as const;
-const kPytchProgramKindValue_PerMethod = "per-method" as const;
-
-export const kPytchProgramKindValues = [
-  kPytchProgramKindValue_Flat,
-  kPytchProgramKindValue_PerMethod,
-];
-export const zPytchProgramKind = z.literal(kPytchProgramKindValues);
-export type PytchProgramKind = z.infer<typeof zPytchProgramKind>;
-
-const zPytchProgramFlat = z.strictObject({
-  kind: z.literal(kPytchProgramKindValue_Flat),
-  text: z.string(),
-});
-
-const zPytchProgramPerMethod = z.strictObject({
-  kind: z.literal(kPytchProgramKindValue_PerMethod),
-  program: zStructuredProgram,
-});
-
-export const zPytchProgram = z.discriminatedUnion("kind", [
-  zPytchProgramFlat,
-  zPytchProgramPerMethod,
-]);
-export type PytchProgram = z.infer<typeof zPytchProgram>;
+import {
+  zPytchProgram,
+  type PytchProgramKind,
+  type PytchProgram,
+} from "./pytch-program-types";
 
 export type PytchProgramOfKind<KindT extends PytchProgram["kind"]> =
   PytchProgram & { kind: KindT };

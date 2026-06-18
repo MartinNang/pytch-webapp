@@ -1,6 +1,6 @@
 import React, { RefObject } from "react";
+import { DemoCatalogueEntry } from "../../model/discoverable-demos-schema";
 import {
-  DemoCatalogueEntry,
   demoThumbnailImageUrl,
   maybeDemoThumbnailVideoUrl,
 } from "../../model/discoverable-demos";

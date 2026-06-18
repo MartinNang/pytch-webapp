@@ -1,5 +1,5 @@
 import { urlWithinApp } from "../../env-utils";
-import { PytchProgramKind } from "../pytch-program";
+import { PytchProgramKind } from "../pytch-program-types";
 import {
   AsyncUserFlowSlice,
   alwaysSubmittable,

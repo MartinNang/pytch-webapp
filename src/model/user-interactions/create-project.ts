@@ -5,7 +5,7 @@ import {
   templateKindFromComponents,
   WhetherExampleTag,
 } from "../project-templates";
-import { PytchProgramKind } from "../pytch-program";
+import { PytchProgramKind } from "../pytch-program-types";
 import {
   asyncUserFlowSlice,
   AsyncUserFlowSlice,

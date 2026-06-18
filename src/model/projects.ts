@@ -19,7 +19,8 @@ import {
   ITrackedTutorial,
   RemoteAssetProjectDescriptor,
 } from "./project-core";
-import { PytchProgramKind, PytchProgramOps } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
+import { PytchProgramOps } from "./pytch-program";
 import { LinkedContentRef } from "./linked-content-core";
 import { StructuredProgramOps } from "./junior/structured-program";
 import { ProjectTemplateKind } from "./project-templates";

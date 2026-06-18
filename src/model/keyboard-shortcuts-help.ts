@@ -1,6 +1,6 @@
 import { urlWithinApp } from "../env-utils";
 import { externalJsonSlice, ExternalJsonSlice } from "./external-json-data";
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
 
 type ProgramKindSpecifier = { forProgramKind?: PytchProgramKind };
 

@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import { submitOnEnterKeyFun } from "../../utils";
 import { RadioButtonOption } from "../RadioButtonOption";
 
-import { PytchProgramKind } from "../../model/pytch-program";
+import { PytchProgramKind } from "../../model/pytch-program-types";
 import { WhetherExampleTag } from "../../model/project-templates";
 
 import FlatEditorThumbnail from "../../images/flat.png";
