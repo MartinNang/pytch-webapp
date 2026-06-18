@@ -9,11 +9,8 @@ import { AssetTransform, AssetTransformOps } from "../model/asset";
 import { StoredProjectContent } from "../model/project";
 import { assertNever, failIfNull, fetchArrayBuffer, hexSHA256 } from "../utils";
 import { envVarOrFail } from "../env-utils";
-import {
-  PytchProgram,
-  PytchProgramKind,
-  PytchProgramOps,
-} from "../model/pytch-program";
+import { PytchProgram, PytchProgramKind } from "../model/pytch-program-types";
+import { PytchProgramOps } from "../model/pytch-program";
 import {
   kLinkedContentRefNone,
   LinkedContentRef,

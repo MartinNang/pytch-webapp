@@ -16,7 +16,7 @@ import {
   SortBy,
   kSortByValues,
 } from "../../model/discoverable-demos";
-import { kPytchProgramKindValues } from "../../model/pytch-program";
+import { kPytchProgramKindValues } from "../../model/pytch-program-types";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
 import { CreateProjectFromDemoModal } from "./CreateProjectFromDemoModal";

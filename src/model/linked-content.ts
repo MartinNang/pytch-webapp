@@ -16,7 +16,7 @@ import {
   SpecimenContentHash,
   LinkedDemoRef,
 } from "./linked-content-core";
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
 import { LinkedContentLoadingState } from "./project";
 import { parseMarkdown } from "./demo-sidebar";
 import {

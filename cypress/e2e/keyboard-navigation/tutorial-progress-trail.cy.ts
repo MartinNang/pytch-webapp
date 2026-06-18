@@ -1,4 +1,4 @@
-import { PytchProgramKind } from "../../../src/model/pytch-program";
+import { PytchProgramKind } from "../../../src/model/pytch-program-types";
 import { range } from "../../../src/utils";
 import { assertProgressTrailChapters } from "../junior/utils";
 import { assertInIDE, jumpToTutorialChapter } from "../utils";

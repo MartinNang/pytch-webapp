@@ -1,5 +1,5 @@
 import { LinkedContentRef } from "./linked-content-core";
-import { PytchProgram } from "./pytch-program";
+import { PytchProgram } from "./pytch-program-types";
 import { ITutorialContent } from "./tutorial";
 
 export type ProjectId = number;

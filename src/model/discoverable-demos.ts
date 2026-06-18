@@ -1,4 +1,4 @@
-import { PytchProgramKind, zPytchProgramKind } from "./pytch-program";
+import { PytchProgramKind, zPytchProgramKind } from "./pytch-program-types";
 import { util } from "zod/v3";
 import assertNever = util.assertNever;
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";

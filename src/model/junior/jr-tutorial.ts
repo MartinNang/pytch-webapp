@@ -1,6 +1,6 @@
 import { ensureDivOfClass, isDivOfClass, parsedHtmlBody } from "../../utils";
 import { I18nResources } from "../i18n/core-types";
-import { PytchProgramKind } from "../pytch-program";
+import { PytchProgramKind } from "../pytch-program-types";
 import { patchImageSrcURLs, tutorialResourceText } from "../tutorial";
 import { EventDescriptor } from "./structured-program";
 import { NoIdsStructuredProject } from "./structured-program/skeleton";

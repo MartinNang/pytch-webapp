@@ -64,7 +64,8 @@ import {
   getFlatAceController,
   pendingCursorWarp,
 } from "../skulpt-connection/code-editor";
-import { PytchProgramKind, PytchProgramOps } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
+import { PytchProgramOps } from "./pytch-program";
 import { Uuid } from "./junior/structured-program/core-types";
 import {
   HandlerDeletionDescriptor,
