@@ -43,6 +43,7 @@
     "cy:run:quiet": "cypress run --quiet",
     "cy:parallel": "cypress-parallel -s cy:run:quiet -t ${CY_PARALLEL_N_THREADS-8} -d 'cypress/e2e/**/*.cy.ts'",
     "dev": "vite",
+    "gen:demos-openapi": "tsx scripts/generate-demos-openapi.ts",
     "build": "tsc && vite build",
     "lint": "eslint src cypress --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview -l info -d",
