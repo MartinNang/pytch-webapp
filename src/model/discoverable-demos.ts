@@ -5,19 +5,15 @@ import {
   type DemoKind,
   type DemoCatalogueEntry,
   type DemoCatalogue,
+  type SortBy,
 } from "./discoverable-demos-schema";
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 import { Action, action } from "easy-peasy";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
-import * as z from "zod/mini";
 import { RefObject } from "react";
 import { assertNever, fetchParsedJsonValue, propSetterAction } from "../utils";
 import { envVarOrFail } from "../env-utils";
-
-export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
-export const zSortBy = z.literal(kSortByValues);
-export type SortBy = z.infer<typeof zSortBy>;
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";

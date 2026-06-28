@@ -12,6 +12,10 @@ export const kDemoKindValues = ["game" as const, "snippet" as const];
 export const zDemoKind = z.literal(kDemoKindValues);
 export type DemoKind = z.infer<typeof zDemoKind>;
 
+export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
+export const zSortBy = z.literal(kSortByValues);
+export type SortBy = z.infer<typeof zSortBy>;
+
 // The slot `latestUuid` is not yet used.  In due course it will support
 // the UI showing a message like "there is a newer version of this demo:
 // CLICK HERE to explore it".  If `null`, it means the whole demo is no
