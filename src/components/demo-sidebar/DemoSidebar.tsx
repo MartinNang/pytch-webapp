@@ -7,6 +7,7 @@ import { DemoChapter } from "./DemoChapter";
 import { useStoreActions, useStoreState } from "../../store";
 import classNames from "classnames";
 import { format } from "date-fns/format";
+import Markdown from "react-markdown";
 
 export const DemoSidebar = () => {
   const linkedDemo = useLinkedDemo();
@@ -52,7 +53,9 @@ export const DemoSidebar = () => {
         linkedDemo.demo.summaryMarkdown ? "py-3" : "py-2"
       )}
     >
-      <Col>{linkedDemo.demo.summaryMarkdown}</Col>
+      <Col>
+        <Markdown>{linkedDemo.demo.summaryMarkdown}</Markdown>
+      </Col>
     </Row>
   );
 
