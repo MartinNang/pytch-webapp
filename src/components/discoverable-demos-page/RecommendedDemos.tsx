@@ -4,10 +4,10 @@ import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
 import { DemoCatalogueEntry } from "../../model/discoverable-demos-schema";
 import {
-  displayDemoKindName,
   getProgramKindIcon,
   resetVideo,
 } from "../../model/discoverable-demos";
+import { displayDemoKindName } from "../../model/discoverable-demos-utils";
 import classNames from "classnames";
 import { CarouselRef } from "react-bootstrap/Carousel";
 import { assertNever } from "../../utils";

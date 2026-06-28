@@ -9,13 +9,15 @@ import { RecommendedDemos } from "./RecommendedDemos";
 import { kDemoKindValues } from "../../model/discoverable-demos-schema";
 import {
   DemoKindSelector,
-  displayDemoKindName,
-  displayProgramKindName,
-  displaySortByName,
   PytchProgramKindSelector,
   SortBy,
   kSortByValues,
 } from "../../model/discoverable-demos";
+import {
+  displayDemoKindName,
+  displayProgramKindName,
+  displaySortByName,
+} from "../../model/discoverable-demos-utils";
 import { kPytchProgramKindValues } from "../../model/pytch-program-types";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";

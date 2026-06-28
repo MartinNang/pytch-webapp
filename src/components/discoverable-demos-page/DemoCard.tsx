@@ -4,10 +4,10 @@ import { useStoreActions } from "../../store";
 import { Link } from "react-router-dom";
 import { DemoCatalogueEntry } from "../../model/discoverable-demos-schema";
 import {
-  displayDemoKindName,
   getProgramKindIcon,
   resetVideo,
 } from "../../model/discoverable-demos";
+import { displayDemoKindName } from "../../model/discoverable-demos-utils";
 import classNames from "classnames";
 import { useFocusContext } from "../hooks/focus-steering";
 import { focusGroupItemClass } from "../../model/junior/grouped-focus";
