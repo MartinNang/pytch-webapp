@@ -22,39 +22,6 @@ export type SortBy = z.infer<typeof zSortBy>;
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
 
-export function displayDemoKindName(demoKind: DemoKind): string {
-  switch (demoKind) {
-    case "game":
-      return "Game";
-    case "snippet":
-      return "Snippet";
-    default:
-      return assertNever(demoKind);
-  }
-}
-
-export function displayProgramKindName(programKind: PytchProgramKind): string {
-  switch (programKind) {
-    case "flat":
-      return "Flat";
-    case "per-method":
-      return "Per-method";
-    default:
-      return assertNever(programKind);
-  }
-}
-
-export function displaySortByName(sortBy: SortBy): string {
-  switch (sortBy) {
-    case "lastUpdated":
-      return "Last Updated";
-    case "alphabetAsc":
-      return "A to Z";
-    default:
-      return assertNever(sortBy);
-  }
-}
-
 /**
  * Keeping this icon section here for now since it is only used on the demos page,
  * however, this could probably be used on the projects and tutorials page in the
