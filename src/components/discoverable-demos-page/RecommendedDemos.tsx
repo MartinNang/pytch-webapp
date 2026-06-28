@@ -1,64 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Button, Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
-import { useStoreActions, useStoreState } from "../../store";
 import { Link } from "react-router-dom";
-import { DemoCatalogueEntry } from "../../model/discoverable-demos-schema";
-import {
-  getProgramKindIcon,
-  resetVideo,
-} from "../../model/discoverable-demos";
-import { displayDemoKindName } from "../../model/discoverable-demos-utils";
-import classNames from "classnames";
+import { useStoreActions, useStoreState } from "../../store";
 import { CarouselRef } from "react-bootstrap/Carousel";
 import { assertNever } from "../../utils";
-import { format } from "date-fns/format";
-import { DemoThumbnailContent } from "./DemoThumbnailContent";
+import { DemoCatalogueEntry } from "../../model/discoverable-demos-schema";
+import { useDemoCardContext } from "./useDemoCardContext";
 
-type DemoCardProps = { demo: DemoCatalogueEntry };
-const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
-  const createProject = useStoreActions(
-    (actions) => actions.userConfirmations.createProjectFromDemoFlow.run
-  );
-
-  const isGame: boolean = demo.demoKind === "game";
-  const isSnippet: boolean = demo.demoKind === "snippet";
-
-  const linkRef = useRef<HTMLAnchorElement>(null);
-
-  const [hover, setHover] = useState<boolean>(false);
-
-  const cardRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleMouseOverCard = () => {
-    setHover(true);
-    resetVideo(videoRef);
-  };
-
-  const handleMouseOutCard = () => {
-    setHover(false);
-  };
-
-  const handleFocusCard = () => {
-    setHover(true);
-    resetVideo(videoRef);
-  };
-
-  const handleBlurCard = () => {
-    setHover(false);
-  };
-
-  const programKindIcon = getProgramKindIcon(demo.programKind);
-  const absTimestamp = format(demo.lastUpdated, "PP");
+type RecommendedDemoCardProps = { demo: DemoCatalogueEntry };
+const RecommendedDemoCard: React.FC<RecommendedDemoCardProps> = ({ demo }) => {
+  const {
+    cardEventHandlers,
+    thumbnail,
+    createProject,
+    programKindIcon,
+    demoKindName,
+    demoKindClassName,
+    absTimestamp,
+  } = useDemoCardContext(demo);
 
   return (
     <Card
       className={"recommended-card flex-sm-row card"}
-      ref={cardRef}
-      onMouseOver={handleMouseOverCard}
-      onMouseOut={handleMouseOutCard}
-      onFocus={handleFocusCard}
-      onBlur={handleBlurCard}
+      {...cardEventHandlers}
     >
       <Col
         xs={12}
@@ -68,14 +32,7 @@ const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
           "card-header-wrapper d-flex justify-content-center align-items-center p-1"
         }
       >
-        <Card.Header className={"p-0 w-100 h-100"}>
-          <DemoThumbnailContent
-            demo={demo}
-            hover={hover}
-            setHover={setHover}
-            videoRef={videoRef}
-          />
-        </Card.Header>
+        <Card.Header className={"p-0 w-100 h-100"}>{thumbnail}</Card.Header>
       </Col>
       <Col xs={12} sm={6} md={6}>
         <Card.Body className={"p-3 px-4 d-flex flex-column"}>
@@ -83,24 +40,12 @@ const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
             <Button className={"pill-icon flat-icon"}>
               <img src={programKindIcon.src} alt={programKindIcon.alt} />
             </Button>
-
-            <div
-              className={classNames(
-                "ms-auto",
-                "pill-demo-kind",
-                { isGame },
-                { isSnippet }
-              )}
-            >
-              <p>{displayDemoKindName(demo.demoKind)}</p>
+            <div className={demoKindClassName}>
+              <p>{demoKindName}</p>
             </div>
           </Row>
-          <Link
-            ref={linkRef}
-            to={""}
-            onClick={() => createProject({ uuid: demo.uuid })}
-          >
-            <h3 style={{ fontWeight: "bold" }}>{demo.displayName}</h3>
+          <Link to={""} onClick={createProject}>
+            <h3>{demo.displayName}</h3>
           </Link>
           <p className={"demo-description"}>{demo.summaryMarkdown}</p>
           <Row className={"footer-row"}>
@@ -171,7 +116,7 @@ export const RecommendedDemos = () => {
           >
             {recommendedDemos.map((recommendedDemo) => (
               <Carousel.Item key={recommendedDemo.uuid}>
-                <DemoCard demo={recommendedDemo} />
+                <RecommendedDemoCard demo={recommendedDemo} />
               </Carousel.Item>
             ))}
           </Carousel>
