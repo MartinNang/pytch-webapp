@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Button, Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
+import { Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "../../store";
 import { CarouselRef } from "react-bootstrap/Carousel";
@@ -37,9 +37,9 @@ const RecommendedDemoCard: React.FC<RecommendedDemoCardProps> = ({ demo }) => {
       <Col xs={12} sm={6} md={6}>
         <Card.Body className={"p-3 px-4 d-flex flex-column"}>
           <Row className={"pill-row p-0 m-0 mb-3"}>
-            <Button className={"pill-icon flat-icon"}>
+            <div className={"pill-icon flat-icon"}>
               <img src={programKindIcon.src} alt={programKindIcon.alt} />
-            </Button>
+            </div>
             <div className={demoKindClassName}>
               <p>{demoKindName}</p>
             </div>
