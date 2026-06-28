@@ -1,4 +1,4 @@
-import { PytchProgramKind, zPytchProgramKind } from "./pytch-program-types";
+import { PytchProgramKind } from "./pytch-program-types";
 import {
   zDemoCatalogueEntry,
   zDemoCatalogue,
