@@ -20,6 +20,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
     demoKindName,
     demoKindClassName,
     absTimestamp,
+    summaryPara,
   } = useDemoCardContext(demo);
 
   const setProgramKind = useStoreActions(
@@ -84,7 +85,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo }) => {
         >
           <h3>{demo.displayName}</h3>
         </Link>
-        <p className={"demo-description"}>{demo.summaryMarkdown}</p>
+        {summaryPara}
 
         <Row className={"share-row"}>
           <Col xs={12} sm={12} md={6} className={"align-items-end d-flex"}>

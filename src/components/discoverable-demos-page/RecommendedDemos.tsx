@@ -17,6 +17,7 @@ const RecommendedDemoCard: React.FC<RecommendedDemoCardProps> = ({ demo }) => {
     demoKindName,
     demoKindClassName,
     absTimestamp,
+    summaryPara,
   } = useDemoCardContext(demo);
 
   return (
@@ -47,7 +48,7 @@ const RecommendedDemoCard: React.FC<RecommendedDemoCardProps> = ({ demo }) => {
           <Link to={""} onClick={createProject}>
             <h3>{demo.displayName}</h3>
           </Link>
-          <p className={"demo-description"}>{demo.summaryMarkdown}</p>
+          {summaryPara}
           <Row className={"footer-row"}>
             <Col xs={12} sm={6} className={"align-items-end d-flex"}>
               <p className={"m-0"}>{absTimestamp}</p>
