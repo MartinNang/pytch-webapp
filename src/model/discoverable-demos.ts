@@ -6,15 +6,13 @@ import {
   type DemoCatalogueEntry,
   type DemoCatalogue,
 } from "./discoverable-demos-schema";
-import { util } from "zod/v3";
-import assertNever = util.assertNever;
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 import { Action, action } from "easy-peasy";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
 import * as z from "zod/mini";
 import { RefObject } from "react";
-import { fetchParsedJsonValue, propSetterAction } from "../utils";
+import { assertNever, fetchParsedJsonValue, propSetterAction } from "../utils";
 import { envVarOrFail } from "../env-utils";
 
 export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
