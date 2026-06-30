@@ -1,18 +1,15 @@
 import React, {KeyboardEventHandler, useEffect} from "react";
 import classNames from "classnames";
-import { useStoreState } from "../store";
-import { useJrEditState } from "./Junior/hooks";
-import { assertNever, EmptyProps } from "../utils";
-import { DivSettingWindowTitle } from "./DivSettingWindowTitle";
-import { ActivityPane } from "./Junior/ActivityPane";
-import { EditorAndOutErr } from "./EditorAndOutErr";
-import { StageAndActorsOrAssets } from "./StageAndActorsOrAssets";
-import { FullScreenLayout } from "./FullScreenLayout";
-import { Modals as PerMethodModals } from "./Junior/Modals";
-import { FlatModals } from "./FlatModals";
-import { useFocusContext } from "./hooks/focus-steering";
-import { NotableChangeToasts } from "./NotableChangeToasts";
-import { useActionAsEffect } from "./hooks/use-action-as-effect";
+import {useStoreState} from "../store";
+import {useJrEditState} from "./Junior/hooks";
+import {assertNever, EmptyProps} from "../utils";
+import {FullScreenLayout} from "./layouts/FullScreenLayout";
+import {Modals as PerMethodModals} from "./Junior/Modals";
+import {FlatModals} from "./FlatModals";
+import {useFocusContext} from "./hooks/focus-steering";
+import {useActionAsEffect} from "./hooks/use-action-as-effect";
+import {SplitScreenLayout} from "./layouts/SplitScreenLayout";
+import {SingleScreenVerticalLayout} from "./layouts/SingleScreenVerticalLayout";
 
 export const Modals: React.FC<EmptyProps> = () => {
   const programKind = useStoreState(
@@ -29,11 +26,8 @@ export const Modals: React.FC<EmptyProps> = () => {
 };
 
 export const IDELayout: React.FC<EmptyProps> = () => {
-  const focusContext = useFocusContext();
-  const projectId = useStoreState((state) => state.activeProject.project.id);
-  const projectName = useStoreState(
-    (state) => state.activeProject.project.name
-  );
+  const focusContext = useFocusContext("per-method");
+
   const activityContentFullStateLabel = useJrEditState(
     (s) => s.activityContentFullStateLabel
   );
