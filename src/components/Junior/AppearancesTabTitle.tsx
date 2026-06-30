@@ -22,8 +22,8 @@ export const AppearancesTabTitle: React.FC<AppearancesTabTitleProps> = ({
       key={ak}
       className={classNames("title-option me-1", { isActive: ak === actorKind })}
     >
-      <FontAwesomeIcon icon={"fa-brush"} className={"me-1"} />
-      {t(`per-method.tab-title.actor-properties.appearances.${ak}`)}
+        <FontAwesomeIcon icon={"brush"} className={"me-1"} />
+        {t(`per-method.tab-title.actor-properties.appearances.${ak}`)}
     </span>
   ));
 

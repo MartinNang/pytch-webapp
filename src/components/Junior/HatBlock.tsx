@@ -20,7 +20,6 @@ import {
 } from "./hooks";
 import { CaptiveContextMenu } from "../CaptiveContextMenu";
 import { useFocusContext } from "../hooks/focus-steering";
-import { Trans, useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -203,7 +202,7 @@ export const HatBlock: React.FC<HatBlockProps> = ({
 
 export const DisplayHatBlock: React.FC<HatBlockContentProps> = (props) => {
   return (
-      <div className="HatBlock display-only">
+    <div className="HatBlock display-only">
       {/*<div className="bump"></div>*/}
       <div className="body">
         <HatBlockContent {...props} />
