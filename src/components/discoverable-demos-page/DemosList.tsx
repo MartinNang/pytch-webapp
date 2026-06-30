@@ -26,6 +26,7 @@ import { createFocusContext, FocusContext } from "../hooks/focus-steering";
 import { CreateProjectFromDemoModal } from "./CreateProjectFromDemoModal";
 import { useDemoListActions, useDemoListState } from "./hooks";
 import { useRunFlow } from "../../model";
+import { ErrorFetchingSomething } from "../ErrorFetchingSomething";
 
 /** TODO The data files for the demos need to live not in this repo.  There
  * needs to be some machinery to support a reasonable workflow for
@@ -246,12 +247,7 @@ const DemosResults: React.FC<EmptyProps> = () => {
       );
     }
     case "error":
-      return (
-        <>
-          <h1>Problem</h1>
-          <p>Sorry, there was a problem fetching the demos information.</p>
-        </>
-      );
+      return <ErrorFetchingSomething resourceKeySuffix="demos-catalogue" />;
     default:
       return assertNever(contentFetchState);
   }
