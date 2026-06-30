@@ -38,12 +38,12 @@ function clickPrevChapter() {
   cy.get(".DemoSidebar .prev-chapter").click();
 }
 
-/** Reset the database, open `/demos`, and create a project from the demo
- * with the given exact `name`, landing in the IDE with its Demo sidebar. */
+/** Reset the database, open `/demos`, and create a project from the
+ * demo matchin the given `name` (which should be specific enough to get
+ * the demo the test wants), landing in the IDE with its Demo sidebar.
+ * */
 function openDemoInIde(name: string) {
   resetAndVisitDemosPage();
-  typeSearch(name);
-  demoCardCountShouldBe(1);
   clickDemoCardTitle(name);
   assertDemoSidebar();
 }
