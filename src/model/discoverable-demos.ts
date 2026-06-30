@@ -216,5 +216,9 @@ export const discoverableDemos: IDiscoverableDemos = {
 
 export function resetVideo(videoRef: RefObject<HTMLVideoElement | null>) {
   if (videoRef.current) videoRef.current.currentTime = 0;
-  if (videoRef.current) videoRef.current.play();
+  if (videoRef.current) {
+    videoRef.current.play().catch(() => {
+      // Not much we can do, so just ignore the rejection.
+    });
+  }
 }
