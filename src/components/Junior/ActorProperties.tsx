@@ -40,7 +40,6 @@ export const ActorProperties = () => {
     <section
       className="Junior-ActorProperties-container compact-tablist-container"
       aria-label={ariaLabel}
-      role={"region"}
     >
       <Tabs
         transition={false}
@@ -51,7 +50,7 @@ export const ActorProperties = () => {
           eventKey="code"
           title={
             <div className={"me-1"}>
-              <FontAwesomeIcon icon={"fa-code"} className={"me-1"} />
+              <FontAwesomeIcon icon={"code"} className={"me-1"} />
               {t("per-method.tab-title.actor-properties.code")}
             </div>
           }
@@ -65,7 +64,7 @@ export const ActorProperties = () => {
           eventKey="sounds"
           title={
             <div className={"me-1"}>
-              <FontAwesomeIcon icon={"fa-volume-high"} className={"me-1"} />
+              <FontAwesomeIcon icon={"volume-high"} className={"me-1"} />
               {t("per-method.tab-title.actor-properties.sounds")}
             </div>
           }

@@ -1,4 +1,4 @@
-import { library } from "@fortawesome/fontawesome-svg-core";
+import {IconDefinition, library } from "@fortawesome/fontawesome-svg-core";
 import {
   faLock,
   faBars,
@@ -57,6 +57,10 @@ import {
   faVolumeHigh,
   faQuestion,
   faGridHorizontal,
+  faGear,
+  faObjectGroup,
+  faTerminal,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faGoogleDrive, faPython } from "@fortawesome/free-brands-svg-icons";
@@ -123,12 +127,16 @@ library.add(
   faClone,
   faCode,
   faDownload,
-  faGoogleDrive,
+  faGoogleDrive as IconDefinition,
   faBug,
   faInfoCircle,
   faCircleXmark,
   faBrush,
   faVolumeHigh,
   faGridHorizontal,
-  faPython
+  faPython as IconDefinition,
+  faGear,
+  faObjectGroup,
+  faTerminal,
+  faPenToSquare
 );

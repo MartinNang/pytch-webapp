@@ -10,18 +10,17 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import pytchLogo from "../images/pytch.png";
 import { ExternalLinkIndicator } from "./decorations";
-import { NavDropdown } from "react-bootstrap";
 
 export const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
-  const menuRef = React.useRef<HTMLDivElement>(null);
+  const menuRef = React.useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const menuDiv = menuRef.current;
     if (menuDiv == null) return;
 
     let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
-      if (window["computedStyleMap"] === "function") {
+      if (window.getComputedStyle(document.body).getPropertyValue("computedStyleMap") === "function") {
         const mMenuDisplay = menuDiv.computedStyleMap().get("display");
         if (mMenuDisplay == null) return;
 
