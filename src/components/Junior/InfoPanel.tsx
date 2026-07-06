@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 
 const useIdeTranslation = () => useTranslation("ide");
 
-const StandardOutput = () => {
+export const StandardOutput = () => {
   // TODO: Remove duplication between this and non-jr component.
   const text = useStoreState((state) => state.standardOutputPane.text);
   const { t } = useIdeTranslation();
@@ -32,7 +32,8 @@ const StandardOutput = () => {
           alt={""}
         />
         <p className="info-pane-placeholder text-center mt-1">
-            t("info.stdout.placeholder")        </p>
+          {t("info.stdout.placeholder")}
+        </p>
       </div>
     ) : null;
 
@@ -47,7 +48,7 @@ const StandardOutput = () => {
   );
 };
 
-const Errors = () => {
+export const Errors = () => {
   const { t } = useIdeTranslation();
   const errorList = useStoreState((state) => state.errorReportList.errors);
 
@@ -67,7 +68,8 @@ const Errors = () => {
           alt={""}
         />
         <p className="info-pane-placeholder text-center mt-1">
-            t("info.errors.placeholder")        </p>
+          {t("info.errors.placeholder")}
+        </p>
       </div>
     ) : (
       <ErrorReportList />
@@ -99,9 +101,9 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
         <FontAwesomeIcon
           className="me-2"
           size={"lg"}
-          icon="fa-circle-exclamation"
+          icon="circle-exclamation"
         />
-        <div style={{ marginTop: 1 }}>{`Output and errors${
+        <div style={{ marginTop: 1 }}>{`${t("info.expand-button.label")}${
           nErrors > 0 ? " (" + nErrors + ")" : ""
         }`}</div>
         <FontAwesomeIcon className="me-2 ms-auto" icon="angle-right" />
@@ -111,7 +113,7 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
   );
 };
 
-export const InfoPanel = () => {
+export const InfoPanel = ({ showOnly }: { showOnly?: InfoPanelTabKey }) => {
   const { t } = useIdeTranslation();
   const activeTab = useJrEditState((s) => s.infoPanelActiveTab);
   const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
@@ -155,56 +157,57 @@ export const InfoPanel = () => {
       className={classes}
       aria-label={t("info.aria-label")}
       ref={maybeFocusButton}
-      role={"region"}
     >
       <Tabs
         id={tabContentId}
         className={tabPanelClasses}
         transition={false}
-        activeKey={activeTab}
+        activeKey={showOnly ? showOnly : activeTab}
         onSelect={(k) => k && setActiveTab(k as TabKey)}
       >
-        <Tab
-          eventKey="output"
-          title={
-            <>
-              <FontAwesomeIcon icon={"fa-circle-info"} className={"me-1"} />
-              {t("info.stdout.tab-title")}
-            </>
-          }
-          role={"log"}
-        >
-          <StandardOutput />
-        </Tab>
-        <Tab
-          eventKey="errors"
-          title={
-            nErrors === 0 ? (
-              <div className={"d-flex align-items-center"}>
-                <FontAwesomeIcon
-                  icon={"fa-bug"}
-                  className={"me-1"}
-                  style={{ marginBottom: 1 }}
-                />
-                <div className={"me-1"}>
-                    t("info.errors.tab-title")
-                </div>
-              </div>
-            ) : (
+        {showOnly && showOnly !== "output" ? null : (
+          <Tab
+            eventKey="output"
+            title={
               <>
-                <FontAwesomeIcon
-                  icon={"fa-bug"}
-                  className={"me-1"}
-                  style={{ marginBottom: 1 }}
-                />{" "}
-                {`Errors (${nErrors})`}
+                <FontAwesomeIcon icon={"circle-info"} className={"me-1"} />
+                {t("info.stdout.tab-title")}
               </>
-            )
-          }
-          role={"log"}
-        >
-          <Errors />
-        </Tab>
+            }
+            role={"log"}
+          >
+            <StandardOutput />
+          </Tab>
+        )}
+        {showOnly && showOnly !== "errors" ? null : (
+          <Tab
+            eventKey="errors"
+            title={
+              nErrors === 0 ? (
+                <div className={"d-flex align-items-center"}>
+                  <FontAwesomeIcon
+                    icon={"bug"}
+                    className={"me-1"}
+                    style={{ marginBottom: 1 }}
+                  />
+                  <div className={"me-1"}>{t("info.errors.tab-title")}</div>
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    icon={"bug"}
+                    className={"me-1"}
+                    style={{ marginBottom: 1 }}
+                  />{" "}
+                  {`${t("info.errors.tab-title")} (${nErrors})`}
+                </>
+              )
+            }
+            role={"log"}
+          >
+            <Errors />
+          </Tab>
+        )}
       </Tabs>
       {isCollapsed ? (
         <InfoDisclosure tabContentId={tabContentId} />

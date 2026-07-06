@@ -7,7 +7,7 @@ import { CodeEditor } from "./CodeEditor";
 import { InfoPanel } from "./Junior/InfoPanel";
 import { ActorProperties } from "./Junior/ActorProperties";
 
-const EditorForProgramKind: React.FC<EmptyProps> = () => {
+export const EditorForProgramKind: React.FC<EmptyProps> = () => {
   const programKind = useStoreState(
     (state) => state.activeProject.project.program.kind
   );
@@ -28,10 +28,10 @@ export const EditorAndOutErr: React.FC<EmptyProps> = () => {
   );
 
   const classes = classNames("EditorAndOutErr", { infoPanelIsCollapsed });
-    return (
-      <div className={classes}>
-        <EditorForProgramKind />
-        <InfoPanel />
-      </div>
-    );
+  return (
+    <div className={classes}>
+      <EditorForProgramKind />
+      <InfoPanel />
+    </div>
+  );
 };

@@ -103,6 +103,7 @@ $stage-controls-height: 37.6px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  height: $stage-controls-height !important;
 
   > * {
     margin-left: 3px;
@@ -119,32 +120,35 @@ $stage-controls-height: 37.6px;
 
   .save-button {
     margin-right: auto;
-    background-color: $pytch-colour-main-blue !important;
-    transition: background-color 0.3s cubic-bezier(.4, 0, .2, 1);
-    height: 2.25rem !important;
-    border-color: $pytch-colour-main-blue !important;
+  }
+}
+
+.save-button {
+  background-color: $pytch-colour-main-blue !important;
+  transition: background-color 0.3s cubic-bezier(.4, 0, .2, 1);
+  //height: 2.25rem !important;
+  border-color: $pytch-colour-main-blue !important;
+
+  svg {
+    margin-top: -1px;
+    margin-left: -1px;
+    color: white !important;
+  }
+
+  &.unsaved-changes-exist {
+    color: $pytch-colour-main-blue-darkened !important;
+    background-color: $pytch-colour-main-yellow !important;
+    border-color: $pytch-colour-main-blue-darkened !important;
+
+    &:hover {
+      background-color: lighten($pytch-colour-main-yellow, 10) !important;
+    }
 
     svg {
-      margin-top: -1px;
-      margin-left: -1px;
-      color: white !important;
+      color: $pytch-colour-main-blue !important;
     }
 
-    &.unsaved-changes-exist {
-      color: $pytch-colour-main-blue-darkened !important;
-      background-color: $pytch-colour-main-yellow !important;
-      border-color: $pytch-colour-main-blue-darkened !important;
-
-      &:hover {
-        background-color: lighten($pytch-colour-main-yellow, 10) !important;
-      }
-
-      svg {
-        color: $pytch-colour-main-blue !important;
-      }
-
-      @include push-down-on-click();
-    }
+    @include shrink-down-on-click();
   }
 }
 
@@ -208,8 +212,9 @@ $stage-controls-height: 37.6px;
 #pytch-attribute-watchers,
 #pytch-speech-bubbles {
   position: absolute;
-  left: 0px;
-  top: 0px;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
   border: $canvas-border-width solid transparent;
   box-sizing: content-box;
   visibility: visible;
@@ -338,6 +343,14 @@ $speech-bubble-max-height: 180px;
       text-align: center;
     }
   }
+}
+
+.info-pane {
+  height: 100%;
+}
+
+.activity-submenu {
+  height: 100%;
 }
 
 .AssetCardPane,
@@ -1081,7 +1094,7 @@ ul.ClipArtTagButtonCollection {
 }
 
 .full-screen, .leave-full-screen {
-  @include push-down-on-click();
+  @include shrink-down-on-click();
 }
 
 .btn:disabled {

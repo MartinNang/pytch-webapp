@@ -15,7 +15,7 @@ export const NoContentHelp: React.FC<NoContentHelpProps> = ({
   return (
     <div className={"h-100 d-flex align-items-center justify-content-center"}>
       <Card className="NoContentHelp" body>
-        <p>{content}</p>
+          <p>{content}</p>
       </Card>
     </div>
   );

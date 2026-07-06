@@ -12,6 +12,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
 import { uniqueUserInputFragment } from "../model/compound-text-input";
 import { useResolveStringSpec } from "./hooks/resolve-string-spec";
+import { uniqueUserInputFragment } from "../model/compound-text-input";
+import { useResolveStringSpec } from "./hooks/resolve-string-spec";
+import { ProjectControls } from "./ProjectControls";
+import {faGoogleDrive} from "@fortawesome/free-brands-svg-icons";
+import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
@@ -55,7 +60,11 @@ const GreenFlag = () => {
         className="StageControlPseudoButton GreenFlag"
         onClick={handleClick}
       >
-        <FontAwesomeIcon icon="flag" aria-label={"Run project"} />
+        <FontAwesomeIcon
+          icon="flag"
+          // TODO: i18n for aria-label
+          aria-label={"Run project"}
+        />
       </Button>
       <StaticTooltip visible={tooltipIsVisible}>
         <p>{t("tooltip.green-flag")}</p>
@@ -71,6 +80,7 @@ export const RedStop = () => {
   };
   return (
     <Button
+      // TODO: i18n for title
       title={"Stop project"}
       className="StageControlPseudoButton RedStop"
       onClick={redStop}
@@ -107,34 +117,34 @@ const ExportToDriveDropdownItem: React.FC<EmptyProps> = () => {
     case "pending":
       return (
         <Dropdown.Item disabled>
-            <FontAwesomeIcon
-              icon="fa-brands fa-google-drive"
-              className={"me-2"}
-              aria-hidden={true}
-            />
-            {t("export-to-google-drive")}
+          <FontAwesomeIcon
+            icon={faGoogleDrive as IconDefinition}
+            className={"me-2"}
+            aria-hidden={true}
+          />
+          {t("export-to-google-drive")}
         </Dropdown.Item>
       );
     case "succeeded":
       return (
         <Dropdown.Item onClick={onExport}>
           <FontAwesomeIcon
-            icon="fa-brands fa-google-drive"
+            icon={faGoogleDrive as IconDefinition}
             className={"me-2"}
             aria-hidden={true}
           />
-            {t("export-to-google-drive")}
+          {t("export-to-google-drive")}
         </Dropdown.Item>
       );
     case "failed":
       return (
         <Dropdown.Item disabled>
           <FontAwesomeIcon
-            icon="fa-brands fa-google-drive"
+            icon={faGoogleDrive as IconDefinition}
             className={"me-2"}
             aria-hidden={true}
           />
-            {t("google-drive-unavailable")}
+          {t("google-drive-unavailable")}
         </Dropdown.Item>
       );
   }
@@ -217,6 +227,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
 
   const fullScreenButton = (
     <Button
+      // TODO: i18n for title
       title={"Enter fullscreen"}
       className="full-screen square-button"
       onClick={() => setIsFullScreen(true)}
@@ -231,6 +242,8 @@ export const StageControls: React.FC<EmptyProps> = () => {
 
   const goHome = () => navigate(pathWithinApp("/"));
 
+  const layoutStyle = useStoreState((state) => state.ideLayout.layoutStyle);
+
   return isFullScreen ? (
     <section
       className="StageControls"
@@ -241,6 +254,7 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <RedStop />
       </div>
       <Button
+        // TODO: i18n for title
         title={"Leave fullscreen"}
         className="leave-full-screen"
         variant={"secondary"}
@@ -249,81 +263,24 @@ export const StageControls: React.FC<EmptyProps> = () => {
         <FontAwesomeIcon
           className="fa-lg"
           icon="compress"
+          // TODO: i18n for aria-label
           aria-label={"Leave fullscreen"}
         />
       </Button>
     </section>
   ) : (
     <section
-        className="StageControls"
-        aria-label={t("stage-controls.aria-label")}
+      className={
+        "StageControls" + (layoutStyle !== "split-screen" ? " me-2" : "")
+      }
+      aria-label={t("stage-controls.aria-label")}
     >
-      <div className="run-stop-controls">
+      <div className={"run-stop-controls"}>
         <GreenFlag />
         <RedStop />
       </div>
       {fullScreenButton}
-      <Button
-        title={"Save project"}
-        className={`save-button d-flex align-items-center ${codeStateVsStorage}`}
-        onClick={handleSave}
-        disabled={codeStateVsStorage === "no-changes-since-last-save"}
-      >
-        <FontAwesomeIcon
-          className="fa-lg"
-          icon="floppy-disk"
-          aria-label={t("project-action.save")}
-        />
-        <span className={"mx-1"}>
-          {codeStateVsStorage === "unsaved-changes-exist" ? "Save" : "Saved"}
-        </span>
-      </Button>
-      {fullScreenButton}
-      <Link
-        to={"/"}
-        className={"StageControlPseudoButton HomeLink w-auto p-2"}
-        aria-label={"Home"}
-      >
-        <FontAwesomeIcon aria-label={t("home-button.aria-label")} icon="home" aria-hidden={true} />
-        <span className={"ps-1"}>Home</span>
-      </Link>
-      <DropdownButton
-        align="end"
-        title={
-          <FontAwesomeIcon
-            icon="ellipsis-vertical"
-            aria-hidden={true}
-            aria-label={"More project options"}
-            title={"More project options"}
-          />
-        }
-        className={"moreOptionsDropdown p-0"}
-      >
-        <GoToMyProjectsDropdownItem />
-        <Dropdown.Item onClick={onScreenshot}>
-          <FontAwesomeIcon
-              icon="camera"
-              className={"me-2"}
-              aria-hidden={true}
-          />
-            {t("project-action.screenshot")}
-        </Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item onClick={onCreateCopy}>
-          <FontAwesomeIcon icon="clone" className={"me-2"} aria-hidden={true} />
-            {t("project-action.make-copy")}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={onDownload}>
-          <FontAwesomeIcon icon="download" className={"me-2"} />
-            {t("project-action.download-zip")}
-        </Dropdown.Item>
-        <ExportToDriveDropdownItem />
-        <Dropdown.Divider />
-        <LaunchCoordsChooserDropdownItem />
-        <Dropdown.Item onClick={onShowTooltips}>
-          {t("project-action.show-tooltips")}
-        </Dropdown.Item>
-      </DropdownButton>
+      {layoutStyle === "split-screen" && <ProjectControls />}
     </section>
   );
 };

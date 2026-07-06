@@ -137,6 +137,7 @@ const ActorCardDropdown: React.FC<ActorCardDropdownProps> = ({
   return (
     <CaptiveContextMenu.DropdownMenu
       toggle={<FontAwesomeIcon icon={"caret-down"} />}
+      // TODO: i18n
       ariaLabel={`Open ${
         kind === "stage" ? "the stage" : "this sprite's"
       } menu`}
@@ -173,7 +174,12 @@ type ActorCardProps = {
   id: Uuid;
   name: string;
 };
-const ActorCard: React.FC<ActorCardProps> = ({ isActive, kind, id, name }) => {
+export const ActorCard: React.FC<ActorCardProps> = ({
+  isActive,
+  kind,
+  id,
+  name,
+}) => {
   const focusContext = useFocusContext("per-method");
   const setActiveActorAction = useJrEditActions((a) => a.setActiveActor);
   const setActiveActor = () => setActiveActorAction(id);
@@ -214,9 +220,8 @@ export const ActorsList = () => {
 
   return (
     <section
-      className="Junior-ActorsList-container compact-tablist-container"
+      className="Junior-ActorsList-container h-100 w-100 compact-tablist-container"
       aria-label={t("per-method.pane-label.actors")}
-      role={"region"}
     >
       <SingleTab title={t("per-method.tab-title.actors")}>
         <div className="abs-0000">

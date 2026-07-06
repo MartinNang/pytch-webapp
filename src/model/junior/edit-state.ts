@@ -22,13 +22,13 @@ export type InfoPanelTabKey = "output" | "errors";
 export type InfoPanelState = "collapsed" | "expanded";
 
 export type ActivityBarTabKey =
-  | "helpsidebar"
-  | "i18n"
-  | "keynavhelp"
   | "lesson"
   | "specimen"
   | "tutorial"
-  | "ideoverview";
+  | "info"
+  | "settings"
+  | "work"
+  | "results";
 
 export type ActivityContentState =
   | { kind: "collapsed" }
@@ -215,13 +215,13 @@ export const editState: EditState = {
       } else {
         switch (linkedContentKind) {
           case "none":
-            actions.expandActivityContent("helpsidebar");
+            actions.expandActivityContent("info");
             break;
           case "jr-tutorial":
             console.log(
               'unexpected "jr-tutorial" linked-content for flat program'
             );
-            actions.expandActivityContent("helpsidebar");
+            actions.expandActivityContent("info");
             break;
           case "specimen":
             actions.expandActivityContent("specimen");
@@ -249,7 +249,7 @@ export const editState: EditState = {
     // effect.
     switch (linkedContentKind) {
       case "none":
-        actions.expandActivityContent("helpsidebar");
+        actions.expandActivityContent("info");
         break;
       case "jr-tutorial":
         actions.expandActivityContent("lesson");

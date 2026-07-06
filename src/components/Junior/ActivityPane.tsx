@@ -8,13 +8,13 @@ export const ActivityPane: React.FC<EmptyProps> = () => {
   const { t } = useTranslation("ide");
   return (
     <div className={"activity-pane-wrapper"}>
-        <section
-            className="ActivityPane"
-            aria-label={t("activity-pane.aria-label")}
-        >
-            <ActivityBar />
-            <ActivityContent />
-        </section>
+      <section
+        className="ActivityPane"
+        aria-label={t("activity-pane.aria-label")}
+      >
+        <ActivityBar />
+        <ActivityContent />
+      </section>
     </div>
   );
 };

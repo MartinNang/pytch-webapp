@@ -137,17 +137,17 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
                   toggle={<FontAwesomeIcon icon={"ellipsis"} />}
                 >
                   <CaptiveContextMenu.DropdownItem onInvoke={onActivate}>
-                      {t("action.open")}
+                    {t("action.open")}
                   </CaptiveContextMenu.DropdownItem>
                   <CaptiveContextMenu.DropdownItem onInvoke={onRename}>
-                      {tCommon("action.rename")}
+                    {tCommon("action.rename")}
                   </CaptiveContextMenu.DropdownItem>
                   <Dropdown.Divider />
                   <CaptiveContextMenu.DropdownItem
                     className="danger"
                     onInvoke={onDelete}
                   >
-                      {tCommon("action.delete")}
+                    {tCommon("action.delete")}
                   </CaptiveContextMenu.DropdownItem>
                 </CaptiveContextMenu.DropdownMenu>
               </div>

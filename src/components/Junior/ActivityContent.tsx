@@ -1,12 +1,16 @@
 import React from "react";
-import { EmptyProps, assertNever } from "../../utils";
-import { useJrEditState } from "./hooks";
-import { MaybeContent as MaybeLessonContent } from "./lesson/MaybeContent";
-import { WidthMonitor } from "./WidthMonitor";
-import { HelpSidebar } from "../HelpSidebar";
-import { Tutorial } from "../Tutorial";
-import { KeyNavHelpSidebar } from "./KeyNavHelpSidebar";
-import { IDEOverview } from "./IDEOverview";
+import {assertNever, EmptyProps} from "../../utils";
+import {useJrEditState} from "./hooks";
+import {MaybeContent as MaybeLessonContent} from "./lesson/MaybeContent";
+import {WidthMonitor} from "./WidthMonitor";
+import {Tutorial} from "../Tutorial";
+
+import "./ActivityContent.scss";
+import {IDESettings} from "./IDESettings";
+import {StageWithControls} from "../StageWithControls";
+import {InfoActivity} from "./activities/InfoActivity";
+import {WorkActivity} from "./activities/WorkActivity";
+import {ResultsActivity} from "./activities/ResultsActivity";
 
 export const ActivityContent: React.FC<EmptyProps> = () => {
   const s = useJrEditState((s) => s.activityContentState);
@@ -17,15 +21,6 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
 
   const content = (() => {
     switch (s.tab) {
-      case "helpsidebar":
-        return (
-          <>
-            <WidthMonitor nonStageWd={980} />
-            <HelpSidebar />
-          </>
-        );
-      case "keynavhelp":
-        return <KeyNavHelpSidebar />;
       case "lesson":
       case "specimen":
         // This is a bit of a fudge.  We treat these both as "lesson"
@@ -34,8 +29,14 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
         return <MaybeLessonContent />;
       case "tutorial":
         return <Tutorial />;
-      case "ideoverview":
-        return <IDEOverview />;
+      case "info":
+        return <InfoActivity />;
+      case "settings":
+        return <IDESettings />;
+      case "work":
+        return <WorkActivity />;
+      case "results":
+        return <ResultsActivity />;
       default:
         return assertNever(s.tab);
     }
