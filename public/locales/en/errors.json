@@ -9,6 +9,7 @@
   "fetch-failure.description.help-sidebar": "Information for the help sidebar",
   "fetch-failure.description.keynavhelp": "Information for the keyboard navigation help",
   "fetch-failure.description.project-list": "Stored list of projects",
+  "fetch-failure.description.demos-catalogue": "Catalogue of demos",
 
   "load-project-failure.window-title": "Pytch: Problem loading project",
   "load-project-failure.intro": "Sorry, there was a problem loading this project. Please contact the Pytch team if you need help.",

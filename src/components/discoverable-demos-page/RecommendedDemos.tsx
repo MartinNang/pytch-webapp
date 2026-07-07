@@ -124,12 +124,9 @@ export const RecommendedDemos = () => {
       );
     }
     case "error":
-      return (
-        <>
-          <h1>Problem</h1>
-          <p>Sorry, there was a problem fetching the help information.</p>
-        </>
-      );
+      // The main panel below this one will give the error message; no
+      // need to repeat it here.
+      return false;
     default:
       return assertNever(contentFetchState);
   }
