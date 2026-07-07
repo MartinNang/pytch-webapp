@@ -6,6 +6,7 @@ import { getProgramKindIcon, resetVideo } from "../../model/discoverable-demos";
 import { displayDemoKindName } from "../../model/discoverable-demos-utils";
 import { useStoreActions } from "../../store";
 import { DemoThumbnailContent } from "./DemoThumbnailContent";
+import Markdown from "react-markdown";
 
 /** Shared logic behind both demo-card variants (the recommended-carousel card
  * and the search-results card).
@@ -61,6 +62,12 @@ export function useDemoCardContext(demo: DemoCatalogueEntry) {
     />
   );
 
+  const summaryPara = (
+    <div className={"demo-description"}>
+      <Markdown>{demo.summaryMarkdown}</Markdown>
+    </div>
+  );
+
   return {
     cardEventHandlers,
     thumbnail,
@@ -69,5 +76,6 @@ export function useDemoCardContext(demo: DemoCatalogueEntry) {
     demoKindName,
     demoKindClassName,
     absTimestamp,
+    summaryPara,
   };
 }
