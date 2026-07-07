@@ -1,16 +1,15 @@
 import * as z from "zod/mini";
 import { zPytchProgramKind } from "./pytch-program-types";
 
-// Pure (asset/store-free) Zod schemas and types describing the discoverable
-// demos catalogue as served by the demo-catalogue server.  Kept separate from
-// discoverable-demos.ts (which imports images, easy-peasy, etc.) so it can be
-// loaded by plain Node tooling — notably the OpenAPI generation script, which
-// derives the published schema from this single source of truth.
-// discoverable-demos.ts re-exports these for existing importers.
+// Pure Zod schemas and types for the discoverable demos catalogue.
 
 export const kDemoKindValues = ["game" as const, "snippet" as const];
 export const zDemoKind = z.literal(kDemoKindValues);
 export type DemoKind = z.infer<typeof zDemoKind>;
+
+export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
+export const zSortBy = z.literal(kSortByValues);
+export type SortBy = z.infer<typeof zSortBy>;
 
 // The slot `latestUuid` is not yet used.  In due course it will support
 // the UI showing a message like "there is a newer version of this demo:

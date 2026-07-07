@@ -1,61 +1,22 @@
-import { PytchProgramKind, zPytchProgramKind } from "./pytch-program-types";
+import { PytchProgramKind } from "./pytch-program-types";
 import {
   zDemoCatalogueEntry,
   zDemoCatalogue,
   type DemoKind,
   type DemoCatalogueEntry,
   type DemoCatalogue,
+  type SortBy,
 } from "./discoverable-demos-schema";
-import { util } from "zod/v3";
-import assertNever = util.assertNever;
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 import { Action, action } from "easy-peasy";
 import flatIcon from "../images/flat-simple.png";
 import permethodIcon from "../images/per-method-simple.png";
-import * as z from "zod/mini";
 import { RefObject } from "react";
-import { fetchParsedJsonValue, propSetterAction } from "../utils";
+import { assertNever, fetchParsedJsonValue, propSetterAction } from "../utils";
 import { envVarOrFail } from "../env-utils";
-
-export const kSortByValues = ["lastUpdated", "alphabetAsc"] as const;
-export const zSortBy = z.literal(kSortByValues);
-export type SortBy = z.infer<typeof zSortBy>;
 
 export type DemoKindSelector = DemoKind | "all";
 export type PytchProgramKindSelector = PytchProgramKind | "all";
-
-export function displayDemoKindName(demoKind: DemoKind): string {
-  switch (demoKind) {
-    case "game":
-      return "Game";
-    case "snippet":
-      return "Snippet";
-    default:
-      return assertNever(demoKind);
-  }
-}
-
-export function displayProgramKindName(programKind: PytchProgramKind): string {
-  switch (programKind) {
-    case "flat":
-      return "Flat";
-    case "per-method":
-      return "Per-method";
-    default:
-      return assertNever(programKind);
-  }
-}
-
-export function displaySortByName(sortBy: SortBy): string {
-  switch (sortBy) {
-    case "lastUpdated":
-      return "Last Updated";
-    case "alphabetAsc":
-      return "A to Z";
-    default:
-      return assertNever(sortBy);
-  }
-}
 
 /**
  * Keeping this icon section here for now since it is only used on the demos page,
@@ -255,5 +216,9 @@ export const discoverableDemos: IDiscoverableDemos = {
 
 export function resetVideo(videoRef: RefObject<HTMLVideoElement | null>) {
   if (videoRef.current) videoRef.current.currentTime = 0;
-  if (videoRef.current) videoRef.current.play();
+  if (videoRef.current) {
+    videoRef.current.play().catch(() => {
+      // Not much we can do, so just ignore the rejection.
+    });
+  }
 }
