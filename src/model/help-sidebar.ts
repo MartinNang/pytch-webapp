@@ -422,6 +422,8 @@ type HelpContent = Array<HelpSectionContent>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const groupHelpIntoSections = (rawHelpData: unknown): HelpContent => {
+  const helpData = zHelpSidebarContent.parse(rawHelpData);
+
   let currentSection: HelpSectionContent = {
     sectionSlug: "will-be-discarded",
     sectionHeading: "Will be discarded",
@@ -430,7 +432,7 @@ const groupHelpIntoSections = (rawHelpData: unknown): HelpContent => {
 
   let sections: Array<HelpSectionContent> = [];
 
-  for (const datum of rawHelpData) {
+  for (const datum of helpData) {
     if (datum.kind === "heading") {
       sections.push(currentSection);
       currentSection = {
