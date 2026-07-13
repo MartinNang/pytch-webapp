@@ -192,7 +192,7 @@ const maybeApplyActorKindPrefix = (
  * which is marked as being applicable to `forActorKinds`, when working
  * in the given `workContext`. */
 const helpStringForContext = (
-  rawHelp: RawHelpValue,
+  rawHelp: HelpEntryContent,
   forActorKinds: Array<ActorKind>,
   workContext: DevWorkContext
 ): string => {
@@ -246,7 +246,7 @@ const helpStringForContext = (
  * into a `HelpContentFromContext` map.
  */
 const makeHelpContentLut = (
-  rawHelp: RawHelpValue,
+  rawHelp: HelpEntryContent,
   forActorKinds: Array<ActorKind>
 ): HelpContentFromContext => {
   const helpEltsForContext = (workContext: DevWorkContext) =>
@@ -304,7 +304,7 @@ type RawPythonCodeValue = string | Record<string, string>;
  * whose values are strings) into a `PythonCodeFromKind` map.
  */
 const makeRichPythonLut = (
-  rawPython: RawPythonCodeValue
+  rawPython: HelpPythonCode
 ): RichPythonFromKind => {
   const pythonCodeForKind = (kind: PytchProgramKind): string => {
     if (typeof rawPython === "string") {
@@ -334,13 +334,13 @@ const makeHeadingElementDescriptor = (raw: any): HeadingElementDescriptor => ({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const applicableActorKindsFromRaw = (raw: any): Array<ActorKind> => {
+const applicableActorKindsFromRaw = (raw: HelpSidebarContentEntry): Array<ActorKind> => {
   const mKind = raw.actorKind;
   return mKind == null ? kActorKindValues : [mKind as ActorKind];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const makeBlockElementDescriptor = (raw: any): BlockElementDescriptor => {
+const makeBlockElementDescriptor = (raw: HelpSidebarBlockEntry): BlockElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
   const richPython = parsedRichPython(raw.python);
   const python = plainFromRich(richPython);
@@ -358,7 +358,7 @@ const makeBlockElementDescriptor = (raw: any): BlockElementDescriptor => {
 
 const makeNonMethodBlockElementDescriptor = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  raw: any
+  raw: HelpSidebarNonMethodBlockEntry
 ): NonMethodBlockElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
   return {
@@ -374,7 +374,7 @@ const makeNonMethodBlockElementDescriptor = (
 
 const makePurePythonElementDescriptor = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  raw: any
+  raw: HelpSidebarPurePythonEntry
 ): PurePythonElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
   return {
@@ -393,7 +393,7 @@ export type HelpElementDescriptor =
   | PurePythonElementDescriptor;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const makeHelpElementDescriptor = (raw: any): HelpElementDescriptor => {
+const makeHelpElementDescriptor = (raw: HelpSidebarContentEntry): HelpElementDescriptor => {
   switch (raw.kind as HelpElementDescriptor["kind"]) {
     case "heading":
       return makeHeadingElementDescriptor(raw);
@@ -417,7 +417,7 @@ export type HelpSectionContent = {
 type HelpContent = Array<HelpSectionContent>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const groupHelpIntoSections = (rawHelpData: any): HelpContent => {
+const groupHelpIntoSections = (rawHelpData: unknown): HelpContent => {
   let currentSection: HelpSectionContent = {
     sectionSlug: "will-be-discarded",
     sectionHeading: "Will be discarded",
