@@ -414,16 +414,16 @@ const groupHelpIntoSections = (rawHelpData: unknown): HelpContent => {
 
   let sections: Array<HelpSectionContent> = [];
 
-  for (const datum of helpData) {
-    if (datum.kind === "heading") {
+  for (const entry of helpData) {
+    if (entry.kind === "heading") {
       sections.push(currentSection);
       currentSection = {
-        sectionSlug: datum.sectionSlug,
-        sectionHeading: datum.heading,
+        sectionSlug: entry.sectionSlug,
+        sectionHeading: entry.heading,
         entries: [],
       };
     } else {
-      currentSection.entries.push(makeHelpElementDescriptor(datum));
+      currentSection.entries.push(makeHelpElementDescriptor(entry));
     }
   }
 
