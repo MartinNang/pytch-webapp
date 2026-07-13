@@ -400,9 +400,7 @@ export type HelpElementDescriptor =
 const makeHelpElementDescriptor = (
   raw: HelpSidebarContentEntry
 ): HelpElementDescriptor => {
-  switch (raw.kind as HelpElementDescriptor["kind"]) {
-    case "heading":
-      return makeHeadingElementDescriptor(raw);
+  switch (raw.kind) {
     case "block":
       return makeBlockElementDescriptor(raw);
     case "non-method-block":
@@ -410,7 +408,7 @@ const makeHelpElementDescriptor = (
     case "pure-python":
       return makePurePythonElementDescriptor(raw);
     default:
-      throw new Error(`unknown help element kind "${raw.kind}"`);
+      return assertNever(raw);
   }
 };
 
