@@ -21,6 +21,15 @@ import { activeActorKindSelector } from "../components/Junior/hooks";
 import { kActorKindValues } from "./junior/structured-program/actor";
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 import { urlWithinApp } from "../env-utils";
+import {
+  HelpSidebarContentEntry,
+  HelpSidebarBlockEntry,
+  HelpSidebarNonMethodBlockEntry,
+  HelpSidebarPurePythonEntry,
+  HelpEntryContent,
+  HelpPythonCode,
+  zHelpSidebarContent,
+} from "./help-sidebar-content";
 
 export type ElementArray = Array<Element>;
 
