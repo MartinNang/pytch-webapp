@@ -29,6 +29,15 @@ export const ActivityContent: React.FC<EmptyProps> = () => {
         return <MaybeLessonContent />;
       case "tutorial":
         return <Tutorial />;
+      case "demo":
+        return (
+            <>
+                <WidthMonitor nonStageWd={980} />
+                <div className={"bg-white h-100"}>
+                    <MaybeLessonContent />
+                </div>
+            </>
+        );
       case "info":
         return <InfoActivity />;
       case "settings":

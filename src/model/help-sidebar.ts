@@ -1,7 +1,10 @@
 import { makeScratchSVG } from "./scratchblocks-render";
 import { markedParse } from "../components/hooks/sync-marked";
 import { assertNever, failIfNull } from "../utils";
-import { PytchProgramKind, PytchProgramAllKinds } from "./pytch-program";
+import {
+  kPytchProgramKindValues,
+  PytchProgramKind,
+} from "./pytch-program-types";
 import {
   ActorKind,
   ActorKindOps,
@@ -15,8 +18,9 @@ import {
   DevWorkContextOps,
 } from "./dev-work-context";
 import { activeActorKindSelector } from "../components/Junior/hooks";
-import { kBothActorKinds } from "./junior/structured-program/actor";
+import { kActorKindValues } from "./junior/structured-program/actor";
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
+import { urlWithinApp } from "../env-utils";
 
 export type ElementArray = Array<Element>;
 
@@ -311,7 +315,7 @@ const makeRichPythonLut = (
   };
 
   return new Map(
-    PytchProgramAllKinds.map((kind) => [kind, richPythonForKind(kind)])
+    kPytchProgramKindValues.map((kind) => [kind, richPythonForKind(kind)])
   );
 };
 
@@ -323,7 +327,7 @@ const makeHeadingElementDescriptor = (raw: any): HeadingElementDescriptor => ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const applicableActorKindsFromRaw = (raw: any): Array<ActorKind> => {
   const mKind = raw.actorKind;
-  return mKind == null ? kBothActorKinds : [mKind as ActorKind];
+  return mKind == null ? kActorKindValues : [mKind as ActorKind];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -436,7 +440,7 @@ const groupHelpIntoSections = (rawHelpData: any): HelpContent => {
 
 export type IHelpSidebar = ExternalJsonSlice<HelpContent>;
 export const helpSidebar = externalJsonSlice(
-  "/data/help-sidebar.json",
+  () => urlWithinApp("/data/help-sidebar.json"),
   groupHelpIntoSections
 );
 

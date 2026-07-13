@@ -114,7 +114,7 @@ context("Modals are cancelled when navigating away", () => {
   };
 
   const goToTutorialsAssertNoModals = () => {
-    cy.get(".NavBar li").contains("Tutorials").click();
+    cy.pytchTutorialsFromHome();
     assertTutorialsNoModals();
   };
 

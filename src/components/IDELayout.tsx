@@ -56,6 +56,7 @@ export const IDELayout: React.FC<EmptyProps> = () => {
           case "expanded-specimen":
           case "expanded-lesson":
           case "expanded-tutorial":
+          case "expanded-demo":
           case "expanded-settings":
           case "expanded-info":
             return 1;
@@ -109,7 +110,6 @@ export const IDELayout: React.FC<EmptyProps> = () => {
     }
   };
 
-  // TODO: create new component for different layout styles
   switch (layoutStyle) {
     case "split-screen":
       return (

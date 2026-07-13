@@ -1,9 +1,9 @@
 import JSZip from "jszip";
-import { PytchProgramKind } from "../../src/model/pytch-program";
+import { PytchProgramKind } from "../../src/model/pytch-program-types";
 import { assertNever, promiseAndResolve } from "../../src/utils";
 
 export const kExpNTutorials = 19;
-export const kExpNMediaLibEntries = 59;
+export const kExpNMediaLibEntries = 56;
 
 /** Set up request intercepts for a specimen for use in tests. */
 export function initSpecimenIntercepts() {

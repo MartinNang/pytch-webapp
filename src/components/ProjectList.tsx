@@ -3,6 +3,10 @@ import React, {
   MouseEventHandler,
   useEffect,
 } from "react";
+import Button from "react-bootstrap/Button";
+import Dropdown from "react-bootstrap/Dropdown";
+import Card from "react-bootstrap/Card";
+import Spinner from "react-bootstrap/Spinner";
 import { useTranslation } from "react-i18next";
 import { IDisplayedProjectSummary, LoadingStatus } from "../model/projects";
 import { useStoreState, useStoreActions } from "../store";
@@ -26,8 +30,6 @@ import {
 import { CaptiveContextMenu } from "./CaptiveContextMenu";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { NotableChangeToasts } from "./NotableChangeToasts";
-import { Col, Button, Dropdown, Card } from "react-bootstrap";
-import { Spinner } from "react-bootstrap";
 import { ErrorFetchingSomething } from "./ErrorFetchingSomething";
 
 type ProjectCardProps = {

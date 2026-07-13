@@ -2,7 +2,8 @@ import React, { KeyboardEventHandler } from "react";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { AssetPresentation } from "../../model/asset";
-import { PytchProgramKind, PytchProgramOps } from "../../model/pytch-program";
+import { PytchProgramKind } from "../../model/pytch-program-types";
+import { PytchProgramOps } from "../../model/pytch-program";
 import { useStoreState } from "../../store";
 import { AssetThumbnail } from "../AssetThumbnail";
 import {

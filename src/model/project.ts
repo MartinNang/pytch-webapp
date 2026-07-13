@@ -13,6 +13,7 @@ import {
   LinkedContentOfKind,
   dereferenceLinkedSpecimen,
   dereferenceLinkedNoContent,
+  dereferenceLinkedDemo,
 } from "./linked-content";
 import {
   Action,
@@ -63,7 +64,8 @@ import {
   getFlatAceController,
   pendingCursorWarp,
 } from "../skulpt-connection/code-editor";
-import { PytchProgramKind, PytchProgramOps } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
+import { PytchProgramOps } from "./pytch-program";
 import { Uuid } from "./junior/structured-program/core-types";
 import {
   HandlerDeletionDescriptor,
@@ -563,14 +565,12 @@ export const activeProject: IActiveProject = {
   }),
 
   ////////////////////////////////////////////////////////////////////////
-
   // The clunky dance for upsertSprite() and deleteSprite() is because
   // modifications to app state have to be made within an Action, but we
   // need information learnt from the process of changing state, to
   // return to the caller of a thunk.  We manage this by having the
   // Action accept a callback arg, which can be used within the
   // corresponding Thunk wrapping the Action.  There might a better way.
-
   _upsertSprite: action((state, augArgs) => {
     let program = ensureStructured(state.project, "_upsertSprite");
     const affectedSpriteId = StructuredProgramOps.upsertSprite(
@@ -804,7 +804,6 @@ export const activeProject: IActiveProject = {
   }),
 
   ////////////////////////////////////////////////////////////////////////
-
   _setCodeText: action((state, text) => {
     let project = state.project;
     failIfDummy(project, "setCodeText");
@@ -891,7 +890,6 @@ export const activeProject: IActiveProject = {
       // TODO: Should the asset-server be local to the project?  Might
       // save all the to/fro with prepare/clear and knowing when to revoke
       // the image-urls?
-
       const assetPresentations = await Promise.all(
         descriptor.assets.map((a) => AssetPresentation.create(a))
       );
@@ -998,6 +996,8 @@ export const activeProject: IActiveProject = {
               projectProgramKind,
               linkedContentRef
             );
+          case "demo":
+            return dereferenceLinkedDemo(projectProgramKind, linkedContentRef);
           default:
             return assertNever(linkedContentRef);
         }
@@ -1027,7 +1027,6 @@ export const activeProject: IActiveProject = {
   syncAssetsFromStorage: thunk(async (actions, _voidPayload, helpers) => {
     // TODO: Does this have a race if the active project changes while
     // we're in the middle of working?
-
     // The assetServer is told about all assets afresh, one by one,
     // via the calls to AssetPresentation.create() below.  So clear
     // the asset-server before we start.
@@ -1091,7 +1090,6 @@ export const activeProject: IActiveProject = {
 
     // If we get here, the operation was successful.  Errors are caught
     // but rethrown.
-
     await actions.syncAssetsFromStorage();
 
     helpers.getStoreActions().projectCollection.noteDatabaseChange();
@@ -1335,7 +1333,6 @@ export const activeProject: IActiveProject = {
 
   ////////////////////////////////////////////////////////////////////////
   // Background sync
-
   nPendingSyncActions: 0,
   pendingSyncActionsExist: computed((state) => state.nPendingSyncActions > 0),
   increaseNPendingSyncActions: action((state, nActionsIncrease) => {

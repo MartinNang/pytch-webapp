@@ -3,7 +3,7 @@ import FlatEditorThumbnail48 from "../images/flat-48h.png";
 import PerMethodEditorThumbnail48 from "../images/per-method-48h.png";
 import FlatEditorThumbnail80 from "../images/flat-80h.png";
 import PerMethodEditorThumbnail80 from "../images/per-method-80h.png";
-import { PytchProgramKind } from "../model/pytch-program";
+import { PytchProgramKind } from "../model/pytch-program-types";
 
 type EditorKindThumbnailProps = {
   programKind: PytchProgramKind;

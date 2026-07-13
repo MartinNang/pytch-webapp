@@ -8,7 +8,11 @@ import { useJrEditActions, useJrEditState } from "./hooks";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-common-types";
-import { useHasLinkedLesson, useHasLinkedSpecimen } from "./lesson/hooks";
+import {
+  useHasLinkedDemo,
+  useHasLinkedLesson,
+  useHasLinkedSpecimen,
+} from "./lesson/hooks";
 import { EmptyProps } from "../../utils";
 import { useStoreActions, useStoreState } from "../../store";
 import { Nav } from "react-bootstrap";
@@ -28,6 +32,7 @@ const iconAndLabelFromTabKey: Record<
   settings: { icon: "gear", label: "Settings" },
   work: { icon: "pen-to-square", label: "Work" },
   results: { icon: "flag", label: "Results" },
+  demo: { icon: "play", label: "Demo" }
 };
 
 const tabIsActive = (
@@ -119,23 +124,29 @@ export const ActivityBar: React.FC<EmptyProps> = () => {
   const hasLinkedTutorial = useStoreState(
     (state) => state.activeProject.project?.trackedTutorial != null
   );
+  const hasLinkedDemo = useHasLinkedDemo();
 
   useEffect(() => {
-    const nextTabs: ActivityBarTabKey[] = hasLinkedLesson
-      ? layoutStyle === "split-screen"
-        ? ["info", "lesson", "settings"]
-        : ["info", "lesson", "work", "results", "settings"]
-      : hasLinkedSpecimen
-      ? layoutStyle === "split-screen"
-        ? ["info", "specimen", "settings"]
-        : ["info", "specimen", "work", "results", "settings"]
-      : hasLinkedTutorial
-      ? layoutStyle === "split-screen"
-        ? ["info", "tutorial", "settings"]
-        : ["info", "tutorial", "work", "results", "settings"]
-      : layoutStyle === "split-screen"
-      ? ["info", "settings"]
-      : ["info", "work", "results", "settings"];
+    const nextTabs: ActivityBarTabKey[] =
+        hasLinkedLesson ?
+            layoutStyle === "split-screen" ?
+                ["info", "lesson", "settings"]
+                : ["info", "lesson", "work", "results", "settings"]
+      : hasLinkedSpecimen ?
+            layoutStyle === "split-screen" ?
+                ["info", "specimen", "settings"]
+                : ["info", "specimen", "work", "results", "settings"]
+      : hasLinkedTutorial ?
+            layoutStyle === "split-screen" ?
+                ["info", "tutorial", "settings"]
+                : ["info", "tutorial", "work", "results", "settings"]
+      : hasLinkedDemo ?
+            layoutStyle === "split-screen" ?
+                ["info", "demo", "settings"]
+                : ["info", "demo", "work", "results", "settings"]
+      : layoutStyle === "split-screen" ?
+            ["info", "settings"]
+            : ["info", "work", "results", "settings"];
     setTabs(nextTabs);
   }, [layoutStyle]);
 

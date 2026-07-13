@@ -46,6 +46,7 @@ import {
 import { I18nContextState, i18nContextState } from "./i18n";
 
 import { useStoreActions, useStoreState } from "../store";
+import { discoverableDemos, IDiscoverableDemos } from "./discoverable-demos";
 
 export interface IPytchAppModel {
   navigationRequestQueue: NavigationRequestQueue;
@@ -66,6 +67,7 @@ export interface IPytchAppModel {
   googleDriveImportExport: GoogleDriveIntegration;
   standalonePlayDemoState: StandalonePlayDemoState;
   i18nContextState: I18nContextState;
+  discoverableDemos: IDiscoverableDemos;
 }
 
 export type PytchAppModelActions = Actions<IPytchAppModel>;
@@ -89,6 +91,7 @@ export const pytchAppModel: IPytchAppModel = {
   googleDriveImportExport: googleDriveIntegration,
   standalonePlayDemoState,
   i18nContextState,
+  discoverableDemos,
 };
 
 export function useFlowState<ResultT>(

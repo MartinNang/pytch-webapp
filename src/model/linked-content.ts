@@ -1,4 +1,4 @@
-import { assertNever, fetchArrayBuffer } from "../utils";
+import { assertNever, fetchArrayBuffer, fetchText } from "../utils";
 import {
   projectDescriptor as projectDescriptorFromData,
   StandaloneProjectDescriptor,
@@ -14,13 +14,28 @@ import {
   LinkedNoContentRef,
   LinkedSpecimenRef,
   SpecimenContentHash,
+  LinkedDemoRef,
 } from "./linked-content-core";
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
 import { LinkedContentLoadingState } from "./project";
+import { parseMarkdown } from "./demo-sidebar";
+import {
+  demoCatalogueEntryFromServer,
+  demoDescriptionUrl,
+} from "./discoverable-demos";
 
 export type LessonDescriptor = {
   specimenContentHash: SpecimenContentHash;
   project: StandaloneProjectDescriptor;
+};
+
+export type DemoDescriptor = {
+  uuid: string;
+  headings: string[];
+  chapters: string[];
+  displayName: string;
+  summaryMarkdown: string;
+  lastUpdated: string;
 };
 
 type LinkedNoContent = { kind: "none" };
@@ -29,7 +44,13 @@ const kLinkedNoContent: LinkedNoContent = { kind: "none" };
 
 export type LinkedSpecimen = { kind: "specimen"; lesson: LessonDescriptor };
 
-export type LinkedContent = LinkedNoContent | LinkedJrTutorial | LinkedSpecimen;
+export type LinkedDemo = { kind: "demo"; demo: DemoDescriptor };
+
+export type LinkedContent =
+  | LinkedNoContent
+  | LinkedJrTutorial
+  | LinkedSpecimen
+  | LinkedDemo;
 
 export type LinkedContentKind = LinkedContent["kind"];
 
@@ -52,6 +73,8 @@ export function linkedContentIsReferent(
         content.kind === "specimen" &&
         content.lesson.specimenContentHash === ref.specimenContentHash
       );
+    case "demo":
+      return false;
     default:
       return assertNever(ref);
   }
@@ -84,6 +107,35 @@ export async function lessonDescriptorFromRelativePath(
   );
 
   return { specimenContentHash, project };
+}
+
+export async function fetchDemo(slug: string) {
+  let response = await fetch("/data/demos/demos.json");
+  if (!response.ok) {
+    throw new Error(`Could not find demos.json`);
+  }
+  let demos = await response.json();
+  return demos.find((d: { slug: string }) => d.slug === slug);
+}
+
+async function demoDescriptorFromUuid(uuid: string): Promise<DemoDescriptor> {
+  const mdUrl = demoDescriptionUrl(uuid);
+  const chaptersContent = await fetchText(mdUrl);
+  if (chaptersContent == null) {
+    throw new Error(`failed to fetch demo description markdown from ${mdUrl}`);
+  }
+
+  const demoChapters = parseMarkdown(chaptersContent);
+  const demo = await demoCatalogueEntryFromServer(uuid);
+
+  return {
+    uuid,
+    displayName: demo.displayName,
+    lastUpdated: demo.lastUpdated,
+    summaryMarkdown: demo.summaryMarkdown,
+    headings: demoChapters?.headings || [],
+    chapters: demoChapters?.content || [],
+  };
 }
 
 export async function dereferenceLinkedSpecimen(
@@ -163,4 +215,12 @@ function eqLCLSS(
  * */
 export function useLinkedContentLoadingStateSummary() {
   return useStoreState(mapLCLSS, eqLCLSS);
+}
+
+export async function dereferenceLinkedDemo(
+  _programKind: PytchProgramKind,
+  ref: LinkedDemoRef
+): Promise<LinkedDemo> {
+  const demo = await demoDescriptorFromUuid(ref.uuid);
+  return { kind: "demo", demo };
 }

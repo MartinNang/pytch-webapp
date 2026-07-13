@@ -4,7 +4,7 @@ import {
   GlobalFocusTargetStem,
 } from "../../model/junior/global-steer-focus";
 import { GroupedFocusManager } from "../../model/junior/grouped-focus";
-import { PytchProgramKind } from "../../model/pytch-program";
+import { PytchProgramKind } from "../../model/pytch-program-types";
 import {
   AsyncUserFlowOnDisposeFun,
   flowWasSettledByUser,

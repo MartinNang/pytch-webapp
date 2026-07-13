@@ -1,6 +1,6 @@
 import { failIfNull, isDivOfClass } from "../utils";
 import { envVarOrFail } from "../env-utils";
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
 
 export interface ITutorialChapter {
   title: string;

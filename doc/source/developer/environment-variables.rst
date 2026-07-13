@@ -33,6 +33,13 @@ make them available to the browser.
   fetched.  This is currently outside the normal deployment structure,
   to allow independent development and updates.
 
+``VITE_DEMO_CATALOGUE_BASE``
+  Initial portion of URL from which "discoverable demos" information
+  wil be fetched.  This consists of the catalogue and the data for the
+  individual demos.  Outside this app and outside the main build
+  deployment structure to allow separate updating of the discoverable
+  demos catalogue.
+
 ``VITE_DEMOS_BASE``
   Initial portion of URL from which demo zipfiles will be fetched.
   This is currently outside the normal deployment structure, to allow

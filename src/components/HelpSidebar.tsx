@@ -490,8 +490,9 @@ const HelpSidebarInnerContent: React.FC<HelpSidebarInnerContentProps> = ({
       );
     }
     case "error":
-    default:
       return <ErrorFetchingSomething resourceKeySuffix="help-sidebar" />;
+    default:
+      return assertNever(contentFetchState);
   }
 };
 

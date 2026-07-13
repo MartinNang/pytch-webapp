@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EmptyProps } from "../utils";
 import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content";
 import { pathWithinApp } from "../env-utils";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "./LinkWithinApp";
+import { useNavigate } from "react-router-dom";
 import { useRunFlow } from "../model";
 import { uniqueUserInputFragment } from "../model/compound-text-input";
 import { useResolveStringSpec } from "./hooks/resolve-string-spec";
@@ -57,6 +58,7 @@ const GreenFlag = () => {
         title={"Run project"}
         className="StageControlPseudoButton GreenFlag"
         onClick={handleClick}
+        aria-label={"Run project"}
       >
         <FontAwesomeIcon
           icon="flag"
@@ -178,7 +180,6 @@ export const StageControls: React.FC<EmptyProps> = () => {
   const resolveStringSpec = useResolveStringSpec();
   const { t } = useTranslation("ide");
   const { t: tProjects } = useTranslation("projects");
-  const navigate = useNavigate();
   const isFullScreen = useStoreState(
     (state) => state.ideLayout.fullScreenState.isFullScreen
   );

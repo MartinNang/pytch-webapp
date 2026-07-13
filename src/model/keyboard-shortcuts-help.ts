@@ -1,5 +1,6 @@
+import { urlWithinApp } from "../env-utils";
 import { externalJsonSlice, ExternalJsonSlice } from "./external-json-data";
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
 
 type ProgramKindSpecifier = { forProgramKind?: PytchProgramKind };
 
@@ -25,6 +26,6 @@ export type Content = { sections: Array<Section> };
 export type KeyboardShortcutsHelpContent = ExternalJsonSlice<Content>;
 
 export let keyboardShortcutsHelpContent = externalJsonSlice(
-  "/data/keyboard-shortcuts.json",
+  () => urlWithinApp("/data/keyboard-shortcuts.json"),
   (obj) => obj as Content
 );

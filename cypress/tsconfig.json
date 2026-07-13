@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "strict": true,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "target": "es6",
     "lib": ["esnext", "dom", "dom.iterable"],
     "types": ["cypress", "node", "vite/client", "cypress-real-events"],
     "skipLibCheck": true,
     "allowJs": true,
+    "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "../src/@types/**/*.d.ts"]
 }

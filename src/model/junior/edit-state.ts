@@ -25,6 +25,7 @@ export type ActivityBarTabKey =
   | "lesson"
   | "specimen"
   | "tutorial"
+  | "demo"
   | "info"
   | "settings"
   | "work"
@@ -226,6 +227,9 @@ export const editState: EditState = {
           case "specimen":
             actions.expandActivityContent("specimen");
             break;
+          case "demo":
+            actions.expandActivityContent("demo");
+            break;
           default:
             assertNever(linkedContentKind);
         }
@@ -256,6 +260,9 @@ export const editState: EditState = {
         break;
       case "specimen":
         actions.expandActivityContent("specimen");
+        break;
+      case "demo":
+        actions.expandActivityContent("demo");
         break;
       default:
         assertNever(linkedContentKind);

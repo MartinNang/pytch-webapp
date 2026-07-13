@@ -1,4 +1,4 @@
-import { PytchProgram } from "../../model/pytch-program";
+import { PytchProgram } from "../../model/pytch-program-types";
 import { useStoreState } from "../../store";
 
 export function codeTextEnsuringFlat(

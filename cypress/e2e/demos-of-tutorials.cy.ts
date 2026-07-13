@@ -31,7 +31,7 @@ context("Demos of all tutorials", { defaultCommandTimeout: 30000 }, () => {
       launchNthTutorial(tutIdx);
       cy.get(".ActivityContent .ProgressTrail").should("be.visible");
       cy.pytchHomeFromIDE();
-      cy.get(".NavBar li").contains("Tutorials").click();
+      cy.pytchTutorialsFromHome();
     }
   });
 
@@ -40,7 +40,7 @@ context("Demos of all tutorials", { defaultCommandTimeout: 30000 }, () => {
       launchNthTutorialDemo(tutIdx);
       cy.contains("Click the green flag to run");
       cy.pytchHomeFromIDE();
-      cy.get(".NavBar li").contains("Tutorials").click();
+      cy.pytchTutorialsFromHome();
     }
   });
 });

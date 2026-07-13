@@ -22,6 +22,7 @@ export type TwoStateSwitchI18nSpec = I18nStringSpec & {
     | "copy.switch.none"
     | "copy.switch.jr-tutorial"
     | "copy.switch.specimen"
+    | "copy.switch.demo"
     | "add.media-library.switch";
 };
 

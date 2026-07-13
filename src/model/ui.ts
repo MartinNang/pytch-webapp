@@ -80,6 +80,11 @@ import {
   StartTutorialAtCheckpointFlow,
   startTutorialAtCheckpointFlow,
 } from "./user-interactions/start-tutorial-at-checkpoint";
+import { demoSidebar, IDemoSidebar } from "./demo-sidebar";
+import {
+  CreateProjectFromDemoFlow,
+  createProjectFromDemoFlow,
+} from "./project-from-demo-flow";
 import { ActivityBarTabKey } from "./junior/edit-state";
 
 export interface IStageDisplaySize {
@@ -125,6 +130,7 @@ export interface IIDELayout {
   buttonTourProgressIndex: number;
   buttonTourProgressStage: Computed<IIDELayout, ButtonTourStage | null>;
   helpSidebar: IHelpSidebar;
+  demoSidebar: IDemoSidebar;
   keyboardShortcutsHelpContent: KeyboardShortcutsHelpContent;
   codeEditorFontSize: number;
   layoutStyle: LayoutStyle;
@@ -301,6 +307,7 @@ export const ideLayout: IIDELayout = {
   }),
 
   helpSidebar,
+  demoSidebar,
   keyboardShortcutsHelpContent,
   codeEditorFontSize: defaultCodeEditorFontSize,
   setCodeEditorFontSize: action((state, size) => {
@@ -326,6 +333,7 @@ export interface IUserConfirmations {
   deleteManyProjectsFlow: DeleteManyProjectsFlow;
 
   createProjectFlow: CreateProjectFlow;
+  createProjectFromDemoFlow: CreateProjectFromDemoFlow;
   startTutorialAtCheckpointFlow: StartTutorialAtCheckpointFlow;
   addAssetsFlow: AddAssetsFlow;
   addClipArtFlow: AddClipArtFlow;
@@ -351,6 +359,7 @@ export const userConfirmations: IUserConfirmations = {
   deleteManyProjectsFlow,
 
   createProjectFlow,
+  createProjectFromDemoFlow,
   startTutorialAtCheckpointFlow,
   addAssetsFlow,
   addClipArtFlow,

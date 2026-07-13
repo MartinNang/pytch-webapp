@@ -1,5 +1,5 @@
 import { assertNever } from "../utils";
-import { PytchProgramKind } from "./pytch-program";
+import { PytchProgramKind } from "./pytch-program-types";
 
 export type ProjectTemplateKind =
   | "bare-bones"

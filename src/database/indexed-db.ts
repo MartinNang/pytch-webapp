@@ -17,7 +17,8 @@ import {
   AssetTransformOps,
 } from "../model/asset";
 import { delaySeconds, failIfNull, hexSHA256, PYTCH_CYPRESS } from "../utils";
-import { PytchProgram, PytchProgramOps } from "../model/pytch-program";
+import { PytchProgram } from "../model/pytch-program-types";
+import { PytchProgramOps } from "../model/pytch-program";
 import {
   AddAssetDescriptorOps,
   projectSummary as summaryFromLink,
