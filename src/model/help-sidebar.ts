@@ -303,9 +303,7 @@ type RawPythonCodeValue = string | Record<string, string>;
  * object with properties whose names are `PytchProgramKind` values and
  * whose values are strings) into a `PythonCodeFromKind` map.
  */
-const makeRichPythonLut = (
-  rawPython: HelpPythonCode
-): RichPythonFromKind => {
+const makeRichPythonLut = (rawPython: HelpPythonCode): RichPythonFromKind => {
   const pythonCodeForKind = (kind: PytchProgramKind): string => {
     if (typeof rawPython === "string") {
       return rawPython;
@@ -334,13 +332,17 @@ const makeHeadingElementDescriptor = (raw: any): HeadingElementDescriptor => ({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const applicableActorKindsFromRaw = (raw: HelpSidebarContentEntry): Array<ActorKind> => {
+const applicableActorKindsFromRaw = (
+  raw: HelpSidebarContentEntry
+): Array<ActorKind> => {
   const mKind = raw.actorKind;
   return mKind == null ? kActorKindValues : [mKind as ActorKind];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const makeBlockElementDescriptor = (raw: HelpSidebarBlockEntry): BlockElementDescriptor => {
+const makeBlockElementDescriptor = (
+  raw: HelpSidebarBlockEntry
+): BlockElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
   const richPython = parsedRichPython(raw.python);
   const python = plainFromRich(richPython);
@@ -393,7 +395,9 @@ export type HelpElementDescriptor =
   | PurePythonElementDescriptor;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const makeHelpElementDescriptor = (raw: HelpSidebarContentEntry): HelpElementDescriptor => {
+const makeHelpElementDescriptor = (
+  raw: HelpSidebarContentEntry
+): HelpElementDescriptor => {
   switch (raw.kind as HelpElementDescriptor["kind"]) {
     case "heading":
       return makeHeadingElementDescriptor(raw);
