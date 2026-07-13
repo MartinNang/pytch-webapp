@@ -319,7 +319,6 @@ const makeRichPythonLut = (rawPython: HelpPythonCode): RichPythonFromKind => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const applicableActorKindsFromRaw = (
   raw: HelpSidebarContentEntry
 ): Array<ActorKind> => {
@@ -329,7 +328,6 @@ const applicableActorKindsFromRaw = (
   return mKind == null ? kActorKindValues : [mKind];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const makeBlockElementDescriptor = (
   raw: HelpSidebarBlockEntry
 ): BlockElementDescriptor => {
@@ -349,7 +347,6 @@ const makeBlockElementDescriptor = (
 };
 
 const makeNonMethodBlockElementDescriptor = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   raw: HelpSidebarNonMethodBlockEntry
 ): NonMethodBlockElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
@@ -365,7 +362,6 @@ const makeNonMethodBlockElementDescriptor = (
 };
 
 const makePurePythonElementDescriptor = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   raw: HelpSidebarPurePythonEntry
 ): PurePythonElementDescriptor => {
   const forActorKinds = applicableActorKindsFromRaw(raw);
@@ -384,7 +380,6 @@ export type HelpElementDescriptor =
   | NonMethodBlockElementDescriptor
   | PurePythonElementDescriptor;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const makeHelpElementDescriptor = (
   raw: HelpSidebarContentEntry
 ): HelpElementDescriptor => {
@@ -408,7 +403,6 @@ export type HelpSectionContent = {
 
 type HelpContent = Array<HelpSectionContent>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const groupHelpIntoSections = (rawHelpData: unknown): HelpContent => {
   const helpData = zHelpSidebarContent.parse(rawHelpData);
 
