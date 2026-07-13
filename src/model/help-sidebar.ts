@@ -157,11 +157,6 @@ const simpleSyntaxHighlight = (codeElt: Element): void => {
   codeLineElts.forEach((elt) => preElt.appendChild(elt));
 };
 
-type RawHelpValue =
-  | string
-  | Record<string, string>
-  | Record<string, Record<string, string>>;
-
 const maybeApplyActorKindPrefix = (
   programKind: PytchProgramKind,
   helpContent: string,
@@ -297,8 +292,6 @@ const makeHelpTextElements = (helpMarkdown: string): ElementArray => {
   return helpElts;
 };
 
-type RawPythonCodeValue = string | Record<string, string>;
-
 /** Convert the given `rawPython` (which must be either a string or an
  * object with properties whose names are `PytchProgramKind` values and
  * whose values are strings) into a `PythonCodeFromKind` map.
@@ -325,11 +318,6 @@ const makeRichPythonLut = (rawPython: HelpPythonCode): RichPythonFromKind => {
     kPytchProgramKindValues.map((kind) => [kind, richPythonForKind(kind)])
   );
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const makeHeadingElementDescriptor = (raw: any): HeadingElementDescriptor => ({
-  ...raw,
-});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const applicableActorKindsFromRaw = (
