@@ -335,8 +335,10 @@ const makeHeadingElementDescriptor = (raw: any): HeadingElementDescriptor => ({
 const applicableActorKindsFromRaw = (
   raw: HelpSidebarContentEntry
 ): Array<ActorKind> => {
-  const mKind = raw.actorKind;
-  return mKind == null ? kActorKindValues : [mKind as ActorKind];
+  // Only `block` entries can restrict themselves to a single
+  // actor-kind; any other entry applies to both.
+  const mKind = raw.kind === "block" ? raw.actorKind : null;
+  return mKind == null ? kActorKindValues : [mKind];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
