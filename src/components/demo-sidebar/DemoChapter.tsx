@@ -1,4 +1,5 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Markdown from "react-markdown";
 import React, {
@@ -13,6 +14,7 @@ import classNames from "classnames";
 import { EmptyProps } from "../../utils";
 
 const DemoChapterNavigation: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("demos");
   const linkedDemo = useLinkedDemo();
   const activeChapter = useStoreState(
     (state) => state.ideLayout.demoSidebar.activeChapter
@@ -102,7 +104,7 @@ const DemoChapterNavigation: React.FC<EmptyProps> = () => {
       <Button
         key={"prev-chapter"}
         ref={navPrevChapterRef}
-        aria-label={"Previous chapter"}
+        aria-label={t("sidebar.prev-chapter.aria-label")}
         variant={"primary"}
         className={"prev-chapter"}
         onClick={handlePrevChapterClicked}
@@ -116,7 +118,7 @@ const DemoChapterNavigation: React.FC<EmptyProps> = () => {
       </Button>
       <Button
         key={"next-chapter"}
-        aria-label={"Next chapter"}
+        aria-label={t("sidebar.next-chapter.aria-label")}
         tabIndex={-1}
         ref={navNextChapterRef}
         variant={"primary"}
