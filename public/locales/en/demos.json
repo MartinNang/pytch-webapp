@@ -1,4 +1,5 @@
 {
+  "sidebar.published-on": "Published on {{date}}",
   "sidebar.chapter-count.aria-label": "Chapter {{current}} out of {{total}}",
   "sidebar.nav-toggle.aria-label": "Expand or collapse chapters navigation menu",
   "sidebar.prev-chapter.aria-label": "Previous chapter",
