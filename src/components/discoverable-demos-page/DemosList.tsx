@@ -203,6 +203,7 @@ const DemosSearch: React.FC<EmptyProps> = () => {
 const kDemosPerPage = 10;
 
 const DemosResults: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("demos");
   const contentFetchState = useDemoListState(
     (s) => s.fetchedDemos.contentFetchState
   );
@@ -240,7 +241,7 @@ const DemosResults: React.FC<EmptyProps> = () => {
           ))}
           {nFoundDemos === 0 ? (
             <Col className={"no-results"}>
-              <p>No demos found.</p>
+              <p>{t("no-results")}</p>
             </Col>
           ) : undefined}
           <PaginationProvider
