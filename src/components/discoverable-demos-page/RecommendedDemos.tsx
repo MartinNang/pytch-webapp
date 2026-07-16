@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, Carousel, Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useStoreActions, useStoreState } from "../../store";
@@ -61,6 +62,7 @@ const RecommendedDemoCard: React.FC<RecommendedDemoCardProps> = ({ demo }) => {
 };
 
 export const RecommendedDemos = () => {
+  const { t } = useTranslation("demos");
   const recommendedIndex = useStoreState(
     (state) => state.discoverableDemos.recommendedIndex
   );
@@ -98,7 +100,7 @@ export const RecommendedDemos = () => {
       return (
         <div className={"row demos-recommended mb-5"}>
           <Row className={"pt-5 justify-content-between mb-3"}>
-            <h2 className={"w-auto m-0"}>Recommended</h2>
+            <h2 className={"w-auto m-0"}>{t("recommended.heading")}</h2>
             <p className={"w-auto m-0 mt-auto"}>
               {recommendedIndex + 1}/{recommendedDemos.length}
             </p>

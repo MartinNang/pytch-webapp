@@ -161,7 +161,7 @@ export const discoverableDemos: IDiscoverableDemos = {
     setDemoKindSelector: propSetterAction("demoKindSelector"),
     setProgramKindSelector: propSetterAction("programKindSelector"),
   },
-  sortBy: "lastUpdated",
+  sortBy: "last-updated",
   setSortBy: action((state, newSortBy) => {
     state.sortBy = newSortBy;
   }),
@@ -194,10 +194,10 @@ export const discoverableDemos: IDiscoverableDemos = {
       }
 
       switch (sortBy) {
-        case "alphabetAsc":
+        case "alphabet-asc":
           searchResults = searchResults.sort(cmpCatalogueEntriesByDisplayName);
           break;
-        case "lastUpdated":
+        case "last-updated":
           searchResults = searchResults.sort(cmpCatalogueEntriesByLastUpdated);
           break;
         default:
