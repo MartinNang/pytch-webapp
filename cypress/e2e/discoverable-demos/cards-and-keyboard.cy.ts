@@ -4,7 +4,6 @@
 // §8 Keyboard / focus navigation on the list (activation is covered in
 //    create-from-demo.cy.ts, cross-ref §32/§41)
 
-import { displayDemoKindName } from "../../../src/model/discoverable-demos-utils";
 import { DemoKind } from "../../../src/model/discoverable-demos-schema";
 import { assertNever } from "../../../src/utils";
 import {

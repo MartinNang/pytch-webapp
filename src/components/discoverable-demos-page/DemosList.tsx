@@ -16,11 +16,6 @@ import {
   DemoKindSelector,
   PytchProgramKindSelector,
 } from "../../model/discoverable-demos";
-import {
-  displayDemoKindName,
-  displayProgramKindName,
-  displaySortByName,
-} from "../../model/discoverable-demos-utils";
 import { kPytchProgramKindValues } from "../../model/pytch-program-types";
 import { FocusGroupContainer } from "../FocusGroupContainer";
 import { createFocusContext, FocusContext } from "../hooks/focus-steering";
