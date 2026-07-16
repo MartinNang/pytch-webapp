@@ -2,6 +2,9 @@
   "page-title": "Pytch: Demos",
   "page-heading": "Demos",
 
+  "search.label": "Search",
+  "search.demo-kind.all": "All",
+
   "recommended.heading": "Recommended",
 
   "demo-kind.game": "Game",

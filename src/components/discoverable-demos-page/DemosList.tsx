@@ -44,6 +44,7 @@ const DemosHeader: React.FC<EmptyProps> = () => {
 };
 
 const DemosSearchField: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("demos");
   const searchFilters = useDemoListState((s) => s.searchFilters);
   const setDemoKindSelector = useDemoListActions(
     (a) => a.searchFilters.setDemoKindSelector
@@ -74,7 +75,7 @@ const DemosSearchField: React.FC<EmptyProps> = () => {
 
   return (
     <Form.Group className="mb-3">
-      <Form.Label visuallyHidden={true}>Search</Form.Label>
+      <Form.Label visuallyHidden={true}>{t("search.label")}</Form.Label>
       <Container className={"p-0"}>
         <Row>
           <div className="d-flex p-0">
@@ -85,10 +86,10 @@ const DemosSearchField: React.FC<EmptyProps> = () => {
                 className={"project-type"}
                 onInput={handleChangeDemoKind}
               >
-                <option value={"all"}>All</option>
+                <option value={"all"}>{t("search.demo-kind.all")}</option>
                 {kDemoKindValues.map((demoKind) => (
                   <option key={demoKind} value={demoKind}>
-                    {displayDemoKindName(demoKind)}
+                    {t(`demo-kind.${demoKind}`)}
                   </option>
                 ))}
               </Form.Select>
