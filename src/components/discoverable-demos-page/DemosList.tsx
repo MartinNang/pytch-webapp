@@ -122,6 +122,7 @@ const DemosSearchField: React.FC<EmptyProps> = () => {
 };
 
 const DemosSearch: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("demos");
   const programKindSelector = useDemoListState(
     (s) => s.searchFilters.programKindSelector
   );
@@ -158,17 +159,19 @@ const DemosSearch: React.FC<EmptyProps> = () => {
                   className={"w-auto ms-auto"}
                   controlId={"formProgramType"}
                 >
-                  <Form.Label visuallyHidden={true}>Program type</Form.Label>
+                  <Form.Label visuallyHidden={true}>
+                    {t("program-kind.label")}
+                  </Form.Label>
                   <Form.Select
-                    aria-label="Program type"
+                    aria-label={t("program-kind.label")}
                     className={"border-0"}
                     value={programKindSelector}
                     onInput={handleChangeProgramKind}
                   >
-                    <option value={"all"}>Program type</option>
+                    <option value={"all"}>{t("program-kind.label")}</option>
                     {kPytchProgramKindValues.map((programKind) => (
                       <option key={programKind} value={programKind}>
-                        {displayProgramKindName(programKind)}
+                        {t(`program-kind.${programKind}`)}
                       </option>
                     ))}
                   </Form.Select>

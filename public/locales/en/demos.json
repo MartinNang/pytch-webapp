@@ -10,6 +10,10 @@
   "demo-kind.game": "Game",
   "demo-kind.snippet": "Snippet",
 
+  "program-kind.label": "Program type",
+  "program-kind.flat": "Flat",
+  "program-kind.per-method": "Per-method",
+
   "thumbnail.video-fallback": "Your browser does not support the video tag.",
 
   "sidebar.published-on": "Published on {{date}}",
