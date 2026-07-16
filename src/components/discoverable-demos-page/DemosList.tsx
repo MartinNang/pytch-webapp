@@ -177,16 +177,18 @@ const DemosSearch: React.FC<EmptyProps> = () => {
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className={"w-auto"}>
-                  <Form.Label visuallyHidden={true}>Sort by</Form.Label>
+                  <Form.Label visuallyHidden={true}>
+                    {t("sort-by.label")}
+                  </Form.Label>
                   <Form.Select
-                    aria-label="Sort by"
+                    aria-label={t("sort-by.label")}
                     className={"border-0"}
                     onInput={handleChangeSortBy}
                     value={sortBy}
                   >
                     {Object.values(kSortByValues).map((sortingOption) => (
                       <option key={sortingOption} value={sortingOption}>
-                        {displaySortByName(sortingOption)}
+                        {t(`sort-by.${sortingOption}`)}
                       </option>
                     ))}
                   </Form.Select>

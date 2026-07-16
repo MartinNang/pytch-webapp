@@ -15,6 +15,10 @@
   "program-kind.flat": "Flat",
   "program-kind.per-method": "Per-method",
 
+  "sort-by.label": "Sort by",
+  "sort-by.last-updated": "Last updated",
+  "sort-by.alphabet-asc": "A to Z",
+
   "thumbnail.video-fallback": "Your browser does not support the video tag.",
 
   "sidebar.published-on": "Published on {{date}}",
