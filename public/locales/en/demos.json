@@ -1,4 +1,7 @@
 {
+  "demo-kind.game": "Game",
+  "demo-kind.snippet": "Snippet",
+
   "thumbnail.video-fallback": "Your browser does not support the video tag.",
 
   "sidebar.published-on": "Published on {{date}}",
