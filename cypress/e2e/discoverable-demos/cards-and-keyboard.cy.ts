@@ -26,7 +26,7 @@ context("Discoverable demos — card presentation", () => {
   });
 
   function assertCardDetails(expDemoKind: DemoKind) {
-    const expDisplayName = displayDemoKindName(expDemoKind);
+    const expDisplayName = expDemoKind === "game" ? "Game" : "Snippet";
     cy.get(".pill-demo-kind").should("have.text", expDisplayName);
     switch (expDemoKind) {
       case "game":
