@@ -1,4 +1,5 @@
 import React, { ChangeEventHandler, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { NavBanner } from "../NavBanner";
 import { assertNever, EmptyProps, mDataAttrStringValue } from "../../utils";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
@@ -33,9 +34,10 @@ import { ErrorFetchingSomething } from "../ErrorFetchingSomething";
  * publishing new demos. */
 
 const DemosHeader: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("demos");
   return (
     <div className={"demos-header pt-1 mb-2 border-bottom"}>
-      <h1 className={"row pt-5"}>Demos</h1>
+      <h1 className={"row pt-5"}>{t("page-heading")}</h1>
       <RecommendedDemos />
     </div>
   );
@@ -267,6 +269,7 @@ const DemosContent: React.FC<EmptyProps> = () => {
 };
 
 export const DemosList: React.FC<EmptyProps> = () => {
+  const { t } = useTranslation("demos");
   const focusContext = createFocusContext("my-projects-list");
 
   const maybeLoadContent = useDemoListActions(
@@ -282,7 +285,7 @@ export const DemosList: React.FC<EmptyProps> = () => {
   }, [maybeLoadContent]);
 
   useEffect(() => {
-    document.title = "Pytch: Demos";
+    document.title = t("page-title");
   });
 
   return (
