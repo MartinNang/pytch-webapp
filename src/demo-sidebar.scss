@@ -3,6 +3,22 @@
 $chapter-navigation-link-height: 3rem;
 
 .DemoSidebar {
+  h2 {
+    color: $pytch-colour-main-yellow;
+    background-color: $pytch-colour-main-blue;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  h3 {
+    font-size: 20px;
+    margin: 0.5rem 0rem;
+  }
+  h4 {
+    font-size: 1.125rem;
+    font-style: italic;
+  }
+
   overflow: auto;
   overflow-x: clip;
   overscroll-behavior-y: none;
@@ -199,10 +215,10 @@ $chapter-navigation-link-height: 3rem;
         margin: 0;
         width: 100%;
 
-        h2 {
+        /*h2 {
           font-size: 1.2rem;
           font-weight: bold;
-        }
+        }*/
 
         p {
           margin: 0;
@@ -214,12 +230,13 @@ $chapter-navigation-link-height: 3rem;
         }
       }
 
-      h2 {
+      /*h2 {
         font-size: 1.15rem;
-      }
+      }*/
 
       h3 {
         font-size: 1.1rem;
+        color: black;
       }
 
       h4 {
