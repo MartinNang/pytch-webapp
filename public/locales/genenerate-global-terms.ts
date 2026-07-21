@@ -26,7 +26,7 @@ const mergedJSON = Object.assign({},
 );
 
 console.log("merged JSON object:", mergedJSON);
-const outputFilePath = 'global-strings.json';
+const outputFilePath = 'pytch-english.json';
 fs.writeFileSync(outputFilePath, JSON.stringify(mergedJSON));
 
 function addPrefixToJSON(prefix: string, jsonFile: Object): Object {
