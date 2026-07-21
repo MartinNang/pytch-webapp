@@ -106,8 +106,6 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
         <div style={{ marginTop: 1 }}>{`${t("info.expand-button.label")}${
           nErrors > 0 ? " (" + nErrors + ")" : ""
         }`}</div>
-        <FontAwesomeIcon className="me-2 ms-auto" icon="angle-right" />
-          {t("info.expand-button.label")}
       </Button>
     </div>
   );

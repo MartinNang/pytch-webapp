@@ -9,14 +9,13 @@ import {
   Button,
   Col,
 } from "react-bootstrap";
-import { Content } from "../../model/keyboard-shortcuts-help";
 import { useStoreActions, useStoreState } from "../../store";
 
 import "./IDESettings.scss";
 import { LayoutStyle } from "../../model/ui";
 import { LanguageChooser } from "./LanguageChooser";
 
-const IDESettingsContent: React.FC<{ content: Content }> = () => {
+const IDESettingsContent: React.FC<{ }> = () => {
   const fontSize = useStoreState((state) => state.ideLayout.codeEditorFontSize);
   const setFontSize = useStoreActions(
     (actions) => actions.ideLayout.setCodeEditorFontSize
@@ -132,10 +131,10 @@ const IDESettingsContent: React.FC<{ content: Content }> = () => {
 };
 
 const IDESettingsMaybeContent: React.FC<EmptyProps> = () => {
-  const contentState = useStoreState(
-    (s) => s.ideLayout.keyboardShortcutsHelpContent
-  );
-  switch (contentState.contentFetchState.state) {
+/*  const contentState = useStoreState(
+    (s) => s.ideLayout
+  );*/
+/*  switch (contentState.contentFetchState.state) {
     case "idle":
     case "requesting":
       return (
@@ -143,11 +142,11 @@ const IDESettingsMaybeContent: React.FC<EmptyProps> = () => {
           <Spinner animation="border" />
         </div>
       );
-    case "available":
+    case "available":*/
       return (
-        <IDESettingsContent content={contentState.contentFetchState.content} />
+        <IDESettingsContent /*content={contentState.contentFetchState.content}*/ />
       );
-    case "error":
+/*    case "error":
       return (
         <>
           <h1>Problem</h1>
@@ -156,7 +155,7 @@ const IDESettingsMaybeContent: React.FC<EmptyProps> = () => {
       );
     default:
       return assertNever(contentState.contentFetchState);
-  }
+  }*/
 };
 
 export const IDESettings: React.FC<EmptyProps> = () => {
