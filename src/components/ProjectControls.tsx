@@ -297,7 +297,7 @@ export const ProjectControls: React.FC<EmptyProps> = () => {
         </Dropdown.Item>
         <Dropdown.Item onClick={onDownload}>
           <FontAwesomeIcon icon="download" className={"me-2"} />
-          {t("project-action.show-tooltips")}
+          {t("project-action.download-zip")}
         </Dropdown.Item>
         <ExportToDriveDropdownItem />
         <Dropdown.Divider />

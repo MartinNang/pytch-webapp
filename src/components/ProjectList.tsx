@@ -31,6 +31,7 @@ import { CaptiveContextMenu } from "./CaptiveContextMenu";
 import { FocusGroupContainer } from "./FocusGroupContainer";
 import { NotableChangeToasts } from "./NotableChangeToasts";
 import { ErrorFetchingSomething } from "./ErrorFetchingSomething";
+import {Col} from "react-bootstrap";
 
 type ProjectCardProps = {
   project: IDisplayedProjectSummary;
