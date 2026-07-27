@@ -10,6 +10,8 @@ import classNames from "classnames";
 import { Button } from "react-bootstrap";
 import { urlWithinApp } from "../../env-utils";
 import { useTranslation } from "react-i18next";
+import { PanelImperativeHandle } from "react-resizable-panels";
+import {minInfoPanelHeight} from "../../constants";
 
 const useIdeTranslation = () => useTranslation("ide");
 
@@ -78,11 +80,27 @@ export const Errors = () => {
   return <div className="ErrorsPane">{content}</div>;
 };
 
-type InfoDisclosureProps = { tabContentId: string };
-const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
+type InfoDisclosureProps = {
+    tabContentId: string;
+    resizablePanelRef?:
+        | React.RefObject<PanelImperativeHandle | null>
+        | undefined;
+};
+const InfoDisclosure: React.FC<InfoDisclosureProps> = ({
+    tabContentId,
+    resizablePanelRef,
+}) => {
   const { t } = useIdeTranslation();
+  const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
   const toggleStateAction = useJrEditActions((a) => a.toggleInfoPanelState);
-  const toggleState = () => toggleStateAction();
+  const toggleState = () => {
+    console.log('expand panel');
+    if (isCollapsed) {
+      toggleStateAction();
+      resizablePanelRef?.current.expand();
+      if (resizablePanelRef?.current.getSize().inPixels === minInfoPanelHeight) resizablePanelRef.current.resize(380);
+    }
+  };
 
   const errorList = useStoreState((state) => state.errorReportList.errors);
   const nErrors = errorList.length;
@@ -111,7 +129,11 @@ const InfoDisclosure: React.FC<InfoDisclosureProps> = ({ tabContentId }) => {
   );
 };
 
-export const InfoPanel = ({ showOnly }: { showOnly?: InfoPanelTabKey }) => {
+interface InfoPanelProps {
+  resizablePanelRef?: React.RefObject<PanelImperativeHandle | null>;
+}
+
+export const InfoPanel = ({ resizablePanelRef }: InfoPanelProps) => {
   const { t } = useIdeTranslation();
   const activeTab = useJrEditState((s) => s.infoPanelActiveTab);
   const isCollapsed = useJrEditState((s) => s.infoPanelState === "collapsed");
@@ -120,7 +142,13 @@ export const InfoPanel = ({ showOnly }: { showOnly?: InfoPanelTabKey }) => {
   const tabContentId = useId();
   const wasCollapsedRef = useRef<boolean | null>(null);
 
-  const toggleState = () => toggleStateAction();
+  const toggleState = () => {
+    console.log('collapse panel');
+    if (!isCollapsed) {
+      toggleStateAction();
+      resizablePanelRef?.current.collapse();
+    }
+  };
 
   const classes = classNames(
     "Junior-InfoPanel-container",
@@ -160,10 +188,9 @@ export const InfoPanel = ({ showOnly }: { showOnly?: InfoPanelTabKey }) => {
         id={tabContentId}
         className={tabPanelClasses}
         transition={false}
-        activeKey={showOnly ? showOnly : activeTab}
+        activeKey={activeTab}
         onSelect={(k) => k && setActiveTab(k as TabKey)}
       >
-        {showOnly && showOnly !== "output" ? null : (
           <Tab
             eventKey="output"
             title={
@@ -176,8 +203,6 @@ export const InfoPanel = ({ showOnly }: { showOnly?: InfoPanelTabKey }) => {
           >
             <StandardOutput />
           </Tab>
-        )}
-        {showOnly && showOnly !== "errors" ? null : (
           <Tab
             eventKey="errors"
             title={
@@ -205,10 +230,12 @@ export const InfoPanel = ({ showOnly }: { showOnly?: InfoPanelTabKey }) => {
           >
             <Errors />
           </Tab>
-        )}
       </Tabs>
       {isCollapsed ? (
-        <InfoDisclosure tabContentId={tabContentId} />
+        <InfoDisclosure
+          tabContentId={tabContentId}
+          resizablePanelRef={resizablePanelRef}
+        />
       ) : (
         <Button
           variant="outline-secondary"

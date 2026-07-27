@@ -9,3 +9,5 @@ export const stageFullScreenBorderPx = 8;
 export const pytchResearchSiteUrl = "https://pytch.scss.tcd.ie/";
 
 export const defaultCodeEditorFontSize = 14;
+
+export const minInfoPanelHeight = 36;

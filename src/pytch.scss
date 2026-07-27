@@ -2009,3 +2009,17 @@ button.awaiting-action {
   background-color: darken(#ebf5f9, 10);
   overflow: hidden;
 }
+
+.Junior-AppearancesList-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.Junior-AssetsList {
+  flex-grow: 1;
+}
+
+.tab-pane.active {
+  height: 100%;
+}
