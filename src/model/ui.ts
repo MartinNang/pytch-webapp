@@ -136,6 +136,7 @@ export interface IIDELayout {
   layoutStyle: LayoutStyle;
   tabs: Array<ActivityBarTabKey>;
   helpSidebarOrientation: HelpSidebarOrientation;
+  resizablePanelsGroupRef: HTMLDivElement | null;
   _setIsFullScreen: Action<IIDELayout, boolean>;
   setIsFullScreen: Thunk<IIDELayout, boolean>;
   ensureNotFullScreen: Thunk<IIDELayout>;
@@ -152,6 +153,7 @@ export interface IIDELayout {
   setLayoutStyle: Action<IIDELayout, LayoutStyle>;
   setHelpSidebarOrientation: Action<IIDELayout, HelpSidebarOrientation>;
   setTabs: Action<IIDELayout, Array<ActivityBarTabKey>>;
+  setResizablePanelsGroupRef: Action<IIDELayout, HTMLDivElement | null>;
 }
 
 export const fullScreenStageDisplaySize = (controlsHeight = 36) => {
@@ -325,6 +327,10 @@ export const ideLayout: IIDELayout = {
   setTabs: action((state, newTabs) => {
     state.tabs = newTabs;
   }),
+  resizablePanelsGroupRef: null,
+  setResizablePanelsGroupRef: action((state, groupRef) => {
+    state.resizablePanelsGroupRef = groupRef;
+  })
 };
 
 export interface IUserConfirmations {
