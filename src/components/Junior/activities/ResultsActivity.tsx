@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import {assertNever, EmptyProps} from "../../../utils";
-import {Spinner, Tab} from "react-bootstrap";
-import {Content} from "../../../model/keyboard-shortcuts-help";
+import {EmptyProps} from "../../../utils";
+import {Tab} from "react-bootstrap";
 import {useStoreState} from "../../../store";
 
 import "../KeyNavHelpSidebar.scss";
@@ -27,7 +26,7 @@ const ProjectsSubActivity = () => {
   return <StageWithControls />;
 };
 
-const ResultsActivityContent: React.FC<{ content: Content }> = () => {
+const ResultsActivityContent: React.FC<{ }> = () => {
   const layoutStyle: LayoutStyle = useStoreState(
     (state) => state.ideLayout.layoutStyle
   );
@@ -46,7 +45,7 @@ const ResultsActivityContent: React.FC<{ content: Content }> = () => {
           transition={false}
           activeKey={activeTab}
           onSelect={(k) => k && setActiveTab(k as ResultsActivityTabKey)}
-          aria-label={t("activity-pane.results-activity.aria-label")}
+          aria-label={t("activity-pane.results-activity.aria-label" as string)}
         >
           <Tab
             eventKey="project"
@@ -55,7 +54,7 @@ const ResultsActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"flag"} className={""} />
                 </div>
-                <p>Project</p>
+                <p>{t("activity-pane.results-activity.project")}</p>
               </>
             }
           >
@@ -68,7 +67,7 @@ const ResultsActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"info-circle"} className={""} />
                 </div>
-                <p>Output</p>
+                <p>{t("activity-pane.results-activity.output")}</p>
               </>
             }
           >
@@ -81,7 +80,7 @@ const ResultsActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"bug"} className={""} />
                 </div>
-                <p>Errors</p>
+                <p>{t("activity-pane.results-activity.errors")}</p>
               </>
             }
           >
@@ -93,41 +92,11 @@ const ResultsActivityContent: React.FC<{ content: Content }> = () => {
   );
 };
 
-const ResultsActivityMaybeContent: React.FC<EmptyProps> = () => {
-  const contentState = useStoreState(
-    (s) => s.ideLayout.keyboardShortcutsHelpContent
-  );
-  switch (contentState.contentFetchState.state) {
-    case "idle":
-    case "requesting":
-      return (
-        <div className="spinner-container h-100 w-100 d-flex justify-content-center align-items-center">
-          <Spinner animation="border" />
-        </div>
-      );
-    case "available":
-      return (
-        <ResultsActivityContent
-          content={contentState.contentFetchState.content}
-        />
-      );
-    case "error":
-      return (
-        <>
-          <h2>Problem</h2>
-          <p>Sorry, there was a problem fetching the help information.</p>
-        </>
-      );
-    default:
-      return assertNever(contentState.contentFetchState);
-  }
-};
-
 export const ResultsActivity: React.FC<EmptyProps> = () => {
 
   return (
     <div className="ResultsActivity gfs__help-content h-100" tabIndex={-1}>
-      <ResultsActivityMaybeContent />
+      <ResultsActivityContent />
     </div>
   );
 };

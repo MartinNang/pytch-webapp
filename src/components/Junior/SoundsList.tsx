@@ -15,11 +15,7 @@ import { FocusGroupContainer } from "../FocusGroupContainer";
 import { AssetOperationContext } from "../../model/asset";
 import { useTranslation } from "react-i18next";
 
-interface SoundsListProps {
-  showOnly?: boolean;
-}
-
-export const SoundsList = ({ showOnly }: SoundsListProps) => {
+export const SoundsList = ( ) => {
   const { t } = useTranslation("assets");
   const projectId = useStoreState((state) => state.activeProject.project.id);
   const assets = useStoreState((state) => state.activeProject.project.assets);
@@ -38,7 +34,7 @@ export const SoundsList = ({ showOnly }: SoundsListProps) => {
 
   // See comment in CodeEditor.
   const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
-  if (!showOnly && activeTab !== "sounds") {
+  if (activeTab !== "sounds") {
     return false;
   }
 

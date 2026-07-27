@@ -13,7 +13,7 @@ import {
   useHasLinkedLesson,
   useHasLinkedSpecimen,
 } from "./lesson/hooks";
-import { EmptyProps } from "../../utils";
+import { EmptyProps, tabIsActive} from "../../utils";
 import { useStoreActions, useStoreState } from "../../store";
 import { Nav } from "react-bootstrap";
 import { kFocusGroupItemClassName } from "../../model/junior/grouped-focus";
@@ -35,11 +35,6 @@ const iconAndLabelFromTabKey: Record<
   demo: { icon: "play", label: "Demo" }
 };
 
-const tabIsActive = (
-  tab: ActivityBarTabKey,
-  contentState: ActivityContentState
-) => contentState.kind === "expanded" && contentState.tab === tab;
-
 type ActivityBarTabProps = { tab: ActivityBarTabKey; isActive: boolean };
 const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
   const { t } = useTranslation("ide");
@@ -49,10 +44,14 @@ const ActivityBarTab: React.FC<ActivityBarTabProps> = ({ tab, isActive }) => {
   const expandAction = useJrEditActions((a) => a.expandActivityContent);
 
   const layoutStyle = useStoreState((state) => state.ideLayout.layoutStyle);
-  const onClick =
-    isActive && layoutStyle !== "single-screen-vertical"
-      ? () => collapseAction()
-      : () => expandAction(tab);
+  const onClick = () => {
+    if (isActive && layoutStyle !== "single-screen-vertical") {
+      collapseAction();
+    }
+    else {
+      expandAction(tab);
+    }
+  };
 
   const icon = iconAndLabelFromTabKey[tab].icon;
   const label = iconAndLabelFromTabKey[tab].label;

@@ -5,7 +5,7 @@ import { useStoreActions, useStoreState } from "../store";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { EmptyProps } from "../utils";
+import { EmptyProps, tabIsActive} from "../utils";
 import { filenameFormatSpecifier } from "../model/format-spec-for-linked-content";
 import { pathWithinApp } from "../env-utils";
 import { Link } from "./LinkWithinApp";
@@ -16,6 +16,8 @@ import { useResolveStringSpec } from "./hooks/resolve-string-spec";
 import { ProjectControls } from "./ProjectControls";
 import {faGoogleDrive} from "@fortawesome/free-brands-svg-icons";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
+import {ActivityBarTabKey} from "../model/junior/edit-state";
+import {useJrEditActions, useJrEditState} from "./Junior/hooks";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Sk: any;
@@ -48,7 +50,24 @@ const GreenFlag = () => {
   );
   const build = useStoreActions((actions) => actions.activeProject.build);
 
-  const handleClick = () => build("running-project");
+  const tabs: Array<ActivityBarTabKey> = useStoreState(
+      (state) => state.ideLayout.tabs
+  );
+
+  const resultsTab: ActivityBarTabKey | undefined = tabs.find((tab: ActivityBarTabKey) => tab === "results");
+
+  const expandAction = useJrEditActions((a) => a.expandActivityContent);
+  const activityContentState = useJrEditState((s) => s.activityContentState);
+
+  const handleClick = () => {
+    build("running-project");
+    // TODO: move to results screen
+    // check if results tab is already open
+    // if not, open it
+    if (resultsTab !== undefined && !tabIsActive(resultsTab, activityContentState)) {
+      expandAction(resultsTab);
+    }
+  }
 
   const tooltipIsVisible = buttonTourProgressStage === "green-flag";
 

@@ -24,11 +24,7 @@ import { AssetOperationContext } from "../../model/asset";
 import { useTranslation } from "react-i18next";
 import { AssetSource } from "../../model/asset/core";
 
-interface AppearancesListProps {
-  showOnly?: boolean;
-}
-
-export const AppearancesList = ({ showOnly }: AppearancesListProps) => {
+export const AppearancesList = () => {
   const { t } = useTranslation("assets");
   const focusContext = useFocusContext("per-method");
   const projectId = useStoreState((state) => state.activeProject.project.id);
@@ -52,7 +48,7 @@ export const AppearancesList = ({ showOnly }: AppearancesListProps) => {
 
   // See comment in CodeEditor.
   const activeTab = useJrEditState((s) => s.actorPropertiesActiveTab);
-  if (!showOnly && activeTab !== "appearances") {
+  if (activeTab !== "appearances") {
     return false;
   }
 

@@ -55,11 +55,11 @@ const CodeSubActivity = () => {
 };
 
 const AppearancesSubActivity = () => {
-  return <AppearancesList showOnly={true} />;
+  return <AppearancesList />;
 };
 
 const SoundsSubActivity = () => {
-  return <SoundsList showOnly={true} />;
+  return <SoundsList />;
 };
 
 const SpritesSubActivity = () => {
@@ -148,7 +148,7 @@ const WorkActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"object-group"} className={""} />
                 </div>
-                <p>Sprites</p>
+                <p>{t("activity-pane.work-activity.sprites")}</p>
               </>
             }
           >
@@ -161,7 +161,7 @@ const WorkActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"code"} className={""} />
                 </div>
-                <p>Code</p>
+                <p>{t("activity-pane.work-activity.code")}</p>
               </>
             }
           >
@@ -174,7 +174,7 @@ const WorkActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"brush"} className={""} />
                 </div>
-                <p>Appearances</p>
+                <p>{t("activity-pane.work-activity.appearances")}</p>
               </>
             }
           >
@@ -187,7 +187,7 @@ const WorkActivityContent: React.FC<{ content: Content }> = () => {
                 <div className={"icon-wrapper"}>
                   <FontAwesomeIcon icon={"volume-high"} className={""} />
                 </div>
-                <p>Sounds</p>
+                <p>{t("activity-pane.work-activity.sounds")}</p>
               </>
             }
           >
@@ -199,38 +199,10 @@ const WorkActivityContent: React.FC<{ content: Content }> = () => {
   );
 };
 
-const WorkActivityMaybeContent: React.FC<EmptyProps> = () => {
-  const contentState = useStoreState(
-    (s) => s.ideLayout.keyboardShortcutsHelpContent
-  );
-  switch (contentState.contentFetchState.state) {
-    case "idle":
-    case "requesting":
-      return (
-        <div className="spinner-container h-100 w-100 d-flex justify-content-center align-items-center">
-          <Spinner animation="border" />
-        </div>
-      );
-    case "available":
-      return (
-        <WorkActivityContent content={contentState.contentFetchState.content} />
-      );
-    case "error":
-      return (
-        <>
-          <h2>Problem</h2>
-          <p>Sorry, there was a problem fetching the help information.</p>
-        </>
-      );
-    default:
-      return assertNever(contentState.contentFetchState);
-  }
-};
-
 export const WorkActivity: React.FC<EmptyProps> = () => {
   return (
     <div className="WorkActivity gfs__help-content h-100" tabIndex={-1}>
-      <WorkActivityMaybeContent />
+      <WorkActivityContent />
     </div>
   );
 };
