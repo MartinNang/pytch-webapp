@@ -38,6 +38,9 @@ import { InertCopyCodeButton } from "./components/Tutorial";
 import { AppLoadingPlaceholder } from "./components/AppLoadingPlaceholder";
 import { I18nBootErrorModal } from "./components/I18nBootErrorModal";
 import { DemosList } from "./components/discoverable-demos-page/DemosList";
+import SignUp from "./SignUp";
+import SignIn from "./SignIn";
+import Profile from "./Profile";
 
 const UnknownRoute: React.FC<EmptyProps> = () => {
   return (
@@ -134,6 +137,18 @@ function AppWithI18nReady() {
         {
           path: "deliberate-failure/*",
           element: <DeliberateFailureWithBoundary />,
+        },
+        {
+          path: "sign-up/",
+          element: <SignUp />,
+        },
+        {
+          path: "sign-in/",
+          element: <SignIn />,
+        },
+        {
+          path: "profile/",
+          element: <Profile />,
         },
         {
           path: "*",
