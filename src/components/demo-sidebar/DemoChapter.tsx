@@ -135,6 +135,9 @@ const DemoChapterNavigation: React.FC<EmptyProps> = () => {
 
 type DemoChapterBodyProps = { markdown: string };
 
+/** Render the given `markdown`, adjusting each `<img>` element in the
+ * rendered output such that its `src` attribute points inside the
+ * `content/assets` folder within the current demo. */
 const DemoChapterBody: React.FC<DemoChapterBodyProps> = ({ markdown }) => {
   const demoUuid = useMappedLinkedDemo((demo) => demo.demo.uuid);
 
