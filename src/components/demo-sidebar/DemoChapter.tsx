@@ -9,9 +9,10 @@ import React, {
   useState,
 } from "react";
 import { useStoreActions, useStoreState } from "../../store";
-import { useLinkedDemo } from "../Junior/lesson/hooks";
+import { useLinkedDemo, useMappedLinkedDemo } from "../Junior/lesson/hooks";
 import classNames from "classnames";
 import { EmptyProps } from "../../utils";
+import { demoAssetUrl } from "../../model/discoverable-demos";
 
 const DemoChapterNavigation: React.FC<EmptyProps> = () => {
   const { t } = useTranslation("demos");
@@ -129,6 +130,33 @@ const DemoChapterNavigation: React.FC<EmptyProps> = () => {
         <FontAwesomeIcon icon={"angle-right"} color={"white"} />
       </Button>
     </>
+  );
+};
+
+type DemoChapterBodyProps = { markdown: string };
+
+const DemoChapterBody: React.FC<DemoChapterBodyProps> = ({ markdown }) => {
+  const demoUuid = useMappedLinkedDemo((demo) => demo.demo.uuid);
+
+  const maybePatchImageUrls = (div: HTMLDivElement | null) => {
+    if (div == null || div.dataset.imageUrlsPatched === "yes") return;
+
+    const imgElts = div.querySelectorAll("img");
+    imgElts.forEach((imgElt) => {
+      const rawSrc = imgElt.getAttribute("src");
+      if (rawSrc == null) return; // Shouldn't happen?
+
+      const newSrc = demoAssetUrl(demoUuid, rawSrc);
+      imgElt.setAttribute("src", newSrc);
+    });
+
+    div.dataset.imageUrlsPatched = "yes";
+  };
+
+  return (
+    <div ref={maybePatchImageUrls} className="DemoChapterBody-wrapper">
+      <Markdown>{markdown}</Markdown>
+    </div>
   );
 };
 
