@@ -51,7 +51,8 @@ const RecommendedDemoCard: React.FC<RecommendedDemoCardProps> = ({ demo }) => {
           </Link>
           {summaryPara}
           <Row className={"footer-row"}>
-            <Col xs={12} sm={6} className={"align-items-end d-flex"}>
+            <Col sm={12} className={"d-flex justify-content-between"}>
+              <p>{demo.authorName}</p>
               <p className={"m-0"}>{absTimestamp}</p>
             </Col>
           </Row>
