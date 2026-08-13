@@ -65,6 +65,7 @@ export const DemoSidebar = () => {
   const demoFooter = (
     <Row className={"demo-footer py-3 px-3"}>
       <div>
+        <p>{linkedDemo.demo.authorName}</p>
         <p>{t("sidebar.published-on", { replace: { date: absTimestamp } })}</p>
       </div>
     </Row>
