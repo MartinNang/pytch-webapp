@@ -1,33 +1,69 @@
-import { assets, common, errors, flows, ide, notableChanges, projects, tutorials, vm, welcome } from './en';
+import { enAssets, enCommon, enErrors, enFlows, enIde, enNotableChanges, enProjects, enTutorials, enVm, enWelcome } from './index';
+import { gaAssets, gaCommon, gaErrors, gaFlows, gaIde, gaNotableChanges, gaProjects, gaTutorials, gaVm, gaWelcome } from './index';
 import * as fs from "node:fs";
 
-let globalAssets: Object = addPrefixToJSON(Object.keys({assets})[0], assets);
-let globalCommon: Object = addPrefixToJSON(Object.keys({common})[0], common);
-let globalErrors: Object = addPrefixToJSON(Object.keys({errors})[0], errors);
-let globalFlows: Object = addPrefixToJSON(Object.keys({flows})[0], flows);
-let globalIde: Object = addPrefixToJSON(Object.keys({ide})[0], ide);
-let globalNotableChanges: Object = addPrefixToJSON("notable-changes", notableChanges);
-let globalProjects: Object = addPrefixToJSON(Object.keys({projects})[0], projects);
-let globalTutorials: Object = addPrefixToJSON(Object.keys({tutorials})[0], tutorials);
-let globalVm: Object = addPrefixToJSON(Object.keys({vm})[0], vm);
-let globalWelcome: Object = addPrefixToJSON(Object.keys({welcome})[0], welcome);
+function generatePytchEnglishJSON() {
+    let englishAssets: Object = addPrefixToJSON("assets", enAssets);
+    let englishCommon: Object = addPrefixToJSON("common", enCommon);
+    let englishErrors: Object = addPrefixToJSON("errors", enErrors);
+    let englishFlows: Object = addPrefixToJSON("flows", enFlows);
+    let englishIde: Object = addPrefixToJSON("ide", enIde);
+    let englishNotableChanges: Object = addPrefixToJSON("notable-changes", enNotableChanges);
+    let englishProjects: Object = addPrefixToJSON("projects", enProjects);
+    let englishTutorials: Object = addPrefixToJSON("tutorials", enTutorials);
+    let englishVm: Object = addPrefixToJSON("vm", enVm);
+    let englishWelcome: Object = addPrefixToJSON("welcome", enWelcome);
 
-const mergedJSON = Object.assign({},
-    globalAssets,
-    globalCommon,
-    globalErrors,
-    globalFlows,
-    globalIde,
-    globalNotableChanges,
-    globalProjects,
-    globalTutorials,
-    globalVm,
-    globalWelcome,
-);
+    const mergedEnglishJSON = Object.assign({},
+        englishAssets,
+        englishCommon,
+        englishErrors,
+        englishFlows,
+        englishIde,
+        englishNotableChanges,
+        englishProjects,
+        englishTutorials,
+        englishVm,
+        englishWelcome,
+    );
 
-console.log("merged JSON object:", mergedJSON);
-const outputFilePath = 'pytch-english.json';
-fs.writeFileSync(outputFilePath, JSON.stringify(mergedJSON));
+    console.log("merged JSON object:", mergedEnglishJSON);
+    const outputFilePath = 'pytch-english.json';
+    fs.writeFileSync(outputFilePath, JSON.stringify(mergedEnglishJSON));
+}
+
+function generatePytchIrishJSON() {
+    let irishAssets: Object = addPrefixToJSON("assets", gaAssets);
+    let irishCommon: Object = addPrefixToJSON("common", gaCommon);
+    let irishErrors: Object = addPrefixToJSON("errors", gaErrors);
+    let irishFlows: Object = addPrefixToJSON("flows", gaFlows);
+    let irishIde: Object = addPrefixToJSON("ide", gaIde);
+    let irishNotableChanges: Object = addPrefixToJSON("notable-changes", gaNotableChanges);
+    let irishProjects: Object = addPrefixToJSON("projects", gaProjects);
+    let irishTutorials: Object = addPrefixToJSON("tutorials", gaTutorials);
+    let irishVm: Object = addPrefixToJSON("vm", gaVm);
+    let irishWelcome: Object = addPrefixToJSON("welcome", gaWelcome);
+
+    const mergedIrishJSON = Object.assign({},
+        irishAssets,
+        irishCommon,
+        irishErrors,
+        irishFlows,
+        irishIde,
+        irishNotableChanges,
+        irishProjects,
+        irishTutorials,
+        irishVm,
+        irishWelcome,
+    );
+
+    console.log("merged JSON object:", mergedIrishJSON);
+    const outputFilePath = 'pytch-irish.json';
+    fs.writeFileSync(outputFilePath, JSON.stringify(mergedIrishJSON));
+}
+
+generatePytchEnglishJSON();
+generatePytchIrishJSON();
 
 function addPrefixToJSON(prefix: string, jsonFile: Object): Object {
     delete jsonFile["$RUBBISH$"];
