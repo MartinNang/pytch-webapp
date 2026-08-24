@@ -1,6 +1,7 @@
 // context/index.js
 export {default as enAssets} from './en/assets.json';
 export {default as enCommon} from './en/common.json';
+export {default as enDemos} from './en/demos.json';
 export {default as enErrors} from './en/errors.json';
 export {default as enFlows} from './en/flows.json';
 export {default as enIde} from './en/ide.json';

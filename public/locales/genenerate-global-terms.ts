@@ -1,10 +1,13 @@
-import { enAssets, enCommon, enErrors, enFlows, enIde, enNotableChanges, enProjects, enTutorials, enVm, enWelcome } from './index';
+import { enAssets, enCommon, enDemos, enErrors, enFlows, enIde, enNotableChanges, enProjects, enTutorials, enVm, enWelcome } from './index';
 import { gaAssets, gaCommon, gaErrors, gaFlows, gaIde, gaNotableChanges, gaProjects, gaTutorials, gaVm, gaWelcome } from './index';
 import * as fs from "node:fs";
+
+// TODO: use fetch instead of import
 
 function generatePytchEnglishJSON() {
     let englishAssets: Object = addPrefixToJSON("assets", enAssets);
     let englishCommon: Object = addPrefixToJSON("common", enCommon);
+    let englishDemos: Object = addPrefixToJSON("demos", enDemos);
     let englishErrors: Object = addPrefixToJSON("errors", enErrors);
     let englishFlows: Object = addPrefixToJSON("flows", enFlows);
     let englishIde: Object = addPrefixToJSON("ide", enIde);
@@ -17,6 +20,7 @@ function generatePytchEnglishJSON() {
     const mergedEnglishJSON = Object.assign({},
         englishAssets,
         englishCommon,
+        englishDemos,
         englishErrors,
         englishFlows,
         englishIde,
