@@ -3,7 +3,7 @@ import { zEventDescriptor } from "./junior/structured-program/event";
 import { zActorKind } from "./junior/structured-program/actor";
 
 // Zod schemas describing the raw JSON stored in
-// `public/data/help-sidebar.json`, which is fetched and converted into
+// `public/data/structure.json`, which is fetched and converted into
 // an `HelpContent` instance by `groupHelpIntoSections()` in
 // `help-sidebar.ts`.
 
@@ -80,6 +80,7 @@ const zBlockEntry = z.strictObject({
   scratchIsLong: z.optional(z.boolean()), // missing = false
   eventDescriptor: z.optional(zEventDescriptor), // for hat-blocks
   help: zHelpEntryContent,
+  slug: z.string(),
 });
 export type HelpSidebarBlockEntry = z.infer<typeof zBlockEntry>;
 
@@ -92,6 +93,7 @@ const zNonMethodBlockEntry = z.strictObject({
   scratch: z.string(),
   python: z.optional(z.string()),
   help: zHelpEntryContent,
+  slug: z.string(),
 });
 export type HelpSidebarNonMethodBlockEntry = z.infer<
   typeof zNonMethodBlockEntry
@@ -102,6 +104,7 @@ const zPurePythonEntry = z.strictObject({
   kind: z.literal("pure-python"),
   python: zHelpPythonCode,
   help: zHelpEntryContent,
+  slug: z.string(),
 });
 export type HelpSidebarPurePythonEntry = z.infer<typeof zPurePythonEntry>;
 

@@ -17,7 +17,7 @@ import {
   DevWorkContextFlatKey,
   DevWorkContextOps,
 } from "./dev-work-context";
-import { activeActorKindSelector } from "../components/Junior/hooks";
+import { activeActorKindSelector, useI18nResolvedLanguage} from "../components/Junior/hooks";
 import { kActorKindValues } from "./junior/structured-program/actor";
 import { ExternalJsonSlice, externalJsonSlice } from "./external-json-data";
 import { urlWithinApp } from "../env-utils";
@@ -437,7 +437,10 @@ const groupHelpIntoSections = (rawHelpData: unknown): HelpContent => {
 
 export type IHelpSidebar = ExternalJsonSlice<HelpContent>;
 export const helpSidebar = externalJsonSlice(
-  () => urlWithinApp("/data/help-sidebar.json"),
+  () => {
+    // const resolvedLanguage = useI18nResolvedLanguage();
+    return urlWithinApp(`/data/help-sidebar/output/en.json`)
+  },
   groupHelpIntoSections
 );
 

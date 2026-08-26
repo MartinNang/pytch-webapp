@@ -1,0 +1,759 @@
+[
+  {
+    "sectionSlug": "motion",
+    "heading": "Motion"
+  },
+  {
+    "slug": "motion_turn-degrees",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_point-degrees",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_point-towards-mouse",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_go-to-xy",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_go-to-mouse",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_go-to-random-position",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_glide-to-xy",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_glide-to-mouse",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_change-x",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_set-x",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_change-y",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_set-y",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_x-position",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_y-position",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "motion_direction",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "sectionSlug": "looks",
+    "heading": "Looks"
+  },
+  {
+    "slug": "looks_say-for-seconds",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_say",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_switch-costume",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "looks_switch-backdrop",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "looks_next-costume",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_next-backdrop",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_set-size",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_show",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_hide",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_go-to-front-layer",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_go-to-back-layer",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_go-forward-layers",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_go-backward-layers",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_costume-number",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_backdrop-number",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "looks_costume-name",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "looks_backdrop-name",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "looks_size",
+    "scratch": "",
+    "help": ""
+  },
+
+  {
+
+    "sectionSlug": "sound",
+    "heading": "Sound"
+  },
+  {
+    "slug": "sound_play-sound-until-done",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sound_start-sound",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sound_set-sound-volume",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sound_change-sound-volume",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sound_sound-volume",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sound_stop-all-sounds",
+    "scratch": "",
+    "help": ""
+  },
+
+  {
+
+    "sectionSlug": "events",
+    "heading": "Events"
+  },
+  {
+    "slug": "events_when-green-flag-clicked",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_when-key-pressed",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_when-this-sprite-clicked",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_when-stage-clicked",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_when-i-receive",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_broadcast",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_broadcast-and-wait",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "sectionSlug": "control",
+    "heading": "Control"
+  },
+  {
+    "slug": "events_wait-seconds",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "events_repeat",
+    "heading": "Repeat",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "events_forever",
+    "heading": "Forever",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_if-then",
+    "heading": "If/then",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_if-then-else",
+    "heading": "If/then/else",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_repeat-until",
+    "heading": "Repeat until",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_wait-until",
+    "heading": "Wait until",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "events_stop",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_stop-all",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "events_when-i-start-as-a-clone",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_create-clone",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "events_create-clone-of",
+
+
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "events_delete-this-clone",
+    "scratch": "",
+    "help": ""
+  },
+
+  {
+
+    "sectionSlug": "sensing",
+    "heading": "Sensing"
+  },
+  {
+    "slug": "sensing_touching",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "sensing_touching-mouse",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "sensing_distance-to-mouse",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "sensing_ask-and-wait",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sensing_key-pressed",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sensing_mouse-down",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "sensing_mouse-x",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "sensing_mouse-y",
+    "scratch": "",
+    "help": ""
+  },
+
+  {
+
+    "sectionSlug": "operators",
+    "heading": "Operators"
+  },
+  {
+    "slug": "operators_events-add",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_subtract",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_multiply",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_divide",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_randint",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "operators_uniform",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "operators_choice",
+    "scratch": "",
+    "scratchIsLong": true,
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+  {
+    "slug": "operators_larger-than",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_smaller-than",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_equals",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_and",
+    "scratch": "",
+    "scratchIsLong": true,
+    "help": ""
+  },
+  {
+    "slug": "operators_or",
+    "scratch": "",
+    "scratchIsLong": true,
+    "help": ""
+  },
+  {
+    "slug": "operators_not-touching",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "operators_string-concat",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_char-at",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_length",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_contains",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_modulo",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_round",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "operators_absolute",
+    "heading": "Mathematical functions",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+
+  {
+
+    "sectionSlug": "variables",
+    "heading": "Working with variables"
+  },
+  {
+    "slug": "variables_set-value",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "variables_increase-value",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "variables_show-variable",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+  {
+    "slug": "variables_hide-variable",
+    "scratch": "",
+    "help": {
+      "flat": "",
+      "per-method": {
+        "sprite": "",
+        "stage": ""
+      }
+    }
+  },
+
+  {
+
+    "sectionSlug": "lists",
+    "heading": "Working with lists"
+  },
+  {
+    "slug": "lists_append",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_delete",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_delete-all",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_insert",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_replace",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_element-at-index",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_index-of-element",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_length",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_contains",
+    "scratch": "",
+    "help": ""
+  },
+  {
+    "slug": "lists_choice",
+    "scratch": "",
+    "scratchIsLong": true,
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  },
+
+  {
+
+    "sectionSlug": "instances",
+    "heading": "Sprites, clones, and the Stage"
+  },
+  {
+    "slug": "instances_original",
+    "help": ""
+  },
+  {
+    "slug": "instances_all-clones",
+    "help": ""
+  },
+  {
+    "slug": "instances_all-instances",
+    "help": ""
+  },
+  {
+    "slug": "instances_the-only",
+    "python": {
+      "flat": "",
+      "per-method": ""
+    },
+    "help": {
+      "flat": "",
+      "per-method": ""
+    }
+  }
+]

@@ -21,3 +21,8 @@ export {default as gaProjects} from './ga/projects.json';
 export {default as gaTutorials} from './ga/tutorials.json';
 export {default as gaVm} from './ga/vm.json';
 export {default as gaWelcome} from './ga/welcome.json';
+
+export {default as helpSidebarStructure} from '../data/help-sidebar/structure.json'
+export {default as enHelpSidebarContent} from '../data/help-sidebar/content/en.json'
+export {default as gaHelpSidebarContent} from '../data/help-sidebar/content/ga.json'
+export {default as deHelpSidebarContent} from '../data/help-sidebar/content/de.json'
