@@ -32,7 +32,7 @@ function generatePytchEnglishJSON() {
     );
 
     console.log("merged JSON object:", mergedEnglishJSON);
-    const outputFilePath = 'pytch-english.json';
+    const outputFilePath = 'en.json';
     fs.writeFileSync(outputFilePath, JSON.stringify(mergedEnglishJSON));
 }
 
@@ -62,7 +62,7 @@ function generatePytchIrishJSON() {
     );
 
     console.log("merged JSON object:", mergedIrishJSON);
-    const outputFilePath = 'pytch-irish.json';
+    const outputFilePath = 'ga.json';
     fs.writeFileSync(outputFilePath, JSON.stringify(mergedIrishJSON));
 }
 
