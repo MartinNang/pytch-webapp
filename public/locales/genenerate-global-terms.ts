@@ -46,9 +46,6 @@ function addHelpSidebarContent(helpSidebarContent, globalJSON) {
         if (elem.heading) {
             globalJSON[`help-sidebar.${elem.slug}.heading`] = elem.scratch;
         }
-        /*if (elem.scratch) {
-            globalEnglish[`help-sidebar.${elem.slug}.scratch`] = elem.scratch;
-        }*/
         if (typeof elem.help === "string") {
             globalJSON[`help-sidebar.${elem.slug}.help`] = elem.help;
         }
@@ -67,11 +64,8 @@ function addHelpSidebarContent(helpSidebarContent, globalJSON) {
     })
 }
 
-// TODO: use fetch instead of import
-/*const subDirs = fs.readdirSync('.').filter(file => fs.lstatSync(file).isDirectory());
-subDirs.forEach(dir => {
+// TODO: check if fetch can be used instead of import
 
-})*/
 const mergedEnglishJSON = Object.assign({},
     addPrefixToJSON("assets", enAssets),
     addPrefixToJSON("common", enCommon),
