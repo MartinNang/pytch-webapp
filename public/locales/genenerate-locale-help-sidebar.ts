@@ -40,6 +40,7 @@ function generateLocaleHelpSidebar(lang: string, helpSidebarContent: Object) {
     const outputFilePath = `../data/help-sidebar/output/${lang}.json`;
     fs.writeFileSync(outputFilePath, JSON.stringify(helpSidebarStructureContent, null, " "));
 }
+// TODO: automatically translate scratch text
 
 generateLocaleHelpSidebar("en", enHelpSidebarContent);
 generateLocaleHelpSidebar("ga", gaHelpSidebarContent);

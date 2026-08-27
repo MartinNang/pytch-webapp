@@ -22,6 +22,17 @@ export {default as gaTutorials} from './ga/tutorials.json';
 export {default as gaVm} from './ga/vm.json';
 export {default as gaWelcome} from './ga/welcome.json';
 
+export {default as deAssets} from './de/assets.json';
+export {default as deCommon} from './de/common.json';
+export {default as deErrors} from './de/errors.json';
+export {default as deFlows} from './de/flows.json';
+export {default as deIde} from './de/ide.json';
+export {default as deNotableChanges} from './de/notable-changes.json';
+export {default as deProjects} from './de/projects.json';
+export {default as deTutorials} from './de/tutorials.json';
+export {default as deVm} from './de/vm.json';
+export {default as deWelcome} from './de/welcome.json';
+
 export {default as helpSidebarStructure} from '../data/help-sidebar/structure.json';
 export {default as enHelpSidebarContent} from '../data/help-sidebar/content/en.json';
 export {default as gaHelpSidebarContent} from '../data/help-sidebar/content/ga.json';
