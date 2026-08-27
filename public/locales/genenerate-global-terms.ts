@@ -137,14 +137,6 @@ function addHelpSidebarContent(helpSidebarContent, globalEnglish) {
     })
 }
 
-function generateLocaleJSONFiles(lang, globalJSON) {
-    // TODO:
-    // read every term
-    // create new file for new prefix (except help-sidebar)
-    // remove prefix, insert translations
-    //
-}
-
 /*const subDirs = fs.readdirSync('.').filter(file => fs.lstatSync(file).isDirectory());
 subDirs.forEach(dir => {
 
