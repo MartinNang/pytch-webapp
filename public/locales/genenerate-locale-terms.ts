@@ -2,7 +2,6 @@ import {deGlobal, enGlobal, gaGlobal} from './index';
 import * as fs from "node:fs";
 
 function generateLocaleJSONFiles(lang, globalJSON) {
-    // TODO:
     // read every term
     let lastPrefix = "";
     let localFilesContents = {};
