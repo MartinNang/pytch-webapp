@@ -10,11 +10,14 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import pytchLogo from "../images/pytch.png";
 import { ExternalLinkIndicator } from "./decorations";
-import { NavDropdown } from "react-bootstrap";
+import {Col, NavDropdown, Row} from "react-bootstrap";
+import {useStoreState} from "../store";
 
 export const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
+
+  const cloudUsername = useStoreState((state) => state.cloudUser.username);
 
   useEffect(() => {
     const menuDiv = menuRef.current;
@@ -102,6 +105,35 @@ export const NavBanner = () => {
             >
               <FontAwesomeIcon icon={["far", "envelope"]} />
             </Link>
+          </li>
+          <li>
+            {
+              sessionStorage.getItem('token') ?
+                  <Link to={"/profile"}>
+                    <FontAwesomeIcon icon={"circle-user"} size={"lg"} className={"m-0 me-1"} />
+                    { cloudUsername }
+                  </Link>
+                  :
+                  (
+                    <div className={"d-flex gap-2"}>
+                      <Link
+                        to={"/sign-in"}
+                        className={"border border-white rounded-pill p-2 px-3 bg-white"}
+                        style={{color: "#265378"}}
+                      >
+                        Sign in
+                      </Link>
+                      <Link
+                          to={"/sign-up"}
+                          className={"border border-white rounded-pill p-2 px-3 text-white"}
+                          style={{color: "#265378"}}
+                      >
+                        Create an account
+                      </Link>
+                    </div>
+                  )
+            }
+
           </li>
         </ul>
       </div>
