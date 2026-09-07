@@ -50,9 +50,10 @@ for ns in namespaces:
         string_from_full_key[full_key] = ns_str
 
 
-with hsb_path.open("rt") as f_in:
-    help_strings: dict[str, str] = json.load(f_in)
-    string_from_full_key.update(help_strings)
+if str(hsb_path) != "/dev/null":
+    with hsb_path.open("rt") as f_in:
+        help_strings: dict[str, str] = json.load(f_in)
+        string_from_full_key.update(help_strings)
 
 json.dump(string_from_full_key, sys.stdout, ensure_ascii=False, indent=2)
 sys.stdout.write("\n")
