@@ -448,7 +448,7 @@ const helpSidebarUrl = () => {
 
 export type IHelpSidebar = ExternalJsonSlice<HelpContent>;
 export const helpSidebar = externalJsonSlice(
-  () => urlWithinApp("/data/help-sidebar.json"),
+  helpSidebarUrl,
   groupHelpIntoSections
 );
 
