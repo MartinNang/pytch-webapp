@@ -86,7 +86,10 @@ def hsb_xln(key: str) -> str:
 
 def assign_help(help_entry: dict[str, Any], section_slug: str, slug: str) -> None:
     key_stem = f"{section_slug}.item.{slug}.help"
-    xlns = {k: v for k, v in hsb_xlns.items() if k.startswith(key_stem)}
+
+    # Populate with fallback then overwrite with the main target xlns.
+    xlns = {k: v for k, v in hsb_fb_xlns.items() if k.startswith(key_stem)}
+    xlns.update({k: v for k, v in hsb_xlns.items() if k.startswith(key_stem)})
 
     def xln(suffix: str) -> str:
         return xlns[f"{key_stem}{suffix}"]
