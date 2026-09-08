@@ -17,6 +17,5 @@
   "sidebar.published-on": "Veröffentlicht am {{date}}",
   "sidebar.chapter-count.aria-label": "Kapitel {{current}} von {{total}}",
   "sidebar.prev-chapter.aria-label": "Vorheriges Kapitel",
-  "sidebar.next-chapter.aria-label": "Nächstes Kapitel",
-  "$RUBBISH$": ""
+  "sidebar.next-chapter.aria-label": "Nächstes Kapitel"
 }

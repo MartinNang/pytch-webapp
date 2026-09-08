@@ -89,6 +89,5 @@
   "commit.add-script.select-and-add.stage": "Im Bereich \"Bühne und Sprites\", wähle die Bühne aus. Im Codierungsbereich, wähle das Tab \"Code\" aus und klicke auf den <addButton />-Button um den Vorgang des Hinzufügens eines Skripts zu starten.",
   "commit.add-script.choose-hat-block": "Wähle diesen Hutblock aus:",
   "commit.add-script.click-ok": "Klicke auf den OK-Button um ein leeres Skript mit diesem Hutblock hinzuzufügen.",
-  "commit.add-script.type-code": "Suche nach deinem neuen Skript im Codierungsbereich und gib diesen Code ein:",
-  "$RUBBISH$": ""
+  "commit.add-script.type-code": "Suche nach deinem neuen Skript im Codierungsbereich und gib diesen Code ein:"
 }

@@ -65,6 +65,5 @@
   "delete-many.header_one": "Tionscadal a scriosadh?",
   "delete-many.header_other": "Tionscadail a scriosadh?",
   "delete-many.confirm_one": "An bhfuil tú cinnte gur mhaith leat  {{count}} tionscadal a scriosadh?",
-  "delete-many.confirm_other": "An bhfuil tú cinnte gur mhaith leat  {{count}} tionscadal a scriosadh?",
-  "$RUBBISH$": ""
+  "delete-many.confirm_other": "An bhfuil tú cinnte gur mhaith leat  {{count}} tionscadal a scriosadh?"
 }

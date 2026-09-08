@@ -23,6 +23,5 @@
   "error.traceback.raised-error": "hat den Fehler ausgelöst.",
   "error.traceback.which-raised-error": "was den Fehler ausgelöst hat.",
   "error.traceback.no-info": "Leider gibt es keine weitere Information über was diesen Fehler ausgelöst hat. Falls du glaubst nichts Ungewöhnliches gemacht zu haben, bitte kontaktiere das Pytch-Team und bitte um Hilfe. Wir empfehlen dir, dein Projekt zu speichern und Pytch neuzuladen.",
-  "error.traceback.no-more-info": "Es gibt keine weitere Information zu diesem Fehler.",
-  "$RUBBISH$": ""
+  "error.traceback.no-more-info": "Es gibt keine weitere Information zu diesem Fehler."
 }
