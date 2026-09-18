@@ -84,6 +84,7 @@ import {
   CreateProjectFromDemoFlow,
   createProjectFromDemoFlow,
 } from "./project-from-demo-flow";
+import {CloudZipfileFlow, uploadZipfileToCloudFlow} from "./user-interactions/upload-cloud-project";
 
 export interface IStageDisplaySize {
   width: number;
@@ -319,6 +320,8 @@ export interface IUserConfirmations {
   downloadZipfileFlow: DownloadZipfileFlow;
 
   viewCodeDiffFlow: ViewCodeDiffFlow;
+
+  uploadZipfileToCloudFlow: CloudZipfileFlow;
 }
 
 // TODO: Better name than 'confirmations'.
@@ -345,6 +348,8 @@ export const userConfirmations: IUserConfirmations = {
   downloadZipfileFlow,
 
   viewCodeDiffFlow,
+
+  uploadZipfileToCloudFlow,
 };
 
 export interface IPlainTextPane {

@@ -11,7 +11,8 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import pytchLogo from "../images/pytch.png";
 import { ExternalLinkIndicator } from "./decorations";
 import {Col, NavDropdown, Row} from "react-bootstrap";
-import {useStoreState} from "../store";
+import {useStoreActions, useStoreState} from "../store";
+import {getUserProfile, signOutUser} from "../model/cloud-storage";
 
 export const NavBanner = () => {
   const [menuIsExpanded, setMenuIsExpanded] = useState(false);
@@ -107,7 +108,7 @@ export const NavBanner = () => {
             </Link>
           </li>
             {
-              sessionStorage.getItem('token') ?
+              sessionStorage.getItem('access_token') ?
                   <li>
                     <Link to={"/profile"}>
                       <FontAwesomeIcon icon={"circle-user"} size={"lg"} className={"m-0 me-1"} />
