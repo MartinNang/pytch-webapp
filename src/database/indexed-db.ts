@@ -2,7 +2,7 @@ import Dexie, { Transaction } from "dexie";
 
 import { tutorialContent } from "./tutorials";
 
-import { ProjectId, ITrackedTutorial } from "../model/project-core";
+import { ProjectId, ITrackedTutorial, CloudProjectId} from "../model/project-core";
 import {
   IProjectSummary,
   ITutorialTrackingUpdate,
@@ -30,6 +30,7 @@ import {
   eqLinkedContentRefs,
   LinkedContentRefUpdate,
 } from "../model/linked-content-core";
+import {$strict, $strip} from "zod/v4/core";
 
 class PytchDuplicateAssetNameError extends Error {
   constructor(
@@ -69,6 +70,7 @@ export type CreateProjectOptions = Partial<{
   trackedTutorialRef: ITrackedTutorialRef | null;
   linkedContentRef: LinkedContentRef;
   assets: Array<AddAssetDescriptor>;
+  cloudProjectId: string | null;
 }>;
 
 const _defaultNewProjectProgram =
@@ -80,6 +82,7 @@ const _defaultCreateProjectOptions: Required<CreateProjectOptions> = {
   trackedTutorialRef: null,
   linkedContentRef: kLinkedContentRefNone,
   assets: [],
+  cloudProjectId: null,
 };
 
 // TODO: Is there a good way to avoid repeating this information here vs
@@ -91,6 +94,7 @@ interface ProjectSummaryRecord {
   linkedContentRef: LinkedContentRef; // New in V5
   summary?: string;
   trackedTutorialRef?: ITrackedTutorialRef;
+  cloudProjectId?: CloudProjectId;
 }
 
 /** Sort `ProjectSummaryRecord` instances in descending order of mtime,
@@ -307,6 +311,7 @@ export class DexieStorage extends Dexie {
     name: string,
     options: CreateProjectOptions
   ): Promise<IProjectSummary> {
+    console.log(`creating project test:`, options);
     const completeOptions: Required<CreateProjectOptions> = {
       ..._defaultCreateProjectOptions,
       ...options,
@@ -320,12 +325,13 @@ export class DexieStorage extends Dexie {
       linkedContentRef: completeOptions.linkedContentRef,
       summary: completeOptions.summary ?? undefined,
       trackedTutorialRef: completeOptions.trackedTutorialRef ?? undefined,
+      cloudProjectId: completeOptions.cloudProjectId,
     };
 
     const projectId = await this.projectSummaries.add(protoSummary);
-
+    const cloudProjectId = completeOptions.cloudProjectId;
     const program = completeOptions.program;
-    await this.projectPytchPrograms.add({ projectId, program });
+    await this.projectPytchPrograms.add({ projectId, cloudProjectId, program });
 
     // TODO: Check what's going on with trackedTutorialRef vs
     // trackedTutorial.  The types are unhelpful here.
@@ -363,7 +369,8 @@ export class DexieStorage extends Dexie {
   async copyProject(
     sourceId: ProjectId,
     destinationName: string,
-    copyKeepsContentLink: boolean
+    copyKeepsContentLink: boolean,
+    cloudProjectId: CloudProjectId,
   ): Promise<ProjectId> {
     const tables = [
       this.projectSummaries,
@@ -397,6 +404,7 @@ export class DexieStorage extends Dexie {
         trackedTutorialRef: sourceSummary.trackedTutorialRef,
         program: programRecord.program,
         linkedContentRef,
+        cloudProjectId: cloudProjectId,
       };
       const newProject = await this.createNewProject(
         destinationName,
@@ -477,6 +485,7 @@ export class DexieStorage extends Dexie {
       mtime: summaryRecord.mtime,
       linkedContentRef: summaryRecord.linkedContentRef,
       summary: summaryRecord.summary,
+      cloudProjectId: summaryRecord.cloudProjectId,
     };
   }
 
@@ -492,6 +501,7 @@ export class DexieStorage extends Dexie {
   async projectSummary(id: number): Promise<IProjectSummary> {
     await this.queuedSyncTasksQueueEmpty();
     const summary = await this.projectSummaryRecordOrFail(id);
+    console.log("fetched project summary", summary);
     return await this.projectSummaryFromRecord(summary);
   }
 
