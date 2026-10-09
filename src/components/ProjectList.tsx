@@ -157,6 +157,9 @@ const Project: React.FC<ProjectCardProps> = ({ project, anySelected }) => {
                   <CaptiveContextMenu.DropdownItem onInvoke={onRename}>
                     {tCommon("action.rename")}
                   </CaptiveContextMenu.DropdownItem>
+                  <CaptiveContextMenu.DropdownItem>
+                    Publish (TODO)
+                  </CaptiveContextMenu.DropdownItem>
                   <Dropdown.Divider />
                   <CaptiveContextMenu.DropdownItem
                       className="danger"
